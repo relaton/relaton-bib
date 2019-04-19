@@ -15,6 +15,9 @@ require "relaton_bib/formatted_ref"
 require "relaton_bib/medium"
 require "relaton_bib/classification"
 require "relaton_bib/validity"
+require "relaton_bib/document_relation"
+require "relaton_bib/bib_item_locality"
+
 
 module RelatonBib
   # module BibItemType
@@ -182,7 +185,8 @@ module RelatonBib
     #
     # @param relations [Array<Hash>]
     # @option relations [String] :type
-    # @option relations [String] :identifier
+    # @option relations [RelatonBib::BibliographicItem] :bibitem
+    # @option relations [Array<RelatonBib::BibItemLocality>] :bib_locality
     def initialize(**args)
       if args[:type] && !TYPES.include?(args[:type])
         raise ArgumentError, %{Type "#{args[:type]}" is invalid.}
