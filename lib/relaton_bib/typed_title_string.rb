@@ -14,7 +14,7 @@ module RelatonBib
     # @param language [String]
     # @param script [String]
     def initialize(**args)
-      if type && !TITLE_TYPES.include?(args[:type])
+      if args[:type] && !TITLE_TYPES.include?(args[:type])
         raise ArgumentError, %{The type #{args[:type]} is invalid.}
       end
 
@@ -24,12 +24,12 @@ module RelatonBib
 
       @type = args[:type]
 
-      if args[:title]
-        @title = args[:title]
-      else
-        fsargs = args.select { |k, _v| %i[content language script format].include? k }
-        @title = args.fetch :title, FormattedString.new(fsargs)
-      end
+      # if args[:title]
+      #   @title = args[:title]
+      # else
+      fsargs = args.select { |k, _v| %i[content language script format].include? k }
+      @title = args.fetch :title, FormattedString.new(fsargs)
+      # end
     end
 
     # @param builder [Nokogiri::XML::Builder]

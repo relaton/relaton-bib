@@ -26,6 +26,7 @@ module RelatonBib
     # @param surname [RelatonBib::LocalizedString]
     # @param forenames [Array<RelatonBib::LocalizedString>]
     # @param initials [Array<RelatonBib::LocalizedString>]
+    # @param additions [Array<RelatonBib::LocalizedString>]
     # @param prefix [Array<RelatonBib::LocalizedString>]
     # @param completename [RelatonBib::LocalizedString]
     def initialize(**args)
@@ -34,10 +35,10 @@ module RelatonBib
       end
 
       @surname      = args[:surname]
-      @forenames    = args[:forenames]
-      @initials     = args[:initials]
-      @additions    = args[:additions]
-      @prefix       = args[:prefix]
+      @forenames    = args.fetch :forenames, []
+      @initials     = args.fetch :initials, []
+      @additions    = args.fetch :additions, []
+      @prefix       = args.fetch :prefix, []
       @completename = args[:completename]
     end
 
@@ -47,11 +48,11 @@ module RelatonBib
         if completename
           builder.completename { completename.to_xml builder }
         else
-          builder.prefix { prefix.each { |p| p.to_xml builder } } if prefix
-          builder.initial { initials.each { |i| i.to_xml builder } } if initials
-          builder.addition { additions.each { |a| a.to_xml builder } } if additions
+          prefix.each { |p| builder.prefix { p.to_xml builder } } 
+          initials.each { |i| builder.initial { i.to_xml builder } }
+          additions.each { |a| builder.addition { a.to_xml builder } }
           builder.surname { surname.to_xml builder }
-          builder.forename { forenames.each { |f| f.to_xml builder } } if forenames
+          forenames.each { |f| builder.forename { f.to_xml builder } }
         end
       end
     end

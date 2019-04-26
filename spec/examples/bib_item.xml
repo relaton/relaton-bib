@@ -1,5 +1,5 @@
 <bibitem id="ISO/TC211" type="standard">
-  <fetched>2019-04-17</fetched>
+  <fetched>2019-04-25</fetched>
   <title type="main" language="en" script="Latn">Geographic information</title>
   <title language="fr" script="Latn">Information géographique</title>
   <uri type="src">https://www.iso.org/standard/53798.html</uri>
@@ -116,7 +116,7 @@
     </bibitem>
   </relation>
   <series type="main">
-    <title language="en" script="Latn">ISO/IEC FDIS 10118-3</title>
+    <title type="original" format="text/plain" language="en" script="Latn">ISO/IEC FDIS 10118-3</title>
     <place>Serie's place</place>
     <organization>Serie's organization</organization>
     <abbreviation language="en" script="Latn">ABVR</abbreviation>

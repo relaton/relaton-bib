@@ -6,10 +6,10 @@ module RelatonBib
     # @param form [String, NilClass]
     # @param size [String, NilClass]
     # @param scale [String, NilClass]
-    def initialize(**args)
-      @form  = args[:form]
-      @size  = args[:size]
-      @scale = args[:scale]
+    def initialize(form: nil, size: nil, scale: nil)
+      @form  = form
+      @size  = size
+      @scale = scale
     end
 
     # @param builder [Nokogiri::XML::Builder]

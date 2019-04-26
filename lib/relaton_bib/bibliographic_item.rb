@@ -17,6 +17,7 @@ require "relaton_bib/classification"
 require "relaton_bib/validity"
 require "relaton_bib/document_relation"
 require "relaton_bib/bib_item_locality"
+require "relaton_bib/xml_parser"
 
 
 module RelatonBib
@@ -67,7 +68,7 @@ module RelatonBib
     # @return [String]
     attr_reader :id
 
-    # @return [Array<RelatonBib::FormattedString>]
+    # @return [Array<RelatonBib::TypedTitleString>]
     attr_reader :title
 
     # @return [Array<RelatonBib::TypedUri>]
@@ -88,7 +89,7 @@ module RelatonBib
     # @return [Array<RelatonBib::ContributionInfo>]
     attr_reader :contributors
 
-    # @return [String]
+    # @return [String, NillClass]
     attr_reader :edition
 
     # @return [RelatonBib::BibliongraphicItem::Version]
@@ -124,7 +125,7 @@ module RelatonBib
     # @return [RelatonBib::Medium, NilClass]
     attr_reader :medium
 
-    # @return [String, NilClass]
+    # @return [Array<String>]
     attr_reader :place
 
     # @return [Array<RelatonBib::BibItemLocality>]
@@ -146,7 +147,7 @@ module RelatonBib
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     # @param id [String, NilClass]
-    # @param title [Array<RelatonBib::FormattedString>]
+    # @param title [Array<RelatonBib::TypedTitleString>]
     # @param formattedref [RelatonBib::FormattedRef, NilClass]
     # @param type [String, NilClass]
     # @param docid [Array<RelatonBib::DocumentIdentifier>]
@@ -156,13 +157,14 @@ module RelatonBib
     # @param docstatus [RelatonBib::DocumentStatus, NilClass]
     # @param edition [String, NilClass]
     # @param version [RelatonBib::BibliographicItem::Version, NilClass]
-    # @param biblionote [Array<RelatonBib::FormattedStrong>, NilClass]
+    # @param biblionote [Array<RelatonBib::FormattedStrong>]
     # @param series [Array<RelatonBib::Series>]
     # @param medium [RelatonBib::Medium, NilClas]
-    # @param place [String, NilClass]
+    # @param place [Array<String>]
     # @param extent [Array<Relaton::BibItemLocality>]
     # @param accesslocation [Array<String>]
     # @param classification [RelatonBib::Classification, NilClass]
+    # @param validity [RelatonBib:Validity, NilClass]
     # @param fetched [Date, NilClass] default nil
     #
     # @param dates [Array<Hash>]
@@ -192,14 +194,11 @@ module RelatonBib
         raise ArgumentError, %{Type "#{args[:type]}" is invalid.}
       end
 
-      @id            = args[:id]
-      @title         = (args[:titles] || []).map { |t| TypedTitleString.new t }
-      @formattedref  = args[:formattedref] if title.empty?
-      @type          = args[:type]
-      @docidentifier = args[:docid] || []
-      @docnumber     = args[:docnumber]
+      @title = (args[:titles] || []).map do |t|
+        t.is_a?(Hash) ? TypedTitleString.new(t) : t
+      end
 
-      @dates         = (args[:dates] || []).map do |d|
+      @dates = (args[:dates] || []).map do |d|
         d.is_a?(Hash) ? BibliographicDate.new(d) : d
       end
 
@@ -211,18 +210,9 @@ module RelatonBib
         end
       end
 
-      @edition       = args[:edition]
-      @version       = args[:version]
-      @biblionote    = args.fetch :biblionote, []
-      @language      = args[:language]
-      @script        = args[:script]
-      @status        = args[:docstatus]
-
-      @abstract      = (args[:abstract] || []).map do |a|
+      @abstract = (args[:abstract] || []).map do |a|
         a.is_a?(Hash) ? FormattedString.new(a) : a
       end
-
-      @relations = DocRelationCollection.new(args[:relations] || [])
 
       if args[:copyright]
         @copyright = if args[:copyright].is_a?(Hash)
@@ -231,15 +221,27 @@ module RelatonBib
                      end
       end
 
-      @link   = args.fetch(:link, []).map { |s| s.is_a?(Hash) ? TypedUri.new(s) : s }
-      @series = args[:series]
-      @medium = args[:medium]
-      @place  = args[:place]
-      @extent = args[:extent] || []
+      @id             = args[:id]
+      @formattedref   = args[:formattedref] if title.empty?
+      @type           = args[:type]
+      @docidentifier  = args[:docid] || []
+      @docnumber      = args[:docnumber]
+      @edition        = args[:edition]
+      @version        = args[:version]
+      @biblionote     = args.fetch :biblionote, []
+      @language       = args.fetch :language, []
+      @script         = args.fetch :script, []
+      @status         = args[:docstatus]
+      @relations      = DocRelationCollection.new(args[:relations] || [])
+      @link           = args.fetch(:link, []).map { |s| s.is_a?(Hash) ? TypedUri.new(s) : s }
+      @series         = args[:series]
+      @medium         = args[:medium]
+      @place          = args.fetch(:place, [])
+      @extent         = args[:extent] || []
       @accesslocation = args.fetch :accesslocation, []
       @classification = args[:classification]
-      @validity = args[:validity]
-      @fetched = args.fetch :fetched, nil # , Date.today # we should pass the fetched arg from scrappers
+      @validity       = args[:validity]
+      @fetched        = args.fetch :fetched, nil # , Date.today # we should pass the fetched arg from scrappers
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -314,15 +316,15 @@ module RelatonBib
         builder.edition edition if edition
         version.to_xml builder if version
         biblionote.each { |n| builder.note { n.to_xml builder } }
-        language.each { |l| builder.language l } if language
-        script.each { |s| builder.script s } if language
+        language.each { |l| builder.language l }
+        script.each { |s| builder.script s }
         abstract.each { |a| builder.abstract { a.to_xml(builder) } }
         status.to_xml builder if status
         copyright.to_xml builder if copyright
         relations.each { |r| r.to_xml builder }
         series.each { |s| s.to_xml builder } if series
         medium.to_xml builder if medium
-        builder.place place if place
+        place.each { |pl| builder.place pl }
         extent.each { |e| e.to_xml builder }
         accesslocation.each { |al| builder.accesslocation al }
         classification.to_xml builder if classification

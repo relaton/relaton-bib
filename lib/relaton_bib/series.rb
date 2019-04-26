@@ -41,7 +41,7 @@ module RelatonBib
 
     # @param type [String, NilClass] title or formattedref argument should be passed
     # @param formattedref [RelatonBib::FormattedRef, NilClass]
-    # @param title [RelatonBib::FormattedString, NilClass]
+    # @param title [RelatonBib::TypedTitleString, NilClass]
     # @param place [String, NilClass]
     # @param orgaization [String, NilClass]
     # @param abbreviation [RelatonBib::LocalizedString, NilClass]
@@ -50,7 +50,7 @@ module RelatonBib
     # @param number [String, NilClass]
     # @param partnumber [String, NilClass]
     def initialize(**args)
-      unless args[:title].is_a?(RelatonBib::FormattedString) || args[:formattedref]
+      unless args[:title].is_a?(RelatonBib::TypedTitleString) || args[:formattedref]
         raise ArgumentError, "argument `title` or `formattedref` should present"
       end
 

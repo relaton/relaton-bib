@@ -55,7 +55,7 @@ RSpec.describe RelatonBib::BibliographicItem do
               affiliation: [RelatonBib::Affilation.new(
                 RelatonBib::Organization.new(
                   name: "IETF",
-                  abbreviation: "IETF",
+                  abbreviation: RelatonBib::LocalizedString.new("IETF"),
                   identifiers: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
                 )
               )],
@@ -133,8 +133,9 @@ RSpec.describe RelatonBib::BibliographicItem do
         series: [
           RelatonBib::Series.new(
             type: "main",
-            title: RelatonBib::FormattedString.new(
-              content: "ISO/IEC FDIS 10118-3", language: "en", script: "Latn",
+            title: RelatonBib::TypedTitleString.new(
+              type: "original", content: "ISO/IEC FDIS 10118-3", language: "en",
+              script: "Latn", format: "text/plain",
             ),
             place: "Serie's place",
             organization: "Serie's organization",
@@ -154,7 +155,7 @@ RSpec.describe RelatonBib::BibliographicItem do
         medium: RelatonBib::Medium.new(
           form: "medium form", size: "medium size", scale: "medium scale"
         ),
-        place: "bib place",
+        place: ["bib place"],
         extent: [
           RelatonBib::BibItemLocality.new(
             "section", "Reference from", "Reference to"
@@ -206,6 +207,10 @@ RSpec.describe RelatonBib::BibliographicItem do
       copyright: RelatonBib::CopyrightAssociation.new(owner: owner, from: "2018"),
     )
     expect(bibitem.to_xml).to include "<formattedref>ISO123</formattedref>"
+  end
+
+  it "raises invalid type argument error" do
+    expect { RelatonBib::BibliographicItem.new type: "type" }.to raise_error ArgumentError
   end
 
   context RelatonBib::CopyrightAssociation do

@@ -4,10 +4,12 @@ module RelatonBib
     # @return [String]
     attr_reader :id
 
-    # @return [String]
+    # @return [String, NilClass]
     attr_reader :type
 
-    def initialize(id:, type:)
+    # @param id [String]
+    # @param type [String, NilClass]
+    def initialize(id:, type: nil)
       @id   = id
       @type = type
     end

@@ -28,6 +28,11 @@ module RelatonBib
       content
     end
 
+    # @return [TrueClass, FalseClass]
+    def empty?
+      content.empty?
+    end
+
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       return unless content
