@@ -1,8 +1,8 @@
 = RelatonBib
 
 image:https://img.shields.io/gem/v/relaton-bib.svg["Gem Version", link="https://rubygems.org/gems/relaton-bib"]
-image:https://img.shields.io/travis/metanorma/relaton-bib"Build Status", link="https://travis-ci.com/metanorma/relaton-bib"]
-image:https://codeclimate.com/github/metanorma/relaton-bib"Code Climate", link="https://codeclimate.com/github/metanorma/relaton-bib"]
+image:https://img.shields.io/travis/metanorma/relaton-bib["Build Status", link="https://travis-ci.com/metanorma/relaton-bib"]
+image:https://codeclimate.com/github/metanorma/relaton-bib["Code Climate", link="https://codeclimate.com/github/metanorma/relaton-bib"]
 
 RlatonBib is a Ruby gem that implements the https://github.com/metanorma/relaton-models#bibliography-uml-models[BibliographicItem model].
 
