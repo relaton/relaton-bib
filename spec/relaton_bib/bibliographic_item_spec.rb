@@ -22,13 +22,6 @@ RSpec.describe RelatonBib::BibliographicItem do
         docstatus: RelatonBib::DocumentStatus.new(
           RelatonBib::LocalizedString.new("standard", "en", "Latn")
         ),
-        workgroup: { name: "International Organization for Standardization",
-                     abbreviation: "ISO", url: "www.iso.org/",
-                     technical_committee: {
-                       name: " ISO/TC 211 Geographic information/Geomatics",
-                       type: "technicalCommittee", number: 211
-                     } },
-        ics: [{ field: 35, group: 240, subgroup: 70 }],
         dates: [
           { type: "published", on: "2014-04" },
           { type: "accessed", on: "2015" },
@@ -115,7 +108,6 @@ RSpec.describe RelatonBib::BibliographicItem do
             bibitem: RelatonBib::BibliographicItem.new(
               formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003"),
             ),
-            # url: "https://www.iso.org/standard/26020.html",
             bib_locality: [
               RelatonBib::BibItemLocality.new("updates", "Reference form"),
             ],
@@ -126,8 +118,6 @@ RSpec.describe RelatonBib::BibliographicItem do
               type: "standard",
               formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003/Cor 1:2006"),
             ),
-            # url: "https://www.iso.org/standard/44361.html",
-            # bibitem: RelatonBib::BibliographicItem.new(type: "standard"),
           },
         ],
         series: [

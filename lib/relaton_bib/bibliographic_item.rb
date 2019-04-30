@@ -281,12 +281,12 @@ module RelatonBib
 
     # @param builder [Nokogiri::XML::Builder, NillClass] (nil)
     # @return [String]
-    def to_xml(builder = nil)
+    def to_xml(builder = nil, root = "bibitem", &block)
       if builder
-        render_xml builder
+        render_xml builder, root, &block
       else
         Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
-          render_xml xml
+          render_xml xml, root, &block
         end.doc.root.to_xml
       end
     end
@@ -298,8 +298,8 @@ module RelatonBib
 
     # @param builder [Nokogiri::XML::Builder]
     # @return [String]
-    def render_xml(builder)
-      xml = builder.bibitem do
+    def render_xml(builder, root)
+      xml = builder.send(root) do
         builder.fetched fetched if fetched
         title.each { |t| builder.title { t.to_xml builder } }
         formattedref.to_xml builder if formattedref
@@ -329,6 +329,9 @@ module RelatonBib
         accesslocation.each { |al| builder.accesslocation al }
         classification.to_xml builder if classification
         validity.to_xml builder if validity
+        if block_given?
+          yield builder
+        end
       end
       xml[:id] = id if id
       xml[:type] = type if type
