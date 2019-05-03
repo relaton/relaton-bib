@@ -6,36 +6,41 @@ module RelatonBib
       def from_xml(xml)
         doc = Nokogiri::XML(xml)
         bibitem = doc.at "/bibitem"
-        BibliographicItem.new( 
-          id:             bibitem[:id],
-          type:           bibitem[:type],
-          fetched:        bibitem.at("./fetched")&.text,
-          titles:         fetch_titles(bibitem),
-          link:           fetch_link(bibitem),
-          docid:          fetch_docid(bibitem),
-          docnumber:      bibitem.at("./docnumber")&.text,
-          dates:          fetch_dates(bibitem),
-          contributors:   fetch_contributors(bibitem),
-          edition:        bibitem.at("./edition")&.text,
-          version:        fetch_version(bibitem),
-          biblionote:     fetch_note(bibitem),
-          language:       bibitem.xpath("./language").map(&:text),
-          script:         bibitem.xpath("./script").map(&:text),
-          abstract:       fetch_abstract(bibitem),
-          docstatus:      fetch_status(bibitem),
-          copyright:      fetch_copyright(bibitem),
-          relations:      fetch_relations(bibitem),
-          series:         fetch_series(bibitem),
-          medium:         fetch_medium(bibitem),
-          place:          bibitem.xpath("./place").map(&:text),
-          extent:         fetch_extent(bibitem),
-          accesslocation: bibitem.xpath("./accesslocation").map(&:text),
-          classification: fetch_classification(bibitem),
-          validity:       fetch_validity(bibitem),
-        )
+        BibliographicItem.new(item_data(bibitem))
       end
 
       private
+
+      def item_data(bibitem)
+        {
+          id: bibitem[:id],
+          type: bibitem[:type],
+          fetched: bibitem.at("./fetched")&.text,
+          titles: fetch_titles(bibitem),
+          formattedref: fref(bibitem),
+          link: fetch_link(bibitem),
+          docid: fetch_docid(bibitem),
+          docnumber: bibitem.at("./docnumber")&.text,
+          dates: fetch_dates(bibitem),
+          contributors: fetch_contributors(bibitem),
+          edition: bibitem.at("./edition")&.text,
+          version: fetch_version(bibitem),
+          biblionote: fetch_note(bibitem),
+          language: bibitem.xpath("./language").map(&:text),
+          script: bibitem.xpath("./script").map(&:text),
+          abstract: fetch_abstract(bibitem),
+          docstatus: fetch_status(bibitem),
+          copyright: fetch_copyright(bibitem),
+          relations: fetch_relations(bibitem),
+          series: fetch_series(bibitem),
+          medium: fetch_medium(bibitem),
+          place: bibitem.xpath("./place").map(&:text),
+          extent: fetch_extent(bibitem),
+          accesslocation: bibitem.xpath("./accesslocation").map(&:text),
+          classification: fetch_classification(bibitem),
+          validity: fetch_validity(bibitem),
+        }
+      end
 
       def fetch_version(item)
         version = item.at "./version"
@@ -191,16 +196,20 @@ module RelatonBib
           PersonIdentifier.new pi[:type], pi.text
         end
 
-        cname = person.at "./name/completename"
-        completename = cname ? LocalizedString.new(cname.text, cname[:language]) : nil
+        cn = person.at "./name/completename"
+        cname = if cn
+                  LocalizedString.new(cn.text, cn[:language], cn[:script])
+                else
+                  nil
+                end
 
-        sname = person.at "./name/surname"
-        surname = sname ? LocalizedString.new(sname.text, sname[:language]) : nil
+        sn = person.at "./name/surname"
+        sname = sn ? LocalizedString.new(sn.text, sn[:language], sn[:script]) : nil
 
         name = FullName.new(
-          completename: completename, surname: surname,
+          completename: cname, surname: sname,
           initials: name_part(person, "initial"), forenames: name_part(person, "forename"),
-          additions: name_part(person, "addidtion"), prefix: name_part(person, "prefix")
+          additions: name_part(person, "addition"), prefix: name_part(person, "prefix")
         )
 
         Person.new(
@@ -212,7 +221,7 @@ module RelatonBib
       end
 
       def name_part(person, part)
-        additions = person.xpath("./name/#{part}").map do |np|
+        person.xpath("./name/#{part}").map do |np|
           LocalizedString.new np.text, np[:language]
         end
       end
@@ -261,15 +270,12 @@ module RelatonBib
             BibItemLocality.new(
               l[:type],
               LocalizedString.new(l.at("./referenceFrom").text),
-              ref_to
+              ref_to,
             )
           end
-          bibitem = rel&.at "./bibitem"
           DocumentRelation.new(
             type: rel[:type],
-            bibitem: BibliographicItem.new(
-              type: bibitem[:type], formattedref: fref(bibitem), docstatus: fetch_status(bibitem)
-            ),
+            bibitem: BibliographicItem.new(item_data(rel.at("./bibitem"))),
             bib_locality: localities,
           )
         end

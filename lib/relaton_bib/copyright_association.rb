@@ -15,7 +15,7 @@ module RelatonBib
     # @option owner [String] :abbreviation
     # @option owner [String] :url
     # @param from [String] date
-    # @param to [String] date
+    # @param to [String, NilClass] date
     def initialize(owner:, from:, to: nil)
       @owner = if owner.is_a?(Hash)
                  ContributionInfo.new entity: Organization.new(owner)
