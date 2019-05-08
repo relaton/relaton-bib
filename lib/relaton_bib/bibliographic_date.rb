@@ -68,8 +68,10 @@ module RelatonBib
 
       if date =~ /^\d{4}$/
         Time.strptime date, "%Y"
-      else
+      elsif date =~ /^\d{4}-\d{2}$/
         Time.strptime date, "%Y-%m"
+      elsif date =~ /\d{4}-\d{2}-\d{2}$/
+        Time.strptime date, "%Y-%m-%d"
       end
     end
   end
