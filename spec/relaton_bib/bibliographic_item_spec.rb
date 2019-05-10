@@ -23,8 +23,9 @@ RSpec.describe RelatonBib::BibliographicItem do
           RelatonBib::LocalizedString.new("standard", "en", "Latn")
         ),
         dates: [
+          { type: "issued", on: "2014" },
           { type: "published", on: "2014-04" },
-          { type: "accessed", on: "2015" },
+          { type: "accessed", on: "2015-05-20" },
         ],
         abstract: [
           { content: "ISO 19115-1:2014 defines the schema required for ...",

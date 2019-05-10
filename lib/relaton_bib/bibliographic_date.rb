@@ -34,35 +34,38 @@ module RelatonBib
       @to   = parse_date to
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/MethodLength, Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/AbcSize
 
     # @param builder [Nokogiri::XML::Builder]
     # @return [Nokogiri::XML::Builder]
     def to_xml(builder, **opts)
       builder.date(type: type) do
         if on
-          date = opts[:full_date] ? on.strftime("%Y-%m") : on.year
-          builder.on(opts[:no_year] ? "--" : date)
+          builder.on(opts[:no_year] ? "--" : date_format(on, opts[:date_format]))
         elsif from
-          if opts[:full_date]
-            date_form = from.strftime("%Y-%m")
-            date_to = to.strftime("%Y-%m") if to
-          else
-            date_form = from.year
-            date_to = to.year if to
-          end
-          builder.from(opts[:no_year] ? "--" : date_form)
-          builder.to date_to if to
+          builder.from(opts[:no_year] ? "--" : date_format(from, opts[:date_format]))
+          builder.to date_format(to, opts[:date_format]) if to
         end
       end
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/MethodLength, Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/AbcSize
 
     private
 
-    # @params date [String] 'yyyy' or 'yyyy-mm'
+    # Formats date
+    # @param date [Time]
+    # @param format [Symbol, nil] :full (yyyy-mm-dd), :short (yyyy-mm) or nil (yyyy)
+    # @return [String]
+    def date_format(date, format = nil)
+      case format
+      when :short then date.strftime "%Y-%m"
+      when :full then date.strftime "%Y-%m-%d"
+      else date.year
+      end
+    end
+
+    # @params date [String] 'yyyy', 'yyyy-mm', 'yyyy-mm-dd
+    # @return [Time]
     def parse_date(date)
       return unless date
 

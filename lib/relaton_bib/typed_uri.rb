@@ -1,3 +1,5 @@
+require "addressable"
+
 module RelatonBib
   # Typed URI
   class TypedUri
@@ -10,7 +12,7 @@ module RelatonBib
     # @param content [String]
     def initialize(type:, content:)
       @type    = type
-      @content = URI content if content
+      @content = Addressable::URI.parse content if content
     end
 
     def to_xml(builder)

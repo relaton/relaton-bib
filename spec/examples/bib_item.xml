@@ -1,5 +1,5 @@
 <bibitem id="ISO/TC211" type="standard">
-  <fetched>2019-04-25</fetched>
+  <fetched>2019-05-10</fetched>
   <title type="main" language="en" script="Latn">Geographic information</title>
   <title language="fr" script="Latn">Information géographique</title>
   <uri type="src">https://www.iso.org/standard/53798.html</uri>
@@ -7,11 +7,14 @@
   <uri type="rss">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
   <docidentifier type="ISO">TC211</docidentifier>
   <docnumber>123456</docnumber>
+  <date type="issued">
+    <on>2014</on>
+  </date>
   <date type="published">
-    <on>2014-04</on>
+    <on>2014</on>
   </date>
   <date type="accessed">
-    <on>2015-01</on>
+    <on>2015</on>
   </date>
   <contributor>
     <role type="publisher">

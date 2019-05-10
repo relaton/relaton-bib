@@ -281,12 +281,12 @@ module RelatonBib
 
     # @param builder [Nokogiri::XML::Builder, NillClass] (nil)
     # @return [String]
-    def to_xml(builder = nil, root = "bibitem", &block)
+    def to_xml(builder = nil, **opts, &block)
       if builder
-        render_xml builder, root, &block
+        render_xml builder, **opts, &block
       else
         Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
-          render_xml xml, root, &block
+          render_xml xml, **opts, &block
         end.doc.root.to_xml
       end
     end
@@ -298,15 +298,15 @@ module RelatonBib
 
     # @param builder [Nokogiri::XML::Builder]
     # @return [String]
-    def render_xml(builder, root)
-      xml = builder.send(root) do
+    def render_xml(builder, **opts)
+      xml = builder.send(opts.fetch :root, :bibitem) do
         builder.fetched fetched if fetched
         title.each { |t| builder.title { t.to_xml builder } }
         formattedref.to_xml builder if formattedref
         link.each { |s| s.to_xml builder }
         docidentifier.each { |di| di.to_xml builder }
         builder.docnumber docnumber if docnumber
-        dates.each { |d| d.to_xml builder, full_date: true }
+        dates.each { |d| d.to_xml builder, **opts }
         contributors.each do |c|
           builder.contributor do
             c.role.each { |r| r.to_xml builder }
@@ -321,7 +321,7 @@ module RelatonBib
         abstract.each { |a| builder.abstract { a.to_xml(builder) } }
         status.to_xml builder if status
         copyright.to_xml builder if copyright
-        relations.each { |r| r.to_xml builder }
+        relations.each { |r| r.to_xml builder, **opts }
         series.each { |s| s.to_xml builder } if series
         medium.to_xml builder if medium
         place.each { |pl| builder.place pl }

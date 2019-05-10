@@ -21,9 +21,9 @@ RSpec.describe RelatonBib::BibliographicDate do
 
     it "returns xml string with full date" do
       xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
-        subject.to_xml builder, full_date: true
+        subject.to_xml builder, date_format: :full
       end.doc.root.to_xml
-      expect(xml).to be_equivalent_to '<date type="published"><on>2014-11</on></date>'
+      expect(xml).to be_equivalent_to '<date type="published"><on>2014-11-01</on></date>'
     end
   end
 
@@ -39,9 +39,9 @@ RSpec.describe RelatonBib::BibliographicDate do
       expect(xml).to be_equivalent_to '<date type="published"><from>2014</from><to>2015</to></date>'
     end
 
-    it "returns xml string with full date" do
+    it "returns xml string with short date" do
       xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
-        subject.to_xml builder, full_date: true
+        subject.to_xml builder, date_format: :short
       end.doc.root.to_xml
       expect(xml).to be_equivalent_to '<date type="published"><from>2014-11</from><to>2015-12</to></date>'
     end

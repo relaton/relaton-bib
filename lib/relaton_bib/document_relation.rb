@@ -37,9 +37,9 @@ module RelatonBib
     end
 
     # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder)
+    def to_xml(builder, **opts)
       builder.relation(type: type) do
-        bibitem.to_xml(builder)
+        bibitem.to_xml(builder, **opts)
         bib_locality.each do |l|
           l.to_xml builder
         end

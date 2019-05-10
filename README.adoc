@@ -51,8 +51,9 @@ item = RelatonBib::BibliographicItem.new(
   ],
   docnumber: "123456",
   dates: [
+    { type: "issued", on: "2014" },
     { type: "published", on: "2014-04" },
-    { type: "accessed", on: "2015" }
+    { type: "accessed", on: "2015-05-20" }
   ],
   contributors: [
     { entity: {
@@ -175,11 +176,14 @@ item.to_xml
   <uri type=\"rss\">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
   <docidentifier type=\"ISO\">TC211</docidentifier>
   <docnumber>123456</docnumber>
-  <date type=\"published\">
-    <on>2014-04</on>
+  <date type="issued">
+    <on>2014</on>
   </date>
-  <date type=\"accessed\">
-    <on>2015-01</on>
+  <date type="published">
+    <on>2014</on>
+  </date>
+  <date type="accessed">
+    <on>2015</on>
   </date>
   <contributor>
     <role type=\"publisher\">
@@ -254,6 +258,44 @@ item.to_xml
     <validityRevision>2011-03-04 09:00</validityRevision>
   </validity>
 </bibitem>"
+----
+By default date elements are formatted as year (yyyy). Option `:date_format` allows to output date elements in `:short` (yyyy-mm) and `:full` (yyyy-mm-dd) additiona formats.
+[surce,ruby]
+----
+item.to_xml date_format: :short
+=>"<bibitem id=\"ISO/TC211\" type=\"standard\">
+  <fetched>2019-04-30</fetched>
+  <title type=\"main\" language=\"en\" script=\"Latn\">Geographic information</title>
+  <title language=\"fr\" script=\"Latn\">Information géographique</title>
+  <uri type=\"src\">https://www.iso.org/standard/53798.html</uri>
+  <uri type=\"obp\">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
+  <uri type=\"rss\">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
+  <docidentifier type=\"ISO\">TC211</docidentifier>
+  <docnumber>123456</docnumber>
+  <date type="issued">
+    <on>2014-01</on>
+  </date>
+  <date type="published">
+    <on>2014-04</on>
+  </date>
+  <date type="accessed">
+    <on>2015-05</on>
+  </date>
+  ...
+
+item.to_xml date_format: :full
+=>"<bibitem id=\"ISO/TC211\" type=\"standard\">
+  ...
+  <date type="issued">
+    <on>2014-01-01</on>
+  </date>
+  <date type="published">
+    <on>2014-04-01</on>
+  </date>
+  <date type="accessed">
+    <on>2015-05-20</on>
+  </date>
+  ...
 ----
 
 == Development
