@@ -234,7 +234,7 @@ module RelatonBib
       @status         = args[:docstatus]
       @relations      = DocRelationCollection.new(args[:relations] || [])
       @link           = args.fetch(:link, []).map { |s| s.is_a?(Hash) ? TypedUri.new(s) : s }
-      @series         = args[:series]
+      @series         = args.fetch :series, []
       @medium         = args[:medium]
       @place          = args.fetch(:place, [])
       @extent         = args[:extent] || []
@@ -294,7 +294,8 @@ module RelatonBib
     private
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:disable Style/NestedParenthesizedCalls, Metrics/BlockLength
 
     # @param builder [Nokogiri::XML::Builder]
     # @return [String]
@@ -302,7 +303,7 @@ module RelatonBib
       xml = builder.send(opts.fetch :root, :bibitem) do
         builder.fetched fetched if fetched
         title.each { |t| builder.title { t.to_xml builder } }
-        formattedref.to_xml builder if formattedref
+        formattedref&.to_xml builder
         link.each { |s| s.to_xml builder }
         docidentifier.each { |di| di.to_xml builder }
         builder.docnumber docnumber if docnumber
@@ -314,21 +315,21 @@ module RelatonBib
           end
         end
         builder.edition edition if edition
-        version.to_xml builder if version
+        version&.to_xml builder
         biblionote.each { |n| builder.note { n.to_xml builder } }
         language.each { |l| builder.language l }
         script.each { |s| builder.script s }
         abstract.each { |a| builder.abstract { a.to_xml(builder) } }
-        status.to_xml builder if status
-        copyright.to_xml builder if copyright
+        status&.to_xml builder
+        copyright&.to_xml builder
         relations.each { |r| r.to_xml builder, **opts }
-        series.each { |s| s.to_xml builder } if series
-        medium.to_xml builder if medium
+        series.each { |s| s.to_xml builder }
+        medium&.to_xml builder
         place.each { |pl| builder.place pl }
         extent.each { |e| e.to_xml builder }
         accesslocation.each { |al| builder.accesslocation al }
-        classification.to_xml builder if classification
-        validity.to_xml builder if validity
+        classification&.to_xml builder
+        validity&.to_xml builder
         if block_given?
           yield builder
         end
@@ -338,6 +339,7 @@ module RelatonBib
       xml
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:enable Style/NestedParenthesizedCalls, Metrics/BlockLength
   end
 end

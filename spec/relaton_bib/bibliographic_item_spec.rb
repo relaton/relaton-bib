@@ -20,7 +20,7 @@ RSpec.describe RelatonBib::BibliographicItem do
         version: RelatonBib::BibliographicItem::Version.new("2019-04-01", ["draft"]),
         biblionote: [RelatonBib::FormattedString.new(content: "note")],
         docstatus: RelatonBib::DocumentStatus.new(
-          RelatonBib::LocalizedString.new("standard", "en", "Latn")
+          stage: "stage", substage: "substage", iteration: "final",
         ),
         dates: [
           { type: "issued", on: "2014" },

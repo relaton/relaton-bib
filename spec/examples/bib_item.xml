@@ -1,5 +1,5 @@
 <bibitem id="ISO/TC211" type="standard">
-  <fetched>2019-05-10</fetched>
+  <fetched>2019-05-13</fetched>
   <title type="main" language="en" script="Latn">Geographic information</title>
   <title language="fr" script="Latn">Information géographique</title>
   <uri type="src">https://www.iso.org/standard/53798.html</uri>
@@ -93,7 +93,11 @@
   <script>Latn</script>
   <abstract format="text/plain" language="en" script="Latn">ISO 19115-1:2014 defines the schema required for ...</abstract>
   <abstract format="text/plain" language="fr" script="Latn">L'ISO 19115-1:2014 définit le schéma requis pour ...</abstract>
-  <status language="en" script="Latn">standard</status>
+  <status>
+    <stage>stage</stage>
+    <substage>substage</substage>
+    <iteration>final</iteration>
+  </status>
   <copyright>
     <from>2014</from>
     <to>2020</to>

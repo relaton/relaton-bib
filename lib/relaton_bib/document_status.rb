@@ -5,19 +5,31 @@ require "relaton_bib/localized_string"
 module RelatonBib
   # Dovument status.
   class DocumentStatus
-    # @return [RelatonBib::LocalizedString]
-    attr_reader :status
+    # @return [String]
+    attr_reader :stage
 
-    # @param status [RelatonBib::LocalizedString]
-    def initialize(status)
-      @status = status
+    # @return [String, NilClass]
+    attr_reader :substage
+
+    # @return [String, NilClass]
+    attr_reader :iteration
+
+    # @param stage [String]
+    # @param substage [String, NilClass]
+    # @param iteration [String, NilClass]
+    def initialize(stage:, substage: nil, iteration: nil)
+      @stage = stage
+      @substage = substage
+      @iteration = iteration
     end
 
     # @param [Nokogiri::XML::Builder]
     def to_xml(builder)
       builder.status do
         # FormattedString.instance_method(:to_xml).bind(status).call builder
-        status.to_xml builder
+        builder.stage stage
+        builder.substage substage if substage
+        builder.iteration iteration if iteration
       end
     end
   end

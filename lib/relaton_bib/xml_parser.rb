@@ -144,7 +144,9 @@ module RelatonBib
         return unless status
 
         DocumentStatus.new(
-          LocalizedString.new status.text, status[:language], status[:script]
+          stage: status.at("stage").text,
+          substage: status.at("substage")&.text,
+          iteration: status.at("iteration")&.text,
         )
       end
 
