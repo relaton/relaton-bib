@@ -18,7 +18,9 @@ RSpec.describe RelatonBib::BibliographicItem do
         docnumber: "123456",
         edition: "1", language: %w[en fr], script: ["Latn"],
         version: RelatonBib::BibliographicItem::Version.new("2019-04-01", ["draft"]),
-        biblionote: [RelatonBib::FormattedString.new(content: "note")],
+        biblionote: [
+          RelatonBib::BiblioNote.new(content: "note", type: "bibnote"),
+        ],
         docstatus: RelatonBib::DocumentStatus.new(
           stage: "stage", substage: "substage", iteration: "final",
         ),

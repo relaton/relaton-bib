@@ -25,6 +25,7 @@ module RelatonBib
       @format = format
     end
 
+    # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       builder.parent["format"] = format if format
       super

@@ -18,6 +18,7 @@ require "relaton_bib/validity"
 require "relaton_bib/document_relation"
 require "relaton_bib/bib_item_locality"
 require "relaton_bib/xml_parser"
+require "relaton_bib/biblio_note"
 
 
 module RelatonBib
@@ -95,7 +96,7 @@ module RelatonBib
     # @return [RelatonBib::BibliongraphicItem::Version]
     attr_reader :version
 
-    # @return [Array<RelatonBib::FormattedString>, NilClass]
+    # @return [Array<RelatonBib::BiblioNote>, NilClass]
     attr_reader :biblionote
 
     # @return [Array<String>] language Iso639 code
@@ -157,7 +158,7 @@ module RelatonBib
     # @param docstatus [RelatonBib::DocumentStatus, NilClass]
     # @param edition [String, NilClass]
     # @param version [RelatonBib::BibliographicItem::Version, NilClass]
-    # @param biblionote [Array<RelatonBib::FormattedStrong>]
+    # @param biblionote [Array<RelatonBib::BiblioNote>]
     # @param series [Array<RelatonBib::Series>]
     # @param medium [RelatonBib::Medium, NilClas]
     # @param place [Array<String>]
@@ -316,7 +317,7 @@ module RelatonBib
         end
         builder.edition edition if edition
         version&.to_xml builder
-        biblionote.each { |n| builder.note { n.to_xml builder } }
+        biblionote.each { |n| n.to_xml builder }
         language.each { |l| builder.language l }
         script.each { |s| builder.script s }
         abstract.each { |a| builder.abstract { a.to_xml(builder) } }

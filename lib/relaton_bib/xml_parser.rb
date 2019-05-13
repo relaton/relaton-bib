@@ -53,8 +53,12 @@ module RelatonBib
 
       def fetch_note(item)
         item.xpath("./note").map do |n|
-          FormattedString.new(
-            content: n.text, format: n[:format], language: n[:language], script: n[:script]
+          BiblioNote.new(
+            content: n.text,
+            type: n[:type],
+            format: n[:format],
+            language: n[:language],
+            script: n[:script],
           )
         end
       end
