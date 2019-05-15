@@ -75,7 +75,7 @@ module RelatonBib
 
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
-      builder.series type: type do
+      xml = builder.series do
         if formattedref
           formattedref.to_xml builder
         else
@@ -89,6 +89,7 @@ module RelatonBib
           builder.partnumber partnumber if partnumber
         end
       end
+      xml[:type] = type if type
     end
     # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/PerceivedComplexity

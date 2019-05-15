@@ -42,12 +42,10 @@ module RelatonBib
     attr_reader :role
 
     # @return
-    #   [RelatonBib::Person, RelatonBib::Organization,
-    #    RelatonBib::IsoProjectGroup]
+    #   [RelatonBib::Person, RelatonBib::Organization]
     attr_reader :entity
 
-    # @param entity [RelatonBib::Person, RelatonBib::Organization,
-    #   RelatonBib::IsoProjectGroup]
+    # @param entity [RelatonBib::Person, RelatonBib::Organization]
     # @param role [Array<String>]
     def initialize(entity:, role: ["publisher"])
       @entity = entity

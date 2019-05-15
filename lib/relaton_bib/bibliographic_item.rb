@@ -22,20 +22,6 @@ require "relaton_bib/biblio_note"
 
 
 module RelatonBib
-  # module BibItemType
-  #   ARTICLE      = 'article'
-  #   BOOK         = 'book'
-  #   BOOKLET      = 'booklet'
-  #   CONFERENCE   = 'conference'
-  #   MANUAL       = 'manual'
-  #   PROCEEDINGS  = 'proceedings'
-  #   PRESENTATION = 'presentation'
-  #   THESIS       = 'thesis'
-  #   TECHREPORT   = 'techreport'
-  #   STANDARD     = 'standard'
-  #   UNPUBLISHED  = 'unpublished'
-  # end
-
   # Bibliographic item
   class BibliographicItem
     class Version
@@ -174,11 +160,12 @@ module RelatonBib
     # @option dates [String] :to
     #
     # @param contributors [Array<Hash>]
+    # @option contributors [RealtonBib::Organization, RelatonBib::Person]
     # @option contributors [String] :type
     # @option contributors [String] :from
     # @option contributirs [String] :to
     # @option contributors [String] :abbreviation
-    # @option contributors [Array<String>] :roles
+    # @option contributors [Array<Array<String,Array<String>>>] :roles
     #
     # @param abstract [Array<Hash>]
     # @option abstract [String] :content
