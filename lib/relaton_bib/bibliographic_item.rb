@@ -209,7 +209,7 @@ module RelatonBib
                      end
       end
 
-      @id             = args[:id]
+      @id             = args[:id] || args[:docid]&.first&.id&.strip&.gsub(/\s/, "")
       @formattedref   = args[:formattedref] if title.empty?
       @type           = args[:type]
       @docidentifier  = args[:docid] || []
@@ -288,7 +288,8 @@ module RelatonBib
     # @param builder [Nokogiri::XML::Builder]
     # @return [String]
     def render_xml(builder, **opts)
-      xml = builder.send(opts.fetch :root, :bibitem) do
+      root = opts[:bibdata] ? :bibdata : :bibitem
+      xml = builder.send(root) do
         builder.fetched fetched if fetched
         title.each { |t| builder.title { t.to_xml builder } }
         formattedref&.to_xml builder
@@ -322,7 +323,7 @@ module RelatonBib
           yield builder
         end
       end
-      xml[:id] = id if id
+      xml[:id] = id if id && !opts[:bibdata]
       xml[:type] = type if type
       xml
     end

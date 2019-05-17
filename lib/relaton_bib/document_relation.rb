@@ -38,6 +38,7 @@ module RelatonBib
 
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder, **opts)
+      opts.delete :bibdata
       builder.relation(type: type) do
         bibitem.to_xml(builder, **opts)
         bib_locality.each do |l|
