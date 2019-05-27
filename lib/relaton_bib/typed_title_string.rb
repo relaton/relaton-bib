@@ -8,6 +8,8 @@ module RelatonBib
     # @return [RelatonBib::FormattedString]
     attr_reader :title
 
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+
     # @param type [String]
     # @param title [RelatonBib::FormattedString, Hash]
     # @param content [String]
@@ -24,13 +26,14 @@ module RelatonBib
 
       @type = args[:type]
 
-      # if args[:title]
-      #   @title = args[:title]
-      # else
-      fsargs = args.select { |k, _v| %i[content language script format].include? k }
-      @title = args.fetch :title, FormattedString.new(fsargs)
-      # end
+      if args[:title]
+        @title = args[:title]
+      else
+        fsargs = args.select { |k, _v| %i[content language script format].include? k }
+        @title = FormattedString.new(fsargs)
+      end
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)

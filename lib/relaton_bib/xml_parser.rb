@@ -11,6 +11,9 @@ module RelatonBib
 
       private
 
+      # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+
+      # @return [Hash]
       def item_data(bibitem)
         {
           id: bibitem[:id],
@@ -41,6 +44,7 @@ module RelatonBib
           validity: fetch_validity(bibitem),
         }
       end
+      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
       def fetch_version(item)
         version = item.at "./version"
@@ -63,18 +67,23 @@ module RelatonBib
         end
       end
 
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+
       def fetch_series(item)
         item.xpath("./series").map do |sr|
           abbr = sr.at "abbreviation"
           abbreviation = abbr ? LocalizedString.new(abbr.text, abbr[:language], abbr[:script]) : nil
-          Series.new(type: sr[:type], formattedref: fref(sr),
-            title: ttitle(sr.at "title"), place: sr.at("place")&.text,
-            organization: sr.at("organization")&.text, abbreviation: abbreviation,
-            from: sr.at("from")&.text, to: sr.at("to")&.text, number: sr.at("number")&.text,
+          Series.new(
+            type: sr[:type], formattedref: fref(sr),
+            title: ttitle(sr.at("title")), place: sr.at("place")&.text,
+            organization: sr.at("organization")&.text,
+            abbreviation: abbreviation, from: sr.at("from")&.text,
+            to: sr.at("to")&.text, number: sr.at("number")&.text,
             partnumber: sr.at("partnumber")&.text
           )
         end
       end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def fetch_medium(item)
         medium = item.at("./medium")
@@ -111,23 +120,12 @@ module RelatonBib
         Validity.new begins: begins, ends: ends, revision: revision
       end
 
-      # def get_id(did)
-      #   did.text.match(/^(?<project>.*?\d+)(?<hyphen>-)?(?(<hyphen>)(?<part>\d*))/)
-      # end
-
+      # @param item [Nokogiri::XML::Element]
+      # @return [Array<RelatonBib::DocumentIdentifier>]
       def fetch_docid(item)
-        ret = []
-        item.xpath("./docidentifier").each do |did|
-          #did = doc.at('/bibitem/docidentifier')
-          # type = did.at("./@type")
-          # if did.text == "IEV" then
-          #   ret << DocumentIdentifier.new(id: "IEV",  nil)
-          # else
-            # id = get_id did
-          ret << DocumentIdentifier.new(id: did.text, type: did[:type])
-          # end
+        item.xpath("./docidentifier").map do |did|
+          DocumentIdentifier.new(id: did.text, type: did[:type])
         end
-        ret
       end
 
       def fetch_titles(item)
@@ -155,10 +153,10 @@ module RelatonBib
       end
 
       def fetch_dates(item)
-        item.xpath('./date').map do |d|
+        item.xpath("./date").map do |d|
           RelatonBib::BibliographicDate.new(
-            type: d[:type], on: d.at('on')&.text, from: d.at('from')&.text,
-            to: d.at('to')&.text
+            type: d[:type], on: d.at("on")&.text, from: d.at("from")&.text,
+            to: d.at("to")&.text
           )
         end
       end
@@ -253,7 +251,7 @@ module RelatonBib
       def fetch_copyright(item)
         cp     = item.at("./copyright") || return
         org    = cp&.at("owner/organization")
-        name   = org&.at("name").text
+        name   = org&.at("name")&.text
         abbr   = org&.at("abbreviation")&.text
         url    = org&.at("uri")&.text
         entity = Organization.new(name: name, abbreviation: abbr, url: url)
@@ -280,7 +278,7 @@ module RelatonBib
             )
           end
           DocumentRelation.new(
-            type: rel[:type],
+            type: rel[:type]&.empty? ? nil : rel[:type],
             bibitem: BibliographicItem.new(item_data(rel.at("./bibitem"))),
             bib_locality: localities,
           )

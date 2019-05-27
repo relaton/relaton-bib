@@ -19,6 +19,7 @@ require "relaton_bib/document_relation"
 require "relaton_bib/bib_item_locality"
 require "relaton_bib/xml_parser"
 require "relaton_bib/biblio_note"
+require "relaton_bib/workers_pool"
 
 
 module RelatonBib
@@ -97,7 +98,7 @@ module RelatonBib
     # @!attribute [r] abstract
     #   @return [Array<RelatonBib::FormattedString>]
 
-    # @return [RelatonBib::DocumentStatus]
+    # @return [RelatonBib::DocumentStatus, NilClass]
     attr_reader :status
 
     # @return [RelatonBib::CopyrightAssociation]
@@ -175,7 +176,7 @@ module RelatonBib
     #
     # @param relations [Array<Hash>]
     # @option relations [String] :type
-    # @option relations [RelatonBib::BibliographicItem] :bibitem
+    # @option relations [RelatonBib::BibliographicItem, RelatonIso::IsoBibliographicItem] :bibitem
     # @option relations [Array<RelatonBib::BibItemLocality>] :bib_locality
     def initialize(**args)
       if args[:type] && !TYPES.include?(args[:type])
@@ -209,10 +210,10 @@ module RelatonBib
                      end
       end
 
-      @id             = args[:id] || args[:docid]&.first&.id&.strip&.gsub(/\s/, "")
+      @docidentifier  = args[:docid] || []
+      @id             = args[:id] || makeid(nil, false)
       @formattedref   = args[:formattedref] if title.empty?
       @type           = args[:type]
-      @docidentifier  = args[:docid] || []
       @docnumber      = args[:docnumber]
       @edition        = args[:edition]
       @version        = args[:version]
@@ -248,10 +249,12 @@ module RelatonBib
       return nil if attribute && !@id_attribute
 
       id ||= @docidentifier.reject { |i| i.type == "DOI" }[0]
+      return unless id
+
       # contribs = publishers.map { |p| p&.entity&.abbreviation }.join '/'
       # idstr = "#{contribs}#{delim}#{id.project_number}"
       # idstr = id.project_number.to_s
-      idstr = id.id.gsub(/:/, "-")
+      idstr = id.id.gsub(/:/, "-").gsub /\s/, ""
       # if id.part_number&.size&.positive? then idstr += "-#{id.part_number}"
       idstr.strip
     end

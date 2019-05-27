@@ -14,6 +14,27 @@ module RelatonBib
       @type = type
     end
 
+    # in docid manipulations, assume ISO as the default: id-part:year
+    def remove_part
+      case @type
+      when "Chinese Standard" then @id.sub!(/\.\d+/, "")
+      else
+        @id.sub!(/-\d+/, "")
+      end
+    end
+
+    def remove_date
+      case @type
+      when "Chinese Standard" then @id.sub!(/-[12]\d\d\d/, "")
+      else
+        @id.sub!(/:[12]\d\d\d/, "")
+      end
+    end
+
+    def all_parts
+      @id += " (all parts)"
+    end
+
     #
     # Add docidentifier xml element
     #

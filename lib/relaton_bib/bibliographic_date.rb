@@ -6,7 +6,7 @@ module RelatonBib
   # Bibliographic date.
   class BibliographicDate
     TYPES = %w[published accessed created implemented obsoleted confirmed
-               updated issued].freeze
+               updated issued transmitted copied unchanged circulated].freeze
 
     # @return [String]
     attr_reader :type
@@ -24,7 +24,7 @@ module RelatonBib
     # @param from [String]
     # @param to [String]
     def initialize(type:, on: nil, from: nil, to: nil)
-      raise ArgumentError, "expected :on or :form argument" unless on || from
+      raise ArgumentError, "expected :on or :from argument" unless on || from
 
       raise ArgumentError, %{Type "#{type}" is ivalid.} unless TYPES.include?(type)
 

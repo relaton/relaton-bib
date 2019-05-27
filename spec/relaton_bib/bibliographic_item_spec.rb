@@ -141,12 +141,12 @@ RSpec.describe RelatonBib::BibliographicItem do
           RelatonBib::Series.new(
             type: "alt",
             formattedref: RelatonBib::FormattedRef.new(
-              content: "serieref", language: "en", script: "Latn"
+              content: "serieref", language: "en", script: "Latn",
             ),
           )
         ],
         medium: RelatonBib::Medium.new(
-          form: "medium form", size: "medium size", scale: "medium scale"
+          form: "medium form", size: "medium size", scale: "medium scale",
         ),
         place: ["bib place"],
         extent: [
@@ -187,6 +187,10 @@ RSpec.describe RelatonBib::BibliographicItem do
         /<fetched>\d{4}-\d{2}-\d{2}/, "<fetched>#{Date.today}"
       )
       expect(subject.to_xml).to be_equivalent_to xml
+    end
+
+    it "render addition elements" do
+      expect(subject.to_xml { |b| b.element "test" }).to include "<element>test</element>"
     end
   end
 
