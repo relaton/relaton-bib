@@ -16,8 +16,8 @@ module RelatonBib
       # @return [Hash]
       def item_data(bibitem)
         {
-          id: bibitem[:id],
-          type: bibitem[:type],
+          id: bibitem[:id]&.empty? ? nil : bibitem[:id],
+          type: bibitem[:type]&.empty? ? nil : bibitem[:type],
           fetched: bibitem.at("./fetched")&.text,
           titles: fetch_titles(bibitem),
           formattedref: fref(bibitem),
