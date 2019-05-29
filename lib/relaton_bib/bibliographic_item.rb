@@ -211,8 +211,8 @@ module RelatonBib
       end
 
       @docidentifier  = args[:docid] || []
-      @id             = args[:id] || makeid(nil, false)
       @formattedref   = args[:formattedref] if title.empty?
+      @id             = args[:id] || makeid(nil, false)
       @type           = args[:type]
       @docnumber      = args[:docnumber]
       @edition        = args[:edition]

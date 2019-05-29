@@ -10,7 +10,7 @@ module RelatonBib
     attr_reader :script
 
     # @return [String]
-    attr_reader :content
+    attr_accessor :content
 
     # @param content [String]
     # @param language [String] language code Iso639
