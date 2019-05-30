@@ -1,7 +1,7 @@
 <bibitem id="ISO/TC211" type="standard">
-  <fetched>2019-05-13</fetched>
-  <title type="main" language="en" script="Latn">Geographic information</title>
-  <title language="fr" script="Latn">Information géographique</title>
+  <fetched>2019-05-28</fetched>
+  <title type="main" format="text/plain" language="en" script="Latn">Geographic information</title>
+  <title format="text/plain" language="fr" script="Latn">Information géographique</title>
   <uri type="src">https://www.iso.org/standard/53798.html</uri>
   <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
   <uri type="rss">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
@@ -111,7 +111,7 @@
   </copyright>
   <relation type="updates">
     <bibitem>
-      <formattedref>ISO 19115:2003</formattedref>
+      <formattedref format="text/plain">ISO 19115:2003</formattedref>
     </bibitem>
     <locality type="updates">
       <referenceFrom>Reference form</referenceFrom>
@@ -119,7 +119,7 @@
   </relation>
   <relation type="updates">
     <bibitem type="standard">
-      <formattedref>ISO 19115:2003/Cor 1:2006</formattedref>
+      <formattedref format="text/plain">ISO 19115:2003/Cor 1:2006</formattedref>
     </bibitem>
   </relation>
   <series type="main">
@@ -133,7 +133,7 @@
     <partnumber>part5678</partnumber>
   </series>
   <series type="alt">
-    <formattedref language="en" script="Latn">serieref</formattedref>
+    <formattedref format="text/plain" language="en" script="Latn">serieref</formattedref>
   </series>
   <medium>
     <form>medium form</form>

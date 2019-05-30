@@ -203,7 +203,7 @@ RSpec.describe RelatonBib::BibliographicItem do
       formattedref: RelatonBib::FormattedRef.new(content: "ISO123"),
       copyright: RelatonBib::CopyrightAssociation.new(owner: owner, from: "2018"),
     )
-    expect(bibitem.to_xml).to include "<formattedref>ISO123</formattedref>"
+    expect(bibitem.to_xml).to include "<formattedref format=\"text/plain\">ISO123</formattedref>"
   end
 
   it "raises invalid type argument error" do

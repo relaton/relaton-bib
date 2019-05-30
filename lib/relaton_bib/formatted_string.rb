@@ -16,9 +16,9 @@ module RelatonBib
     # @param language [String] language code Iso639
     # @param script [String] script code Iso15924
     # @param format [String] the content type
-    def initialize(content:, language: nil, script: nil, format: nil)
+    def initialize(content:, language: nil, script: nil, format: "text/plain")
       # if format && !FORMATS.include?(format)
-        # raise ArgumentError, %{Format "#{format}" is invalid.}
+      #   raise ArgumentError, %{Format "#{format}" is invalid.}
       # end
 
       super(content, language, script)
