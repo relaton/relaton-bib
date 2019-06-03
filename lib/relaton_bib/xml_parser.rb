@@ -286,7 +286,7 @@ module RelatonBib
       end
 
       def fref(item)
-        ident = item&.at("./formattedref | ./docidentifier")
+        ident = item&.at("./formattedref")
         return unless ident
 
         FormattedRef.new(
