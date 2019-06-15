@@ -9,6 +9,6 @@ RSpec.describe RelatonBib::WorkersPool do
     expect(subject.size).to be_instance_of Integer
     subject.end
     result = subject.result
-    expect(result).to eq [2, 4, 6, 8, 10]
+    expect(result.sort).to eq [2, 4, 6, 8, 10]
   end
 end
