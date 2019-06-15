@@ -41,7 +41,7 @@ module RelatonBib
       opts.delete :bibdata
       opts.delete :note
       builder.relation(type: type) do
-        bibitem.to_xml(builder, **opts)
+        bibitem.to_xml(builder, **opts.merge(embedded: true))
         bib_locality.each do |l|
           l.to_xml builder
         end

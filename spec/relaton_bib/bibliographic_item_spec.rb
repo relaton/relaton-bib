@@ -192,6 +192,7 @@ RSpec.describe RelatonBib::BibliographicItem do
     it "render addition elements" do
       expect(subject.to_xml { |b| b.element "test" }).to include "<element>test</element>"
     end
+
   end
 
   it "initialize with copyright object" do

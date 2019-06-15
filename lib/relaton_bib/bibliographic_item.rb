@@ -326,7 +326,7 @@ module RelatonBib
           yield builder
         end
       end
-      xml[:id] = id if id && !opts[:bibdata]
+      xml[:id] = id if id && !opts[:bibdata] && !opts[:embedded]
       xml[:type] = type if type
       xml
     end
