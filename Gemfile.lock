@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    relaton-bib (0.1.6)
+    relaton-bib (0.2.0)
       addressable
       nokogiri (~> 1.8.4)
 
@@ -12,9 +12,9 @@ GEM
       public_suffix (>= 2.0.2, < 4.0)
     debase (0.2.2)
       debase-ruby_core_source (>= 0.10.2)
-    debase-ruby_core_source (0.10.4)
+    debase-ruby_core_source (0.10.5)
     diff-lcs (1.3)
-    docile (1.3.1)
+    docile (1.3.2)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
     json (2.2.0)
@@ -27,16 +27,16 @@ GEM
       rspec-core (~> 3.8.0)
       rspec-expectations (~> 3.8.0)
       rspec-mocks (~> 3.8.0)
-    rspec-core (3.8.0)
+    rspec-core (3.8.1)
       rspec-support (~> 3.8.0)
-    rspec-expectations (3.8.3)
+    rspec-expectations (3.8.4)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
-    rspec-mocks (3.8.0)
+    rspec-mocks (3.8.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
-    rspec-support (3.8.0)
-    ruby-debug-ide (0.6.1)
+    rspec-support (3.8.2)
+    ruby-debug-ide (0.7.0)
       rake (>= 0.8.1)
     simplecov (0.16.1)
       docile (~> 1.1)
