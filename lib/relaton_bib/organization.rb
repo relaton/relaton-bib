@@ -38,7 +38,7 @@ module RelatonBib
 
   # Organization.
   class Organization < Contributor
-    # @return [RelatonBib::LocalizedString]
+    # @return [Array<RelatonBib::LocalizedString>]
     attr_reader :name
 
     # @return [RelatonBib::LocalizedString]
@@ -54,7 +54,7 @@ module RelatonBib
       name.is_a?(Hash) ? LocalizedString.new(name[:content], name[:language], name[:script]) : LocalizedString.new(name)
     end
 
-    # @param name [String, Array<String>]
+    # @param name [String, Hash, Array<String, Hash>]
     # @param abbreviation [RelatoBib::LocalizedStrig, String]
     # @param subdivision [RelatoBib::LocalizedStrig, String]
     # @param url [String]

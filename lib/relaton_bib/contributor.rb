@@ -77,9 +77,10 @@ module RelatonBib
     attr_reader :organization
 
     # @param organization [RelatonBib::Organization]
-    def initialize(organization)
+    # @param description [Array<RelatonBib::FormattedString>]
+    def initialize(organization, description = [])
       @organization = organization
-      @description  = []
+      @description  = description
     end
 
     # @params builder [Nokogiri::XML::Builder]

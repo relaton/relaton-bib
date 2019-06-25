@@ -168,7 +168,7 @@ module RelatonBib
     # @option contributors [String] :abbreviation
     # @option contributors [Array<Array<String,Array<String>>>] :roles
     #
-    # @param abstract [Array<Hash>]
+    # @param abstract [Array<Hash, RelatonBib::FormattedString>]
     # @option abstract [String] :content
     # @option abstract [String] :language
     # @option abstract [String] :script

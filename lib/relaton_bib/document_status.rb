@@ -29,7 +29,7 @@ module RelatonBib
         # FormattedString.instance_method(:to_xml).bind(status).call builder
         builder.stage stage
         builder.substage substage if substage
-        builder.iteration iteration if iteration
+        builder.iteration iteration unless iteration.to_s.empty?
       end
     end
   end
