@@ -1,4 +1,14 @@
 module RelatonBib
+  class << self
+    def classification_hash_to_bib(ret)
+      #ret[:classification]&.each_with_index do |c, i|
+      #ret[:classification][i] = RelatonBib::Classification.new(c)
+      #end
+      ret[:classification] and
+        ret[:classification] = RelatonBib::Classification.new(ret[:classification])
+    end
+  end
+
   class Classification
     # @return [String, NilClass]
     attr_reader :type

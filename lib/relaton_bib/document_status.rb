@@ -3,7 +3,16 @@
 require "relaton_bib/localized_string"
 
 module RelatonBib
-  # Dovument status.
+  class << self
+    def docstatus_hash_to_bib(ret)
+      ret[:docstatus] and ret[:docstatus] =
+        RelatonBib::DocumentStatus.new(stage: ret[:docstatus][:stage],
+                                       substage: ret[:docstatus][:substage],
+                                       iteration: ret[:docstatus][:iteration])
+    end
+  end
+
+  # Document status.
   class DocumentStatus
     # @return [String]
     attr_reader :stage

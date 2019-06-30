@@ -4,10 +4,30 @@ require "relaton_bib/person"
 
 # RelatonBib module
 module RelatonBib
+  class << self
+    def is_person_hash(c)
+      c.is_a?(Hash) and c[:entity].is_a?(Hash) and
+        c[:entity][:name].is_a?(Hash) and
+        (c.dig(:entity, :name, :completename) ||
+         c.dig(:entity, :name, :surname))
+    end
+
+    def contributors_hash_to_bib(ret)
+      ret[:contributors]&.each_with_index do |c, i|
+        if is_person_hash(c)
+          ret[:contributors][i][:entity] = person_hash_to_bib(c[:entity])
+        else
+          ret[:contributors][i][:entity] = org_hash_to_bib(c[:entity])
+        end
+      end
+    end
+  end
+
   # Contributor's role.
   class ContributorRole
     TYPES = %w[author performer publisher editor adapter translator
-               distributor].freeze
+               distributor
+    ].freeze
 
     # @return [Array<RelatonBib::FormattedString>]
     attr_reader :description

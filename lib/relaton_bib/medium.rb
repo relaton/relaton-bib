@@ -1,4 +1,10 @@
 module RelatonBib
+  class << self
+    def medium_hash_to_bib(ret)
+      ret[:medium] and ret[:medium] = RelatonBib::Medium.new(ret[:medium])
+    end
+  end
+
   class Medium
     # @return [String, NilClass]
     attr_reader :form, :size, :scale

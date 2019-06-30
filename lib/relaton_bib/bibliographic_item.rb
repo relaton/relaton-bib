@@ -19,35 +19,23 @@ require "relaton_bib/document_relation"
 require "relaton_bib/bib_item_locality"
 require "relaton_bib/xml_parser"
 require "relaton_bib/biblio_note"
+require "relaton_bib/biblio_version"
 require "relaton_bib/workers_pool"
 require "relaton_bib/hash_to_bib.rb"
 
 module RelatonBib
-  # Bibliographic item
-  class BibliographicItem
-    class Version
-      # @return [String]
-      attr_reader :revision_date
-
-      # @return [Array<String>]
-      attr_reader :draft
-
-      # @oaram revision_date [String]
-      # @param draft [Array<String>]
-      def initialize(revision_date = nil, draft = [])
-        @revision_date = revision_date
-        @draft         = draft
-      end
-
-      # @param builder [Nokogiri::XML::Builder]
-      def to_xml(builder)
-        builder.version do
-          builder.revision_date revision_date if revision_date
-          draft.each { |d| builder.draft d }
-        end
+  class << self
+    def extent_hash_to_bib(ret)
+      ret[:extent]&.each_with_index do |e, i|
+        ret[:extent][i] = RelatonBib::BibItemLocality.new(e[:type],
+                                                          e[:reference_from],
+                                                          e[:reference_to])
       end
     end
+  end
 
+  # Bibliographic item
+  class BibliographicItem
     TYPES = %W[article book booklet conference manual proceedings presentation
                thesis techreport standard unpublished map electronic\sresource
                audiovisual film video broadcast graphic_work music patent

@@ -1,4 +1,15 @@
 module RelatonBib
+  class << self
+    def biblionote_hash_to_bib(ret)
+      ret[:biblionote]&.each_with_index do |n, i|
+        ret[:biblionote][i] =
+          RelatonBib::BiblioNote.new(content: n[:content], type: n[:type],
+                                     language: n[:language], script: n[:script],
+                                     format: n[:format])
+      end
+    end
+  end
+
   class BiblioNote < FormattedString
     # @return [String]
     attr_reader :type

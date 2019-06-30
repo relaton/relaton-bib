@@ -11,6 +11,20 @@ module RelatonBib
   #   IDENTICAL     = 'identical'
   #   NONEQUIVALENT = 'nonequivalent'
   # end
+  class << self
+    def relations_hash_to_bib(ret)
+      ret[:relations]&.each_with_index do |r, i|
+        ret[:relations][i][:bibitem] =
+          RelatonBib::BibliographicItem.new(
+            hash_to_bib(ret[:relations][i][:bibitem]))
+        ret[:relations][i][:bib_locality] =
+          Array(ret[:relations][i][:bib_locality]).map do |bl|
+            RelatonBib::BibItemLocality.new(
+              bl[:type], bl[:reference_from], bl[:reference_to])
+          end
+      end
+    end
+  end
 
   # Documett relation
   class DocumentRelation
