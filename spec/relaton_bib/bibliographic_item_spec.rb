@@ -1,9 +1,171 @@
 # frozen_string_literal: true
 
+    item_hash = {
+        id: "ISO/TC211", fetched: Date.today.to_s,
+        titles: [
+          { type: "main", content: "Geographic information", language: "en", script: "Latn" },
+          {
+            content: "Information géographique", language: "fr", script: "Latn"
+          },
+        ],
+        type: "standard",
+        docid: [ { id: "TC211", type: "ISO" } ],
+        docnumber: "123456",
+        edition: "1", language: %w[en fr], script: ["Latn"],
+        version: { revision_date: "2019-04-01", draft: ["draft"]},
+        biblionote: [ { content: "note", type: "bibnote" } ],
+        docstatus: {
+          stage: "stage", substage: "substage", iteration: "final",
+        },
+        dates: [
+          { type: "issued", on: "2014" },
+          { type: "published", on: "2014-04" },
+          { type: "accessed", on: "2015-05-20" },
+        ],
+        abstract: [
+          { content: "ISO 19115-1:2014 defines the schema required for ...",
+            language: "en", script: "Latn", format: "text/plain" },
+          { content: "L'ISO 19115-1:2014 définit le schéma requis pour ...",
+            language: "fr", script: "Latn", format: "text/plain" },
+        ],
+        contributors: [
+          {
+            entity: {
+              name: "International Organization for Standardization",
+              url: "www.iso.org", abbreviation: "ISO", subdivision: "division",
+            },
+            roles: [["publisher", ["Publisher role"]]],
+          },
+          {
+            entity: {
+              name: {
+                completename: {
+                  content: "A. Bierman",
+                  language: "en"
+                }
+              },
+              affiliation: [{
+                organization: {
+                  name: "IETF",
+                  abbreviation: "IETF",
+                  identifiers: [{type: "uri", id: "www.ietf.org"}],
+                }
+              }],
+              contacts: [
+                {
+                  street: ["Street"], city: "City", postcode: "123456",
+                  country: "Country", state: "State"
+                },
+                {type: "phone", value: "223322"},
+              ]
+            },
+            roles: ["author"],
+          },
+          {
+            entity: {
+              name: "IETF",
+              abbreviation: "IETF",
+              identifiers: [{type: "uri", id: "www.ietf.org"}],
+            },
+            roles: ["publisher"],
+          },
+          {
+            entity: {
+              name: {
+                language: "en",
+                initials: ["A."],
+                surname: "Bierman",
+              },
+              affiliation: [{
+                organization: {
+                name: "IETF", abbreviation: "IETF",
+                }
+              }],
+              contacts: [
+                {
+                  street: ["Street"], city: "City", postcode: "123456",
+                  country: "Country", state: "State"
+                },
+                {type: "phone", value: "223322"},
+              ],
+              identifiers: [{type: "uri", id: "www.person.com"}],
+            },
+            roles: ["author"],
+          },
+        ],
+        copyright: { owner: {
+          name: "International Organization for Standardization",
+          abbreviation: "ISO", url: "www.iso.org"
+        }, from: "2014", to: "2020" },
+        link: [
+          { type: "src", content: "https://www.iso.org/standard/53798.html" },
+          { type: "obp",
+            content: "https://www.iso.org/obp/ui/#!iso:std:53798:en" },
+          { type: "rss", content: "https://www.iso.org/contents/data/standard"\
+            "/05/37/53798.detail.rss" },
+        ],
+        relations: [
+          {
+            type: "updates",
+            bibitem: {
+              formattedref: "ISO 19115:2003",
+            },
+            bib_locality: [
+              {type: "updates", reference_from: "Reference form"},
+            ],
+          },
+          {
+            type: "updates",
+            bibitem: {
+              type: "standard",
+              formattedref: "ISO 19115:2003/Cor 1:2006",
+            },
+          },
+        ],
+        series: [
+          {
+            type: "main",
+            title: {
+              type: "original", content: "ISO/IEC FDIS 10118-3", language: "en",
+              script: "Latn", format: "text/plain",
+            },
+            place: "Serie's place",
+            organization: "Serie's organization",
+            abbreviation: {content: "ABVR", language: "en", script: "Latn"},
+            from: "2009-02-01",
+            to: "2010-12-20",
+            number: "serie1234",
+            partnumber: "part5678",
+          },
+          {
+            type: "alt",
+            formattedref: {
+              content: "serieref", language: "en", script: "Latn",
+            },
+          }
+        ],
+        medium: {
+          form: "medium form", size: "medium size", scale: "medium scale",
+        },
+        place: ["bib place"],
+        extent: [
+          {
+            type: "section", reference_from: "Reference from", reference_to: "Reference to"
+          },
+        ],
+        accesslocation: ["accesslocation1", "accesslocation2"],
+        classification: {type: "type", value: "value"},
+        validity: {
+          begins: "2010-10-10 12:21",
+          ends: "2011-02-03 18:30",
+          revision: "2011-03-04 09:00",
+        }
+    }
+
 RSpec.describe RelatonBib::BibliographicItem do
   context "instance" do
     subject do
-      RelatonBib::BibliographicItem.new(
+    item = {
         id: "ISO/TC211", fetched: Date.today.to_s,
         titles: [
           { type: "main", content: "Geographic information", language: "en", script: "Latn" },
@@ -161,7 +323,9 @@ RSpec.describe RelatonBib::BibliographicItem do
           ends: Time.new(2011, 2, 3, 18,30),
           revision: Time.new(2011, 3, 4, 9, 0)
         )
-      )
+    }
+
+      RelatonBib::BibliographicItem.new(item)
     end
 
     it "is instance of BibliographicItem" do
@@ -191,6 +355,12 @@ RSpec.describe RelatonBib::BibliographicItem do
 
     it "render addition elements" do
       expect(subject.to_xml { |b| b.element "test" }).to include "<element>test</element>"
+    end
+
+    it "deals with hashes" do
+      h = RelatonBib::hash_to_bib(item_hash)
+      b = RelatonBib::BibliographicItem.new(h)
+      expect(b.to_xml).to be_equivalent_to subject.to_xml
     end
 
   end

@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "ruby-debug-ide"
   spec.add_development_dependency "simplecov"
+  spec.add_development_dependency "byebug"
 
   spec.add_dependency "addressable"
   spec.add_dependency "nokogiri", "~> 1.8.4"

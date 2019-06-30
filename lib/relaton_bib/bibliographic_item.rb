@@ -20,7 +20,7 @@ require "relaton_bib/bib_item_locality"
 require "relaton_bib/xml_parser"
 require "relaton_bib/biblio_note"
 require "relaton_bib/workers_pool"
-
+require "relaton_bib/hash_to_bib.rb"
 
 module RelatonBib
   # Bibliographic item
