@@ -1,7 +1,7 @@
 module RelatonBib
   class << self
-    def hash_to_bib(**args)
-      ret = Marshal.load(Marshal.dump(args)) # deep copy
+    def hash_to_bib(args)
+      ret = Marshal.load(Marshal.dump(symbolize(args))) # deep copy
       docid_hash_to_bib(ret)
       version_hash_to_bib(ret)
       biblionote_hash_to_bib(ret)
@@ -15,6 +15,14 @@ module RelatonBib
       classification_hash_to_bib(ret)
       validity_hash_to_bib(ret)
       ret
+    end
+
+    def symbolize(obj)
+      obj.is_a? Hash and
+        return obj.inject({}){|memo,(k,v)| memo[k.to_sym] =  symbolize(v); memo}
+      obj.is_a? Array and
+        return obj.inject([]){|memo,v    | memo           << symbolize(v); memo}
+      return obj
     end
 
     def localname(f, c)
