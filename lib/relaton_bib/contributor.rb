@@ -5,19 +5,20 @@ require "uri"
 module RelatonBib
   class << self
     def affiliation_hash_to_bib(c)
+      return nil unless c[:affiliation]
       Array(c[:affiliation]).map do |a|
         a[:description] = Array(a[:description]).map do |d|
-          RelatonBib::FormattedString.new(d.nil? ? { content: nil } :
+          FormattedString.new(d.nil? ? { content: nil } :
             { content: d[:content], language: d[:language],
              script: d[:language], format: d[:format] })
         end
-        RelatonBib::Affilation.new(
-          RelatonBib::Organization.new(org_hash_to_bib(a[:organization])),
-          a[:description])
+        Affilation.new(
+          Organization.new(org_hash_to_bib(a[:organization])), a[:description])
       end
     end
 
     def contacts_hash_to_bib(c)
+      return nil unless c[:contacts]
       Array(c[:contacts]).map do |a|
         (a[:city] || a[:country]) ?
           RelatonBib::Address.new(

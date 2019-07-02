@@ -6,9 +6,9 @@ module RelatonBib
   class << self
     def docstatus_hash_to_bib(ret)
       ret[:docstatus] and ret[:docstatus] =
-        RelatonBib::DocumentStatus.new(stage: ret[:docstatus][:stage],
-                                       substage: ret[:docstatus][:substage],
-                                       iteration: ret[:docstatus][:iteration])
+        DocumentStatus.new(stage: ret[:docstatus][:stage],
+                           substage: ret[:docstatus][:substage],
+                           iteration: ret[:docstatus][:iteration])
     end
   end
 

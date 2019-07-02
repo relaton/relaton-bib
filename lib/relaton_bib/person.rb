@@ -5,7 +5,7 @@ require "relaton_bib/contributor"
 module RelatonBib
   class << self
     def person_hash_to_bib(c)
-      RelatonBib::Person.new(
+      Person.new(
         name: fullname_hash_to_bib(c),
         affiliation: affiliation_hash_to_bib(c),
         contacts: contacts_hash_to_bib(c),
@@ -15,7 +15,7 @@ module RelatonBib
 
     def fullname_hash_to_bib(c)
       n = c[:name]
-      RelatonBib::FullName.new(
+      FullName.new(
         forenames: Array(n[:forenames]).map { |f| localname(f, c) },
         initials: Array(n[:initials]).map { |f| localname(f, c) },
         additions: Array(n[:additions]).map { |f| localname(f, c) },
@@ -27,7 +27,7 @@ module RelatonBib
 
     def person_identifiers_hash_to_bib(c)
       Array(c[:identifiers]).map do |a|
-        RelatonBib::PersonIdentifier.new(a[:type], a[:id])
+        PersonIdentifier.new(a[:type], a[:id])
       end
     end
   end

@@ -1,11 +1,13 @@
 module RelatonBib
   class << self
     def biblionote_hash_to_bib(ret)
+      return unless ret[:biblionote]
+      ret[:biblionote] = [ret[:biblionote]] unless ret[:biblionote].is_a?(Array)
       ret[:biblionote]&.each_with_index do |n, i|
         ret[:biblionote][i] =
-          RelatonBib::BiblioNote.new(content: n[:content], type: n[:type],
-                                     language: n[:language], script: n[:script],
-                                     format: n[:format])
+          BiblioNote.new(content: n[:content], type: n[:type], 
+                         language: n[:language], 
+                         script: n[:script], format: n[:format])
       end
     end
   end

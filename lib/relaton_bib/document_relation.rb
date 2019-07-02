@@ -13,14 +13,15 @@ module RelatonBib
   # end
   class << self
     def relations_hash_to_bib(ret)
+      return unless ret[:relations]
+      ret[:relations] = [ret[:relations]] unless ret[:relations].is_a?(Array)
       ret[:relations]&.each_with_index do |r, i|
         ret[:relations][i][:bibitem] =
-          RelatonBib::BibliographicItem.new(
-            hash_to_bib(ret[:relations][i][:bibitem]))
+          BibliographicItem.new(hash_to_bib(ret[:relations][i][:bibitem]))
         ret[:relations][i][:bib_locality] =
           Array(ret[:relations][i][:bib_locality]).map do |bl|
-            RelatonBib::BibItemLocality.new(
-              bl[:type], bl[:reference_from], bl[:reference_to])
+            BibItemLocality.new(bl[:type], bl[:reference_from],
+                                bl[:reference_to])
           end
       end
     end

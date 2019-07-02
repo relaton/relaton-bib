@@ -3,10 +3,18 @@
 require "time"
 
 module RelatonBib
+  class << self
+    def dates_hash_to_bib(ret)
+      return unless ret[:dates]
+      ret[:dates] = [ret[:dates]] unless ret[:dates].is_a?(Array)
+    end
+  end
+
   # Bibliographic date.
   class BibliographicDate
     TYPES = %w[published accessed created implemented obsoleted confirmed
-               updated issued transmitted copied unchanged circulated].freeze
+               updated issued transmitted copied unchanged circulated
+    ].freeze
 
     # @return [String]
     attr_reader :type
@@ -26,7 +34,8 @@ module RelatonBib
     def initialize(type:, on: nil, from: nil, to: nil)
       raise ArgumentError, "expected :on or :from argument" unless on || from
 
-      raise ArgumentError, %{Type "#{type}" is ivalid.} unless TYPES.include?(type)
+      TYPES.include?(type) or
+      raise ArgumentError, %{Type "#{type}" is invalid.} unless
 
       @type = type
       @on   = parse_date on

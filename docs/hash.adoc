@@ -4,6 +4,21 @@ The following structure is in place for encoding bibitem as YAML objects, and is
 to represent bibliographic entries in Metanorma Asciidoctor. The structure has not yet been
 generalised to `bibdata/ext`, the flavour specific extensions of relaton.
 
+Any elements which are arrays can also be populated by a hash or single element. For example,
+the following are equivalent:
+
+````
+titles:
+  - type: main
+    content: Geographic information
+titles:
+  type: main
+  content: Geographic information
+script:
+  - Latn
+script: Latn
+````
+
 The structure below is given in YAML format:
 
 ````
@@ -24,8 +39,8 @@ titles:
 type: standard
 # document identifiers are an array, with a mandatory type and id component
 docid:
-  - type: ISO
-    id: TC211
+  type: ISO
+  id: TC211
 # document number
 docnumber: 211
 # edition
@@ -36,16 +51,15 @@ language:
   - fr
 # script is an array
 script:
-  - Latn
+  Latn
 # version contains revision date and draft (as array)
 version:
   revision_date: 2019-04-01
-  draft: 
-    - draft
+  draft: draft
 # note is an array of type and content
 biblionote:
-  - type: bibnote
-    content: >
+  type: bibnote
+  content: >
       Mark set a major league
       home run record in 1998.
 # document status has stage, and optional substage and iteration
@@ -61,7 +75,7 @@ dates:
     from: 2014-04
     to: 2014-05
   - type: accessed
-    on: 2015-05-20A
+    on: 2015-05-20
 # abstract is an array, with content, and optional language, script, format
 abstract:
   - content: >
@@ -78,7 +92,8 @@ abstract:
 # of an array, and is itself an array.
 # Organisations have attributes name, url, abbreviation, subdivision, contacts, identifiers
 # Persons have attributes name, affiliation, contacts
-# Person names have attributes surname, completename, initials, forename. Initials, forename are arrays.
+# Person names have attributes surname, completename, initials, forename, additions, prefixes.
+# Initials, forename, additions, prefixes are arrays.
 # Name field values are either strings, or hashes, with content and language and script attributes.
 # The language and script attribute can also be given on the name.
 # Contacts are an array, containing either addresses, or other fields. 
@@ -94,10 +109,9 @@ contributors:
       abbreviation: ISO
       subdivision: division
     role: 
+      - publisher
       - 
-        - publisher
-        - 
-          - Publisher role
+        - Publisher role
   - entity:
       name:
         completename:
@@ -120,8 +134,7 @@ contributors:
           state: State
         - type: phone
           value: 223322
-    role:
-      - author
+    role: author
   - entity:
       name: IETF
       abbreviation: IETF
@@ -129,7 +142,7 @@ contributors:
         - type: uri
         - id: www.ietf.org
     role:
-      - publisher
+      publisher
   - entity:
       name:
         language: en
@@ -148,7 +161,7 @@ contributors:
         - type: uri
           id: www.person.com
     roles: 
-      - author
+      author
 # copyright consists of an owner (a hash containing the fields of an organisation),
 # a "from" date, and an optional "to" date
 copyright:
@@ -174,9 +187,9 @@ relations:
     bibitem:
       formattedref: ISO 19115:2003
     bib_locality:
-      - type: page
-        reference_from: 7
-        reference_to: 10
+      type: page
+      reference_from: 7
+      reference_to: 10
   - type: updates
     bibitem:
       type: standard
@@ -217,20 +230,19 @@ medium:
   size: medium size
   scale: medium scale
 # place is an array of strings
-place:
-  - bib place
+place: bib place
 # extent is an array, containing type, a reference_from, and an optional reference_to
 extent:
-  - type: section
-    reference_from: 7
+  type: section
+  reference_from: 7
 # accesslocation is an array of strings
 accesslocation:
   - accesslocation1
   - accesslocation2
 # classification is an array of type and value
 classification:
-  - type: type
-    value: value
+  type: type
+  value: value
 # validity contains a begins date, an ends date, and a revision date
 validity:
   begins: 2010-10-10 12:21

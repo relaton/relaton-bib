@@ -2,8 +2,10 @@ module RelatonBib
   # Version
   class << self
     def version_hash_to_bib(ret)
-      ret[:version] and ret[:version] =
-        RelatonBib::BibliographicItem::Version.new(
+      return unless ret[:version]
+      ret[:version][:draft] and !ret[:version][:draft].is_a?(Array) and
+        ret[:version][:draft] = [ret[:version][:draft]]
+      ret[:version] and ret[:version] = BibliographicItem::Version.new(
           ret[:version][:revision_date], ret[:version][:draft])
     end
   end
@@ -16,7 +18,7 @@ module RelatonBib
       # @return [Array<String>]
       attr_reader :draft
 
-      # @oaram revision_date [String]
+      # @param revision_date [String]
       # @param draft [Array<String>]
       def initialize(revision_date = nil, draft = [])
         @revision_date = revision_date

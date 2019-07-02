@@ -7,7 +7,7 @@ module RelatonBib
     def org_hash_to_bib(c)
       return nil if c.nil?
       c[:identifiers] = Array(c[:identifiers]).map do |a|
-        RelatonBib::OrgIdentifier.new(a[:type], a[:id])
+        OrgIdentifier.new(a[:type], a[:id])
       end
       c
     end
@@ -61,7 +61,9 @@ module RelatonBib
     attr_reader :identifiers
 
     def hash2locstr(name)
-      name.is_a?(Hash) ? LocalizedString.new(name[:content], name[:language], name[:script]) : LocalizedString.new(name)
+      name.is_a?(Hash) ?
+        LocalizedString.new(name[:content], name[:language], name[:script]) : 
+        LocalizedString.new(name)
     end
 
     # @param name [String, Hash, Array<String, Hash>]

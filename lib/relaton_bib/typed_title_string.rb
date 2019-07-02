@@ -29,7 +29,9 @@ module RelatonBib
       if args[:title]
         @title = args[:title]
       else
-        fsargs = args.select { |k, _v| %i[content language script format].include? k }
+        fsargs = args.select do |k, _v|
+          %i[content language script format].include? k 
+        end
         @title = FormattedString.new(fsargs)
       end
     end

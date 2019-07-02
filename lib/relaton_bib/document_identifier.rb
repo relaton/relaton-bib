@@ -3,9 +3,10 @@ module RelatonBib
   
   class << self
     def docid_hash_to_bib(ret)
+      return unless ret[:docid]
+      ret[:docid] = [ret[:docid]] unless ret[:docid].is_a?(Array)
       ret[:docid]&.each_with_index do |id, i|
-        ret[:docid][i] = RelatonBib::DocumentIdentifier.new(id: id[:id],
-                                                            type: id[:type])
+        ret[:docid][i] = DocumentIdentifier.new(id: id[:id], type: id[:type])
       end
     end
   end

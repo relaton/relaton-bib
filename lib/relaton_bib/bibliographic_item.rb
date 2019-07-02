@@ -26,11 +26,48 @@ require "relaton_bib/hash_to_bib.rb"
 module RelatonBib
   class << self
     def extent_hash_to_bib(ret)
+      return unless ret[:extent]
+      ret[:extent] = [ret[:extent]] unless ret[:extent].is_a?(Array)
       ret[:extent]&.each_with_index do |e, i|
-        ret[:extent][i] = RelatonBib::BibItemLocality.new(e[:type],
-                                                          e[:reference_from],
-                                                          e[:reference_to])
+        ret[:extent][i] = BibItemLocality.new(e[:type], e[:reference_from],
+                                              e[:reference_to])
       end
+    end
+
+    def title_hash_to_bib(ret)
+      return unless ret[:titles]
+      ret[:titles] = [ret[:titles]] unless ret[:titles].is_a?(Array)
+    end
+
+    def language_hash_to_bib(ret)
+      return unless ret[:language]
+      ret[:language] = [ret[:language]] unless ret[:language].is_a?(Array)
+    end
+
+    def script_hash_to_bib(ret)
+      return unless ret[:script]
+      ret[:script] = [ret[:script]] unless ret[:script].is_a?(Array)
+    end
+
+    def abstract_hash_to_bib(ret)
+      return unless ret[:abstract]
+      ret[:abstract] = [ret[:abstract]] unless ret[:abstract].is_a?(Array)
+    end
+
+    def link_hash_to_bib(ret)
+      return unless ret[:link]
+      ret[:link] = [ret[:link]] unless ret[:link].is_a?(Array)
+    end
+
+    def place_hash_to_bib(ret)
+      return unless ret[:place]
+      ret[:place] = [ret[:place]] unless ret[:place].is_a?(Array)
+    end
+
+    def accesslocation_hash_to_bib(ret)
+      return unless ret[:accesslocation]
+      ret[:accesslocation].is_a?(Array) or
+        ret[:accesslocation] = [ret[:accesslocation]]
     end
   end
 
@@ -39,7 +76,8 @@ module RelatonBib
     TYPES = %W[article book booklet conference manual proceedings presentation
                thesis techreport standard unpublished map electronic\sresource
                audiovisual film video broadcast graphic_work music patent
-               inbook incollection inproceedings journal].freeze
+               inbook incollection inproceedings journal
+    ].freeze
 
     # @return [String]
     attr_reader :id

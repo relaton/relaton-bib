@@ -1,7 +1,7 @@
 module RelatonBib
   class << self
     def medium_hash_to_bib(ret)
-      ret[:medium] and ret[:medium] = RelatonBib::Medium.new(ret[:medium])
+      ret[:medium] and ret[:medium] = Medium.new(ret[:medium])
     end
   end
 

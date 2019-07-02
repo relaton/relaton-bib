@@ -1,11 +1,12 @@
 module RelatonBib
   class << self
     def classification_hash_to_bib(ret)
+      #ret[:classification] = [ret[:classification]] unless ret[:classification].is_a?(Array)
       #ret[:classification]&.each_with_index do |c, i|
       #ret[:classification][i] = RelatonBib::Classification.new(c)
       #end
       ret[:classification] and
-        ret[:classification] = RelatonBib::Classification.new(ret[:classification])
+        ret[:classification] = Classification.new(ret[:classification])
     end
   end
 
