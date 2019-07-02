@@ -7,6 +7,13 @@ module RelatonBib
     def dates_hash_to_bib(ret)
       return unless ret[:dates]
       ret[:dates] = [ret[:dates]] unless ret[:dates].is_a?(Array)
+      ret[:dates].each_with_index do |d, i|
+        # value is synonym of on: it is reserved word in YAML
+        if d[:value]
+          ret[:dates][i][:on] ||= d[:value]
+          ret[:dates][i].delete(:value)
+        end
+      end
     end
   end
 
@@ -35,7 +42,7 @@ module RelatonBib
       raise ArgumentError, "expected :on or :from argument" unless on || from
 
       TYPES.include?(type) or
-      raise ArgumentError, %{Type "#{type}" is invalid.} unless
+        raise ArgumentError, %{Type "#{type}" is invalid.} unless
 
       @type = type
       @on   = parse_date on

@@ -18,7 +18,7 @@
           "stage" => "stage", "substage" => "substage", "iteration" => "final",
         },
         "dates" => [
-          { "type" => "issued", "on" => "2014" },
+          { "type" => "issued", "value" => "2014" },
           { "type" => "published", "on" => "2014-04" },
           { "type" => "accessed", "on" => "2015-05-20" },
         ],

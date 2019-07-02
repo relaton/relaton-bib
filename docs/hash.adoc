@@ -19,6 +19,9 @@ script:
 script: Latn
 ````
 
+In YAML, "on" is a reserved word, and thus cannot be used as a key. "value" is used as a synonym for
+"on" in dates.
+
 The structure below is given in YAML format:
 
 ````
@@ -70,12 +73,12 @@ docstatus:
 # date is an array, with mandatory type, and either an "on" value or a "from" and optional "to" value
 dates:
   - type: issued
-    on: 2014
+    value: 2014
   - type: published
     from: 2014-04
     to: 2014-05
   - type: accessed
-    on: 2015-05-20
+    value: 2015-05-20
 # abstract is an array, with content, and optional language, script, format
 abstract:
   - content: >
