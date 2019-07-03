@@ -7,6 +7,7 @@ generalised to `bibdata/ext`, the flavour specific extensions of relaton.
 Any elements which are arrays can also be populated by a hash or single element. For example,
 the following are equivalent:
 
+[source,yaml]
 ....
 titles:
   - type: main
@@ -24,6 +25,7 @@ In YAML, "on" is a reserved word, and thus cannot be used as a key. "value" is u
 
 The structure below is given in YAML format:
 
+[source,yaml]
 ....
 # bibliographic item anchor, used to crossreference within document
 id: ISO/TC211
