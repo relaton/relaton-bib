@@ -7,7 +7,7 @@ generalised to `bibdata/ext`, the flavour specific extensions of relaton.
 Any elements which are arrays can also be populated by a hash or single element. For example,
 the following are equivalent:
 
-````
+....
 titles:
   - type: main
     content: Geographic information
@@ -17,14 +17,14 @@ titles:
 script:
   - Latn
 script: Latn
-````
+....
 
 In YAML, "on" is a reserved word, and thus cannot be used as a key. "value" is used as a synonym for
 "on" in dates.
 
 The structure below is given in YAML format:
 
-````
+....
 # bibliographic item anchor, used to crossreference within document
 id: ISO/TC211
 # date record was created
@@ -251,4 +251,4 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-````
+....
