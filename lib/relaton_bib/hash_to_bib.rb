@@ -1,7 +1,8 @@
 module RelatonBib
   class << self
-    def hash_to_bib(args)
+    def hash_to_bib(args, nested = false)
       ret = Marshal.load(Marshal.dump(symbolize(args))) # deep copy
+      timestamp_hash(ret) unless nested
       title_hash_to_bib(ret)
       link_hash_to_bib(ret)
       language_hash_to_bib(ret)
@@ -23,6 +24,10 @@ module RelatonBib
       classification_hash_to_bib(ret)
       validity_hash_to_bib(ret)
       ret
+    end
+
+    def timestamp_hash(ret)
+      ret[:fetched] ||= Date.today.to_s
     end
 
     def symbolize(obj)

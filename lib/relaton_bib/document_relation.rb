@@ -17,7 +17,7 @@ module RelatonBib
       ret[:relations] = [ret[:relations]] unless ret[:relations].is_a?(Array)
       ret[:relations]&.each_with_index do |r, i|
         ret[:relations][i][:bibitem] =
-          BibliographicItem.new(hash_to_bib(ret[:relations][i][:bibitem]))
+          BibliographicItem.new(hash_to_bib(ret[:relations][i][:bibitem], true))
         ret[:relations][i][:bib_locality] =
           Array(ret[:relations][i][:bib_locality]).map do |bl|
             BibItemLocality.new(bl[:type], bl[:reference_from],
