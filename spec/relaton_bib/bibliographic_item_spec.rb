@@ -3,7 +3,8 @@
     item_hash = {
         "id" => "ISO/TC211", "fetched" => Date.today.to_s,
         "titles" => [
-          { "type" => "main", "content" => "Geographic information", "language" => "en", "script" => "Latn" },
+          "Geographic information",
+          #{ "type" => "main", "content" => "Geographic information", "language" => "en", "script" => "Latn" },
           {
             "content" => "Information géographique", "language" => "fr", "script" => "Latn"
           },

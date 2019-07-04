@@ -37,6 +37,10 @@ module RelatonBib
     def title_hash_to_bib(ret)
       return unless ret[:titles]
       ret[:titles] = [ret[:titles]] unless ret[:titles].is_a?(Array)
+      ret[:titles] = ret[:titles].map do |t|
+        t.is_a?(Hash) ? t : { content: t, language: "en", script: "Latn", 
+                              format: "text/plain", type: "main" }
+      end
     end
 
     def language_hash_to_bib(ret)
