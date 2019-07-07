@@ -1,6 +1,7 @@
 module RelatonBib
   class << self
     def hash_to_bib(args, nested = false)
+      return nil unless args.is_a?(Hash)
       ret = Marshal.load(Marshal.dump(symbolize(args))) # deep copy
       timestamp_hash(ret) unless nested
       title_hash_to_bib(ret)

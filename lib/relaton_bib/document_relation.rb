@@ -16,14 +16,26 @@ module RelatonBib
       return unless ret[:relations]
       ret[:relations] = array(ret[:relations])
       ret[:relations]&.each_with_index do |r, i|
-        ret[:relations][i][:bibitem] =
-          BibliographicItem.new(hash_to_bib(ret[:relations][i][:bibitem], true))
-        ret[:relations][i][:bib_locality] =
-          array(ret[:relations][i][:bib_locality])&.map do |bl|
-            BibItemLocality.new(bl[:type], bl[:reference_from],
-                                bl[:reference_to])
-          end
+        relation_bibitem_hash_to_bib(ret, r, i)
+        relation_biblocality_hash_to_bib(ret, r, i)
       end
+    end
+
+    def relation_bibitem_hash_to_bib(ret, r, i)
+      if r[:bibitem] then ret[:relations][i][:bibitem] =
+          BibliographicItem.new(hash_to_bib(r[:bibitem], true))
+      else
+        warn "bibitem missing: #{r}"
+        ret[:relations][i][:bibitem] = nil
+      end
+    end
+
+    def relation_biblocality_hash_to_bib(ret, r, i)
+      ret[:relations][i][:bib_locality] =
+        array(r[:bib_locality])&.map do |bl|
+          BibItemLocality.new(bl[:type], bl[:reference_from],
+                              bl[:reference_to])
+        end
     end
   end
 
