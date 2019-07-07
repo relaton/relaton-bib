@@ -16,17 +16,17 @@ module RelatonBib
     def fullname_hash_to_bib(c)
       n = c[:name]
       FullName.new(
-        forenames: Array(n[:forenames]).map { |f| localname(f, c) },
-        initials: Array(n[:initials]).map { |f| localname(f, c) },
-        additions: Array(n[:additions]).map { |f| localname(f, c) },
-        prefix: Array(n[:prefix]).map { |f| localname(f, c) },
+        forenames: array(n[:forenames])&.map { |f| localname(f, c) },
+        initials: array(n[:initials])&.map { |f| localname(f, c) },
+        additions: array(n[:additions])&.map { |f| localname(f, c) },
+        prefix: array(n[:prefix])&.map { |f| localname(f, c) },
         surname: localname(n[:surname], c),
         completename: localname(n[:completename], c),
       )
     end
 
     def person_identifiers_hash_to_bib(c)
-      Array(c[:identifiers]).map do |a|
+      array(c[:identifiers])&.map do |a|
         PersonIdentifier.new(a[:type], a[:id])
       end
     end

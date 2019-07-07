@@ -6,8 +6,8 @@ module RelatonBib
   class << self
     def affiliation_hash_to_bib(c)
       return [] unless c[:affiliation]
-      Array(c[:affiliation]).map do |a|
-        a[:description] = Array(a[:description]).map do |d|
+      array(c[:affiliation]).map do |a|
+        a[:description] = array(a[:description])&.map do |d|
           FormattedString.new(d.nil? ? { content: nil } :
             { content: d[:content], language: d[:language],
              script: d[:language], format: d[:format] })
@@ -19,7 +19,7 @@ module RelatonBib
 
     def contacts_hash_to_bib(c)
       return [] unless c[:contacts]
-      Array(c[:contacts]).map do |a|
+      array(c[:contacts]).map do |a|
         (a[:city] || a[:country]) ?
           RelatonBib::Address.new(
             street: Array(a[:street]), city: a[:city], postcode: a[:postcode],

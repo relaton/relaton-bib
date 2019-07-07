@@ -27,7 +27,7 @@ module RelatonBib
   class << self
     def extent_hash_to_bib(ret)
       return unless ret[:extent]
-      ret[:extent] = [ret[:extent]] unless ret[:extent].is_a?(Array)
+      ret[:extent] = array(ret[:extent])
       ret[:extent]&.each_with_index do |e, i|
         ret[:extent][i] = BibItemLocality.new(e[:type], e[:reference_from],
                                               e[:reference_to])
@@ -36,7 +36,7 @@ module RelatonBib
 
     def title_hash_to_bib(ret)
       return unless ret[:titles]
-      ret[:titles] = [ret[:titles]] unless ret[:titles].is_a?(Array)
+      ret[:titles] = array(ret[:titles])
       ret[:titles] = ret[:titles].map do |t|
         t.is_a?(Hash) ? t : { content: t, language: "en", script: "Latn", 
                               format: "text/plain", type: "main" }
@@ -45,33 +45,32 @@ module RelatonBib
 
     def language_hash_to_bib(ret)
       return unless ret[:language]
-      ret[:language] = [ret[:language]] unless ret[:language].is_a?(Array)
+      ret[:language] = array(ret[:language])
     end
 
     def script_hash_to_bib(ret)
       return unless ret[:script]
-      ret[:script] = [ret[:script]] unless ret[:script].is_a?(Array)
+      ret[:script] = array(ret[:script])
     end
 
     def abstract_hash_to_bib(ret)
       return unless ret[:abstract]
-      ret[:abstract] = [ret[:abstract]] unless ret[:abstract].is_a?(Array)
+      ret[:abstract] = array(ret[:abstract])
     end
 
     def link_hash_to_bib(ret)
       return unless ret[:link]
-      ret[:link] = [ret[:link]] unless ret[:link].is_a?(Array)
+      ret[:link] = array(ret[:link])
     end
 
     def place_hash_to_bib(ret)
       return unless ret[:place]
-      ret[:place] = [ret[:place]] unless ret[:place].is_a?(Array)
+      ret[:place] = array(ret[:place])
     end
 
     def accesslocation_hash_to_bib(ret)
       return unless ret[:accesslocation]
-      ret[:accesslocation].is_a?(Array) or
-        ret[:accesslocation] = [ret[:accesslocation]]
+      ret[:accesslocation] = array(ret[:accesslocation])
     end
   end
 

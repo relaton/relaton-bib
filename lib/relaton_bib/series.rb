@@ -3,12 +3,10 @@
 module RelatonBib
   class << self
     def series_hash_to_bib(ret)
-      return unless ret[:series]
-      ret[:series] = [ret[:series]] unless ret[:series].is_a?(Array)
-      ret[:series]&.each_with_index do |s, i|
+      array(ret[:series])&.each_with_index do |s, i|
         s[:formattedref] and s[:formattedref] = formattedref(s[:formattedref])
         if s[:title]
-          s[:title] = {content: s[:title]} unless s.is_a?(Hash)
+          s[:title] = { content: s[:title] } unless s.is_a?(Hash)
           s[:title] = TypedTitleString.new(s[:title])
         end
         s[:abbreviation] and

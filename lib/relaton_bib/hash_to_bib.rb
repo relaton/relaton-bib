@@ -38,6 +38,12 @@ module RelatonBib
       return obj
     end
 
+    def array(a)
+      return [] unless a
+      return [a] unless a.is_a?(Array)
+      a
+    end
+
     def localname(f, c)
       return nil if f.nil?
       f.is_a?(Hash) and lang = f[:language] 

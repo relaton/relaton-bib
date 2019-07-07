@@ -6,7 +6,7 @@ module RelatonBib
   class << self
     def dates_hash_to_bib(ret)
       return unless ret[:dates]
-      ret[:dates] = [ret[:dates]] unless ret[:dates].is_a?(Array)
+      ret[:dates] = array(ret[:dates])
       ret[:dates].each_with_index do |d, i|
         # value is synonym of on: it is reserved word in YAML
         if d[:value]

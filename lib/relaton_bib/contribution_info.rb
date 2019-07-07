@@ -14,11 +14,9 @@ module RelatonBib
 
     def contributors_hash_to_bib(ret)
       return unless ret[:contributors]
-      ret[:contributors].is_a?(Array) or
-        ret[:contributors] = [ret[:contributors]]
+      ret[:contributors] = array(ret[:contributors])
       ret[:contributors]&.each_with_index do |c, i|
-        ret[:contributors][i][:roles].is_a?(Array) or
-          ret[:contributors][i][:roles] = [ret[:contributors][i][:roles]]
+        ret[:contributors][i][:roles] = array(ret[:contributors][i][:roles])
         ret[:contributors][i][:entity] = is_person_hash(c) ?
           person_hash_to_bib(c[:entity]) : org_hash_to_bib(c[:entity])
       end

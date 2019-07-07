@@ -6,7 +6,7 @@ module RelatonBib
   class << self
     def org_hash_to_bib(c)
       return nil if c.nil?
-      c[:identifiers] = Array(c[:identifiers]).map do |a|
+      c[:identifiers] = array(c[:identifiers])&.map do |a|
         OrgIdentifier.new(a[:type], a[:id])
       end
       c
