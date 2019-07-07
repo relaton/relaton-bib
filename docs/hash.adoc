@@ -145,7 +145,7 @@ contributors:
       abbreviation: IETF
       identifiers:
         - type: uri
-        - id: www.ietf.org
+          id: www.ietf.org
     role:
       publisher
   - entity:
@@ -254,3 +254,295 @@ validity:
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
 ....
+
+The Metanorma Asciidoctor representation of this hash structure
+in a bibliography
+is as a definition list, with nested definition lists for nested structures.
+Repeating elements in a hash can be realised as ordered or unordered lists.
+However, given how awkward lists of definition lists are in Asciidoctor,
+Metanorma Asciidoctor also supports representing repeating elements 
+by repeating the key for that entry.
+
+Each Relaton entry in a bibliography is represented in Metanorma Asciidoctor
+through a subclause with option attribute `[%bibitem]`. Any title given to the
+subclause is treated as the title for the bibliographic entry, with language `en`,
+script `Latn`, format `text/plain`, and type `main`. If there is no such title
+for the entry, the subclause title should be left as `{blank}`.
+
+So the following is a very simple reference in Metanorma Asciidoctor:
+
+[source,asciidoctor]
+----
+[%bibitem]
+=== Rubber latex -- Sampling
+id:: iso123
+docid:: 
+  type::: ISO
+  id::: ISO 123
+docid::
+  type::: ABC
+  id::: 32784
+type:: standard
+----
+
+The anchor crossreference for the bibliographic entry may be encoded as the
+`id` entry in the definition list, or as the normal Asciidoctor anchor on the
+subclause, which takes priority over it:
+
+[source,asciidoctor]
+----
+[[iso123]]
+[%bibitem]
+=== Rubber latex -- Sampling
+docid:: 
+  type::: ISO
+  id::: ISO 123
+type:: standard
+----
+
+Asciidoctor does not currently cope with definition lists more than four levels
+deep. If deeper nesting is needed, you will need to attach a new definition
+list with a list continuation:
+
+[source,asciidoctor]
+----
+[[iso123]]
+[%bibitem]
+=== Rubber latex -- Sampling
+docid:: 
+  type::: ISO
+  id::: ISO 123
+type:: standard
+contributors::
+  roles::: author
+  entity:::
+    name::::
++
+--
+completename::
+  language::: en
+  content::: Fred
+--
+----
+
+The most heavily nested parts of a Relaton entry are the contributors,
+series, and relations. To prevent excessive depth of nesting for such
+entries, they can be marked up as subclauses within the entry, with the clause
+titles "contributor", "series", and "relation". Each subclause contains
+a new definition list, with its definition list reset to zero depth;
+the subclauses can be repeated for multiple instances of the same subentity.
+
+The following is Metanorma Asciidoctor markup corresponding to the YAML
+given above:
+
+
+[source,asciidoc]
+....
+[[ISO/TC211]]
+[%bibitem]
+=== {blank}
+fetched:: 2019-06-30
+title::
+  type::: main
+  content::: Geographic information
+title::
+  type::: subtitle
+  content::: Geographic information subtitle
+  language::: en
+  script::: Latn
+  format::: text/plain
+type:: standard
+docid::
+  type::: ISO
+  id::: TC211
+docnumber:: 211
+edition:: 1
+language::
+  * en
+  * fr
+script:: Latn
+version::
+  revision_date::: 2019-04-01
+  draft::: draft
+biblionote::
+  type::: bibnote
+  content::: 
++
+---
+Mark set a major league
+home run record in 1998.
+---
+docstatus::
+  stage::: stage
+  substage::: substage
+  iteration::: iteration
+dates::
+  type::: issued
+  value::: 2014
+dates::
+  type::: published
+  from::: 2014-04
+  to::: 2014-05
+dates::
+  type::: accessed
+  value::: 2015-05-20
+abstract::
+  content::: 
++
+---
+      ISO 19115-1:2014 defines the schema required for ...
+---
+abstract::
+  content::: L'ISO 19115-1:2014 définit le schéma requis pour ...
+  language::: fr
+  script::: Latn
+  format::: text/plain
+copyright::
+   owner:::
+     name:::: International Organization for Standardization
+     abbreviation:::: ISO
+     url:::: www.iso.org
+   from::: 2014
+   to::: 2020
+link::
+  type::: src
+  content::: https://www.iso.org/standard/53798.html
+link::
+  type::: obp
+  content::: https://www.iso.org/obp/ui/#!iso:std:53798:en
+link::
+  type::: rss
+  content::: https://www.iso.org/contents/data/standard/05/37/53798.detail.rss
+medium::
+  form::: medium form
+  size::: medium size
+  scale::: medium scale
+place:: bib place
+extent::
+  type::: section
+  reference_from::: 7
+accesslocation::
+  * accesslocation1
+  * accesslocation2
+classification::
+  type::: type
+  value::: value
+validity::
+  begins::: 2010-10-10 12:21
+  ends::: 2011-02-03 18:30
+
+
+==== Contributor
+entity::
+  name::: International Organization for Standardization
+  url::: www.iso.org
+  abbreviation::: ISO
+  subdivision::: division
+role::
+  * publisher
+  * 
+  ** Publisher role
+
+==== Contributor
+entity::
+  name:::
+    completename::::
+      content::::: A. Bierman
+      language::::: en
+  affiliation:::
+    organization::::
+      name::::: IETF
+      abbreviation::::: IETF
+      identifiers:::::
++
+---
+type:: uri
+id:: www.ietf.org
+---
+    description:::: Affiliation description
+  contacts:::
+    street::::
+      * 8 Street St
+    city:::: City
+    postcode:::: 123456
+    country:::: Country
+    state:::: State
+  contacts:::
+    type:::: phone
+    value:::: 223322
+role:: author
+
+==== Contributor
+entity::
+  name::: IETF
+  abbreviation::: IETF
+  identifiers:::
+    type:::: uri
+    id:::: www.ietf.org
+role:: publisher
+
+==== Contributor
+entity::
+  name:::
+    language:::: en
+    initials:::: A.
+    surname:::: Bierman
+  affiliation:::
+    organization::::
+      name::::: IETF
+      abbreviation::::: IETF
+    description::::
+      content::::: Affiliation description
+      language::::: en
+      script::::: Latn
+  identifiers:::
+    type:::: uri
+    id:::: www.person.com
+roles:: author
+
+==== Relation
+type:: updates
+bibitem::
+  formattedref::: ISO 19115:2003
+  bib_locality:::
+    type:::: page
+    reference_from:::: 7
+    reference_to:::: 10
+
+==== Relation
+type::: updates
+bibitem:::
+  type::: standard
+  formattedref::: ISO 19115:2003/Cor 1:2006
+
+==== Series
+type:: main
+title::
+  type::: original
+  content::: ISO/IEC FDIS 10118-3
+  language::: en
+  script::: Latn
+  format::: text/plain
+place:: Serie's place
+organization:: Serie's organization
+abbreviation::
+  content::: ABVR
+  language::: en
+  script::: Latn
+from:: 2009-02-01
+to:: 2010-12-20
+number:: serie1234
+partnumber:: part5678
+
+==== Series
+type:: alt
+formattedref::
+  content::: serieref
+  language::: en
+  script::: Latn
+....
+
+
+
+
+

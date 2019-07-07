@@ -1,10 +1,11 @@
 module RelatonBib
   class << self
     def validity_hash_to_bib(ret)
-      ret[:validity] and ret[:validity] =
-        Validity.new(begins: Time.parse(ret[:validity][:begins]),
-                     ends: Time.parse(ret[:validity][:ends]),
-                     revision: Time.parse(ret[:validity][:revision]))
+      return unless ret[:validity]
+      ret[:validity][:begins] and b = Time.parse(ret[:validity][:begins])
+      ret[:validity][:ends] and e = Time.parse(ret[:validity][:ends])
+      ret[:validity][:revision] and r = Time.parse(ret[:validity][:revision])
+      ret[:validity] = Validity.new(begins: b, ends: e, revision: r)
     end
   end
 
