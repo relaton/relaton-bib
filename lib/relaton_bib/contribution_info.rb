@@ -5,20 +5,15 @@ require "relaton_bib/person"
 # RelatonBib module
 module RelatonBib
   class << self
-    def is_person_hash(c)
-      c.is_a?(Hash) and c[:entity].is_a?(Hash) and
-        c[:entity][:name].is_a?(Hash) and
-        (c.dig(:entity, :name, :completename) ||
-         c.dig(:entity, :name, :surname))
-    end
-
     def contributors_hash_to_bib(ret)
       return unless ret[:contributors]
       ret[:contributors] = array(ret[:contributors])
       ret[:contributors]&.each_with_index do |c, i|
         ret[:contributors][i][:roles] = array(ret[:contributors][i][:roles])
-        ret[:contributors][i][:entity] = is_person_hash(c) ?
-          person_hash_to_bib(c[:entity]) : org_hash_to_bib(c[:entity])
+        ret[:contributors][i][:entity] = c[:person] ?
+          person_hash_to_bib(c[:person]) : org_hash_to_bib(c[:organization])
+        ret[:contributors][i].delete(:person)
+        ret[:contributors][i].delete(:organization)
       end
     end
   end

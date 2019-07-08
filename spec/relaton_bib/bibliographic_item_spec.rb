@@ -31,14 +31,14 @@
         ],
         "contributors" => [
           {
-            "entity" => {
+            "organization" => {
               "name" => "International Organization for Standardization",
               "url" => "www.iso.org", "abbreviation" => "ISO", "subdivision" => "division",
             },
             "roles" => [["publisher", ["Publisher role"]]],
           },
           {
-            "entity" => {
+            "person" => {
               "name" => {
                 "completename" => {
                   "content" => "A. Bierman",
@@ -63,7 +63,7 @@
             "roles" => ["author"],
           },
           {
-            "entity" => {
+            "organization" => {
               "name" => "IETF",
               "abbreviation" => "IETF",
               "identifiers" => [{"type" => "uri", "id" => "www.ietf.org"}],
@@ -71,7 +71,7 @@
             "roles" => ["publisher"],
           },
           {
-            "entity" => {
+            "person" => {
               "name" => {
                 "language" => "en",
                 "initials" => ["A."],
