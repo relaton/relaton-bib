@@ -90,9 +90,7 @@ abstract:
     language: fr
     script: Latn
     format: text/plain
-# contributors are an array of entity/role pairs. Whether the entity is an organisation or a person
-# is inferred by whether the entity name is a hash with a completename or surname attribute; 
-# if not, it is an organisation. 
+# contributors are an array of entity/role pairs, where entity is either person or organization.
 # The role is an array; if there is a more complete description, that is given as the second element 
 # of an array, and is itself an array.
 # Organisations have attributes name, url, abbreviation, subdivision, contacts, identifiers
@@ -108,7 +106,7 @@ abstract:
 # Affiliations are an array, and they contains an organization, and an optional description. 
 # The affiliation description can be a single string, or a hash of content, language, script, and format.
 contributors:
-  - entity:
+  - organization:
       name: International Organization for Standardization
       url: www.iso.org
       abbreviation: ISO
@@ -117,7 +115,7 @@ contributors:
       - publisher
       - 
         - Publisher role
-  - entity:
+  - person:
       name:
         completename:
           content: A. Bierman
@@ -140,7 +138,7 @@ contributors:
         - type: phone
           value: 223322
     role: author
-  - entity:
+  - person:
       name: IETF
       abbreviation: IETF
       identifiers:
@@ -148,7 +146,7 @@ contributors:
           id: www.ietf.org
     role:
       publisher
-  - entity:
+  - person:
       name:
         language: en
         initials:
@@ -315,7 +313,7 @@ docid::
 type:: standard
 contributors::
   roles::: author
-  entity:::
+  person:::
     name::::
 +
 --
@@ -433,7 +431,7 @@ validity::
 
 
 ==== Contributor
-entity::
+person::
   name::: International Organization for Standardization
   url::: www.iso.org
   abbreviation::: ISO
@@ -444,7 +442,7 @@ role::
   ** Publisher role
 
 ==== Contributor
-entity::
+person::
   name:::
     completename::::
       content::::: A. Bierman
@@ -473,7 +471,7 @@ id:: www.ietf.org
 role:: author
 
 ==== Contributor
-entity::
+person::
   name::: IETF
   abbreviation::: IETF
   identifiers:::
@@ -482,7 +480,7 @@ entity::
 role:: publisher
 
 ==== Contributor
-entity::
+person::
   name:::
     language:::: en
     initials:::: A.
