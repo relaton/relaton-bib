@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    relaton-bib (0.2.4)
+    relaton-bib (0.2.5)
       addressable
-      nokogiri (~> 1.8.4)
+      nokogiri (~> 1.10)
 
 GEM
   remote: https://rubygems.org/
@@ -19,9 +19,9 @@ GEM
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
     json (2.2.0)
-    mini_portile2 (2.3.0)
-    nokogiri (1.8.5)
-      mini_portile2 (~> 2.3.0)
+    mini_portile2 (2.4.0)
+    nokogiri (1.10.3)
+      mini_portile2 (~> 2.4.0)
     public_suffix (3.1.1)
     rake (10.5.0)
     rspec (3.8.0)
