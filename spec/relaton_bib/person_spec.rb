@@ -12,7 +12,7 @@ RSpec.describe RelatonBib::Person do
       expect do
         RelatonBib::Person.new(
           name: RelatonBib::FullName.new(completename: "John Lennon"),
-          identifiers: RelatonBib::PersonIdentifier.new("wrong_type", "value"),
+          identifier: RelatonBib::PersonIdentifier.new("wrong_type", "value"),
         )
       end.to raise_error ArgumentError
     end

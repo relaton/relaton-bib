@@ -6,14 +6,14 @@ require "relaton_bib/person"
 module RelatonBib
   class << self
     def contributors_hash_to_bib(ret)
-      return unless ret[:contributors]
-      ret[:contributors] = array(ret[:contributors])
-      ret[:contributors]&.each_with_index do |c, i|
-        ret[:contributors][i][:roles] = array(ret[:contributors][i][:roles])
-        ret[:contributors][i][:entity] = c[:person] ?
+      return unless ret[:contributor]
+      ret[:contributor] = array(ret[:contributor])
+      ret[:contributor]&.each_with_index do |c, i|
+        ret[:contributor][i][:role] = array(ret[:contributor][i][:role])
+        ret[:contributor][i][:entity] = c[:person] ?
           person_hash_to_bib(c[:person]) : org_hash_to_bib(c[:organization])
-        ret[:contributors][i].delete(:person)
-        ret[:contributors][i].delete(:organization)
+        ret[:contributor][i].delete(:person)
+        ret[:contributor][i].delete(:organization)
       end
     end
   end

@@ -35,9 +35,9 @@ module RelatonBib
     end
 
     def title_hash_to_bib(ret)
-      return unless ret[:titles]
-      ret[:titles] = array(ret[:titles])
-      ret[:titles] = ret[:titles].map do |t|
+      return unless ret[:title]
+      ret[:title] = array(ret[:title])
+      ret[:title] = ret[:title].map do |t|
         t.is_a?(Hash) ? t : { content: t, language: "en", script: "Latn", 
                               format: "text/plain", type: "main" }
       end
@@ -101,10 +101,10 @@ module RelatonBib
     attr_reader :docnumber
 
     # @return [Array<RelatonBib::BibliographicDate>]
-    attr_reader :dates
+    attr_reader :date
 
     # @return [Array<RelatonBib::ContributionInfo>]
-    attr_reader :contributors
+    attr_reader :contributor
 
     # @return [String, NillClass]
     attr_reader :edition
@@ -134,7 +134,7 @@ module RelatonBib
     attr_reader :copyright
 
     # @return [RelatonBib::DocRelationCollection]
-    attr_reader :relations
+    attr_reader :relation
 
     # @return [Array<RelatonBib::Series>]
     attr_reader :series
@@ -184,18 +184,18 @@ module RelatonBib
     # @param validity [RelatonBib:Validity, NilClass]
     # @param fetched [Date, NilClass] default nil
     #
-    # @param dates [Array<Hash>]
-    # @option dates [String] :type
-    # @option dates [String] :from
-    # @option dates [String] :to
+    # @param date [Array<Hash>]
+    # @option date [String] :type
+    # @option date [String] :from
+    # @option date [String] :to
     #
-    # @param contributors [Array<Hash>]
-    # @option contributors [RealtonBib::Organization, RelatonBib::Person]
-    # @option contributors [String] :type
-    # @option contributors [String] :from
-    # @option contributirs [String] :to
-    # @option contributors [String] :abbreviation
-    # @option contributors [Array<Array<String,Array<String>>>] :roles
+    # @param contributor [Array<Hash>]
+    # @option contributor [RealtonBib::Organization, RelatonBib::Person]
+    # @option contributor [String] :type
+    # @option contributor [String] :from
+    # @option contributor [String] :to
+    # @option contributor [String] :abbreviation
+    # @option contributor [Array<Array<String,Array<String>>>] :role
     #
     # @param abstract [Array<Hash, RelatonBib::FormattedString>]
     # @option abstract [String] :content
@@ -203,27 +203,31 @@ module RelatonBib
     # @option abstract [String] :script
     # @option abstract [String] :type
     #
-    # @param relations [Array<Hash>]
-    # @option relations [String] :type
-    # @option relations [RelatonBib::BibliographicItem, RelatonIso::IsoBibliographicItem] :bibitem
-    # @option relations [Array<RelatonBib::BibItemLocality>] :bib_locality
+    # @param relation [Array<Hash>]
+    # @option relation [String] :type
+    # @option relation [RelatonBib::BibliographicItem, RelatonIso::IsoBibliographicItem] :bibitem
+    # @option relation [Array<RelatonBib::BibItemLocality>] :bib_locality
+    #
+    # @param link [Array<Hash, RelatonBib::TypedUri>]
+    # @option link [String] :type
+    # @option link [String] :content
     def initialize(**args)
       if args[:type] && !TYPES.include?(args[:type])
         raise ArgumentError, %{Type "#{args[:type]}" is invalid.}
       end
 
-      @title = (args[:titles] || []).map do |t|
+      @title = (args[:title] || []).map do |t|
         t.is_a?(Hash) ? TypedTitleString.new(t) : t
       end
 
-      @dates = (args[:dates] || []).map do |d|
+      @date = (args[:date] || []).map do |d|
         d.is_a?(Hash) ? BibliographicDate.new(d) : d
       end
 
-      @contributors = (args[:contributors] || []).map do |c|
+      @contributor = (args[:contributor] || []).map do |c|
         if c.is_a? Hash
           e = c[:entity].is_a?(Hash) ? Organization.new(c[:entity]) : c[:entity]
-          ContributionInfo.new(entity: e, role: c[:roles])
+          ContributionInfo.new(entity: e, role: c[:role])
         else c
         end
       end
@@ -250,7 +254,7 @@ module RelatonBib
       @language       = args.fetch :language, []
       @script         = args.fetch :script, []
       @status         = args[:docstatus]
-      @relations      = DocRelationCollection.new(args[:relations] || [])
+      @relation      = DocRelationCollection.new(args[:relation] || [])
       @link           = args.fetch(:link, []).map { |s| s.is_a?(Hash) ? TypedUri.new(s) : s }
       @series         = args.fetch :series, []
       @medium         = args[:medium]
@@ -290,7 +294,7 @@ module RelatonBib
 
     # @return [String]
     def shortref(identifier, **opts)
-      pubdate = dates.select { |d| d.type == "published" }
+      pubdate = date.select { |d| d.type == "published" }
       year = if opts[:no_year] || pubdate.empty? then ""
              else ":" + pubdate&.first&.on&.year.to_s
              end
@@ -328,8 +332,8 @@ module RelatonBib
         link.each { |s| s.to_xml builder }
         docidentifier.each { |di| di.to_xml builder }
         builder.docnumber docnumber if docnumber
-        dates.each { |d| d.to_xml builder, **opts }
-        contributors.each do |c|
+        date.each { |d| d.to_xml builder, **opts }
+        contributor.each do |c|
           builder.contributor do
             c.role.each { |r| r.to_xml builder }
             c.to_xml builder
@@ -343,7 +347,7 @@ module RelatonBib
         abstract.each { |a| builder.abstract { a.to_xml(builder) } }
         status&.to_xml builder
         copyright&.to_xml builder
-        relations.each { |r| r.to_xml builder, **opts }
+        relation.each { |r| r.to_xml builder, **opts }
         series.each { |s| s.to_xml builder }
         medium&.to_xml builder
         place.each { |pl| builder.place pl }

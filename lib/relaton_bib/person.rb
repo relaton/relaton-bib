@@ -8,17 +8,17 @@ module RelatonBib
       Person.new(
         name: fullname_hash_to_bib(c),
         affiliation: affiliation_hash_to_bib(c),
-        contacts: contacts_hash_to_bib(c),
-        identifiers: person_identifiers_hash_to_bib(c),
+        contact: contacts_hash_to_bib(c),
+        identifier: person_identifiers_hash_to_bib(c),
       )
     end
 
     def fullname_hash_to_bib(c)
       n = c[:name]
       FullName.new(
-        forenames: array(n[:forenames])&.map { |f| localname(f, c) },
-        initials: array(n[:initials])&.map { |f| localname(f, c) },
-        additions: array(n[:additions])&.map { |f| localname(f, c) },
+        forename: array(n[:forename])&.map { |f| localname(f, c) },
+        initial: array(n[:initial])&.map { |f| localname(f, c) },
+        addition: array(n[:addition])&.map { |f| localname(f, c) },
         prefix: array(n[:prefix])&.map { |f| localname(f, c) },
         surname: localname(n[:surname], c),
         completename: localname(n[:completename], c),
@@ -26,7 +26,7 @@ module RelatonBib
     end
 
     def person_identifiers_hash_to_bib(c)
-      array(c[:identifiers])&.map do |a|
+      array(c[:identifier])&.map do |a|
         PersonIdentifier.new(a[:type], a[:id])
       end
     end
@@ -35,16 +35,16 @@ module RelatonBib
   # Person's full name
   class FullName
     # @return [Array<RelatonBib::LocalizedString>]
-    attr_accessor :forenames
+    attr_accessor :forename
 
     # @return [Array<RelatonBib::LocalizedString>]
-    attr_accessor :initials
+    attr_accessor :initial
 
     # @return [RelatonBib::LocalizedString]
     attr_accessor :surname
 
     # @return [Array<RelatonBib::LocalizedString>]
-    attr_accessor :additions
+    attr_accessor :addition
 
     # @return [Array<RelatonBib::LocalizedString>]
     attr_accessor :prefix
@@ -53,9 +53,9 @@ module RelatonBib
     attr_reader :completename
 
     # @param surname [RelatonBib::LocalizedString]
-    # @param forenames [Array<RelatonBib::LocalizedString>]
-    # @param initials [Array<RelatonBib::LocalizedString>]
-    # @param additions [Array<RelatonBib::LocalizedString>]
+    # @param forename [Array<RelatonBib::LocalizedString>]
+    # @param initial [Array<RelatonBib::LocalizedString>]
+    # @param addition [Array<RelatonBib::LocalizedString>]
     # @param prefix [Array<RelatonBib::LocalizedString>]
     # @param completename [RelatonBib::LocalizedString]
     def initialize(**args)
@@ -64,9 +64,9 @@ module RelatonBib
       end
 
       @surname      = args[:surname]
-      @forenames    = args.fetch :forenames, []
-      @initials     = args.fetch :initials, []
-      @additions    = args.fetch :additions, []
+      @forename     = args.fetch :forename, []
+      @initial      = args.fetch :initial, []
+      @addition     = args.fetch :addition, []
       @prefix       = args.fetch :prefix, []
       @completename = args[:completename]
     end
@@ -78,10 +78,10 @@ module RelatonBib
           builder.completename { completename.to_xml builder }
         else
           prefix.each { |p| builder.prefix { p.to_xml builder } } 
-          initials.each { |i| builder.initial { i.to_xml builder } }
-          additions.each { |a| builder.addition { a.to_xml builder } }
+          initial.each { |i| builder.initial { i.to_xml builder } }
+          addition.each { |a| builder.addition { a.to_xml builder } }
           builder.surname { surname.to_xml builder }
-          forenames.each { |f| builder.forename { f.to_xml builder } }
+          forename.each { |f| builder.forename { f.to_xml builder } }
         end
       end
     end
@@ -134,17 +134,17 @@ module RelatonBib
     attr_accessor :affiliation
 
     # @return [Array<RelatonBib::PersonIdentifier>]
-    attr_accessor :identifiers
+    attr_accessor :identifier
 
     # @param name [RelatonBib::FullName]
     # @param affiliation [Array<RelatonBib::Affiliation>]
-    # @param contacts [Array<RelatonBib::Address, RelatonBib::Phone>]
-    # @param identifiers [Array<RelatonBib::PersonIdentifier>]
-    def initialize(name:, affiliation: [], contacts: [], identifiers: [])
-      super(contacts: contacts)
+    # @param contact [Array<RelatonBib::Address, RelatonBib::Phone>]
+    # @param identifier [Array<RelatonBib::PersonIdentifier>]
+    def initialize(name:, affiliation: [], contact: [], identifier: [])
+      super(contact: contact)
       @name        = name
       @affiliation = affiliation
-      @identifiers = identifiers
+      @identifier = identifier
     end
 
     # @param builder [Nokogiri::XML::Builder]
@@ -152,8 +152,8 @@ module RelatonBib
       builder.person do
         name.to_xml builder
         affiliation.each { |a| a.to_xml builder }
-        identifiers.each { |id| id.to_xml builder }
-        contacts.each { |contact| contact.to_xml builder }
+        identifier.each { |id| id.to_xml builder }
+        contact.each { |contact| contact.to_xml builder }
       end
     end
   end

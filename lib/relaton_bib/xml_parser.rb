@@ -19,13 +19,13 @@ module RelatonBib
           id: bibitem[:id]&.empty? ? nil : bibitem[:id],
           type: bibitem[:type]&.empty? ? nil : bibitem[:type],
           fetched: bibitem.at("./fetched")&.text,
-          titles: fetch_titles(bibitem),
+          title: fetch_titles(bibitem),
           formattedref: fref(bibitem),
           link: fetch_link(bibitem),
           docid: fetch_docid(bibitem),
           docnumber: bibitem.at("./docnumber")&.text,
-          dates: fetch_dates(bibitem),
-          contributors: fetch_contributors(bibitem),
+          date: fetch_dates(bibitem),
+          contributor: fetch_contributors(bibitem),
           edition: bibitem.at("./edition")&.text,
           version: fetch_version(bibitem),
           biblionote: fetch_note(bibitem),
@@ -34,7 +34,7 @@ module RelatonBib
           abstract: fetch_abstract(bibitem),
           docstatus: fetch_status(bibitem),
           copyright: fetch_copyright(bibitem),
-          relations: fetch_relations(bibitem),
+          relation: fetch_relations(bibitem),
           series: fetch_series(bibitem),
           medium: fetch_medium(bibitem),
           place: bibitem.xpath("./place").map(&:text),
@@ -165,14 +165,14 @@ module RelatonBib
         names = org.xpath("name").map do |n|
           { content: n.text, language: n[:language], script: n[:script] }
         end
-        identifiers = org.xpath("./identifier").map do |i|
+        identifier = org.xpath("./identifier").map do |i|
           OrgIdentifier.new(i[:type], i.text)
         end
         Organization.new(name: names,
                          abbreviation: org.at("abbreviation")&.text,
                          subdivision: org.at("subdivision")&.text,
                          url: org.at("uri")&.text,
-                         identifiers: identifiers)
+                         identifier: identifier)
       end
 
       def get_person(person)
@@ -181,22 +181,22 @@ module RelatonBib
           Affilation.new get_org(org)
         end
 
-        contacts = person.xpath("./address | ./phone | ./email | ./uri").map do |contact|
-          if contact.name == "address"
-            streets = contact.xpath("./street").map(&:text)
+        contact = person.xpath("./address | ./phone | ./email | ./uri").map do |c|
+          if c.name == "address"
+            streets = c.xpath("./street").map(&:text)
             Address.new(
               street: streets,
-              city: contact.at("./city").text,
-              state: contact.at("./state").text,
-              country: contact.at("./country").text,
-              postcode: contact.at("./postcode").text,
+              city: c.at("./city").text,
+              state: c.at("./state").text,
+              country: c.at("./country").text,
+              postcode: c.at("./postcode").text,
             )
           else
-            Contact.new(type: contact.name, value: contact.text)
+            Contact.new(type: c.name, value: c.text)
           end
         end
 
-        identifiers = person.xpath("./identifier").map do |pi|
+        identifier = person.xpath("./identifier").map do |pi|
           PersonIdentifier.new pi[:type], pi.text
         end
 
@@ -212,15 +212,15 @@ module RelatonBib
 
         name = FullName.new(
           completename: cname, surname: sname,
-          initials: name_part(person, "initial"), forenames: name_part(person, "forename"),
-          additions: name_part(person, "addition"), prefix: name_part(person, "prefix")
+          initial: name_part(person, "initial"), forename: name_part(person, "forename"),
+          addition: name_part(person, "addition"), prefix: name_part(person, "prefix")
         )
 
         Person.new(
           name: name,
           affiliation: affilations,
-          contacts: contacts,
-          identifiers: identifiers,
+          contact: contact,
+          identifier: identifier,
         )
       end
 

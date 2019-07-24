@@ -33,7 +33,7 @@ item = RelatonBib::BibliographicItem.new(
   id: "ISO/TC211",
   fetched: Date.today.to_s,
   type: "standard",
-  titles: [
+  title: [
     { type: "main", content: "Geographic information", language: "en", script: "Latn" },
     {
       content: "Information géographique", language: "fr", script: "Latn"
@@ -50,16 +50,16 @@ item = RelatonBib::BibliographicItem.new(
     RelatonBib::DocumentIdentifier.new(id: "TC211", type: "ISO")
   ],
   docnumber: "123456",
-  dates: [
+  date: [
     { type: "issued", on: "2014" },
     { type: "published", on: "2014-04" },
     { type: "accessed", on: "2015-05-20" }
   ],
-  contributors: [
+  contributor: [
     { entity: {
         name: "International Organization for Standardization",
         url: "www.iso.org", abbreviation: "ISO", subdivision: "division" },
-      roles: [["publisher", ["Publisher role"]]], }
+      role: [["publisher", ["Publisher role"]]], }
   ],
   edition: "1",
   version: RelatonBib::BibliographicItem::Version.new("2019-04-01", ["draft"]),
@@ -79,7 +79,7 @@ item = RelatonBib::BibliographicItem.new(
       abbreviation: "ISO", url: "www.iso.org"
     },
     from: "2014", to: "2020" },
-  relations: [
+  relation: [
     { type: "updates",
       bibitem: RelatonBib::BibliographicItem.new(
         formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003"),

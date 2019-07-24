@@ -6,7 +6,7 @@ module RelatonBib
   class << self
     def org_hash_to_bib(c)
       return nil if c.nil?
-      c[:identifiers] = array(c[:identifiers])&.map do |a|
+      c[:identifier] = array(c[:identifier])&.map do |a|
         OrgIdentifier.new(a[:type], a[:id])
       end
       c
@@ -58,7 +58,7 @@ module RelatonBib
     attr_reader :subdivision
 
     # @return [Array<RelatonBib::OrgIdentifier>]
-    attr_reader :identifiers
+    attr_reader :identifier
 
     def hash2locstr(name)
       name.is_a?(Hash) ?
@@ -70,12 +70,12 @@ module RelatonBib
     # @param abbreviation [RelatoBib::LocalizedStrig, String]
     # @param subdivision [RelatoBib::LocalizedStrig, String]
     # @param url [String]
-    # @param identifiers [Array<RelatonBib::OrgIdentifier>]
-    # @param contacts [Array<RelatonBib::Address, RelatonBib::Phone>]
+    # @param identifier [Array<RelatonBib::OrgIdentifier>]
+    # @param contact [Array<RelatonBib::Address, RelatonBib::Phone>]
     def initialize(**args)
       raise ArgumentError, "missing keyword: name" unless args[:name]
 
-      super(url: args[:url], contacts: args.fetch(:contacts, []))
+      super(url: args[:url], contact: args.fetch(:contact, []))
 
       @name = if args[:name].is_a?(Array)
                 args[:name].map { |n| hash2locstr(n) }
@@ -95,7 +95,7 @@ module RelatonBib
                         args[:subdivision]
                       end
 
-      @identifiers  = args.fetch(:identifiers, [])
+      @identifier  = args.fetch(:identifier, [])
     end
 
     # @param builder [Nokogiri::XML::Builder]
@@ -107,7 +107,7 @@ module RelatonBib
         builder.subdivision { |s| subdivision.to_xml s } if subdivision
         builder.abbreviation { |a| abbreviation.to_xml a } if abbreviation
         builder.uri url if uri
-        identifiers.each { |identifier| identifier.to_xml builder }
+        identifier.each { |identifier| identifier.to_xml builder }
         super
       end
     end

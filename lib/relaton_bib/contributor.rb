@@ -18,8 +18,8 @@ module RelatonBib
     end
 
     def contacts_hash_to_bib(c)
-      return [] unless c[:contacts]
-      array(c[:contacts]).map do |a|
+      return [] unless c[:contact]
+      array(c[:contact]).map do |a|
         (a[:city] || a[:country]) ?
           RelatonBib::Address.new(
             street: Array(a[:street]), city: a[:city], postcode: a[:postcode],
@@ -125,13 +125,13 @@ module RelatonBib
     attr_reader :uri
 
     # @return [Array<RelatonBib::Address, RelatonBib::Phone>]
-    attr_reader :contacts
+    attr_reader :contact
 
     # @param url [String]
-    # @param contacts [Array<RelatonBib::Address, RelatonBib::Phone>]
-    def initialize(url: nil, contacts: [])
+    # @param contact [Array<RelatonBib::Address, RelatonBib::Phone>]
+    def initialize(url: nil, contact: [])
       @uri = URI url if url
-      @contacts = contacts
+      @contact = contact
     end
 
     # Returns url.
@@ -142,7 +142,7 @@ module RelatonBib
 
     # @params builder [Nokogiri::XML::Builder]
     def to_xml(builder)
-      contacts.each { |contact| contact.to_xml builder }
+      contact.each { |contact| contact.to_xml builder }
     end
   end
 end

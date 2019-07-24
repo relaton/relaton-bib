@@ -2,7 +2,7 @@
 
     item_hash = {
         "id" => "ISO/TC211", "fetched" => Date.today.to_s,
-        "titles" => [
+        "title" => [
           "Geographic information",
           #{ "type" => "main", "content" => "Geographic information", "language" => "en", "script" => "Latn" },
           {
@@ -18,7 +18,7 @@
         "docstatus" => {
           "stage" => "stage", "substage" => "substage", "iteration" => "final",
         },
-        "dates" => [
+        "date" => [
           { "type" => "issued", "value" => "2014" },
           { "type" => "published", "on" => "2014-04" },
           { "type" => "accessed", "on" => "2015-05-20" },
@@ -29,13 +29,13 @@
           { "content" => "L'ISO 19115-1:2014 définit le schéma requis pour ...",
             "language" => "fr", "script" => "Latn", "format" => "text/plain" },
         ],
-        "contributors" => [
+        "contributor" => [
           {
             "organization" => {
               "name" => "International Organization for Standardization",
               "url" => "www.iso.org", "abbreviation" => "ISO", "subdivision" => "division",
             },
-            "roles" => [["publisher", ["Publisher role"]]],
+            "role" => [["publisher", ["Publisher role"]]],
           },
           {
             "person" => {
@@ -49,10 +49,10 @@
                 "organization" => {
                   "name" => "IETF",
                   "abbreviation" => "IETF",
-                  "identifiers" => [{"type" => "uri", "id" => "www.ietf.org"}],
+                  "identifier" => [{"type" => "uri", "id" => "www.ietf.org"}],
                 }
               }],
-              "contacts" => [
+              "contact" => [
                 {
                   "street" => ["Street"], "city" => "City", "postcode" => "123456",
                   "country" => "Country", "state" => "State"
@@ -60,21 +60,21 @@
                 {"type" => "phone", "value" => "223322"},
               ]
             },
-            "roles" => ["author"],
+            "role" => ["author"],
           },
           {
             "organization" => {
               "name" => "IETF",
               "abbreviation" => "IETF",
-              "identifiers" => [{"type" => "uri", "id" => "www.ietf.org"}],
+              "identifier" => [{"type" => "uri", "id" => "www.ietf.org"}],
             },
-            "roles" => ["publisher"],
+            "role" => ["publisher"],
           },
           {
             "person" => {
               "name" => {
                 "language" => "en",
-                "initials" => ["A."],
+                "initial" => ["A."],
                 "surname" => "Bierman",
               },
               "affiliation" => [{
@@ -82,16 +82,16 @@
                 "name" => "IETF", "abbreviation" => "IETF",
                 }
               }],
-              "contacts" => [
+              "contact" => [
                 {
                   "street" => ["Street"], "city" => "City", "postcode" => "123456",
                   "country" => "Country", "state" => "State"
                 },
                 {"type" => "phone", "value" => "223322"},
               ],
-              "identifiers" => [{"type" => "uri", "id" => "www.person.com"}],
+              "identifier" => [{"type" => "uri", "id" => "www.person.com"}],
             },
-            "roles" => ["author"],
+            "role" => ["author"],
           },
         ],
         "copyright" => { "owner" => {
@@ -105,7 +105,7 @@
           { "type" => "rss", "content" => "https://www.iso.org/contents/data/standard"\
             "/05/37/53798.detail.rss" },
         ],
-        "relations" => [
+        "relation" => [
           {
             "type" => "updates",
             "bibitem" => {
@@ -168,7 +168,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
     subject do
     item = {
         id: "ISO/TC211", fetched: Date.today.to_s,
-        titles: [
+        title: [
           { type: "main", content: "Geographic information", language: "en", script: "Latn" },
           {
             content: "Information géographique", language: "fr", script: "Latn"
@@ -187,7 +187,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
         docstatus: RelatonBib::DocumentStatus.new(
           stage: "stage", substage: "substage", iteration: "final",
         ),
-        dates: [
+        date: [
           { type: "issued", on: "2014" },
           { type: "published", on: "2014-04" },
           { type: "accessed", on: "2015-05-20" },
@@ -198,13 +198,13 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
           { content: "L'ISO 19115-1:2014 définit le schéma requis pour ...",
             language: "fr", script: "Latn", format: "text/plain" },
         ],
-        contributors: [
+        contributor: [
           {
             entity: {
               name: "International Organization for Standardization",
               url: "www.iso.org", abbreviation: "ISO", subdivision: "division",
             },
-            roles: [["publisher", ["Publisher role"]]],
+            role: [["publisher", ["Publisher role"]]],
           },
           {
             entity: RelatonBib::Person.new(
@@ -215,10 +215,10 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
                 RelatonBib::Organization.new(
                   name: "IETF",
                   abbreviation: RelatonBib::LocalizedString.new("IETF"),
-                  identifiers: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
+                  identifier: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
                 )
               )],
-              contacts: [
+              contact: [
                 RelatonBib::Address.new(
                   street: ["Street"], city: "City", postcode: "123456",
                   country: "Country", state: "State"
@@ -226,35 +226,35 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
                 RelatonBib::Contact.new(type: "phone", value: "223322"),
               ]
             ),
-            roles: ["author"],
+            role: ["author"],
           },
           RelatonBib::ContributionInfo.new(
             entity: RelatonBib::Organization.new(
               name: "IETF",
               abbreviation: "IETF",
-              identifiers: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
+              identifier: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
             ),
             role: ["publisher"],
           ),
           {
             entity: RelatonBib::Person.new(
               name: RelatonBib::FullName.new(
-                initials: [localized_string("A.")],
+                initial: [localized_string("A.")],
                 surname: localized_string("Bierman"),
               ),
               affiliation: [RelatonBib::Affilation.new(
                 RelatonBib::Organization.new(name: "IETF", abbreviation: "IETF"),
               )],
-              contacts: [
+              contact: [
                 RelatonBib::Address.new(
                   street: ["Street"], city: "City", postcode: "123456",
                   country: "Country", state: "State"
                 ),
                 RelatonBib::Contact.new(type: "phone", value: "223322"),
               ],
-              identifiers: [RelatonBib::PersonIdentifier.new("uri", "www.person.com")],
+              identifier: [RelatonBib::PersonIdentifier.new("uri", "www.person.com")],
             ),
-            roles: ["author"],
+            role: ["author"],
           },
         ],
         copyright: { owner: {
@@ -268,7 +268,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
           { type: "rss", content: "https://www.iso.org/contents/data/standard"\
             "/05/37/53798.detail.rss" },
         ],
-        relations: [
+        relation: [
           {
             type: "updates",
             bibitem: RelatonBib::BibliographicItem.new(
