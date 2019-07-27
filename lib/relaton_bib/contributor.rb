@@ -8,9 +8,11 @@ module RelatonBib
       return [] unless c[:affiliation]
       array(c[:affiliation]).map do |a|
         a[:description] = array(a[:description])&.map do |d|
-          FormattedString.new(d.nil? ? { content: nil } :
+          FormattedString.new(
+            d.is_a?(Hash) ?
             { content: d[:content], language: d[:language],
-             script: d[:language], format: d[:format] })
+              script: d[:script], format: d[:format] } : 
+          { content: d })
         end
         Affilation.new(
           Organization.new(org_hash_to_bib(a[:organization])), a[:description])
