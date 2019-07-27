@@ -41,7 +41,7 @@ module RelatonBib
 
     def array(a)
       return [] unless a
-      return [a] unless a.is_a?(Array)
+      return [].push(a) unless a.is_a?(Array)
       a
     end
 
