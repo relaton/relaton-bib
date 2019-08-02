@@ -3,16 +3,6 @@
 require "relaton_bib/contributor"
 
 module RelatonBib
-  class << self
-    def org_hash_to_bib(c)
-      return nil if c.nil?
-      c[:identifier] = array(c[:identifier])&.map do |a|
-        OrgIdentifier.new(a[:type], a[:id])
-      end
-      c
-    end
-  end
-
   # module OrgIdentifierType
   #   ORCID = 'orcid'
   #   URI   = 'uri'

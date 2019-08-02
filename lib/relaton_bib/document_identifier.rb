@@ -1,16 +1,5 @@
 module RelatonBib
   # Document identifier.
-  
-  class << self
-    def docid_hash_to_bib(ret)
-      return unless ret[:docid]
-      ret[:docid] = array(ret[:docid])
-      ret[:docid]&.each_with_index do |id, i|
-        ret[:docid][i] = DocumentIdentifier.new(id: id[:id], type: id[:type])
-      end
-    end
-  end
-
   class DocumentIdentifier
     # @return [String]
     attr_reader :id

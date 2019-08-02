@@ -9,10 +9,10 @@ the following are equivalent:
 
 [source,yaml]
 ....
-titles:
+title:
   - type: main
     content: Geographic information
-titles:
+title:
   type: main
   content: Geographic information
 script:
@@ -32,7 +32,7 @@ id: ISO/TC211
 # date record was created
 fetched: 2019-06-30
 # titles are an array, with a mandatory type and content, and optional format, language and script
-titles:
+title:
   - type: main
     content: Geographic information
   - type: subtitle
@@ -73,7 +73,7 @@ docstatus:
   substage: substage
   iteration: iteration
 # date is an array, with mandatory type, and either an "on" value or a "from" and optional "to" value
-dates:
+date:
   - type: issued
     value: 2014
   - type: published
@@ -105,7 +105,7 @@ abstract:
 # are phones, emails, uris; they contain a type giving the field name, and a value.
 # Affiliations are an array, and they contains an organization, and an optional description. 
 # The affiliation description can be a single string, or a hash of content, language, script, and format.
-contributors:
+contributor:
   - organization:
       name: International Organization for Standardization
       url: www.iso.org
@@ -124,11 +124,11 @@ contributors:
         - organization:
             name: IETF
             abbreviation: IETF
-             identifiers:      
+             identifier:      
                - type: uri
                  id: www.ietf.org
           description: Affiliation description
-      contacts:
+      contact:
         - street:
           - 8 Street St
           city: City
@@ -141,7 +141,7 @@ contributors:
   - person:
       name: IETF
       abbreviation: IETF
-      identifiers:
+      identifier:
         - type: uri
           id: www.ietf.org
     role:
@@ -149,7 +149,7 @@ contributors:
   - person:
       name:
         language: en
-        initials:
+        initial:
           - A.
         surname: Bierman
       affiliation:
@@ -160,10 +160,10 @@ contributors:
              content: Affiliation description
              language: en
              script: Latn
-      identifiers:
+      identifier:
         - type: uri
           id: www.person.com
-    roles: 
+    role: 
       author
 # copyright consists of an owner (a hash containing the fields of an organisation),
 # a "from" date, and an optional "to" date
@@ -185,7 +185,7 @@ link:
 # relations are an array of type, bibitem, and bib_locality.
 # bibitem contains any of the attributes of a bibliographic item.
 # bib_locality is an array that contains a type, a reference_from, and optionally a reference_to
-relations:
+relation:
   - type: updates
     bibitem:
       formattedref: ISO 19115:2003
@@ -311,8 +311,8 @@ docid::
   type::: ISO
   id::: ISO 123
 type:: standard
-contributors::
-  roles::: author
+contributor::
+  role::: author
   person:::
     name::::
 +
@@ -374,14 +374,14 @@ docstatus::
   stage::: stage
   substage::: substage
   iteration::: iteration
-dates::
+date::
   type::: issued
   value::: 2014
-dates::
+date::
   type::: published
   from::: 2014-04
   to::: 2014-05
-dates::
+date::
   type::: accessed
   value::: 2015-05-20
 abstract::
@@ -451,21 +451,21 @@ person::
     organization::::
       name::::: IETF
       abbreviation::::: IETF
-      identifiers:::::
+      identifier:::::
 +
 ---
 type:: uri
 id:: www.ietf.org
 ---
     description:::: Affiliation description
-  contacts:::
+  contact:::
     street::::
       * 8 Street St
     city:::: City
     postcode:::: 123456
     country:::: Country
     state:::: State
-  contacts:::
+  contact:::
     type:::: phone
     value:::: 223322
 role:: author
@@ -474,7 +474,7 @@ role:: author
 person::
   name::: IETF
   abbreviation::: IETF
-  identifiers:::
+  identifier:::
     type:::: uri
     id:::: www.ietf.org
 role:: publisher
@@ -483,7 +483,7 @@ role:: publisher
 person::
   name:::
     language:::: en
-    initials:::: A.
+    initial:::: A.
     surname:::: Bierman
   affiliation:::
     organization::::
@@ -493,10 +493,10 @@ person::
       content::::: Affiliation description
       language::::: en
       script::::: Latn
-  identifiers:::
+  identifier:::
     type:::: uri
     id:::: www.person.com
-roles:: author
+role:: author
 
 ==== Relation
 type:: updates

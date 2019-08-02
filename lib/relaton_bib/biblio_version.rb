@@ -1,14 +1,5 @@
 module RelatonBib
   # Version
-  class << self
-    def version_hash_to_bib(ret)
-      return unless ret[:version]
-      ret[:version][:draft] = array(ret[:version][:draft])
-      ret[:version] and ret[:version] = BibliographicItem::Version.new(
-          ret[:version][:revision_date], ret[:version][:draft])
-    end
-  end
-
   class BibliographicItem
     class Version
       # @return [String]

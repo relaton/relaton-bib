@@ -308,6 +308,21 @@ item.to_xml date_format: :full
       </date>
       ...
 ----
+=== Create bibliographic item form YAML
+[source,ruby]
+----
+hash = YAML.load_file 'spec/examples/bib_item.yml'
+=> {"id"=>"ISO/TC211",
+...
+
+bib_hash = RelatonBib::HashConverter.hash_to_bib hash
+=> {:id=>"ISO/TC211",
+...
+
+RelatonBib::BibliographicItem.new bib_hash
+=> #<RelatonBib::BibliographicItem:0x007ff1524f8c88
+...
+----
 
 == Development
 

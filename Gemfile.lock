@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    relaton-bib (0.3.0)
+    relaton-bib (0.3.1)
       addressable
       nokogiri (~> 1.10)
 

@@ -3,20 +3,6 @@
 require "time"
 
 module RelatonBib
-  class << self
-    def dates_hash_to_bib(ret)
-      return unless ret[:date]
-      ret[:date] = array(ret[:date])
-      ret[:date].each_with_index do |d, i|
-        # value is synonym of on: it is reserved word in YAML
-        if d[:value]
-          ret[:date][i][:on] ||= d[:value]
-          ret[:date][i].delete(:value)
-        end
-      end
-    end
-  end
-
   # Bibliographic date.
   class BibliographicDate
     TYPES = %w[published accessed created implemented obsoleted confirmed

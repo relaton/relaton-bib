@@ -3,35 +3,6 @@
 require "relaton_bib/contributor"
 
 module RelatonBib
-  class << self
-    def person_hash_to_bib(c)
-      Person.new(
-        name: fullname_hash_to_bib(c),
-        affiliation: affiliation_hash_to_bib(c),
-        contact: contacts_hash_to_bib(c),
-        identifier: person_identifiers_hash_to_bib(c),
-      )
-    end
-
-    def fullname_hash_to_bib(c)
-      n = c[:name]
-      FullName.new(
-        forename: array(n[:forename])&.map { |f| localname(f, c) },
-        initial: array(n[:initial])&.map { |f| localname(f, c) },
-        addition: array(n[:addition])&.map { |f| localname(f, c) },
-        prefix: array(n[:prefix])&.map { |f| localname(f, c) },
-        surname: localname(n[:surname], c),
-        completename: localname(n[:completename], c),
-      )
-    end
-
-    def person_identifiers_hash_to_bib(c)
-      array(c[:identifier])&.map do |a|
-        PersonIdentifier.new(a[:type], a[:id])
-      end
-    end
-  end
-
   # Person's full name
   class FullName
     # @return [Array<RelatonBib::LocalizedString>]

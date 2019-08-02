@@ -236,7 +236,7 @@ module RelatonBib
                    elsif (person = c.at "./person") then get_person(person)
                    end
           role_descr = c.xpath("./role/description").map &:text
-          ContributionInfo.new entity: entity, role: [[c.at("role")[:type], role_descr]]
+          ContributionInfo.new entity: entity, role: [{ type: c.at("role")[:type], description: role_descr }]
         end
       end
 

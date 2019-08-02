@@ -21,59 +21,9 @@ require "relaton_bib/xml_parser"
 require "relaton_bib/biblio_note"
 require "relaton_bib/biblio_version"
 require "relaton_bib/workers_pool"
-require "relaton_bib/hash_to_bib.rb"
+require "relaton_bib/hash_converter"
 
 module RelatonBib
-  class << self
-    def extent_hash_to_bib(ret)
-      return unless ret[:extent]
-      ret[:extent] = array(ret[:extent])
-      ret[:extent]&.each_with_index do |e, i|
-        ret[:extent][i] = BibItemLocality.new(e[:type], e[:reference_from],
-                                              e[:reference_to])
-      end
-    end
-
-    def title_hash_to_bib(ret)
-      return unless ret[:title]
-      ret[:title] = array(ret[:title])
-      ret[:title] = ret[:title].map do |t|
-        t.is_a?(Hash) ? t : { content: t, language: "en", script: "Latn", 
-                              format: "text/plain", type: "main" }
-      end
-    end
-
-    def language_hash_to_bib(ret)
-      return unless ret[:language]
-      ret[:language] = array(ret[:language])
-    end
-
-    def script_hash_to_bib(ret)
-      return unless ret[:script]
-      ret[:script] = array(ret[:script])
-    end
-
-    def abstract_hash_to_bib(ret)
-      return unless ret[:abstract]
-      ret[:abstract] = array(ret[:abstract])
-    end
-
-    def link_hash_to_bib(ret)
-      return unless ret[:link]
-      ret[:link] = array(ret[:link])
-    end
-
-    def place_hash_to_bib(ret)
-      return unless ret[:place]
-      ret[:place] = array(ret[:place])
-    end
-
-    def accesslocation_hash_to_bib(ret)
-      return unless ret[:accesslocation]
-      ret[:accesslocation] = array(ret[:accesslocation])
-    end
-  end
-
   # Bibliographic item
   class BibliographicItem
     TYPES = %W[article book booklet conference manual proceedings presentation

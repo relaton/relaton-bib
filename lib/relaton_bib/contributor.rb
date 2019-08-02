@@ -3,34 +3,6 @@
 require "uri"
 
 module RelatonBib
-  class << self
-    def affiliation_hash_to_bib(c)
-      return [] unless c[:affiliation]
-      array(c[:affiliation]).map do |a|
-        a[:description] = array(a[:description])&.map do |d|
-          FormattedString.new(
-            d.is_a?(Hash) ?
-            { content: d[:content], language: d[:language],
-              script: d[:script], format: d[:format] } : 
-          { content: d })
-        end
-        Affilation.new(
-          Organization.new(org_hash_to_bib(a[:organization])), a[:description])
-      end
-    end
-
-    def contacts_hash_to_bib(c)
-      return [] unless c[:contact]
-      array(c[:contact]).map do |a|
-        (a[:city] || a[:country]) ?
-          RelatonBib::Address.new(
-            street: Array(a[:street]), city: a[:city], postcode: a[:postcode],
-            country: a[:country], state: a[:state]) :
-        RelatonBib::Contact.new(type: a[:type], value: a[:value])
-      end
-    end
-  end
-
   # Address class.
   class Address
     # @return [Array<String>]

@@ -11,33 +11,6 @@ module RelatonBib
   #   IDENTICAL     = 'identical'
   #   NONEQUIVALENT = 'nonequivalent'
   # end
-  class << self
-    def relations_hash_to_bib(ret)
-      return unless ret[:relation]
-      ret[:relation] = array(ret[:relation])
-      ret[:relation]&.each_with_index do |r, i|
-        relation_bibitem_hash_to_bib(ret, r, i)
-        relation_biblocality_hash_to_bib(ret, r, i)
-      end
-    end
-
-    def relation_bibitem_hash_to_bib(ret, r, i)
-      if r[:bibitem] then ret[:relation][i][:bibitem] =
-          BibliographicItem.new(hash_to_bib(r[:bibitem], true))
-      else
-        warn "bibitem missing: #{r}"
-        ret[:relation][i][:bibitem] = nil
-      end
-    end
-
-    def relation_biblocality_hash_to_bib(ret, r, i)
-      ret[:relation][i][:bib_locality] =
-        array(r[:bib_locality])&.map do |bl|
-          BibItemLocality.new(bl[:type], bl[:reference_from],
-                              bl[:reference_to])
-        end
-    end
-  end
 
   # Documett relation
   class DocumentRelation
