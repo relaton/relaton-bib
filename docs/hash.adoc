@@ -91,8 +91,8 @@ abstract:
     script: Latn
     format: text/plain
 # contributors are an array of entity/role pairs, where entity is either person or organization.
-# The role is an array; if there is a more complete description, that is given as the second element 
-# of an array, and is itself an array.
+# The role is an array of type and description; it can be a an array of just string, which are treated
+# as the type.
 # Organisations have attributes name, url, abbreviation, subdivision, contacts, identifiers
 # Persons have attributes name, affiliation, contacts
 # Person names have attributes surname, completename, initials, forename, additions, prefixes.
@@ -112,9 +112,8 @@ contributor:
       abbreviation: ISO
       subdivision: division
     role: 
-      - publisher
-      - 
-        - Publisher role
+      type: publisher
+      description: Publisher role
   - person:
       name:
         completename:
@@ -437,9 +436,8 @@ person::
   abbreviation::: ISO
   subdivision::: division
 role::
-  * publisher
-  * 
-  ** Publisher role
+  type::: publisher
+  description::: Publisher role
 
 ==== Contributor
 person::
