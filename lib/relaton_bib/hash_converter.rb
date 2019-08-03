@@ -136,7 +136,9 @@ module RelatonBib
         ret[:contributor] = array(ret[:contributor])
         ret[:contributor]&.each_with_index do |c, i|
           roles = array(ret[:contributor][i][:role]).map do |r|
-            if r.is_a? Array
+            if r.is_a? Hash
+              { type: r[:type], description: array(r[:description]) }
+            elsif r.is_a? Array
               { type: r[0], description: r.fetch(1) }
             else
               { type: r }

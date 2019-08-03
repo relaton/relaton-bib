@@ -61,10 +61,8 @@ contributor:
       abbreviation: ISO
       subdivision: division
     role:
-      -
-        - publisher
-        -
-          - Publisher role
+      type: publisher
+      description: Publisher role
  
   - person:
       name: 
