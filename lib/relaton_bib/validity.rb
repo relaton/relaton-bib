@@ -1,5 +1,7 @@
 module RelatonBib
   class Validity
+    FORMAT = "%Y-%m-%d %H:%M"
+
     # @return [Time, NilClass]
     attr_reader :begins
 
@@ -20,20 +22,19 @@ module RelatonBib
 
     # @param [Nokogiri::XML::Builder]
     def to_xml(builder)
-      format = "%Y-%m-%d %H:%M"
       builder.validity do
-        builder.validityBegins begins.strftime(format) if begins
-        builder.validityEnds ends.strftime(format) if ends
-        builder.validityRevision revision.strftime(format) if revision
+        builder.validityBegins begins.strftime(FORMAT) if begins
+        builder.validityEnds ends.strftime(FORMAT) if ends
+        builder.validityRevision revision.strftime(FORMAT) if revision
       end
     end
 
     # @return [Hash]
     def to_hash
       hash = {}
-      hash[:begins] = begins.to_s if begins
-      hash[:ends] = ends.to_s if ends
-      hash[:revision] = revision.to_s if revision
+      hash[:begins] = begins.strftime(FORMAT) if begins
+      hash[:ends] = ends.strftime(FORMAT) if ends
+      hash[:revision] = revision.strftime(FORMAT) if revision
       hash
     end
   end
