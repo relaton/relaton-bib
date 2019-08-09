@@ -103,10 +103,19 @@ contributor:
         initial:
           - A.
         surname: Bierman
+        forename:
+          - Forename
+        addition:
+          - Addition
+        prefix:
+          - Prefix
       affiliation:
         - organization:
             name: IETF
             abbreviation: IETF
+          description:
+            - content: Description
+              language: en
       contact:
         - street:
           - Street
@@ -160,10 +169,7 @@ series:
       format: text/plain
     place: Serie's place
     organization: Serie's organization
-    abbreviation:
-      content: ABVR
-      language: en
-      script: Latn
+    abbreviation: ABVR
     from: "2009-02-01"
     to: "2010-12-20"
     number: serie1234

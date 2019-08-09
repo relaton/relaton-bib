@@ -9,7 +9,7 @@ RSpec.describe RelatonBib::BibliographicDate do
     end
 
     it "parse yyyy-mm format date" do
-      expect(subject.on).to eq Time.strptime "2014-11", "%Y-%m"
+      expect(subject.on).to eq Date.strptime "2014-11", "%Y-%m"
     end
 
     it "returns xml string" do

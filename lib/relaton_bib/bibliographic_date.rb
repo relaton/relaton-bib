@@ -12,13 +12,13 @@ module RelatonBib
     # @return [String]
     attr_reader :type
 
-    # @return [Time]
+    # @return [Date]
     attr_reader :from
 
-    # @return [Time]
+    # @return [Date]
     attr_reader :to
 
-    # @return [Time]
+    # @return [Date]
     attr_reader :on
 
     # @param type [String] "published", "accessed", "created", "activated"
@@ -52,6 +52,15 @@ module RelatonBib
     end
     # rubocop:enable Metrics/AbcSize
 
+    # @return [Hash]
+    def to_hash
+      hash = { type: type }
+      hash[:value] = on.to_s if on
+      hash[:from] = from.to_s if from
+      hash[:to] = to.to_s if to
+      hash
+    end
+
     private
 
     # Formats date
@@ -67,16 +76,16 @@ module RelatonBib
     end
 
     # @params date [String] 'yyyy', 'yyyy-mm', 'yyyy-mm-dd
-    # @return [Time]
+    # @return [Date]
     def parse_date(date)
       return unless date
 
       if date =~ /^\d{4}$/
-        Time.strptime date, "%Y"
+        Date.strptime date, "%Y"
       elsif date =~ /^\d{4}-\d{2}$/
-        Time.strptime date, "%Y-%m"
+        Date.strptime date, "%Y-%m"
       elsif date =~ /\d{4}-\d{2}-\d{2}$/
-        Time.strptime date, "%Y-%m-%d"
+        Date.strptime date, "%Y-%m-%d"
       end
     end
   end

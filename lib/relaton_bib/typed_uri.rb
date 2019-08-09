@@ -15,8 +15,14 @@ module RelatonBib
       @content = Addressable::URI.parse content if content
     end
 
+    # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       builder.uri(content.to_s, type: type)
+    end
+
+    # @return [Hash]
+    def to_hash
+      { type: type, content: content.to_s }
     end
   end
 end

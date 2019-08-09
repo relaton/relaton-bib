@@ -51,7 +51,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
                 completename: localized_string("A. Bierman"),
               ),
               affiliation: [RelatonBib::Affilation.new(
-                RelatonBib::Organization.new(
+                organization: RelatonBib::Organization.new(
                   name: "IETF",
                   abbreviation: RelatonBib::LocalizedString.new("IETF"),
                   identifier: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
@@ -80,9 +80,13 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
               name: RelatonBib::FullName.new(
                 initial: [localized_string("A.")],
                 surname: localized_string("Bierman"),
+                forename: [localized_string("Forename")],
+                addition: [localized_string("Addition")],
+                prefix: [localized_string("Prefix")],
               ),
               affiliation: [RelatonBib::Affilation.new(
-                RelatonBib::Organization.new(name: "IETF", abbreviation: "IETF"),
+                organization: RelatonBib::Organization.new(name: "IETF", abbreviation: "IETF"),
+                description: [localized_string("Description")]
               )],
               contact: [
                 RelatonBib::Address.new(
@@ -134,7 +138,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
             ),
             place: "Serie's place",
             organization: "Serie's organization",
-            abbreviation: RelatonBib::LocalizedString.new("ABVR", "en", "Latn"),
+            abbreviation: RelatonBib::LocalizedString.new("ABVR"),
             from: "2009-02-01",
             to: "2010-12-20",
             number: "serie1234",
@@ -203,6 +207,15 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
       expect(b.to_xml).to be_equivalent_to subject.to_xml
     end
 
+    it "conver item to hash" do
+      hash = subject.to_hash
+      file = "spec/examples/hash.yml"
+      File.write file, hash.to_yaml unless File.exist? file
+      h = RelatonBib::HashConverter.hash_to_bib(YAML.load_file("spec/examples/hash.yml"))
+      h[:fetched] = Date.today.to_s
+      b = RelatonBib::BibliographicItem.new(h)
+      expect(hash).to eq b.to_hash
+    end
   end
 
   it "initialize with copyright object" do

@@ -17,18 +17,18 @@ module RelatonBib
 
   # Bibliographic item locality.
   class BibItemLocality
-    # @return [RelatonBib::SpecificLocalityType]
+    # @return [String]
     attr_reader :type
 
-    # @return [RelatonBib::LocalizedString]
+    # @return [String]
     attr_reader :reference_from
 
-    # @return [RelatonBib::LocalizedString]
+    # @return [String, NilClass]
     attr_reader :reference_to
 
     # @param type [String]
     # @param referenceFrom [String]
-    # @param referenceTo [String]
+    # @param referenceTo [String, NilClass]
     def initialize(type, reference_from, reference_to = nil)
       @type           = type
       @reference_from = reference_from
@@ -41,6 +41,13 @@ module RelatonBib
         builder.referenceFrom reference_from # { reference_from.to_xml(builder) }
         builder.referenceTo reference_to if reference_to
       end
+    end
+
+    # @return [Hash]
+    def to_hash
+      hash = { type: type, reference_from: reference_from }
+      hash[:reference_to] = reference_to if reference_to
+      hash
     end
   end
 end

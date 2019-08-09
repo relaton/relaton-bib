@@ -56,6 +56,27 @@ module RelatonBib
         end
       end
     end
+
+    # @return [Hash]
+    def to_hash
+      hash = {}
+      hash[:forename] = forename.map(&:to_hash) if forename&.any?
+      hash[:initial] = initial.map(&:to_hash) if initial&.any?
+      hash[:surname] = surname.to_hash if surname
+      hash[:addition] = addition.map(&:to_hash) if addition&.any?
+      hash[:prefix] = prefix.map(&:to_hash) if prefix&.any?
+      hash[:completename] = completename.to_hash if completename
+      hash
+      # instance_variables.reduce({}) do |hash, var|
+      #   val = instance_variable_get var
+      #   if val || val.is_a?(Array) && val.any?
+      #     key = var.to_s.sub("@", "").to_sym
+      #     hash.merge key => val
+      #   else
+      #     hash
+      #   end
+      # end
+    end
   end
 
   # Person identifier type.
@@ -94,6 +115,11 @@ module RelatonBib
     def to_xml(builder)
       builder.identifier value, type: type
     end
+
+    # @return [Hash]
+    def to_hash
+      { type: type, id: value }
+    end
   end
 
   # Person class.
@@ -109,7 +135,7 @@ module RelatonBib
 
     # @param name [RelatonBib::FullName]
     # @param affiliation [Array<RelatonBib::Affiliation>]
-    # @param contact [Array<RelatonBib::Address, RelatonBib::Phone>]
+    # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
     # @param identifier [Array<RelatonBib::PersonIdentifier>]
     def initialize(name:, affiliation: [], contact: [], identifier: [])
       super(contact: contact)
@@ -126,6 +152,14 @@ module RelatonBib
         identifier.each { |id| id.to_xml builder }
         contact.each { |contact| contact.to_xml builder }
       end
+    end
+
+    # @return [Hash]
+    def to_hash
+      hash = { name: name.to_hash }
+      hash[:affiliation] = affiliation.map(&:to_hash) if affiliation&.any?
+      hash[:identifier] = identifier.map(&:to_hash) if identifier&.any?
+      { person: hash.merge(super) }
     end
   end
 end

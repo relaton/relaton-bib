@@ -1,10 +1,10 @@
 module RelatonBib
   # Copyright association.
   class CopyrightAssociation
-    # @return [Time]
+    # @return [Date]
     attr_reader :from
 
-    # @return [Time]
+    # @return [Date, NilClass]
     attr_reader :to
 
     # @return [RelatonBib::ContributionInfo]
@@ -22,8 +22,8 @@ module RelatonBib
                else owner
                end
 
-      @from  = Time.strptime(from, "%Y") unless from.empty?
-      @to    = Time.strptime(to, "%Y") unless to.to_s.empty?
+      @from  = Date.strptime(from, "%Y") unless from.empty?
+      @to    = Date.strptime(to, "%Y") unless to.to_s.empty?
     end
 
     # @param builder [Nokogiri::XML::Builder]
@@ -33,6 +33,13 @@ module RelatonBib
         builder.to to.year if to
         builder.owner { owner.to_xml builder }
       end
+    end
+
+    # @return [Hash]
+    def to_hash
+      hash = { owner: owner.to_hash[:organization], from: from.to_s }
+      hash[:to] = to.to_s if to
+      hash
     end
   end
 end

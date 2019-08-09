@@ -36,6 +36,15 @@ module RelatonBib
         end
       end
     end
+
+    # @return [Array]
+    def to_hash
+      if description&.any?
+        [type, description.map(&:content)] if type
+      else
+        type if type
+      end
+    end
   end
 
   # Contribution info.
@@ -54,8 +63,16 @@ module RelatonBib
       @role   = role.map { |r| ContributorRole.new(**r) }
     end
 
+    # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       entity.to_xml builder
+    end
+
+    # @return [Hash]
+    def to_hash
+      hash = entity.to_hash
+      hash[:role] = role.map(&:to_hash) if role&.any?
+      hash
     end
   end
 end

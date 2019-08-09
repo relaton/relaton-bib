@@ -43,5 +43,12 @@ module RelatonBib
     def to_xml(builder)
       builder.docidentifier(id, type: type)
     end
+
+    # @return [Hash]
+    def to_hash
+      hash = { id: id }
+      hash[:type] if type
+      hash
+    end
   end
 end

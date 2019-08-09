@@ -30,5 +30,12 @@ module RelatonBib
       builder.parent["format"] = format if format
       super
     end
+
+    # @return [Hash]
+    def to_hash
+      hash = super
+      hash[:format] = format if format
+      hash
+    end
   end
 end

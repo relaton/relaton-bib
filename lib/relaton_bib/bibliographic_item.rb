@@ -32,7 +32,7 @@ module RelatonBib
                inbook incollection inproceedings journal
     ].freeze
 
-    # @return [String]
+    # @return [String, NilClass]
     attr_reader :id
 
     # @return [Array<RelatonBib::TypedTitleString>]
@@ -41,13 +41,13 @@ module RelatonBib
     # @return [Array<RelatonBib::TypedUri>]
     attr_reader :link
 
-    # @return [String]
+    # @return [String, NilClass]
     attr_reader :type
 
     # @return [Array<RelatonBib::DocumentIdentifier>]
     attr_reader :docidentifier
 
-    # @return [String] docnumber
+    # @return [String, NilClass] docnumber
     attr_reader :docnumber
 
     # @return [Array<RelatonBib::BibliographicDate>]
@@ -59,10 +59,10 @@ module RelatonBib
     # @return [String, NillClass]
     attr_reader :edition
 
-    # @return [RelatonBib::BibliongraphicItem::Version]
+    # @return [RelatonBib::BibliongraphicItem::Version, NilClass]
     attr_reader :version
 
-    # @return [Array<RelatonBib::BiblioNote>, NilClass]
+    # @return [Array<RelatonBib::BiblioNote>]
     attr_reader :biblionote
 
     # @return [Array<String>] language Iso639 code
@@ -71,7 +71,7 @@ module RelatonBib
     # @return [Array<String>] script Iso15924 code
     attr_reader :script
 
-    # @return [RelatonBib::FormattedRef]
+    # @return [RelatonBib::FormattedRef, NilClass]
     attr_reader :formattedref
 
     # @!attribute [r] abstract
@@ -80,7 +80,7 @@ module RelatonBib
     # @return [RelatonBib::DocumentStatus, NilClass]
     attr_reader :status
 
-    # @return [RelatonBib::CopyrightAssociation]
+    # @return [RelatonBib::CopyrightAssociation, NilClass]
     attr_reader :copyright
 
     # @return [RelatonBib::DocRelationCollection]
@@ -133,6 +133,11 @@ module RelatonBib
     # @param classification [RelatonBib::Classification, NilClass]
     # @param validity [RelatonBib:Validity, NilClass]
     # @param fetched [Date, NilClass] default nil
+    #
+    # @param copyright [Hash, RelatonBib::CopyrightAssociation, NilClass]
+    # @option copyright [Hash, RelatonBib::ContributionInfo] :owner
+    # @option copyright [String] :form
+    # @option copyright [String, NilClass] :to
     #
     # @param date [Array<Hash>]
     # @option date [String] :type
@@ -263,6 +268,38 @@ module RelatonBib
           render_xml xml, **opts, &block
         end.doc.root.to_xml
       end
+    end
+
+    # @return [Hash]
+    def to_hash
+      hash = {}
+      hash[:id] = id if id
+      hash[:title] = title.map(&:to_hash) if title&.any?
+      hash[:link] = link.map(&:to_hash) if link&.any?
+      hash[:type] = type if type
+      hash[:docid] = docidentifier.map(&:to_hash) if docidentifier&.any?
+      hash[:docnumber] = docnumber if docnumber
+      hash[:date] = date.map(&:to_hash) if date&.any?
+      hash[:contributor] = contributor.map(&:to_hash) if contributor&.any?
+      hash[:edition] = edition if edition
+      hash[:version] = version.to_hash if version
+      hash[:biblionote] = biblionote.map(&:to_hash) if biblionote&.any?
+      hash[:language] = language if language&.any?
+      hash[:script] = script if script&.any?
+      hash[:formattedref] = formattedref.to_hash if formattedref
+      hash[:abstract] = abstract.map(&:to_hash) if abstract&.any?
+      hash[:docstatus] = status.to_hash if status
+      hash[:copyright] = copyright.to_hash if copyright
+      hash[:relation] = relation.map(&:to_hash) if relation&.any?
+      hash[:series] = series.map(&:to_hash) if series&.any?
+      hash[:medium] = medium.to_hash if medium
+      hash[:place] = place if place&.any?
+      hash[:extent] = extent.map(&:to_hash) if extent&.any?
+      hash[:accesslocation] = accesslocation if accesslocation&.any?
+      hash[:classification] = classification.to_hash if classification
+      hash[:validity] = validity.to_hash if validity
+      hash[:fetched] = fetched.to_s if fetched
+      hash
     end
 
     private

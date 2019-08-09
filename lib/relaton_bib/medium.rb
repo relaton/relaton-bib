@@ -20,5 +20,14 @@ module RelatonBib
         builder.scale scale if scale
       end
     end
+
+    # @return [Hash]
+    def to_hash
+      hash = {}
+      hash[:form] = form if form
+      hash[:size] = size if size
+      hash[:scale] = scale if scale
+      hash
+    end
   end
 end

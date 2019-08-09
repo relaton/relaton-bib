@@ -27,5 +27,14 @@ module RelatonBib
         builder.validityRevision revision.strftime(format) if revision
       end
     end
+
+    # @return [Hash]
+    def to_hash
+      hash = {}
+      hash[:begins] = begins.to_s if begins
+      hash[:ends] = ends.to_s if ends
+      hash[:revision] = revision.to_s if revision
+      hash
+    end
   end
 end

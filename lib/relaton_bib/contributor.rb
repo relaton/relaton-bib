@@ -43,6 +43,17 @@ module RelatonBib
         doc.postcode postcode if postcode
       end
     end
+
+    # @return [Hash]
+    def to_hash
+      hash = {}
+      hash[:street] = street if street&.any?
+      hash[:city] = city
+      hash[:state] = state if state
+      hash[:country] = country
+      hash[:postcode] = postcode if postcode
+      hash
+    end
   end
 
   # Contact class.
@@ -63,11 +74,16 @@ module RelatonBib
     def to_xml(doc)
       doc.send type, value
     end
+
+    # @return [Hash]
+    def to_hash
+      { type: type, value: value }
+    end
   end
 
   # Affilation.
   class Affilation
-    # @return [RelatonBib::LocalizedString]
+    # @return [RelatonBib::LocalizedString, NilClass]
     attr_reader :name
 
     # @return [Array<RelatonBib::FormattedString>]
@@ -77,8 +93,10 @@ module RelatonBib
     attr_reader :organization
 
     # @param organization [RelatonBib::Organization]
+    # @param name [RelatonBib::LocalizedString, NilClass]
     # @param description [Array<RelatonBib::FormattedString>]
-    def initialize(organization, description = [])
+    def initialize(organization:, name: nil, description: [])
+      @name = name
       @organization = organization
       @description  = description
     end
@@ -91,6 +109,14 @@ module RelatonBib
         organization.to_xml builder
       end
     end
+
+    # @return [Hash]
+    def to_hash
+      hash = organization.to_hash
+      hash[:name] = name.to_hash if name
+      hash[:description] = description.map(&:to_hash) if description&.any?
+      hash
+    end
   end
 
   # Contributor.
@@ -98,11 +124,11 @@ module RelatonBib
     # @return [URI]
     attr_reader :uri
 
-    # @return [Array<RelatonBib::Address, RelatonBib::Phone>]
+    # @return [Array<RelatonBib::Address, RelatonBib::Contact>]
     attr_reader :contact
 
     # @param url [String]
-    # @param contact [Array<RelatonBib::Address, RelatonBib::Phone>]
+    # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
     def initialize(url: nil, contact: [])
       @uri = URI url if url
       @contact = contact
@@ -117,6 +143,14 @@ module RelatonBib
     # @params builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       contact.each { |contact| contact.to_xml builder }
+    end
+
+    # @return [Hash]
+    def to_hash
+      hash = {}
+      hash[:url] = uri.to_s if uri
+      hash[:contact] = contact.map(&:to_hash) if contact&.any?
+      hash
     end
   end
 end

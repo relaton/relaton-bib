@@ -198,7 +198,9 @@ module RelatonBib
             { content: d })
           end
           Affilation.new(
-            Organization.new(org_hash_to_bib(a[:organization])), a[:description])
+            organization: Organization.new(org_hash_to_bib(a[:organization])),
+            description: a[:description]
+          )
         end
       end
 
@@ -222,6 +224,9 @@ module RelatonBib
         end
       end
 
+      # @param ret [Hash]
+      # @param r [Hash] relation
+      # @param i [Integr] index of relation
       def relation_bibitem_hash_to_bib(ret, r, i)
         if r[:bibitem] then ret[:relation][i][:bibitem] =
             BibliographicItem.new(hash_to_bib(r[:bibitem], true))

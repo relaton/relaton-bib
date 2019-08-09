@@ -34,6 +34,11 @@ module RelatonBib
     def to_xml(builder)
       builder.identifier(value, type: type)
     end
+
+    # @return [Hash]
+    def to_hash
+      { type: type, id: value }
+    end
   end
 
   # Organization.
@@ -41,10 +46,10 @@ module RelatonBib
     # @return [Array<RelatonBib::LocalizedString>]
     attr_reader :name
 
-    # @return [RelatonBib::LocalizedString]
+    # @return [RelatonBib::LocalizedString, NilClass]
     attr_reader :abbreviation
 
-    # @return [RelatonBib::LocalizedString]
+    # @return [RelatonBib::LocalizedString, NilClass]
     attr_reader :subdivision
 
     # @return [Array<RelatonBib::OrgIdentifier>]
@@ -61,7 +66,7 @@ module RelatonBib
     # @param subdivision [RelatoBib::LocalizedStrig, String]
     # @param url [String]
     # @param identifier [Array<RelatonBib::OrgIdentifier>]
-    # @param contact [Array<RelatonBib::Address, RelatonBib::Phone>]
+    # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
     def initialize(**args)
       raise ArgumentError, "missing keyword: name" unless args[:name]
 
@@ -100,6 +105,15 @@ module RelatonBib
         identifier.each { |identifier| identifier.to_xml builder }
         super
       end
+    end
+
+    # @return [Hash]
+    def to_hash
+      hash = { name: name.map(&:to_hash) }
+      hash[:abbreviation] = abbreviation.to_hash if abbreviation
+      hash[:identifier] = identifier.map(&:to_hash) if identifier&.any?
+      hash[:subdivision] = subdivision.to_hash if subdivision
+      { organization: hash.merge(super) }
     end
   end
 end

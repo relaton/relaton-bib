@@ -47,5 +47,12 @@ module RelatonBib
         end
       end
     end
+
+    # @return [Hash]
+    def to_hash
+      hash = { type: type, bibitem: bibitem.to_hash }
+      hash[:bib_locality] = bib_locality.map(&:to_hash) if bib_locality&.any?
+      hash
+    end
   end
 end

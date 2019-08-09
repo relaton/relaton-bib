@@ -18,5 +18,12 @@ module RelatonBib
       xml = builder.classification value
       xml[:type] = type if type
     end
+
+    # @return [Hash]
+    def to_hash
+      hash = { value: value }
+      hash[:type] = type if type
+      hash
+    end
   end
 end

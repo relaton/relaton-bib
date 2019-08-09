@@ -16,10 +16,8 @@ module RelatonBib
     # @param language [String] language code Iso639
     # @param script [String] script code Iso15924
     def initialize(content, language = nil, script = nil)
-      @language = []
-      @language << language if language
-      @script = []
-      @script << script if script
+      @language = language.is_a?(String) ? [language] : language
+      @script = script.is_a?(String) ? [script] : script
       @content = content
     end
 
@@ -37,9 +35,17 @@ module RelatonBib
     def to_xml(builder)
       return unless content
 
-      builder.parent["language"] = language.join(",") if language.any?
-      builder.parent["script"]   = script.join(",") if script.any?
+      builder.parent["language"] = language.join(",") if language&.any?
+      builder.parent["script"]   = script.join(",") if script&.any?
       builder.text content
+    end
+
+    # @return [Hash]
+    def to_hash
+      hash = { content: content }
+      hash[:language] = language if language&.any?
+      hash[:script] = script if script&.any?
+      hash
     end
   end
 end

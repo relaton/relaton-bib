@@ -42,5 +42,12 @@ module RelatonBib
       builder.parent[:type] = type if type
       title.to_xml builder
     end
+
+    # @return [Hash]
+    def to_hash
+      hash = {}
+      hash[:type] = type if type
+      hash.merge title.to_hash
+    end
   end
 end

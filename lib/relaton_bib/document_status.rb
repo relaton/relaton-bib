@@ -32,5 +32,13 @@ module RelatonBib
         builder.iteration iteration unless iteration.to_s.empty?
       end
     end
+
+    # @return [Hash]
+    def to_hash
+      hash = { stage: stage }
+      hash[:substage] = substage if substage
+      hash[:iteration] = iteration if iteration
+      hash
+    end
   end
 end
