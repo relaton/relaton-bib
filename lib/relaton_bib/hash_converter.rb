@@ -217,6 +217,7 @@ module RelatonBib
 
       def relations_hash_to_bib(ret)
         return unless ret[:relation]
+
         ret[:relation] = array(ret[:relation])
         ret[:relation]&.each_with_index do |r, i|
           relation_bibitem_hash_to_bib(ret, r, i)
@@ -228,12 +229,18 @@ module RelatonBib
       # @param r [Hash] relation
       # @param i [Integr] index of relation
       def relation_bibitem_hash_to_bib(ret, r, i)
-        if r[:bibitem] then ret[:relation][i][:bibitem] =
-            BibliographicItem.new(hash_to_bib(r[:bibitem], true))
+        if r[:bibitem]
+          ret[:relation][i][:bibitem] = bib_item(hash_to_bib(r[:bibitem], true))
         else
           warn "bibitem missing: #{r}"
           ret[:relation][i][:bibitem] = nil
         end
+      end
+
+      # @param item [Hash]
+      # @retirn [RelatonBib::BibliographicItem]
+      def bib_item(item)
+        BibliographicItem.new(item)
       end
 
       def relation_biblocality_hash_to_bib(ret, r, i)
@@ -249,7 +256,7 @@ module RelatonBib
           s[:formattedref] and s[:formattedref] = formattedref(s[:formattedref])
           if s[:title]
             s[:title] = { content: s[:title] } unless s.is_a?(Hash)
-            s[:title] = TypedTitleString.new(s[:title])
+            s[:title] = typed_title_strig(s[:title])
           end
           s[:abbreviation] and
             s[:abbreviation] = localizedstring(s[:abbreviation])
@@ -257,15 +264,21 @@ module RelatonBib
         end
       end
 
+      # @param title [Hash]
+      # @return [RelatonBib::TypedTitleString]
+      def typed_title_strig(title)
+        TypedTitleString.new title
+      end
+
       def medium_hash_to_bib(ret)
         ret[:medium] and ret[:medium] = Medium.new(ret[:medium])
       end
 
       def classification_hash_to_bib(ret)
-        #ret[:classification] = [ret[:classification]] unless ret[:classification].is_a?(Array)
-        #ret[:classification]&.each_with_index do |c, i|
-        #ret[:classification][i] = RelatonBib::Classification.new(c)
-        #end
+        # ret[:classification] = [ret[:classification]] unless ret[:classification].is_a?(Array)
+        # ret[:classification]&.each_with_index do |c, i|
+        # ret[:classification][i] = RelatonBib::Classification.new(c)
+        # end
         ret[:classification] and
           ret[:classification] = Classification.new(ret[:classification])
       end
