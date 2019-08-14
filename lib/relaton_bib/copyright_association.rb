@@ -22,14 +22,14 @@ module RelatonBib
                else owner
                end
 
-      @from  = Date.strptime(from, "%Y") unless from.empty?
+      @from  = Date.strptime(from, "%Y") if from =~ /\d{4}/
       @to    = Date.strptime(to, "%Y") unless to.to_s.empty?
     end
 
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       builder.copyright do
-        builder.from from.year
+        builder.from from ? from.year : "copyright year unknown"
         builder.to to.year if to
         builder.owner { owner.to_xml builder }
       end
