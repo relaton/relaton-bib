@@ -46,8 +46,8 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      hash = { id: id }
-      hash[:type] if type
+      hash = { "id" => id }
+      hash["type"] = type if type
       hash
     end
   end

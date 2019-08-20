@@ -9,8 +9,8 @@ title:
 type: standard
 
 docid:
-  - id: TC211
-    type: ISO
+  id: TC211
+  type: ISO
 
 docnumber: "123456"
 edition: "1"
@@ -19,17 +19,15 @@ language:
   - en
   - fr
 
-script:
-  - Latn
+script: Latn
 
 version:
   revision_date: "2019-04-01"
-  draft:
-    - draft
+  draft: draft
 
 biblionote:
-  - content: note
-    type: bibnote
+  content: note
+  type: bibnote
 
 docstatus:
   stage: stage
@@ -74,8 +72,8 @@ contributor:
             name: IETF
             abbreviation: IETF
             identifier:
-              - type: uri
-                id: www.ietf.org
+              type: uri
+              id: www.ietf.org
       contact:
         - street:
           - Street
@@ -85,37 +83,31 @@ contributor:
           state: State
         - type: phone
           value: "223322"
-    role:
-      - author
+    role: author
  
   - organization:
       name: IETF
       abbreviation: IETF
       identifier:
-        - type: uri
-          id: www.ietf.org
-    role:
-      - publisher
+        type: uri
+        id: www.ietf.org
+    role: publisher
  
   - person:
       name:
         language: en
-        initial:
-          - A.
+        initial: A.
         surname: Bierman
-        forename:
-          - Forename
-        addition:
-          - Addition
-        prefix:
-          - Prefix
+        forename: Forename
+        addition: Addition
+        prefix: Prefix
       affiliation:
-        - organization:
-            name: IETF
-            abbreviation: IETF
-          description:
-            - content: Description
-              language: en
+        organization:
+          name: IETF
+          abbreviation: IETF
+        description:
+          content: Description
+          language: en
       contact:
         - street:
           - Street
@@ -126,8 +118,8 @@ contributor:
         - type: phone
           value: "223322"
       identifier:
-        - type: uri
-          id: www.person.com
+        type: uri
+        id: www.person.com
     role:
       - author
 
@@ -152,8 +144,8 @@ relation:
     bibitem:
       formattedref: ISO 19115:2003
     bib_locality:
-      - type: updates
-        reference_from: Reference form
+      type: updates
+      reference_from: Reference form
   - type: updates
     bibitem:
       type: standard
@@ -185,13 +177,12 @@ medium:
   size: medium size
   scale: medium scale
 
-place:
-  - bib place
+place: bib place
 
 extent:
-  - type: section
-    reference_from: Reference from
-    reference_to: Reference to
+  type: section
+  reference_from: Reference from
+  reference_to: Reference to
 
 accesslocation:
   - accesslocation1

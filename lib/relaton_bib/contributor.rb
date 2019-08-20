@@ -47,11 +47,11 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       hash = {}
-      hash[:street] = street if street&.any?
-      hash[:city] = city
-      hash[:state] = state if state
-      hash[:country] = country
-      hash[:postcode] = postcode if postcode
+      hash["street"] = street if street&.any?
+      hash["city"] = city
+      hash["state"] = state if state
+      hash["country"] = country
+      hash["postcode"] = postcode if postcode
       hash
     end
   end
@@ -77,12 +77,14 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      { type: type, value: value }
+      { "type" => type, "value" => value }
     end
   end
 
   # Affilation.
   class Affilation
+    include RelatonBib
+
     # @return [RelatonBib::LocalizedString, NilClass]
     attr_reader :name
 
@@ -113,14 +115,16 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       hash = organization.to_hash
-      hash[:name] = name.to_hash if name
-      hash[:description] = description.map(&:to_hash) if description&.any?
+      hash["name"] = name.to_hash if name
+      hash["description"] = single_element_array(description) if description&.any?
       hash
     end
   end
 
   # Contributor.
   class Contributor
+    include RelatonBib
+
     # @return [URI]
     attr_reader :uri
 
@@ -148,8 +152,8 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       hash = {}
-      hash[:url] = uri.to_s if uri
-      hash[:contact] = contact.map(&:to_hash) if contact&.any?
+      hash["url"] = uri.to_s if uri
+      hash["contact"] = single_element_array(contact) if contact&.any?
       hash
     end
   end

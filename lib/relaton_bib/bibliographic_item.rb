@@ -26,11 +26,12 @@ require "relaton_bib/hash_converter"
 module RelatonBib
   # Bibliographic item
   class BibliographicItem
+    include RelatonBib
+
     TYPES = %W[article book booklet conference manual proceedings presentation
                thesis techreport standard unpublished map electronic\sresource
                audiovisual film video broadcast graphic_work music patent
-               inbook incollection inproceedings journal
-    ].freeze
+               inbook incollection inproceedings journal].freeze
 
     # @return [String, NilClass]
     attr_reader :id
@@ -273,32 +274,32 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       hash = {}
-      hash[:id] = id if id
-      hash[:title] = title.map(&:to_hash) if title&.any?
-      hash[:link] = link.map(&:to_hash) if link&.any?
-      hash[:type] = type if type
-      hash[:docid] = docidentifier.map(&:to_hash) if docidentifier&.any?
-      hash[:docnumber] = docnumber if docnumber
-      hash[:date] = date.map(&:to_hash) if date&.any?
-      hash[:contributor] = contributor.map(&:to_hash) if contributor&.any?
-      hash[:edition] = edition if edition
-      hash[:version] = version.to_hash if version
-      hash[:biblionote] = biblionote.map(&:to_hash) if biblionote&.any?
-      hash[:language] = language if language&.any?
-      hash[:script] = script if script&.any?
-      hash[:formattedref] = formattedref.to_hash if formattedref
-      hash[:abstract] = abstract.map(&:to_hash) if abstract&.any?
-      hash[:docstatus] = status.to_hash if status
-      hash[:copyright] = copyright.to_hash if copyright
-      hash[:relation] = relation.map(&:to_hash) if relation&.any?
-      hash[:series] = series.map(&:to_hash) if series&.any?
-      hash[:medium] = medium.to_hash if medium
-      hash[:place] = place if place&.any?
-      hash[:extent] = extent.map(&:to_hash) if extent&.any?
-      hash[:accesslocation] = accesslocation if accesslocation&.any?
-      hash[:classification] = classification.to_hash if classification
-      hash[:validity] = validity.to_hash if validity
-      hash[:fetched] = fetched.to_s if fetched
+      hash["id"] = id if id
+      hash["title"] = single_element_array(title) if title&.any?
+      hash["link"] = single_element_array(link) if link&.any?
+      hash["type"] = type if type
+      hash["docid"] = single_element_array(docidentifier) if docidentifier&.any?
+      hash["docnumber"] = docnumber if docnumber
+      hash["date"] = single_element_array(date) if date&.any?
+      hash["contributor"] = single_element_array(contributor) if contributor&.any?
+      hash["edition"] = edition if edition
+      hash["version"] = version.to_hash if version
+      hash["biblionote"] = single_element_array(biblionote) if biblionote&.any?
+      hash["language"] = single_element_array(language) if language&.any?
+      hash["script"] = single_element_array(script) if script&.any?
+      hash["formattedref"] = formattedref.to_hash if formattedref
+      hash["abstract"] = single_element_array(abstract) if abstract&.any?
+      hash["docstatus"] = status.to_hash if status
+      hash["copyright"] = copyright.to_hash if copyright
+      hash["relation"] = single_element_array(relation) if relation&.any?
+      hash["series"] = single_element_array(series) if series&.any?
+      hash["medium"] = medium.to_hash if medium
+      hash["place"] = single_element_array(place) if place&.any?
+      hash["extent"] = single_element_array(extent) if extent&.any?
+      hash["accesslocation"] = single_element_array(accesslocation) if accesslocation&.any?
+      hash["classification"] = classification.to_hash if classification
+      hash["validity"] = validity.to_hash if validity
+      hash["fetched"] = fetched.to_s if fetched
       hash
     end
 

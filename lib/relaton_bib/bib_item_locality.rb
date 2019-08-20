@@ -45,8 +45,8 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      hash = { type: type, reference_from: reference_from }
-      hash[:reference_to] = reference_to if reference_to
+      hash = { "type" => type, "reference_from" => reference_from }
+      hash["reference_to"] = reference_to if reference_to
       hash
     end
   end

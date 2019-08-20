@@ -34,7 +34,10 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       hash = super
-      hash[:format] = format if format
+      return hash unless format
+
+      hash = { "content" => hash } if hash.is_a? String
+      hash["format"] = format if format
       hash
     end
   end

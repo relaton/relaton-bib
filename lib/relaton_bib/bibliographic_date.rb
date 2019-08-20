@@ -54,10 +54,10 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      hash = { type: type }
-      hash[:value] = on.to_s if on
-      hash[:from] = from.to_s if from
-      hash[:to] = to.to_s if to
+      hash = { "type" => type }
+      hash["value"] = on.to_s if on
+      hash["from"] = from.to_s if from
+      hash["to"] = to.to_s if to
       hash
     end
 

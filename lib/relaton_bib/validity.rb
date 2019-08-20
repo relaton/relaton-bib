@@ -32,9 +32,9 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       hash = {}
-      hash[:begins] = begins.strftime(FORMAT) if begins
-      hash[:ends] = ends.strftime(FORMAT) if ends
-      hash[:revision] = revision.strftime(FORMAT) if revision
+      hash["begins"] = begins.strftime(FORMAT) if begins
+      hash["ends"] = ends.strftime(FORMAT) if ends
+      hash["revision"] = revision.strftime(FORMAT) if revision
       hash
     end
   end

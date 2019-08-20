@@ -97,16 +97,16 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       hash = {}
-      hash[:type] = type if type
-      hash[:formattedref] = formattedref.to_hash if formattedref
-      hash[:title] = title.to_hash if title
-      hash[:place] = place if place
-      hash[:organization] = organization if organization
-      hash[:abbreviation] = abbreviation.to_hash if abbreviation
-      hash[:from] = from if from
-      hash[:to] = to if to
-      hash[:number] = number if number
-      hash[:partnumber] = partnumber if partnumber
+      hash["type"] = type if type
+      hash["formattedref"] = formattedref.to_hash if formattedref
+      hash["title"] = title.to_hash if title
+      hash["place"] = place if place
+      hash["organization"] = organization if organization
+      hash["abbreviation"] = abbreviation.to_hash if abbreviation
+      hash["from"] = from if from
+      hash["to"] = to if to
+      hash["number"] = number if number
+      hash["partnumber"] = partnumber if partnumber
       hash
     end
   end

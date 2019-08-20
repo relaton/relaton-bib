@@ -4,17 +4,17 @@ require "relaton_bib/person"
 
 # RelatonBib module
 module RelatonBib
-
   # Contributor's role.
   class ContributorRole
+    include RelatonBib
+
     TYPES = %w[author performer publisher editor adapter translator
-               distributor
-    ].freeze
+               distributor].freeze
 
     # @return [Array<RelatonBib::FormattedString>]
     attr_reader :description
 
-    # @return [ContributorRoleType]
+    # @return [Strig]
     attr_reader :type
 
     # @param type [String] allowed types "author", "editor",
@@ -29,6 +29,7 @@ module RelatonBib
       @description = args.fetch(:description, []).map { |d| FormattedString.new content: d, format: nil }
     end
 
+    # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       builder.role(type: type) do
         description.each do |d|
@@ -37,18 +38,22 @@ module RelatonBib
       end
     end
 
-    # @return [Array]
+    # @return [Hash, String]
     def to_hash
       if description&.any?
-        [type, description.map(&:content)] if type
-      else
-        type if type
+        hash = { "description" => single_element_array(description) }
+        hash["type"] = type if type
+        hash
+      elsif type
+        type
       end
     end
   end
 
   # Contribution info.
   class ContributionInfo
+    include RelatonBib
+
     # @return [Array<RelatonBib::ContributorRole>]
     attr_reader :role
 
@@ -71,7 +76,7 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       hash = entity.to_hash
-      hash[:role] = role.map(&:to_hash) if role&.any?
+      hash["role"] = single_element_array(role) if role&.any?
       hash
     end
   end

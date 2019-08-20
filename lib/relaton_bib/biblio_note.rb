@@ -23,7 +23,10 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       hash = super
-      hash[:type] = type if type
+      return hash unless type
+
+      hash = { "content" => hash } if hash.is_a? String
+      hash["type"] = type
       hash
     end
   end

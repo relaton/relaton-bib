@@ -5,6 +5,8 @@ require "relaton_bib/contributor"
 module RelatonBib
   # Person's full name
   class FullName
+    include RelatonBib
+
     # @return [Array<RelatonBib::LocalizedString>]
     attr_accessor :forename
 
@@ -60,22 +62,13 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       hash = {}
-      hash[:forename] = forename.map(&:to_hash) if forename&.any?
-      hash[:initial] = initial.map(&:to_hash) if initial&.any?
-      hash[:surname] = surname.to_hash if surname
-      hash[:addition] = addition.map(&:to_hash) if addition&.any?
-      hash[:prefix] = prefix.map(&:to_hash) if prefix&.any?
-      hash[:completename] = completename.to_hash if completename
+      hash["forename"] = single_element_array(forename) if forename&.any?
+      hash["initial"] = single_element_array(initial) if initial&.any?
+      hash["surname"] = surname.to_hash if surname
+      hash["addition"] = single_element_array(addition) if addition&.any?
+      hash["prefix"] = single_element_array(prefix) if prefix&.any?
+      hash["completename"] = completename.to_hash if completename
       hash
-      # instance_variables.reduce({}) do |hash, var|
-      #   val = instance_variable_get var
-      #   if val || val.is_a?(Array) && val.any?
-      #     key = var.to_s.sub("@", "").to_sym
-      #     hash.merge key => val
-      #   else
-      #     hash
-      #   end
-      # end
     end
   end
 
@@ -118,7 +111,7 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      { type: type, id: value }
+      { "type" => type, "id" => value }
     end
   end
 
@@ -156,10 +149,10 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      hash = { name: name.to_hash }
-      hash[:affiliation] = affiliation.map(&:to_hash) if affiliation&.any?
-      hash[:identifier] = identifier.map(&:to_hash) if identifier&.any?
-      { person: hash.merge(super) }
+      hash = { "name" => name.to_hash }
+      hash["affiliation"] = single_element_array(affiliation) if affiliation&.any?
+      hash["identifier"] = single_element_array(identifier) if identifier&.any?
+      { "person" => hash.merge(super) }
     end
   end
 end

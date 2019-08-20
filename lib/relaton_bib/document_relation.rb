@@ -14,6 +14,8 @@ module RelatonBib
 
   # Documett relation
   class DocumentRelation
+    include RelatonBib
+
     # @return [String]
     attr_reader :type
 
@@ -50,8 +52,8 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      hash = { type: type, bibitem: bibitem.to_hash }
-      hash[:bib_locality] = bib_locality.map(&:to_hash) if bib_locality&.any?
+      hash = { "type" => type, "bibitem" => bibitem.to_hash }
+      hash["bib_locality"] = single_element_array(bib_locality) if bib_locality&.any?
       hash
     end
   end

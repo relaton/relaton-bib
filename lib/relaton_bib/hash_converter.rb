@@ -133,6 +133,7 @@ module RelatonBib
 
       def contributors_hash_to_bib(ret)
         return unless ret[:contributor]
+
         ret[:contributor] = array(ret[:contributor])
         ret[:contributor]&.each_with_index do |c, i|
           roles = array(ret[:contributor][i][:role]).map do |r|
@@ -252,15 +253,14 @@ module RelatonBib
       end
 
       def series_hash_to_bib(ret)
-        array(ret[:series])&.each_with_index do |s, i|
-          s[:formattedref] and s[:formattedref] = formattedref(s[:formattedref])
+        ret[:series] = array(ret[:series])&.map do |s|
+          s[:formattedref] && s[:formattedref] = formattedref(s[:formattedref])
           if s[:title]
             s[:title] = { content: s[:title] } unless s.is_a?(Hash)
             s[:title] = typed_title_strig(s[:title])
           end
-          s[:abbreviation] and
-            s[:abbreviation] = localizedstring(s[:abbreviation])
-          ret[:series][i] = Series.new(s)
+          s[:abbreviation] && s[:abbreviation] = localizedstring(s[:abbreviation])
+          Series.new(s)
         end
       end
 

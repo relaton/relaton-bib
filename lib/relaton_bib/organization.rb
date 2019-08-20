@@ -37,7 +37,7 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      { type: type, id: value }
+      { "type" => type, "id" => value }
     end
   end
 
@@ -55,15 +55,9 @@ module RelatonBib
     # @return [Array<RelatonBib::OrgIdentifier>]
     attr_reader :identifier
 
-    def hash2locstr(name)
-      name.is_a?(Hash) ?
-        LocalizedString.new(name[:content], name[:language], name[:script]) : 
-        LocalizedString.new(name)
-    end
-
     # @param name [String, Hash, Array<String, Hash>]
-    # @param abbreviation [RelatoBib::LocalizedStrig, String]
-    # @param subdivision [RelatoBib::LocalizedStrig, String]
+    # @param abbreviation [RelatoBib::LocalizedString, String]
+    # @param subdivision [RelatoBib::LocalizedString, String]
     # @param url [String]
     # @param identifier [Array<RelatonBib::OrgIdentifier>]
     # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
@@ -73,24 +67,14 @@ module RelatonBib
       super(url: args[:url], contact: args.fetch(:contact, []))
 
       @name = if args[:name].is_a?(Array)
-                args[:name].map { |n| hash2locstr(n) }
+                args[:name].map { |n| localized_string(n) }
               else
-                [hash2locstr(args[:name])]
+                [localized_string(args[:name])]
               end
 
-      @abbreviation = if args[:abbreviation].is_a?(String)
-                        LocalizedString.new(args[:abbreviation])
-                      else
-                        args[:abbreviation]
-                      end
-
-      @subdivision  = if args[:subdivision].is_a?(String)
-                        LocalizedString.new(args[:subdivision])
-                      else
-                        args[:subdivision]
-                      end
-
-      @identifier  = args.fetch(:identifier, [])
+      @abbreviation = localized_string args[:abbreviation]
+      @subdivision  = localized_string args[:subdivision]
+      @identifier   = args.fetch(:identifier, [])
     end
 
     # @param builder [Nokogiri::XML::Builder]
@@ -109,11 +93,23 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      hash = { name: name.map(&:to_hash) }
-      hash[:abbreviation] = abbreviation.to_hash if abbreviation
-      hash[:identifier] = identifier.map(&:to_hash) if identifier&.any?
-      hash[:subdivision] = subdivision.to_hash if subdivision
-      { organization: hash.merge(super) }
+      hash = { "name" => single_element_array(name) }
+      hash["abbreviation"] = abbreviation.to_hash if abbreviation
+      hash["identifier"] = single_element_array(identifier) if identifier&.any?
+      hash["subdivision"] = subdivision.to_hash if subdivision
+      { "organization" => hash.merge(super) }
+    end
+
+    private
+
+    # @param arg [String, Hash, RelatoBib::LocalizedString]
+    # @return [RelatoBib::LocalizedString]
+    def localized_string(arg)
+      if arg.is_a?(String) then LocalizedString.new(arg)
+      elsif arg.is_a?(Hash)
+        LocalizedString.new(arg[:content], arg[:language], arg[:script])
+      elsif arg.is_a? LocalizedString then arg
+      end
     end
   end
 end

@@ -3,6 +3,8 @@
 module RelatonBib
   # Localized string.
   class LocalizedString
+    include RelatonBib
+
     # @return [Array<String>] language Iso639 code
     attr_reader :language
 
@@ -42,9 +44,11 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      hash = { content: content }
-      hash[:language] = language if language&.any?
-      hash[:script] = script if script&.any?
+      return content unless language || script
+
+      hash = { "content" => content }
+      hash["language"] = single_element_array(language) if language&.any?
+      hash["script"] = single_element_array(script) if script&.any?
       hash
     end
   end

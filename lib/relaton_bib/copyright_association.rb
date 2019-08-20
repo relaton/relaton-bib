@@ -22,8 +22,8 @@ module RelatonBib
                else owner
                end
 
-      @from  = Date.strptime(from, "%Y") if from =~ /\d{4}/
-      @to    = Date.strptime(to, "%Y") unless to.to_s.empty?
+      @from  = Date.strptime(from.to_s, "%Y") if from.to_s =~ /\d{4}/
+      @to    = Date.strptime(to.to_s, "%Y") unless to.to_s.empty?
     end
 
     # @param builder [Nokogiri::XML::Builder]
@@ -37,8 +37,8 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      hash = { owner: owner.to_hash[:organization], from: from.to_s }
-      hash[:to] = to.to_s if to
+      hash = { "owner" => owner.to_hash["organization"], "from" => from.year.to_s }
+      hash["to"] = to.year.to_s if to
       hash
     end
   end

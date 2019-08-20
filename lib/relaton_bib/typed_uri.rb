@@ -22,7 +22,7 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      { type: type, content: content.to_s }
+      { "type" => type, "content" => content.to_s }
     end
   end
 end
