@@ -29,7 +29,7 @@ module RelatonBib
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       builder.copyright do
-        builder.from from ? from.year : "copyright year unknown"
+        builder.from from ? from.year : "unknown"
         builder.to to.year if to
         builder.owner { owner.to_xml builder }
       end

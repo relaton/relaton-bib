@@ -3,7 +3,7 @@ PATH
   specs:
     relaton-bib (0.3.5)
       addressable
-      nokogiri (~> 1.10)
+      nokogiri
 
 GEM
   remote: https://rubygems.org/
