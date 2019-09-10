@@ -210,7 +210,7 @@ module RelatonBib
       @language       = args.fetch :language, []
       @script         = args.fetch :script, []
       @status         = args[:docstatus]
-      @relation      = DocRelationCollection.new(args[:relation] || [])
+      @relation       = DocRelationCollection.new(args[:relation] || [])
       @link           = args.fetch(:link, []).map { |s| s.is_a?(Hash) ? TypedUri.new(s) : s }
       @series         = args.fetch :series, []
       @medium         = args[:medium]

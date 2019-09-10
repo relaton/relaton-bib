@@ -22,18 +22,18 @@ module RelatonBib
     attr_reader :on
 
     # @param type [String] "published", "accessed", "created", "activated"
+    # @param on [String]
     # @param from [String]
     # @param to [String]
     def initialize(type:, on: nil, from: nil, to: nil)
       raise ArgumentError, "expected :on or :from argument" unless on || from
 
-      TYPES.include?(type) or
-        raise ArgumentError, %{Type "#{type}" is invalid.} unless
+      raise ArgumentError, "invalid type: #{type}" unless TYPES.include? type
 
       @type = type
-      @on   = parse_date on
-      @from = parse_date from
-      @to   = parse_date to
+      @on   = RelatonBib.parse_date on
+      @from = RelatonBib.parse_date from
+      @to   = RelatonBib.parse_date to
     end
 
     # rubocop:disable Metrics/AbcSize
@@ -72,20 +72,6 @@ module RelatonBib
       when :short then date.strftime "%Y-%m"
       when :full then date.strftime "%Y-%m-%d"
       else date.year
-      end
-    end
-
-    # @params date [String] 'yyyy', 'yyyy-mm', 'yyyy-mm-dd
-    # @return [Date]
-    def parse_date(date)
-      return unless date
-
-      if date =~ /^\d{4}$/
-        Date.strptime date, "%Y"
-      elsif date =~ /^\d{4}-\d{2}$/
-        Date.strptime date, "%Y-%m"
-      elsif date =~ /\d{4}-\d{2}-\d{2}$/
-        Date.strptime date, "%Y-%m-%d"
       end
     end
   end

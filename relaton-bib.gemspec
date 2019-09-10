@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "RelatonBib: Ruby XMLDOC impementation."
   spec.description   = "RelatonBib: Ruby XMLDOC impementation."
-  spec.homepage      = "https://github.com/metanorma/relaton-item"
+  spec.homepage      = "https://github.com/relaton/relaton-item"
   spec.license       = "BSD-2-Clause"
 
   # Specify which files should be added to the gem when it is released.
