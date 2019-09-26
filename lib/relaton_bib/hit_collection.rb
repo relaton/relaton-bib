@@ -9,7 +9,7 @@ module RelatonBib
     # @return [String]
     attr_reader :year
 
-    # @return [Iecbib::HitCollection]
+    # @return [RelatonIso::HitCollection]
     def fetch
       workers = WorkersPool.new 4
       workers.worker(&:fetch)

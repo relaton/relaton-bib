@@ -35,6 +35,7 @@ module RelatonBib
 
       def extent_hash_to_bib(ret)
         return unless ret[:extent]
+
         ret[:extent] = array(ret[:extent])
         ret[:extent]&.each_with_index do |e, i|
           ret[:extent][i] = BibItemLocality.new(e[:type], e[:reference_from],
@@ -44,45 +45,57 @@ module RelatonBib
 
       def title_hash_to_bib(ret)
         return unless ret[:title]
+
         ret[:title] = array(ret[:title])
         ret[:title] = ret[:title].map do |t|
-          t.is_a?(Hash) ? t : { content: t, language: "en", script: "Latn", 
-                                format: "text/plain", type: "main" }
+          if t.is_a?(Hash) then t
+          else
+            { content: t, language: "en", script: "Latn", format: "text/plain", type: "main" }
+          end
         end
       end
 
       def language_hash_to_bib(ret)
         return unless ret[:language]
+
         ret[:language] = array(ret[:language])
       end
 
       def script_hash_to_bib(ret)
         return unless ret[:script]
+
         ret[:script] = array(ret[:script])
       end
 
       def abstract_hash_to_bib(ret)
         return unless ret[:abstract]
-        ret[:abstract] = array(ret[:abstract])
+
+        ret[:abstract] = array(ret[:abstract]).map do |a|
+          a.is_a?(String) ? FormattedString.new(content: a) : a
+        end
       end
 
       def link_hash_to_bib(ret)
         return unless ret[:link]
+
         ret[:link] = array(ret[:link])
       end
 
       def place_hash_to_bib(ret)
         return unless ret[:place]
+
         ret[:place] = array(ret[:place])
       end
 
       def accesslocation_hash_to_bib(ret)
         return unless ret[:accesslocation]
+
         ret[:accesslocation] = array(ret[:accesslocation])
       end
 
       def dates_hash_to_bib(ret)
         return unless ret[:date]
+
         ret[:date] = array(ret[:date])
         ret[:date].each_with_index do |d, i|
           # value is synonym of on: it is reserved word in YAML
@@ -95,6 +108,7 @@ module RelatonBib
 
       def docid_hash_to_bib(ret)
         return unless ret[:docid]
+
         ret[:docid] = array(ret[:docid])
         ret[:docid]&.each_with_index do |id, i|
           ret[:docid][i] = DocumentIdentifier.new(id: id[:id], type: id[:type])
@@ -103,32 +117,35 @@ module RelatonBib
 
       def version_hash_to_bib(ret)
         return unless ret[:version]
+
         ret[:version][:draft] = array(ret[:version][:draft])
-        ret[:version] and ret[:version] = BibliographicItem::Version.new(
-            ret[:version][:revision_date], ret[:version][:draft])
+        ret[:version] && ret[:version] = BibliographicItem::Version.new(
+          ret[:version][:revision_date], ret[:version][:draft]
+        )
       end
 
       def biblionote_hash_to_bib(ret)
         return unless ret[:biblionote]
+
         ret[:biblionote] = array(ret[:biblionote])
         (ret[:biblionote])&.each_with_index do |n, i|
-          ret[:biblionote][i] =
-            BiblioNote.new(content: n[:content], type: n[:type], 
-                          language: n[:language], 
-                          script: n[:script], format: n[:format])
+          ret[:biblionote][i] = BiblioNote.new(
+            content: n[:content], type: n[:type], language: n[:language],
+            script: n[:script], format: n[:format]
+          )
         end
       end
 
       def formattedref_hash_to_bib(ret)
-        ret[:formattedref] and ret[:formattedref] =
-          formattedref(ret[:formattedref])
+        ret[:formattedref] && ret[:formattedref] = formattedref(ret[:formattedref])
       end
 
       def docstatus_hash_to_bib(ret)
-        ret[:docstatus] and ret[:docstatus] =
-          DocumentStatus.new(stage: ret[:docstatus][:stage],
-                            substage: ret[:docstatus][:substage],
-                            iteration: ret[:docstatus][:iteration])
+        ret[:docstatus] && ret[:docstatus] = DocumentStatus.new(
+          stage: ret[:docstatus][:stage],
+          substage: ret[:docstatus][:substage],
+          iteration: ret[:docstatus][:iteration],
+        )
       end
 
       def contributors_hash_to_bib(ret)
@@ -146,73 +163,83 @@ module RelatonBib
             end
           end
           ret[:contributor][i][:role] = roles
-          ret[:contributor][i][:entity] = c[:person] ?
-            person_hash_to_bib(c[:person]) : org_hash_to_bib(c[:organization])
+          ret[:contributor][i][:entity] = if c[:person]
+                                            person_hash_to_bib(c[:person])
+                                          else
+                                            org_hash_to_bib(c[:organization])
+                                          end
           ret[:contributor][i].delete(:person)
           ret[:contributor][i].delete(:organization)
         end
       end
 
-      def org_hash_to_bib(c)
-        return nil if c.nil?
-        c[:identifier] = array(c[:identifier])&.map do |a|
+      def org_hash_to_bib(org)
+        return nil if org.nil?
+
+        org[:identifier] = array(org[:identifier])&.map do |a|
           OrgIdentifier.new(a[:type], a[:id])
         end
-        c
+        org
       end
 
-      def person_hash_to_bib(c)
+      def person_hash_to_bib(person)
         Person.new(
-          name: fullname_hash_to_bib(c),
-          affiliation: affiliation_hash_to_bib(c),
-          contact: contacts_hash_to_bib(c),
-          identifier: person_identifiers_hash_to_bib(c),
+          name: fullname_hash_to_bib(person),
+          affiliation: affiliation_hash_to_bib(person),
+          contact: contacts_hash_to_bib(person),
+          identifier: person_identifiers_hash_to_bib(person),
         )
       end
 
-      def fullname_hash_to_bib(c)
-        n = c[:name]
+      def fullname_hash_to_bib(person)
+        n = person[:name]
         FullName.new(
-          forename: array(n[:forename])&.map { |f| localname(f, c) },
-          initial: array(n[:initial])&.map { |f| localname(f, c) },
-          addition: array(n[:addition])&.map { |f| localname(f, c) },
-          prefix: array(n[:prefix])&.map { |f| localname(f, c) },
-          surname: localname(n[:surname], c),
-          completename: localname(n[:completename], c),
+          forename: array(n[:forename])&.map { |f| localname(f, person) },
+          initial: array(n[:initial])&.map { |f| localname(f, person) },
+          addition: array(n[:addition])&.map { |f| localname(f, person) },
+          prefix: array(n[:prefix])&.map { |f| localname(f, person) },
+          surname: localname(n[:surname], person),
+          completename: localname(n[:completename], person),
         )
       end
 
-      def person_identifiers_hash_to_bib(c)
-        array(c[:identifier])&.map do |a|
+      def person_identifiers_hash_to_bib(person)
+        array(person[:identifier])&.map do |a|
           PersonIdentifier.new(a[:type], a[:id])
         end
       end
 
-      def affiliation_hash_to_bib(c)
-        return [] unless c[:affiliation]
-        array(c[:affiliation]).map do |a|
+      def affiliation_hash_to_bib(person)
+        return [] unless person[:affiliation]
+
+        array(person[:affiliation]).map do |a|
           a[:description] = array(a[:description])&.map do |d|
-            FormattedString.new(
-              d.is_a?(Hash) ?
-              { content: d[:content], language: d[:language],
-                script: d[:script], format: d[:format] } : 
-            { content: d })
+            cnt = if d.is_a?(Hash)
+                    { content: d[:content], language: d[:language],
+                      script: d[:script], format: d[:format] }
+                  else { content: d }
+                  end
+            FormattedString.new cnt
           end
           Affilation.new(
             organization: Organization.new(org_hash_to_bib(a[:organization])),
-            description: a[:description]
+            description: a[:description],
           )
         end
       end
 
-      def contacts_hash_to_bib(c)
-        return [] unless c[:contact]
-        array(c[:contact]).map do |a|
-          (a[:city] || a[:country]) ?
+      def contacts_hash_to_bib(person)
+        return [] unless person[:contact]
+
+        array(person[:contact]).map do |a|
+          if a[:city] || a[:country]
             RelatonBib::Address.new(
               street: Array(a[:street]), city: a[:city], postcode: a[:postcode],
-              country: a[:country], state: a[:state]) :
-          RelatonBib::Contact.new(type: a[:type], value: a[:value])
+              country: a[:country], state: a[:state]
+            )
+          else
+            RelatonBib::Contact.new(type: a[:type], value: a[:value])
+          end
         end
       end
 
@@ -227,14 +254,14 @@ module RelatonBib
       end
 
       # @param ret [Hash]
-      # @param r [Hash] relation
-      # @param i [Integr] index of relation
-      def relation_bibitem_hash_to_bib(ret, r, i)
-        if r[:bibitem]
-          ret[:relation][i][:bibitem] = bib_item(hash_to_bib(r[:bibitem], true))
+      # @param rel [Hash] relation
+      # @param idx [Integr] index of relation
+      def relation_bibitem_hash_to_bib(ret, rel, idx)
+        if rel[:bibitem]
+          ret[:relation][idx][:bibitem] = bib_item(hash_to_bib(rel[:bibitem], true))
         else
-          warn "bibitem missing: #{r}"
-          ret[:relation][i][:bibitem] = nil
+          warn "bibitem missing: #{rel}"
+          ret[:relation][idx][:bibitem] = nil
         end
       end
 
@@ -244,9 +271,9 @@ module RelatonBib
         BibliographicItem.new(item)
       end
 
-      def relation_biblocality_hash_to_bib(ret, r, i)
-        ret[:relation][i][:bib_locality] =
-          array(r[:bib_locality])&.map do |bl|
+      def relation_biblocality_hash_to_bib(ret, rel, idx)
+        ret[:relation][idx][:bib_locality] =
+          array(rel[:bib_locality])&.map do |bl|
             BibItemLocality.new(bl[:type], bl[:reference_from],
                                 bl[:reference_to])
           end
@@ -271,7 +298,7 @@ module RelatonBib
       end
 
       def medium_hash_to_bib(ret)
-        ret[:medium] and ret[:medium] = Medium.new(ret[:medium])
+        ret[:medium] = Medium.new(ret[:medium]) if ret[:medium]
       end
 
       def classification_hash_to_bib(ret)
@@ -279,52 +306,70 @@ module RelatonBib
         # ret[:classification]&.each_with_index do |c, i|
         # ret[:classification][i] = RelatonBib::Classification.new(c)
         # end
-        ret[:classification] and
+        if ret[:classification]
           ret[:classification] = Classification.new(ret[:classification])
+        end
       end
 
       def validity_hash_to_bib(ret)
         return unless ret[:validity]
-        ret[:validity][:begins] and b = Time.parse(ret[:validity][:begins])
-        ret[:validity][:ends] and e = Time.parse(ret[:validity][:ends])
-        ret[:validity][:revision] and r = Time.parse(ret[:validity][:revision])
+
+        ret[:validity][:begins] && b = Time.parse(ret[:validity][:begins])
+        ret[:validity][:ends] && e = Time.parse(ret[:validity][:ends])
+        ret[:validity][:revision] && r = Time.parse(ret[:validity][:revision])
         ret[:validity] = Validity.new(begins: b, ends: e, revision: r)
       end
 
+      # @param ogj [Hash, Array, String]
+      # @return [Hash, Array, String]
       def symbolize(obj)
-        obj.is_a? Hash and
-          return obj.inject({}){|memo,(k,v)| memo[k.to_sym] =  symbolize(v); memo}
-        obj.is_a? Array and
-          return obj.inject([]){|memo,v    | memo           << symbolize(v); memo}
-        return obj
+        if obj.is_a? Hash
+          obj.reduce({}) do |memo, (k, v)|
+            memo[k.to_sym] = symbolize(v)
+            memo
+          end
+        elsif obj.is_a? Array
+          obj.reduce([]) { |memo, v| memo << symbolize(v) }
+        else
+          obj
+        end
       end
 
-      def array(a)
-        return [] unless a
-        return [a] unless a.is_a?(Array)
-        a
+      def array(arr)
+        return [] unless arr
+        return [arr] unless arr.is_a?(Array)
+
+        arr
       end
 
-      def localname(f, c)
-        return nil if f.nil?
-        f.is_a?(Hash) and lang = f[:language] 
-        lang ||= c[:name][:language] 
-        f.is_a?(Hash) and script = f[:script] 
-        script ||= c[:name][:script]
-        f.is_a?(Hash) ?
-          RelatonBib::LocalizedString.new(f[:content], lang, script) :
-          RelatonBib::LocalizedString.new(f, lang, script)
+      def localname(name, person)
+        return nil if name.nil?
+
+        lang = name[:language] if name.is_a?(Hash)
+        lang ||= person[:name][:language]
+        script = name[:script] if name.is_a?(Hash)
+        script ||= person[:name][:script]
+        if name.is_a?(Hash)
+          RelatonBib::LocalizedString.new(name[:content], lang, script)
+        else
+          RelatonBib::LocalizedString.new(name, lang, script)
+        end
       end
 
-      def localizedstring(f)
-        f.is_a?(Hash) ?
-          RelatonBib::LocalizedString.new(f[:content], f[:language], f[:script]) :
-          RelatonBib::LocalizedString.new(f)
+      def localizedstring(lst)
+        if lst.is_a?(Hash)
+          RelatonBib::LocalizedString.new(lst[:content], lst[:language], lst[:script])
+        else
+          RelatonBib::LocalizedString.new(lst)
+        end
       end
 
-      def formattedref(f)
-        f.is_a?(Hash) ? RelatonBib::FormattedRef.new(f) :
-          RelatonBib::FormattedRef.new(content: f)
+      def formattedref(frf)
+        if frf.is_a?(Hash)
+          RelatonBib::FormattedRef.new(frf)
+        else
+          RelatonBib::FormattedRef.new(content: frf)
+        end
       end
     end
   end
