@@ -9,10 +9,20 @@ RSpec.describe RelatonBib::TypedTitleString do
     expect { RelatonBib::TypedTitleString.new }.to raise_error ArgumentError
   end
 
-  it "create instance without exeption" do
-    title = RelatonBib::TypedTitleString.new(
-      title: RelatonBib::FormattedString.new(content: "Title"),
-    )
-    expect(title).to be_instance_of RelatonBib::TypedTitleString
+  context "instance" do
+    subject do
+      RelatonBib::TypedTitleString.new(
+        type: "main",
+        title: RelatonBib::FormattedString.new(content: "Title", format: nil),
+      )
+    end
+
+    it "create instance without exeption" do
+      expect(subject).to be_instance_of RelatonBib::TypedTitleString
+    end
+
+    it "return hash when title is string" do
+      expect(subject.to_hash).to eq("type" => "main", "content" => "Title")
+    end
   end
 end

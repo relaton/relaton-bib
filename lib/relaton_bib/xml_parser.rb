@@ -5,7 +5,7 @@ module RelatonBib
     class << self
       def from_xml(xml)
         doc = Nokogiri::XML(xml)
-        bibitem = doc.at "/bibitem"
+        bibitem = doc.at "/bibitem|/bibdata"
         BibliographicItem.new(item_data(bibitem))
       end
 
@@ -29,8 +29,8 @@ module RelatonBib
           edition: bibitem.at("./edition")&.text,
           version: fetch_version(bibitem),
           biblionote: fetch_note(bibitem),
-          language: bibitem.xpath("./language").map(&:text),
-          script: bibitem.xpath("./script").map(&:text),
+          language: fetch_language(bibitem),
+          script: fetch_script(bibitem),
           abstract: fetch_abstract(bibitem),
           docstatus: fetch_status(bibitem),
           copyright: fetch_copyright(bibitem),
@@ -65,6 +65,14 @@ module RelatonBib
             script: n[:script],
           )
         end
+      end
+
+      def fetch_language(item)
+        item.xpath("./language").reduce([]) { |a, l| l.text.empty? ? a : a << l.text }
+      end
+
+      def fetch_script(item)
+        item.xpath("./script").reduce([]) { |a, s| s.text.empty? ? a : a << s.text }
       end
 
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
@@ -145,8 +153,9 @@ module RelatonBib
         status = item.at("./status")
         return unless status
 
+        stage = status.at "stage"
         DocumentStatus.new(
-          stage: status.at("stage").text,
+          stage: stage ? stage.text : status.text,
           substage: status.at("substage")&.text,
           iteration: status.at("iteration")&.text,
         )
@@ -154,8 +163,9 @@ module RelatonBib
 
       def fetch_dates(item)
         item.xpath("./date").map do |d|
+          type = d[:type].to_s.empty? ? "published" : d[:type]
           RelatonBib::BibliographicDate.new(
-            type: d[:type], on: d.at("on")&.text, from: d.at("from")&.text,
+            type: type, on: d.at("on")&.text, from: d.at("from")&.text,
             to: d.at("to")&.text
           )
         end

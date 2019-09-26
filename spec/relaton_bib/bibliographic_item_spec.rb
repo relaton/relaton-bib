@@ -165,7 +165,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
         validity: RelatonBib::Validity.new(
           begins: Time.new(2010, 10, 10, 12, 21),
           ends: Time.new(2011, 2, 3, 18,30),
-          revision: Time.new(2011, 3, 4, 9, 0)
+          revision: Time.new(2011, 3, 4, 9, 0),
         )
       }
 
@@ -230,8 +230,10 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
     expect(bibitem.to_xml).to include "<formattedref format=\"text/plain\">ISO123</formattedref>"
   end
 
-  it "raises invalid type argument error" do
-    expect { RelatonBib::BibliographicItem.new type: "type" }.to raise_error ArgumentError
+  it "warn invalid type argument error" do
+    expect { RelatonBib::BibliographicItem.new type: "type" }.to output(
+      /Document type "type" is invalid./,
+    ).to_stderr
   end
 
   context RelatonBib::CopyrightAssociation do

@@ -4,7 +4,7 @@ module RelatonBib
     attr_reader :hit
 
     # @param hit [Hash]
-    # @param hit_collection [RelatonNist:HitCollection]
+    # @param hit_collection [RelatonIso::HitCollection, RelatonNist:HitCollection]
     def initialize(hit, hit_collection = nil)
       @hit            = hit
       @hit_collection = hit_collection

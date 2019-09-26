@@ -45,9 +45,16 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      hash = {}
-      hash["type"] = type if type
-      hash.merge title.to_hash
+      th = title.to_hash
+      return th unless type
+
+      hash = { "type" => type }
+      if th.is_a? String
+        hash["content"] = th
+      else
+        hash.merge th
+      end
+      hash
     end
   end
 end
