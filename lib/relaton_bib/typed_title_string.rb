@@ -52,7 +52,7 @@ module RelatonBib
       if th.is_a? String
         hash["content"] = th
       else
-        hash.merge th
+        hash.merge! th
       end
       hash
     end
