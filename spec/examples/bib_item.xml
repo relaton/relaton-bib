@@ -1,5 +1,5 @@
 <bibitem id="ISO/TC211" type="standard">
-  <fetched>2019-08-09</fetched>
+  <fetched>2019-10-01</fetched>
   <title type="main" format="text/plain" language="en" script="Latn">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
   <uri type="src">https://www.iso.org/standard/53798.html</uri>
@@ -88,7 +88,7 @@
   </contributor>
   <edition>1</edition>
   <version>
-    <revision_date>2019-04-01</revision_date>
+    <revision-date>2019-04-01</revision-date>
     <draft>draft</draft>
   </version>
   <note type="bibnote">note</note>

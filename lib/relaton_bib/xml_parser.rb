@@ -50,7 +50,7 @@ module RelatonBib
         version = item.at "./version"
         return unless version
 
-        revision_date = version.at("revision_date").text
+        revision_date = version.at("revision-date")&.text
         draft = version.xpath("draft").map &:text
         RelatonBib::BibliographicItem::Version.new revision_date, draft
       end

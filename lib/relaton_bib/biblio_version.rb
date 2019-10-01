@@ -20,7 +20,7 @@ module RelatonBib
       # @param builder [Nokogiri::XML::Builder]
       def to_xml(builder)
         builder.version do
-          builder.revision_date revision_date if revision_date
+          builder.send("revision-date", revision_date) if revision_date
           draft.each { |d| builder.draft d }
         end
       end
