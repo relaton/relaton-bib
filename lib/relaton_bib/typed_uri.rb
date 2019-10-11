@@ -6,7 +6,7 @@ module RelatonBib
     # @return [Symbol] :src/:obp/:rss
     attr_reader :type
     # @retutn [URI]
-    attr_reader :content
+    attr_accessor :content
 
     # @param type [String] src/obp/rss
     # @param content [String]

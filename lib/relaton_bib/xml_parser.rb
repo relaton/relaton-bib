@@ -5,6 +5,7 @@ module RelatonBib
     class << self
       def from_xml(xml)
         doc = Nokogiri::XML(xml)
+        doc.remove_namespaces!
         bibitem = doc.at "/bibitem|/bibdata"
         BibliographicItem.new(item_data(bibitem))
       end
