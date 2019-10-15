@@ -273,7 +273,7 @@ for the entry, the subclause title should be left as `{blank}`.
 
 So the following is a very simple reference in Metanorma Asciidoctor:
 
-[source,asciidoctor]
+[source,asciidoc]
 ----
 [%bibitem]
 === Rubber latex -- Sampling
@@ -291,7 +291,7 @@ The anchor crossreference for the bibliographic entry may be encoded as the
 `id` entry in the definition list, or as the normal Asciidoctor anchor on the
 subclause, which takes priority over it:
 
-[source,asciidoctor]
+[source,asciidoc]
 ----
 [[iso123]]
 [%bibitem]
@@ -306,7 +306,7 @@ Asciidoctor does not currently cope with definition lists more than four levels
 deep. If deeper nesting is needed, you will need to attach a new definition
 list with a list continuation:
 
-[source,asciidoctor]
+[source,asciidoc]
 ----
 [[iso123]]
 [%bibitem]
@@ -555,7 +555,7 @@ The foregoing structure requires frequent breakouts into open blocks, to deal
 with the limitation on Asciidoctor nested definition lists. An alternative is to
 represent the nested structure of Relaton records in a simple, one-level definition list, and to use the key for each key-value pair to represent the hierarchical nesting of entries, as a dot-delimited path of keys. For example,
 
-[source,asciidoctor]
+[source,asciidoc]
 ----
 [%bibitem]
 === Rubber latex -- Sampling
@@ -567,7 +567,7 @@ docid::
 
 can instead be represented as:
 
-[source,asciidoctor]
+[source,asciidoc]
 ----
 [%bibitem]
 === Rubber latex -- Sampling
@@ -578,7 +578,7 @@ docid.id::: ISO 123
 
 Whenever part of the key is repeated between entries, the entries are assumed to attach to the same parent. If an array of hashes is needed, a blank entry is required for the key of each repeating element: For example,
 
-[source,asciidoctor]
+[source,asciidoc]
 ----
 [%bibitem]
 === Rubber latex -- Sampling
@@ -594,7 +594,7 @@ type:: standard
 
 can instead be represented as:
 
-[source,asciidoctor]
+[source,asciidoc]
 ----
 [%bibitem]
 === Rubber latex -- Sampling
@@ -609,7 +609,7 @@ docid.id:: 32784
 
 Embedded elements can also repeat:
 
-[source,asciidoctor]
+[source,asciidoc]
 ----
 [%bibitem]
 ...
@@ -629,7 +629,7 @@ person::
 
 can instead be represented as:
 
-[source,asciidoctor]
+[source,asciidoc]
 ----
 [%bibitem]
 ...
