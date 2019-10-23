@@ -215,6 +215,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
       h[:fetched] = Date.today.to_s
       b = RelatonBib::BibliographicItem.new(h)
       expect(hash).to eq b.to_hash
+      expect(hash["revdate"]).to eq "2019-04-01"
     end
   end
 

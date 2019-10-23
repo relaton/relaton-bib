@@ -6,7 +6,7 @@ RSpec.describe RelatonBib::HashConverter do
     end.to output(/bibitem missing/).to_stderr
   end
 
-  it "make affiliation description form string" do
+  it "make affiliation description from string" do
     affiliation = RelatonBib::HashConverter.affiliation_hash_to_bib(
       affiliation: { description: "Description", organization: { name: "Org" } },
     )
@@ -14,7 +14,7 @@ RSpec.describe RelatonBib::HashConverter do
     expect(affiliation.first).to be_instance_of RelatonBib::Affilation
   end
 
-  it "make loalized string form hash" do
+  it "make localized string from hash" do
     ls = RelatonBib::HashConverter.localizedstring content: "string"
     expect(ls).to be_instance_of RelatonBib::LocalizedString
   end
