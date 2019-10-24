@@ -284,7 +284,7 @@ module RelatonBib
       hash["contributor"] = single_element_array(contributor) if contributor&.any?
       hash["edition"] = edition if edition
       hash["version"] = version.to_hash if version
-      hash["revdate"] = revdate
+      hash["revdate"] = revdate if revdate
       hash["biblionote"] = single_element_array(biblionote) if biblionote&.any?
       hash["language"] = single_element_array(language) if language&.any?
       hash["script"] = single_element_array(script) if script&.any?
@@ -304,17 +304,17 @@ module RelatonBib
       hash
     end
 
-    private
-
     # If revision_date exists then returns it else returns published date or nil
     # @return [String, NilClass]
     def revdate
-      if version&.revision_date
-        version.revision_date
-      else
-        date.detect { |d| d.type == "published" }&.on&.to_s
-      end
+      @revdate ||= if version&.revision_date
+                     version.revision_date
+                   else
+                     date.detect { |d| d.type == "published" }&.on&.to_s
+                   end
     end
+
+    private
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
