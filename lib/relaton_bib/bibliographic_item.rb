@@ -350,7 +350,7 @@ module RelatonBib
         series.each { |s| s.to_xml builder }
         medium&.to_xml builder
         place.each { |pl| builder.place pl }
-        extent.each { |e| e.to_xml builder }
+        extent.each { |e| builder.extent { e.to_xml builder } }
         accesslocation.each { |al| builder.accesslocation al }
         classification&.to_xml builder
         validity&.to_xml builder

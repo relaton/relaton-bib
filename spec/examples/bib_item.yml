@@ -1,4 +1,4 @@
-id: ISO/TC211
+id: ISOTC211
 
 title:
   - Geographic information
@@ -144,8 +144,8 @@ relation:
     bibitem:
       formattedref: ISO 19115:2003
     bib_locality:
-      type: updates
-      reference_from: Reference form
+      type: section
+      reference_from: Reference from
   - type: updates
     bibitem:
       type: standard

@@ -1,5 +1,5 @@
 ---
-id: ISO/TC211
+id: ISOTC211
 title:
 - type: main
   content: Geographic information
@@ -139,17 +139,15 @@ copyright:
 relation:
 - type: updates
   bibitem:
-    revdate: 
     formattedref:
       content: ISO 19115:2003
       format: text/plain
   bib_locality:
-    type: updates
-    reference_from: Reference form
+    type: section
+    reference_from: Reference from
 - type: updates
   bibitem:
     type: standard
-    revdate: 
     formattedref:
       content: ISO 19115:2003/Cor 1:2006
       format: text/plain
@@ -193,4 +191,4 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2019-10-23'
+fetched: '2019-11-14'

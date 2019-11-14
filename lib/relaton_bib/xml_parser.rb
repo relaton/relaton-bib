@@ -105,7 +105,7 @@ module RelatonBib
       end
 
       def fetch_extent(item)
-        item.xpath("./locality").map do |ex|
+        item.xpath("./extent").map do |ex|
           BibItemLocality.new(
             ex[:type], ex.at("referenceFrom")&.text, ex.at("referenceTo")&.text
           )
@@ -125,7 +125,7 @@ module RelatonBib
 
         begins = (b = vl.at("validityBegins")) ? Time.strptime(b.text, "%Y-%m-%d %H:%M") : nil
         ends = (e = vl.at("validityEnds")) ? Time.strptime(e.text, "%Y-%m-%d %H:%M") : nil
-        revision = (r = vl.at("validityRevision")) ? Time.strptime(r.text, "%Y-%m-%d %H:%M") : nil
+        revision = (r = vl.at("revision")) ? Time.strptime(r.text, "%Y-%m-%d %H:%M") : nil
         Validity.new begins: begins, ends: ends, revision: revision
       end
 

@@ -6,7 +6,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
   context "instance" do
     subject do
       item = {
-        id: "ISO/TC211", fetched: Date.today.to_s,
+        id: "ISOTC211", fetched: Date.today.to_s,
         title: [
           { type: "main", content: "Geographic information", language: "en", script: "Latn" },
           {
@@ -118,7 +118,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
               formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003"),
             ),
             bib_locality: [
-              RelatonBib::BibItemLocality.new("updates", "Reference form"),
+              RelatonBib::BibItemLocality.new("section", "Reference from"),
             ],
           },
           {
@@ -195,6 +195,10 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
         /<fetched>\d{4}-\d{2}-\d{2}/, "<fetched>#{Date.today}"
       )
       expect(subject.to_xml).to be_equivalent_to xml
+      schema = Nokogiri::XML::RelaxNG File.open "relaton-models/grammars/biblio.rng"
+      instance = Nokogiri::XML xml
+      errors = schema.validate instance
+      expect(errors.empty?).to be true
     end
 
     it "render addition elements" do

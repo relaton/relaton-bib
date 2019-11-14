@@ -45,7 +45,7 @@ module RelatonBib
       builder.relation(type: type) do
         bibitem.to_xml(builder, **opts.merge(embedded: true))
         bib_locality.each do |l|
-          l.to_xml builder
+          builder.locality { l.to_xml builder }
         end
       end
     end

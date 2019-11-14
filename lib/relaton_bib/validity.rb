@@ -25,7 +25,7 @@ module RelatonBib
       builder.validity do
         builder.validityBegins begins.strftime(FORMAT) if begins
         builder.validityEnds ends.strftime(FORMAT) if ends
-        builder.validityRevision revision.strftime(FORMAT) if revision
+        builder.revision revision.strftime(FORMAT) if revision
       end
     end
 

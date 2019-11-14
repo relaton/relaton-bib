@@ -37,10 +37,9 @@ module RelatonBib
 
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
-      builder.locality(type: type) do
-        builder.referenceFrom reference_from # { reference_from.to_xml(builder) }
-        builder.referenceTo reference_to if reference_to
-      end
+      builder.parent[:type] = type
+      builder.referenceFrom reference_from # { reference_from.to_xml(builder) }
+      builder.referenceTo reference_to if reference_to
     end
 
     # @return [Hash]

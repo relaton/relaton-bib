@@ -51,10 +51,10 @@ module RelatonBib
           builder.completename { completename.to_xml builder }
         else
           prefix.each { |p| builder.prefix { p.to_xml builder } } 
-          initial.each { |i| builder.initial { i.to_xml builder } }
-          addition.each { |a| builder.addition { a.to_xml builder } }
-          builder.surname { surname.to_xml builder }
           forename.each { |f| builder.forename { f.to_xml builder } }
+          initial.each { |i| builder.initial { i.to_xml builder } }
+          builder.surname { surname.to_xml builder }
+          addition.each { |a| builder.addition { a.to_xml builder } }
         end
       end
     end

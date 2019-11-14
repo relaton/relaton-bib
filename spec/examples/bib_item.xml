@@ -1,4 +1,4 @@
-<bibitem id="ISO/TC211" type="standard">
+<bibitem id="ISOTC211" type="standard">
   <fetched>2019-10-01</fetched>
   <title type="main" format="text/plain" language="en" script="Latn">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -63,10 +63,10 @@
     <person>
       <name>
         <prefix language="en">Prefix</prefix>
-        <initial language="en">A.</initial>
-        <addition language="en">Addition</addition>
-        <surname language="en">Bierman</surname>
         <forename language="en">Forename</forename>
+        <initial language="en">A.</initial>
+        <surname language="en">Bierman</surname>
+        <addition language="en">Addition</addition>
       </name>
       <affiliation>
         <description language="en">Description</description>
@@ -117,8 +117,8 @@
     <bibitem>
       <formattedref format="text/plain">ISO 19115:2003</formattedref>
     </bibitem>
-    <locality type="updates">
-      <referenceFrom>Reference form</referenceFrom>
+    <locality type="section">
+      <referenceFrom>Reference from</referenceFrom>
     </locality>
   </relation>
   <relation type="updates">
@@ -145,16 +145,16 @@
     <scale>medium scale</scale>
   </medium>
   <place>bib place</place>
-  <locality type="section">
+  <extent type="section">
     <referenceFrom>Reference from</referenceFrom>
     <referenceTo>Reference to</referenceTo>
-  </locality>
+  </extent>
   <accesslocation>accesslocation1</accesslocation>
   <accesslocation>accesslocation2</accesslocation>
   <classification type="type">value</classification>
   <validity>
     <validityBegins>2010-10-10 12:21</validityBegins>
     <validityEnds>2011-02-03 18:30</validityEnds>
-    <validityRevision>2011-03-04 09:00</validityRevision>
+    <revision>2011-03-04 09:00</revision>
   </validity>
 </bibitem>
