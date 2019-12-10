@@ -64,7 +64,8 @@ module RelatonBib
     # @return [String]
     attr_reader :value
 
-    # @param phone [String]
+    # @param type [String] allowed "phone", "email" or "uri"
+    # @param value [String]
     def initialize(type:, value:)
       @type  = type
       @value = value

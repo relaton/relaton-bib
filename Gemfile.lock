@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    relaton-bib (0.3.12)
+    relaton-bib (0.4.0)
       addressable
       nokogiri
 
@@ -22,6 +22,7 @@ GEM
     mini_portile2 (2.4.0)
     nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
+    optout (0.0.2)
     public_suffix (4.0.1)
     rake (10.5.0)
     rspec (3.8.0)
@@ -39,6 +40,8 @@ GEM
     rspec-support (3.8.2)
     ruby-debug-ide (0.7.0)
       rake (>= 0.8.1)
+    ruby-jing (0.0.1)
+      optout (>= 0.0.2)
     simplecov (0.17.0)
       docile (~> 1.1)
       json (>= 1.8, < 3)
@@ -57,7 +60,8 @@ DEPENDENCIES
   relaton-bib!
   rspec (~> 3.0)
   ruby-debug-ide
+  ruby-jing
   simplecov
 
 BUNDLED WITH
-   2.0.1
+   2.0.2

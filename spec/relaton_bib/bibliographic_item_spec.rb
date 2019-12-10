@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "yaml"
+require "jing"
 
 RSpec.describe "RelatonBib" =>:BibliographicItem do
   context "instance" do
@@ -195,10 +196,9 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
         /<fetched>\d{4}-\d{2}-\d{2}/, "<fetched>#{Date.today}"
       )
       expect(subject.to_xml).to be_equivalent_to xml
-      schema = Nokogiri::XML::RelaxNG File.open "relaton-models/grammars/biblio.rng"
-      instance = Nokogiri::XML xml
-      errors = schema.validate instance
-      expect(errors.empty?).to be true
+      schema = Jing.new "relaton-models/grammars/biblio.rng"
+      errors = schema.validate file
+      expect(errors).to eq []
     end
 
     it "render addition elements" do
