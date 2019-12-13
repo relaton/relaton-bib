@@ -201,10 +201,10 @@ module RelatonBib
             streets = c.xpath("./street").map(&:text)
             Address.new(
               street: streets,
-              city: c.at("./city").text,
-              state: c.at("./state").text,
-              country: c.at("./country").text,
-              postcode: c.at("./postcode").text,
+              city: c.at("./city")&.text,
+              state: c.at("./state")&.text,
+              country: c.at("./country")&.text,
+              postcode: c.at("./postcode")&.text,
             )
           else
             Contact.new(type: c.name, value: c.text)
