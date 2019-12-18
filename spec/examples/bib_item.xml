@@ -1,5 +1,5 @@
 <bibitem id="ISOTC211" type="standard">
-  <fetched>2019-10-01</fetched>
+  <fetched>2019-12-18</fetched>
   <title type="main" format="text/plain" language="en" script="Latn">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
   <uri type="src">https://www.iso.org/standard/53798.html</uri>
@@ -145,6 +145,7 @@
     <scale>medium scale</scale>
   </medium>
   <place>bib place</place>
+  <place uri="geneva.place" region="Switzelznd">Geneva</place>
   <extent type="section">
     <referenceFrom>Reference from</referenceFrom>
     <referenceTo>Reference to</referenceTo>

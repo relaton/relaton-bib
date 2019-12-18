@@ -176,7 +176,11 @@ medium:
   form: medium form
   size: medium size
   scale: medium scale
-place: bib place
+place:
+- bib place
+- :name: Geneva
+  uri: geneva.place
+  region: Switzelznd
 extent:
   type: section
   reference_from: Reference from
@@ -191,4 +195,4 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2019-11-14'
+fetched: '2019-12-18'

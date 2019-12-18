@@ -155,7 +155,10 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
         medium: RelatonBib::Medium.new(
           form: "medium form", size: "medium size", scale: "medium scale",
         ),
-        place: ["bib place"],
+        place: [
+          "bib place",
+          RelatonBib::Place.new(name: "Geneva", uri: "geneva.place", region: "Switzelznd")
+        ],
         extent: [
           RelatonBib::BibItemLocality.new(
             "section", "Reference from", "Reference to"

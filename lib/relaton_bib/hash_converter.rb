@@ -84,7 +84,9 @@ module RelatonBib
       def place_hash_to_bib(ret)
         return unless ret[:place]
 
-        ret[:place] = array(ret[:place])
+        ret[:place] = array(ret[:place]).map do |pl|
+          pl.is_a?(String) ? Place.new(name: pl) : Place.new(pl)
+        end
       end
 
       def accesslocation_hash_to_bib(ret)

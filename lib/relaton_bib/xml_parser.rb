@@ -38,7 +38,7 @@ module RelatonBib
           relation: fetch_relations(bibitem),
           series: fetch_series(bibitem),
           medium: fetch_medium(bibitem),
-          place: bibitem.xpath("./place").map(&:text),
+          place: fetch_place(bibitem),
           extent: fetch_extent(bibitem),
           accesslocation: bibitem.xpath("./accesslocation").map(&:text),
           classification: fetch_classification(bibitem),
@@ -54,6 +54,12 @@ module RelatonBib
         revision_date = version.at("revision-date")&.text
         draft = version.xpath("draft").map &:text
         RelatonBib::BibliographicItem::Version.new revision_date, draft
+      end
+
+      def fetch_place(item)
+        item.xpath("./place").map do |pl|
+          Place.new(name: pl.text, uri: pl[:uri], region: pl[:region])
+        end
       end
 
       def fetch_note(item)

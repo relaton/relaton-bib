@@ -177,7 +177,11 @@ medium:
   size: medium size
   scale: medium scale
 
-place: bib place
+place:
+  - bib place
+  - name: Geneva
+    uri: geneva.place
+    region: Switzelznd
 
 extent:
   type: section

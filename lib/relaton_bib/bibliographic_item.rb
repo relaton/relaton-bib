@@ -22,6 +22,7 @@ require "relaton_bib/biblio_note"
 require "relaton_bib/biblio_version"
 require "relaton_bib/workers_pool"
 require "relaton_bib/hash_converter"
+require "relaton_bib/place"
 
 module RelatonBib
   # Bibliographic item
@@ -93,7 +94,7 @@ module RelatonBib
     # @return [RelatonBib::Medium, NilClass]
     attr_reader :medium
 
-    # @return [Array<String>]
+    # @return [Array<RelatonBib::Place>]
     attr_reader :place
 
     # @return [Array<RelatonBib::BibItemLocality>]
@@ -128,7 +129,7 @@ module RelatonBib
     # @param biblionote [Array<RelatonBib::BiblioNote>]
     # @param series [Array<RelatonBib::Series>]
     # @param medium [RelatonBib::Medium, NilClas]
-    # @param place [Array<String>]
+    # @param place [Array<String, RelatonBib::Place>]
     # @param extent [Array<Relaton::BibItemLocality>]
     # @param accesslocation [Array<String>]
     # @param classification [RelatonBib::Classification, NilClass]
@@ -214,7 +215,7 @@ module RelatonBib
       @link           = args.fetch(:link, []).map { |s| s.is_a?(Hash) ? TypedUri.new(s) : s }
       @series         = args.fetch :series, []
       @medium         = args[:medium]
-      @place          = args.fetch(:place, [])
+      @place          = args.fetch(:place, []).map { |pl| pl.is_a?(String) ? Place.new(name: pl) : pl }
       @extent         = args[:extent] || []
       @accesslocation = args.fetch :accesslocation, []
       @classification = args[:classification]
@@ -349,7 +350,7 @@ module RelatonBib
         relation.each { |r| r.to_xml builder, **opts }
         series.each { |s| s.to_xml builder }
         medium&.to_xml builder
-        place.each { |pl| builder.place pl }
+        place.each { |pl| pl.to_xml builder }
         extent.each { |e| builder.extent { e.to_xml builder } }
         accesslocation.each { |al| builder.accesslocation al }
         classification&.to_xml builder
