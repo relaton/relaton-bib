@@ -18,6 +18,7 @@ require "relaton_bib/validity"
 require "relaton_bib/document_relation"
 require "relaton_bib/bib_item_locality"
 require "relaton_bib/xml_parser"
+require "relaton_bib/bibtex_parser"
 require "relaton_bib/biblio_note"
 require "relaton_bib/biblio_version"
 require "relaton_bib/workers_pool"
@@ -103,7 +104,7 @@ module RelatonBib
     # @return [Array<Strig>]
     attr_reader :accesslocation
 
-    # @return [Relaton::Classification, NilClass]
+    # @return [Array<Relaton::Classification>]
     attr_reader :classification
 
     # @return [RelatonBib:Validity, NilClass]
@@ -132,7 +133,7 @@ module RelatonBib
     # @param place [Array<String, RelatonBib::Place>]
     # @param extent [Array<Relaton::BibItemLocality>]
     # @param accesslocation [Array<String>]
-    # @param classification [RelatonBib::Classification, NilClass]
+    # @param classification [Array<RelatonBib::Classification>]
     # @param validity [RelatonBib:Validity, NilClass]
     # @param fetched [Date, NilClass] default nil
     #
@@ -218,7 +219,7 @@ module RelatonBib
       @place          = args.fetch(:place, []).map { |pl| pl.is_a?(String) ? Place.new(name: pl) : pl }
       @extent         = args[:extent] || []
       @accesslocation = args.fetch :accesslocation, []
-      @classification = args[:classification]
+      @classification = args.fetch :classification, []
       @validity       = args[:validity]
       @fetched        = args.fetch :fetched, nil # , Date.today # we should pass the fetched arg from scrappers
     end
@@ -299,7 +300,7 @@ module RelatonBib
       hash["place"] = single_element_array(place) if place&.any?
       hash["extent"] = single_element_array(extent) if extent&.any?
       hash["accesslocation"] = single_element_array(accesslocation) if accesslocation&.any?
-      hash["classification"] = classification.to_hash if classification
+      hash["classification"] = single_element_array(classification) if classification&.any?
       hash["validity"] = validity.to_hash if validity
       hash["fetched"] = fetched.to_s if fetched
       hash
@@ -353,7 +354,7 @@ module RelatonBib
         place.each { |pl| pl.to_xml builder }
         extent.each { |e| builder.extent { e.to_xml builder } }
         accesslocation.each { |al| builder.accesslocation al }
-        classification&.to_xml builder
+        classification.each { |cls| cls.to_xml builder }
         validity&.to_xml builder
         if block_given?
           yield builder

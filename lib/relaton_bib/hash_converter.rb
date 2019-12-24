@@ -310,7 +310,7 @@ module RelatonBib
         # ret[:classification][i] = RelatonBib::Classification.new(c)
         # end
         if ret[:classification]
-          ret[:classification] = Classification.new(ret[:classification])
+          ret[:classification] = array(ret[:classification]).map { |cls| Classification.new cls }
         end
       end
 

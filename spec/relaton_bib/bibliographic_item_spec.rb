@@ -165,7 +165,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
           ),
         ],
         accesslocation: ["accesslocation1", "accesslocation2"],
-        classification: RelatonBib::Classification.new(type: "type", value: "value"),
+        classification: [RelatonBib::Classification.new(type: "type", value: "value")],
         validity: RelatonBib::Validity.new(
           begins: Time.new(2010, 10, 10, 12, 21),
           ends: Time.new(2011, 2, 3, 18,30),

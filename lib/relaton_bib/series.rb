@@ -55,7 +55,7 @@ module RelatonBib
       end
 
       if args[:type] && !TYPES.include?(args[:type])
-        raise ArgumentError, "invalid argument `type`"
+        warn "[relaton-bib] Series type is invalid: #{args[:type]}"
       end
 
       @type         = args[:type] # if %w[main alt].include? args[:type]
@@ -67,7 +67,7 @@ module RelatonBib
       @from         = args[:from]
       @to           = args[:to]
       @number       = args[:number]
-      @partnumber  = args[:partnumber]
+      @partnumber   = args[:partnumber]
     end
     # rubocop:enable Metrics/MethodLength
 

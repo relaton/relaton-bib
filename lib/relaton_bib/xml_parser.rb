@@ -119,10 +119,9 @@ module RelatonBib
       end
 
       def fetch_classification(item)
-        cls = item.at "classification"
-        return unless cls
-
-        Classification.new type: cls[:type], value: cls.text
+        item.xpath("classification").map do |cls|
+          Classification.new type: cls[:type], value: cls.text
+        end
       end
 
       def fetch_validity(item)
