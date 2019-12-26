@@ -306,6 +306,31 @@ module RelatonBib
       hash
     end
 
+    # @param bibtex [BibTeX::Bibliography, NilClass]
+    # @return [String]
+    def to_bibtex(bibtex = nil)
+      item = BibTeX::Entry.new
+      item.type = bibtex_type
+      item.key = id
+      bibtex_title item
+      item.edition = edition if edition
+      bibtex_author item
+      bibtex_contributor item
+      item.address = place.first.name if place.any?
+      bibtex_note item
+      bibtex_relation item
+      bibtex_extent item
+      bibtex_date item
+      bibtex_series item
+      bibtex_classification item
+      bibtex_docidentifier item
+      item.timestamp = fetched.to_s if fetched
+      bibtex_link item
+      bibtex ||= BibTeX::Bibliography.new
+      bibtex << item
+      bibtex.to_s
+    end
+
     # If revision_date exists then returns it else returns published date or nil
     # @return [String, NilClass]
     def revdate
@@ -317,6 +342,140 @@ module RelatonBib
     end
 
     private
+
+    # @return [String]
+    def bibtex_title(item)
+      title.each do |t|
+        case t.type
+        when "main" then item.tile = t.title.content
+        end
+      end
+    end
+
+    # @return [String]
+    def bibtex_type
+      case type
+      when "standard", nil then "misc"
+      else type
+      end
+    end
+
+    # @param [BibTeX::Entry]
+    def bibtex_author(item)
+      authors = contributor.select do |c|
+        c.entity.is_a?(Person) && c.role.map(&:type).include?("author")
+      end.map &:entity
+
+      return unless authors.any?
+
+      item.author = authors.map do |a|
+        if a.name.surname
+          "#{a.name.surname}, #{a.name.forename.map(&:to_s).join(" ")}"
+        else
+          a.name.completename.to_s
+        end
+      end.join " and "
+    end
+
+    # @param [BibTeX::Entry]
+    def bibtex_contributor(item)
+      contributor.each do |c|
+        rls = c.role.map(&:type)
+        if rls.include?("publisher") then item.publisher = c.entity.name
+        elsif rls.include?("sponsor") then item.institution = c.entity.name
+        end
+      end
+    end
+
+    # @param [BibTeX::Entry]
+    def bibtex_note(item)
+      biblionote.each do |n|
+        case n.type
+        when "annote" then item.annote = n.content
+        when "howpublished" then item.howpublished = n.content
+        when "comment" then item.comment = n.content
+        when "tableOfContents" then item.content = n.content
+        when nil then item.note = n.content
+        end
+      end
+    end
+
+    # @param [BibTeX::Entry]
+    def bibtex_relation(item)
+      rel = relation.detect { |r| r.type == "partOf" }
+      item.booktitle = rel.bibitem.title.detect { |t| t.type == "main" }.title.content if rel
+    end
+
+    # @param [BibTeX::Entry]
+    def bibtex_extent(item)
+      extent.each do |e|
+        case e.type
+        when "chapter" then item.chapter = e.reference_from
+        when "page"
+          value = e.reference_from
+          value += "-#{e.reference_to}" if e.reference_to
+          item.pages = value
+        when "volume" then item.volume = e.reference_from
+        end
+      end
+    end
+
+    # @param [BibTeX::Entry]
+    def bibtex_date(item)
+      date.each do |d|
+        case d.type
+        when "published"
+          item.year = d.on.year
+          item.month = d.on.month
+        when "accessed" then item.urldate = d.on.to_s
+        end
+      end
+    end
+
+    # @param [BibTeX::Entry]
+    def bibtex_series(item)
+      series.each do |s|
+        case s.type
+        when "journal"
+          item.journal = s.title.title
+          item.number = s.number if s.number
+        when nil then item.series = s.title.title
+        end
+      end
+    end
+
+    # @param [BibTeX::Entry]
+    def bibtex_classification(item)
+      classification.each do |c|
+        case c.type
+        when "type" then item["type"] = c.value
+        when "keyword" then item.keywords = c.value
+        when "mendeley" then item["mendeley-tags"] = c.value
+        end
+      end
+    end
+
+    # @param [BibTeX::Entry]
+    def bibtex_docidentifier(item)
+      docidentifier.each do |i|
+        case i.type
+        when "isbn" then item.isbn = i.id
+        when "lccn" then item.lccn = i.id
+        when "issn" then item.issn = i.id
+        end
+      end
+    end
+
+    # @param [BibTeX::Entry]
+    def bibtex_link(item)
+      link.each do |l|
+        case l.type
+        when "doi" then item.doi = l.content
+        when "file" then item.file2 = l.content
+        when "src" then item.url = l.content
+        end
+      end
+    end
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

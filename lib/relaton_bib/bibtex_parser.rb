@@ -32,7 +32,7 @@ module RelatonBib
 
       private
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::DocumentIdentifier>]
       def fetch_docid(bibtex)
         docid = []
@@ -42,29 +42,30 @@ module RelatonBib
         docid
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [String, NilClass]
       def fetch_fetched(bibtex)
-        Date.parse(bibtex.timestamp.to_s).to_s if bibtex["timestamp"]
+        Date.parse(bibtex.timestamp.to_s) if bibtex["timestamp"]
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [String]
       def fetch_type(bibtex)
         case bibtex.type
         when :mastersthesis, :phdthesis then "thesis"
         when :conference then "inproceedings"
+        when :misc then "standard"
         else bibtex.type.to_s
         end
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [Array<Hash>]
       def fetch_place(bibtex)
         bibtex["address"] ? [bibtex.address.to_s] : []
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [Array<Hash>]
       def fetch_title(bibtex)
         title = []
@@ -73,12 +74,16 @@ module RelatonBib
         title
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [Array<Hash>]
       def fetch_contributor(bibtex)
         contributor = []
-        fetch_person(bibtex).each do |entity|
+        fetch_person(bibtex["author"]).each do |entity|
           contributor << { entity: entity, role: [{ type: "author" }] }
+        end
+
+        fetch_person(bibtex["editor"]).each do |entity|
+          contributor << { entity: entity, role: [{ type: "editor" }] }
         end
 
         if bibtex["publisher"]
@@ -99,12 +104,12 @@ module RelatonBib
         contributor
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::Person>]
-      def fetch_person(bibtex)
-        return [] unless bibtex["author"]
+      def fetch_person(person)
+        return [] unless person
 
-        bibtex.author.map do |name|
+        person.map do |name|
           parts = name.split ", "
           surname = LocalizedString.new parts.first
           fname = parts.size > 1 ? parts[1].split : []
@@ -113,7 +118,7 @@ module RelatonBib
         end
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [Array<Hash>]
       def fetch_date(bibtex)
         date = []
@@ -129,7 +134,7 @@ module RelatonBib
         date
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::BiblioNote>]
       def fetch_note(bibtex)
         note = []
@@ -145,7 +150,7 @@ module RelatonBib
         note
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [Array<Hash>]
       def fetch_relation(bibtex)
         return [] unless bibtex["booktitle"]
@@ -154,7 +159,7 @@ module RelatonBib
         [{ type: "partOf", bibitem: BibliographicItem.new(title: [title]) }]
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::BibItemLocality>]
       def fetch_extent(bibtex)
         extent = []
@@ -169,22 +174,26 @@ module RelatonBib
         extent
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::Series>]
       def fetch_series(bibtex)
         series = []
         if bibtex["journal"]
-          series << Series.new(title: TypedTitleString.new(content: bibtex.journal.to_s))
+          series << Series.new(
+            type: "journal",
+            title: TypedTitleString.new(content: bibtex.journal.to_s),
+            number: bibtex["number"]&.to_s
+          )
         end
 
         if bibtex["series"]
           title = TypedTitleString.new content: bibtex.series.to_s
-          series << Series.new(title: title, number: bibtex["number"]&.to_s)
+          series << Series.new(title: title)
         end
         series
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::TypedUri>]
       def fetch_link(bibtex)
         link = []
@@ -194,7 +203,7 @@ module RelatonBib
         link
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [Array<String>]
       def fetch_language(bibtex)
         return [] unless bibtex["language"]
@@ -202,7 +211,7 @@ module RelatonBib
         [Iso639[bibtex.language.to_s].alpha2]
       end
 
-      # @param bibtex [BibTex::Entry]
+      # @param bibtex [BibTeX::Entry]
       # @return [RelatonBib::Classification, NilClass]
       def fetch_classification(bibtex)
         cls = []

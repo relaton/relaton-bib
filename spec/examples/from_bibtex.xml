@@ -33,6 +33,15 @@
     </person>
   </contributor>
   <contributor>
+    <role type="editor"/>
+    <person>
+      <name>
+        <forename>Mr.</forename>
+        <surname>Z</surname>
+      </name>
+    </person>
+  </contributor>
+  <contributor>
     <role type="publisher"/>
     <organization>
       <name>nobody</name>
@@ -68,12 +77,12 @@
       <title type="main" format="text/plain">Book title</title>
     </bibitem>
   </relation>
-  <series>
+  <series type="journal">
     <title format="text/plain">Journal</title>
+    <number>7</number>
   </series>
   <series>
     <title format="text/plain">Series</title>
-    <number>7</number>
   </series>
   <place>Some address</place>
   <extent type="chapter">

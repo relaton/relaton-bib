@@ -17,12 +17,19 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
         type: "standard",
         docid: [
           RelatonBib::DocumentIdentifier.new(id: "TC211", type: "ISO"),
+          RelatonBib::DocumentIdentifier.new(id: "ISBN", type: "isbn"),
+          RelatonBib::DocumentIdentifier.new(id: "LCCN", type: "lccn"),
+          RelatonBib::DocumentIdentifier.new(id: "ISSN", type: "issn"),
         ],
         docnumber: "123456",
         edition: "1", language: %w[en fr], script: ["Latn"],
         version: RelatonBib::BibliographicItem::Version.new("2019-04-01", ["draft"]),
         biblionote: [
-          RelatonBib::BiblioNote.new(content: "note", type: "bibnote"),
+          RelatonBib::BiblioNote.new(content: "note"),
+          RelatonBib::BiblioNote.new(content: "An note", type: "annote"),
+          RelatonBib::BiblioNote.new(content: "How published", type: "howpublished"),
+          RelatonBib::BiblioNote.new(content: "Comment", type: "comment"),
+          RelatonBib::BiblioNote.new(content: "Table Of Contents", type: "tableOfContents"),
         ],
         docstatus: RelatonBib::DocumentStatus.new(
           stage: "stage", substage: "substage", iteration: "final",
@@ -100,6 +107,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
             ),
             role: [type: "author"],
           },
+          { entity: { name: "Institution" }, role: [type: "sponsor"] }
         ],
         copyright: { owner: {
           name: "International Organization for Standardization",
@@ -111,6 +119,8 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
             content: "https://www.iso.org/obp/ui/#!iso:std:53798:en" },
           { type: "rss", content: "https://www.iso.org/contents/data/standard"\
             "/05/37/53798.detail.rss" },
+          { type: "doi", content: "http://standrd.org/doi-123" },
+          { type: "file", content: "file://path/file" },
         ],
         relation: [
           {
@@ -127,6 +137,12 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
             bibitem: RelatonBib::BibliographicItem.new(
               type: "standard",
               formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003/Cor 1:2006"),
+            ),
+          },
+          {
+            type: "partOf",
+            bibitem: RelatonBib::BibliographicItem.new(
+              title: [RelatonBib::TypedTitleString.new(type: "main", content: "Book title")],
             ),
           },
         ],
@@ -150,7 +166,11 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
             formattedref: RelatonBib::FormattedRef.new(
               content: "serieref", language: "en", script: "Latn",
             ),
-          )
+          ),
+          RelatonBib::Series.new(
+            type: "journal", title: RelatonBib::TypedTitleString.new(content: "Journal"), number: "7"
+          ),
+          RelatonBib::Series.new(title: RelatonBib::TypedTitleString.new(content: "Series")),
         ],
         medium: RelatonBib::Medium.new(
           form: "medium form", size: "medium size", scale: "medium scale",
@@ -160,12 +180,17 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
           RelatonBib::Place.new(name: "Geneva", uri: "geneva.place", region: "Switzelznd")
         ],
         extent: [
-          RelatonBib::BibItemLocality.new(
-            "section", "Reference from", "Reference to"
-          ),
+          RelatonBib::BibItemLocality.new("section", "Reference from", "Reference to"),
+          RelatonBib::BibItemLocality.new("chapter", "4"),
+          RelatonBib::BibItemLocality.new("page", "10", "20"),
+          RelatonBib::BibItemLocality.new("volume", "1"),
         ],
         accesslocation: ["accesslocation1", "accesslocation2"],
-        classification: [RelatonBib::Classification.new(type: "type", value: "value")],
+        classification: [
+          RelatonBib::Classification.new(type: "type", value: "value"),
+          RelatonBib::Classification.new(type: "keyword", value: "Keywords"),
+          RelatonBib::Classification.new(type: "mendeley", value: "Mendeley Tags"),
+        ],
         validity: RelatonBib::Validity.new(
           begins: Time.new(2010, 10, 10, 12, 21),
           ends: Time.new(2011, 2, 3, 18,30),
@@ -214,7 +239,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
       expect(b.to_xml).to be_equivalent_to subject.to_xml
     end
 
-    it "conver item to hash" do
+    it "converts item to hash" do
       hash = subject.to_hash
       file = "spec/examples/hash.yml"
       File.write file, hash.to_yaml unless File.exist? file
@@ -223,6 +248,13 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
       b = RelatonBib::BibliographicItem.new(h)
       expect(hash).to eq b.to_hash
       expect(hash["revdate"]).to eq "2019-04-01"
+    end
+
+    it "converts to BibTex" do
+      bibtex = subject.to_bibtex
+      file = "spec/examples/bibitem.bib"
+      File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
+      expect(bibtex).to eq File.read(file, encoding: "utf-8")
     end
   end
 
