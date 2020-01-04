@@ -107,7 +107,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
             ),
             role: [type: "author"],
           },
-          { entity: { name: "Institution" }, role: [type: "sponsor"] }
+          { entity: { name: "Institution" }, role: [type: "distributor", description: ["sponsor"]] }
         ],
         copyright: { owner: {
           name: "International Organization for Standardization",
@@ -250,11 +250,41 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
       expect(hash["revdate"]).to eq "2019-04-01"
     end
 
-    it "converts to BibTex" do
-      bibtex = subject.to_bibtex
-      file = "spec/examples/bibitem.bib"
-      File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
-      expect(bibtex).to eq File.read(file, encoding: "utf-8")
+    context "converts to BibTex" do
+      it "standard" do
+        bibtex = subject.to_bibtex
+        file = "spec/examples/misc.bib"
+        File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
+        expect(bibtex).to eq File.read(file, encoding: "utf-8")
+          .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+      end
+
+      it "techreport" do
+        expect(subject).to receive(:type).and_return("techreport").at_least :once
+        bibtex = subject.to_bibtex
+        file = "spec/examples/techreport.bib"
+        File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
+        expect(bibtex).to eq File.read(file, encoding: "utf-8")
+          .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+      end
+
+      it "manual" do
+        expect(subject).to receive(:type).and_return("manual").at_least :once
+        bibtex = subject.to_bibtex
+        file = "spec/examples/manual.bib"
+        File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
+        expect(bibtex).to eq File.read(file, encoding: "utf-8")
+          .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+      end
+
+      it "phdthesis" do
+        expect(subject).to receive(:type).and_return("phdthesis").at_least :once
+        bibtex = subject.to_bibtex
+        file = "spec/examples/phdthesis.bib"
+        File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
+        expect(bibtex).to eq File.read(file, encoding: "utf-8")
+          .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+      end
     end
   end
 

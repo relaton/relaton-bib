@@ -48,19 +48,25 @@
     </organization>
   </contributor>
   <contributor>
-    <role type="sponsor"/>
+    <role type="distributor">
+      <description>sponsor</description>
+    </role>
     <organization>
       <name>Institution</name>
     </organization>
   </contributor>
   <contributor>
-    <role type="sponsor"/>
+    <role type="distributor">
+      <description>sponsor</description>
+    </role>
     <organization>
       <name>Organization</name>
     </organization>
   </contributor>
   <contributor>
-    <role type="sponsor"/>
+    <role type="distributor">
+      <description>sponsor</description>
+    </role>
     <organization>
       <name>School</name>
     </organization>

@@ -382,7 +382,13 @@ module RelatonBib
       contributor.each do |c|
         rls = c.role.map(&:type)
         if rls.include?("publisher") then item.publisher = c.entity.name
-        elsif rls.include?("sponsor") then item.institution = c.entity.name
+        elsif rls.include?("distributor")
+          case type
+          when "techreport" then item.institution = c.entity.name
+          when "inproceedings", "conference", "manual", "proceedings"
+            item.organization = c.entity.name
+          when "mastersthesis", "phdthesis" then item.school = c.entity.name
+          end
         end
       end
     end

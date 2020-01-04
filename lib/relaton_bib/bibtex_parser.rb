@@ -91,15 +91,24 @@ module RelatonBib
         end
 
         if bibtex["institution"]
-          contributor << { entity: { name: bibtex.institution.to_s }, role: [{ type: "sponsor" }] }
+          contributor << {
+            entity: { name: bibtex.institution.to_s },
+            role: [{ type: "distributor", description: ["sponsor"] }]
+          }
         end
 
         if bibtex["organization"]
-          contributor << { entity: { name: bibtex.organization.to_s }, role: [{ type: "sponsor" }] }
+          contributor << {
+            entity: { name: bibtex.organization.to_s },
+            role: [{ type: "distributor", description: ["sponsor"] }]
+          }
         end
 
         if bibtex["school"]
-          contributor << { entity: { name: bibtex.school.to_s }, role: [{ type: "sponsor" }] }
+          contributor << {
+            entity: { name: bibtex.school.to_s },
+            role: [{ type: "distributor", description: ["sponsor"] }]
+          }
         end
         contributor
       end

@@ -138,7 +138,9 @@ contributor:
 
   - organization:
       name: Institution
-    role: sponsor
+    role:
+      type: distributor
+      description: sponsor
  
 copyright:
   owner:
