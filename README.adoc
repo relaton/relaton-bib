@@ -1,8 +1,12 @@
 = RelatonBib
 
 image:https://img.shields.io/gem/v/relaton-bib.svg["Gem Version", link="https://rubygems.org/gems/relaton-bib"]
-image:https://img.shields.io/travis/metanorma/relaton-bib["Build Status", link="https://travis-ci.com/metanorma/relaton-bib"]
-image:https://codeclimate.com/github/metanorma/relaton-bib["Code Climate", link="https://codeclimate.com/github/metanorma/relaton-bib"]
+image:https://github.com/relaton/relaton-bib/workflows/macos/badge.svg["Build Status (macOS)", link="https://github.com/relaton/relaton-bib/actions?workflow=macos"]
+image:https://github.com/relaton/relaton-bib/workflows/windows/badge.svg["Build Status (Windows)", link="https://github.com/relaton/relaton-bib/actions?workflow=windows"]
+image:https://github.com/relaton/relaton-bib/workflows/ubuntu/badge.svg["Build Status (Ubuntu)", link="https://github.com/relaton/relaton-bib/actions?workflow=ubuntu"]
+image:https://codeclimate.com/github/relaton/relaton-bib/badges/gpa.svg["Code Climate", link="https://codeclimate.com/github/relaton/relaton-bib"]
+image:https://img.shields.io/github/issues-pr-raw/relaton/relaton-bib.svg["Pull Requests", link="https://github.com/relaton/relaton-bib/pulls"]
+image:https://img.shields.io/github/commits-since/relaton/relaton-bib/latest.svg["Commits since latest",link="https://github.com/relaton/relaton-bib/releases"]
 
 RlatonBib is a Ruby gem that implements the https://github.com/metanorma/relaton-models#bibliography-uml-models[BibliographicItem model].
 
@@ -30,62 +34,144 @@ Or install it yourself as:
 [source,ruby]
 ----
 item = RelatonBib::BibliographicItem.new(
-  id: "ISO/TC211",
-  fetched: Date.today.to_s,
-  type: "standard",
+  id: "ISOTC211", fetched: Date.today.to_s,
   title: [
     { type: "main", content: "Geographic information", language: "en", script: "Latn" },
     {
       content: "Information géographique", language: "fr", script: "Latn"
     },
   ],
-  link: [
-    { type: "src", content: "https://www.iso.org/standard/53798.html" },
-    { type: "obp",
-      content: "https://www.iso.org/obp/ui/#!iso:std:53798:en" },
-    { type: "rss", content: "https://www.iso.org/contents/data/standard"\
-      "/05/37/53798.detail.rss" }
-  ],
+  type: "standard",
   docid: [
-    RelatonBib::DocumentIdentifier.new(id: "TC211", type: "ISO")
+    RelatonBib::DocumentIdentifier.new(id: "TC211", type: "ISO"),
+    RelatonBib::DocumentIdentifier.new(id: "ISBN", type: "isbn"),
+    RelatonBib::DocumentIdentifier.new(id: "LCCN", type: "lccn"),
+    RelatonBib::DocumentIdentifier.new(id: "ISSN", type: "issn"),
   ],
   docnumber: "123456",
+  edition: "1", language: %w[en fr], script: ["Latn"],
+  version: RelatonBib::BibliographicItem::Version.new("2019-04-01", ["draft"]),
+  biblionote: [
+    RelatonBib::BiblioNote.new(content: "note"),
+    RelatonBib::BiblioNote.new(content: "An note", type: "annote"),
+    RelatonBib::BiblioNote.new(content: "How published", type: "howpublished"),
+    RelatonBib::BiblioNote.new(content: "Comment", type: "comment"),
+    RelatonBib::BiblioNote.new(content: "Table Of Contents", type: "tableOfContents"),
+  ],
+  docstatus: RelatonBib::DocumentStatus.new(
+    stage: "stage", substage: "substage", iteration: "final",
+  ),
   date: [
     { type: "issued", on: "2014" },
     { type: "published", on: "2014-04" },
-    { type: "accessed", on: "2015-05-20" }
+    { type: "accessed", on: "2015-05-20" },
   ],
-  contributor: [
-    { entity: {
-        name: "International Organization for Standardization",
-        url: "www.iso.org", abbreviation: "ISO", subdivision: "division" },
-      role: [["publisher", ["Publisher role"]]], }
-  ],
-  edition: "1",
-  version: RelatonBib::BibliographicItem::Version.new("2019-04-01", ["draft"]),
-  language: ["en", "fr"],
-  script: ["Latn"],
   abstract: [
     { content: "ISO 19115-1:2014 defines the schema required for ...",
       language: "en", script: "Latn", format: "text/plain" },
     { content: "L'ISO 19115-1:2014 définit le schéma requis pour ...",
       language: "fr", script: "Latn", format: "text/plain" },
   ],
-  docstatus: RelatonBib::DocumentStatus.new(
-    RelatonBib::LocalizedString.new("standard", "en", "Latn")
-  ),
-  copyright: { owner: {
-      name: "International Organization for Standardization",
-      abbreviation: "ISO", url: "www.iso.org"
+  contributor: [
+    {
+      entity: {
+        name: "International Organization for Standardization",
+        url: "www.iso.org", abbreviation: "ISO", subdivision: "division",
+      },
+      role: [{ type: "publisher", description: ["Publisher role"] }],
     },
-    from: "2014", to: "2020" },
+    {
+      entity: RelatonBib::Person.new(
+        name: RelatonBib::FullName.new(
+          completename: RelatonBib::LocalizedString.new("A. Bierman", "en"),
+        ),
+        affiliation: [RelatonBib::Affilation.new(
+          organization: RelatonBib::Organization.new(
+            name: "IETF",
+            abbreviation: RelatonBib::LocalizedString.new("IETF"),
+            identifier: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
+          )
+        )],
+        contact: [
+          RelatonBib::Address.new(
+            street: ["Street"], city: "City", postcode: "123456",
+            country: "Country", state: "State"
+          ),
+          RelatonBib::Contact.new(type: "phone", value: "223322"),
+        ]
+      ),
+      role: [type: "author"],
+    },
+    RelatonBib::ContributionInfo.new(
+      entity: RelatonBib::Organization.new(
+        name: "IETF",
+        abbreviation: "IETF",
+        identifier: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
+      ),
+      role: [type: "publisher"],
+    ),
+    {
+      entity: RelatonBib::Person.new(
+        name: RelatonBib::FullName.new(
+          initial: [RelatonBib::LocalizedString.new("A.", "en")],
+          surname: RelatonBib::LocalizedString.new("Bierman", "en"),
+          forename: [RelatonBib::LocalizedString.new("Forename", "en")],
+          addition: [RelatonBib::LocalizedString.new("Addition", "en")],
+          prefix: [RelatonBib::LocalizedString.new("Prefix", "en")],
+        ),
+        affiliation: [RelatonBib::Affilation.new(
+          organization: RelatonBib::Organization.new(name: "IETF", abbreviation: "IETF"),
+          description: [RelatonBib::LocalizedString.new("Description", "en")]
+        )],
+        contact: [
+          RelatonBib::Address.new(
+            street: ["Street"], city: "City", postcode: "123456",
+            country: "Country", state: "State"
+          ),
+          RelatonBib::Contact.new(type: "phone", value: "223322"),
+        ],
+        identifier: [RelatonBib::PersonIdentifier.new("uri", "www.person.com")],
+      ),
+      role: [type: "author"],
+    },
+    { entity: { name: "Institution" }, role: [type: "sponsor"] }
+  ],
+  copyright: { owner: {
+    name: "International Organization for Standardization",
+    abbreviation: "ISO", url: "www.iso.org"
+  }, from: "2014", to: "2020" },
+  link: [
+    { type: "src", content: "https://www.iso.org/standard/53798.html" },
+    { type: "obp",
+      content: "https://www.iso.org/obp/ui/#!iso:std:53798:en" },
+    { type: "rss", content: "https://www.iso.org/contents/data/standard"\
+      "/05/37/53798.detail.rss" },
+    { type: "doi", content: "http://standrd.org/doi-123" },
+    { type: "file", content: "file://path/file" },
+  ],
   relation: [
-    { type: "updates",
+    {
+      type: "updates",
       bibitem: RelatonBib::BibliographicItem.new(
         formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003"),
       ),
-      bib_locality: [RelatonBib::BibItemLocality.new("updates", "Reference form")],
-    }
+      bib_locality: [
+        RelatonBib::BibItemLocality.new("section", "Reference from"),
+      ],
+    },
+    {
+      type: "updates",
+      bibitem: RelatonBib::BibliographicItem.new(
+        type: "standard",
+        formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003/Cor 1:2006"),
+      ),
+    },
+    {
+      type: "partOf",
+      bibitem: RelatonBib::BibliographicItem.new(
+        title: [RelatonBib::TypedTitleString.new(type: "main", content: "Book title")],
+      ),
+    },
   ],
   series: [
     RelatonBib::Series.new(
@@ -96,7 +182,7 @@ item = RelatonBib::BibliographicItem.new(
       ),
       place: "Serie's place",
       organization: "Serie's organization",
-      abbreviation: RelatonBib::LocalizedString.new("ABVR", "en", "Latn"),
+      abbreviation: RelatonBib::LocalizedString.new("ABVR"),
       from: "2009-02-01",
       to: "2010-12-20",
       number: "serie1234",
@@ -105,25 +191,37 @@ item = RelatonBib::BibliographicItem.new(
     RelatonBib::Series.new(
       type: "alt",
       formattedref: RelatonBib::FormattedRef.new(
-        content: "serieref", language: "en", script: "Latn"
+        content: "serieref", language: "en", script: "Latn",
       ),
-    )
+    ),
+    RelatonBib::Series.new(
+      type: "journal", title: RelatonBib::TypedTitleString.new(content: "Journal"), number: "7"
+    ),
+    RelatonBib::Series.new(title: RelatonBib::TypedTitleString.new(content: "Series")),
   ],
   medium: RelatonBib::Medium.new(
-    form: "medium form", size: "medium size", scale: "medium scale"
+    form: "medium form", size: "medium size", scale: "medium scale",
   ),
-  place: ["bib place"],
+  place: [
+    "bib place",
+    RelatonBib::Place.new(name: "Geneva", uri: "geneva.place", region: "Switzelznd")
+  ],
   extent: [
-    RelatonBib::BibItemLocality.new(
-      "section", "Reference from", "Reference to"
-    ),
+    RelatonBib::BibItemLocality.new("section", "Reference from", "Reference to"),
+    RelatonBib::BibItemLocality.new("chapter", "4"),
+    RelatonBib::BibItemLocality.new("page", "10", "20"),
+    RelatonBib::BibItemLocality.new("volume", "1"),
   ],
   accesslocation: ["accesslocation1", "accesslocation2"],
-  classification: RelatonBib::Classification.new(type: "type", value: "value"),
+  classification: [
+    RelatonBib::Classification.new(type: "type", value: "value"),
+    RelatonBib::Classification.new(type: "keyword", value: "Keywords"),
+    RelatonBib::Classification.new(type: "mendeley", value: "Mendeley Tags"),
+  ],
   validity: RelatonBib::Validity.new(
     begins: Time.new(2010, 10, 10, 12, 21),
     ends: Time.new(2011, 2, 3, 18,30),
-    revision: Time.new(2011, 3, 4, 9, 0)
+    revision: Time.new(2011, 3, 4, 9, 0),
   )
 )
 ----
@@ -171,96 +269,13 @@ item.to_xml
       <fetched>2019-04-30</fetched>
       <title type=\"main\" language=\"en\" script=\"Latn\">Geographic information</title>
       <title language=\"fr\" script=\"Latn\">Information géographique</title>
-      <uri type=\"src\">https://www.iso.org/standard/53798.html</uri>
-      <uri type=\"obp\">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
-      <uri type=\"rss\">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
-      <docidentifier type=\"ISO\">TC211</docidentifier>
-      <docnumber>123456</docnumber>
-      <date type="issued">
-        <on>2014</on>
-      </date>
-      <date type="published">
-        <on>2014</on>
-      </date>
-      <date type="accessed">
-        <on>2015</on>
-      </date>
-      <contributor>
-        <role type=\"publisher\">
-          <description>Publisher role</description>
-        </role>
-        <organization>
-          <name>International Organization for Standardization</name>
-          <subdivision>division</subdivision>
-          <abbreviation>ISO</abbreviation>
-          <uri>www.iso.org</uri>
-        </organization>
-      </contributor>
-      <edition>1</edition>
-      <version>
-        <revision_date>2019-04-01</revision_date>
-        <draft>draft</draft>
-      </version>
-      <language>en</language>
-      <language>fr</language>
-      <script>Latn</script>
-      <abstract format=\"text/plain\" language=\"en\" script=\"Latn\">ISO 19115-1:2014 defines the schema required for ...</abstract>
-      <abstract format=\"text/plain\" language=\"fr\" script=\"Latn\">L'ISO 19115-1:2014 définit le schéma requis pour ...</abstract>
-      <status language=\"en\" script=\"Latn\">standard</status>
-      <copyright>
-        <from>2014</from>
-        <to>2020</to>
-        <owner>
-          <organization>
-            <name>International Organization for Standardization</name>
-            <abbreviation>ISO</abbreviation>
-            <uri>www.iso.org</uri>
-          </organization>
-        </owner>
-      </copyright>
-      <relation type=\"updates\">
-        <bibitem>
-          <formattedref>ISO 19115:2003</formattedref>
-        </bibitem>
-        <locality type=\"updates\">
-          <referenceFrom>Reference form</referenceFrom>
-        </locality>
-      </relation>
-      <series type=\"main\">
-        <title type=\"original\" format=\"text/plain\" language=\"en\" script=\"Latn\">ISO/IEC FDIS 10118-3</title>
-        <place>Serie's place</place>
-        <organization>Serie's organization</organization>
-        <abbreviation language=\"en\" script=\"Latn\">ABVR</abbreviation>
-        <from>2009-02-01</from>
-        <to>2010-12-20</to>
-        <number>serie1234</number>
-        <partnumber>part5678</partnumber>
-      </series>
-      <series type=\"alt\">
-        <formattedref language=\"en\" script=\"Latn\">serieref</formattedref>
-      </series>
-      <medium>
-        <form>medium form</form>
-        <size>medium size</size>
-        <scale>medium scale</scale>
-      </medium>
-      <place>bib place</place>
-      <locality type=\"section\">
-        <referenceFrom>Reference from</referenceFrom>
-        <referenceTo>Reference to</referenceTo>
-      </locality>
-      <accesslocation>accesslocation1</accesslocation>
-      <accesslocation>accesslocation2</accesslocation>
-      <classification type=\"type\">value</classification>
-      <validity>
-        <validityBegins>2010-10-10 12:21</validityBegins>
-        <validityEnds>2011-02-03 18:30</validityEnds>
-        <validityRevision>2011-03-04 09:00</validityRevision>
-      </validity>
+      ...
     </bibitem>"
 ----
+
 Default root element is `bibitem`. With argument `bibdata: true` the XML wrapped with `bibdata` element.
 [source,ruby]
+
 ----
 item.to_xml
 => "<bibitem id=\"ISO/TC211\" type=\"standard\">
@@ -269,20 +284,18 @@ item.to_xml
       ...
     </bibdata>"
 ----
+
 ==== Date format
+
 By default date elements are formatted as year (yyyy). Option `:date_format` allows to output date elements in `:short` (yyyy-mm) and `:full` (yyyy-mm-dd) additiona formats.
 [surce,ruby]
+
 ----
 item.to_xml date_format: :short
 => "<bibitem id=\"ISO/TC211\" type=\"standard\">
       <fetched>2019-04-30</fetched>
       <title type=\"main\" language=\"en\" script=\"Latn\">Geographic information</title>
-      <title language=\"fr\" script=\"Latn\">Information géographique</title>
-      <uri type=\"src\">https://www.iso.org/standard/53798.html</uri>
-      <uri type=\"obp\">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
-      <uri type=\"rss\">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
-      <docidentifier type=\"ISO\">TC211</docidentifier>
-      <docnumber>123456</docnumber>
+      ...
       <date type="issued">
         <on>2014-01</on>
       </date>
@@ -308,7 +321,9 @@ item.to_xml date_format: :full
       </date>
       ...
 ----
+
 === Create bibliographic item form YAML
+
 [source,ruby]
 ----
 hash = YAML.load_file 'spec/examples/bib_item.yml'
@@ -322,6 +337,40 @@ bib_hash = RelatonBib::HashConverter.hash_to_bib hash
 RelatonBib::BibliographicItem.new bib_hash
 => #<RelatonBib::BibliographicItem:0x007ff1524f8c88
 ...
+----
+
+=== Export bibliographic item to Hash
+
+[source,ruby]
+----
+item.to_hash
+=> {"id"=>"ISOTC211",
+ "title"=>
+  [{"type"=>"main", "content"=>"Geographic information", "language"=>"en", "script"=>"Latn", "format"=>"text/plain"},
+   {"content"=>"Information géographique", "language"=>"fr", "script"=>"Latn", "format"=>"text/plain"}],
+  ...
+----
+
+=== Create bibliographic item from BibTeX
+
+[source,ruby]
+----
+RelatonBib::BibtexParser.from_bibtex File.read('spec/examples/bibitem.bib')
+=> {"ISOTC211"=>
+  #<RelatonBib::BibliographicItem:0x007fedee0a2ab0
+  ...
+----
+
+=== Export bibliographic item to BibTeX
+
+[source,ruby]
+----
+item.to_bibtex
+@misc{ISOTC211,
+  tile = {Geographic information},
+  edition = {1},
+  author = {Bierman, A. and Bierman, Forename},
+  ...
 ----
 
 == Development

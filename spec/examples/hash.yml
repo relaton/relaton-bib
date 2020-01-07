@@ -17,10 +17,20 @@ link:
   content: https://www.iso.org/obp/ui/#!iso:std:53798:en
 - type: rss
   content: https://www.iso.org/contents/data/standard/05/37/53798.detail.rss
+- type: doi
+  content: http://standrd.org/doi-123
+- type: file
+  content: file://path/file
 type: standard
 docid:
-  id: TC211
+- id: TC211
   type: ISO
+- id: ISBN
+  type: isbn
+- id: LCCN
+  type: lccn
+- id: ISSN
+  type: issn
 docnumber: '123456'
 date:
 - type: issued
@@ -104,14 +114,26 @@ contributor:
     - type: phone
       value: '223322'
   role: author
+- organization:
+    name: Institution
+  role:
+    description: sponsor
+    type: distributor
 edition: '1'
 version:
   revision_date: '2019-04-01'
   draft: draft
 revdate: '2019-04-01'
 biblionote:
-  content: note
-  type: bibnote
+- note
+- content: An note
+  type: annote
+- content: How published
+  type: howpublished
+- content: Comment
+  type: comment
+- content: Table Of Contents
+  type: tableOfContents
 language:
 - en
 - fr
@@ -151,6 +173,12 @@ relation:
     formattedref:
       content: ISO 19115:2003/Cor 1:2006
       format: text/plain
+- type: partOf
+  bibitem:
+    title:
+      type: main
+      content: Book title
+      format: text/plain
 series:
 - type: main
   title:
@@ -172,6 +200,14 @@ series:
     language: en
     script: Latn
     format: text/plain
+- type: journal
+  title:
+    content: Journal
+    format: text/plain
+  number: '7'
+- title:
+    content: Series
+    format: text/plain
 medium:
   form: medium form
   size: medium size
@@ -182,17 +218,28 @@ place:
   uri: geneva.place
   region: Switzelznd
 extent:
-  type: section
+- type: section
   reference_from: Reference from
   reference_to: Reference to
+- type: chapter
+  reference_from: '4'
+- type: page
+  reference_from: '10'
+  reference_to: '20'
+- type: volume
+  reference_from: '1'
 accesslocation:
 - accesslocation1
 - accesslocation2
 classification:
-  value: value
+- value: value
   type: type
+- value: Keywords
+  type: keyword
+- value: Mendeley Tags
+  type: mendeley
 validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2019-12-18'
+fetched: '2020-01-04'

@@ -132,10 +132,14 @@ module RelatonBib
 
         ret[:biblionote] = array(ret[:biblionote])
         (ret[:biblionote])&.each_with_index do |n, i|
-          ret[:biblionote][i] = BiblioNote.new(
-            content: n[:content], type: n[:type], language: n[:language],
-            script: n[:script], format: n[:format]
-          )
+          ret[:biblionote][i] = if n.is_a?(String)
+            BiblioNote.new content: n
+          else
+            BiblioNote.new(
+              content: n[:content], type: n[:type], language: n[:language],
+              script: n[:script], format: n[:format]
+            )
+          end
         end
       end
 
@@ -310,7 +314,7 @@ module RelatonBib
         # ret[:classification][i] = RelatonBib::Classification.new(c)
         # end
         if ret[:classification]
-          ret[:classification] = Classification.new(ret[:classification])
+          ret[:classification] = array(ret[:classification]).map { |cls| Classification.new cls }
         end
       end
 
