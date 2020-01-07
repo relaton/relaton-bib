@@ -4,9 +4,26 @@
 
 The following structure is in place for encoding bibitem as YAML objects, and is also used 
 to represent bibliographic entries in Metanorma Asciidoctor. The structure has not yet been
-generalised to `bibdata/ext`, the flavour specific extensions of relaton.
+generalised to `bibdata/ext`, the flavour-specific extensions of relaton.
 
-Any elements which are arrays can also be populated by a hash or single element. For example,
+If an element in Relaton XML has attributes, the content of the element is represented in YAML
+with a `content` key:
+
+[source,xml]
+....
+<title type="main">Geographic information</title>
+....
+
+[source,yaml]
+....
+title:
+  type: main
+  content: Geographic information
+....
+
+Any elements with a cardinality of many can be represented as arrays, but
+they can also be populated by a hash or single element. For example,
+a Relaton title can have multiple titles, and multiple scripts; so
 the following are equivalent:
 
 [source,yaml]
@@ -254,22 +271,53 @@ validity:
   revision: 2011-03-04 09:00
 ....
 
-== Metanorma structure: nested definition list
+== Metanorma structure (AsciiBib): nested definition list
 
-The Metanorma Asciidoctor representation of this hash structure
+The Metanorma Asciidoctor representation of the Relaton hash structure
 in a bibliography
-is as a definition list, with nested definition lists for nested structures.
+is as a definition list of element name and element contents,
+with nested definition lists for nested structures. If a nested
+definition is given for an element, the element itself has a blank definition.
+
+As with the YAML representation, if an element in Relaton XML has attributes, 
+the content of the element is represented in YAML with a `content` key:
+
+[source,xml]
+....
+<title type="main">Geographic information</title>
+....
+
+[source,asciidoc]
+....
+title::
+  type::: main
+  content::: Geographic information
+....
+
+Likewise, as with the YAML representation,
 Repeating elements in a hash can be realised as ordered or unordered lists.
-However, given how awkward lists of definition lists are in Asciidoctor
-(with a limitation of three nesting levels),
-Metanorma Asciidoctor also supports representing repeating elements 
-by repeating the key for that entry.
+
+[source,asciidoc]
+----
+language::
+  . en
+  . fr
+----
+
+Metanorma Asciidoctor also supports representing repeating elements
+by repeating the key for that entry. This will almost always be more
+straightforward to use in Asciidoctor:
+
+[source,asciidoc]
+----
+language:: en
+language:: fr
+----
 
 Each Relaton entry in a bibliography is represented in Metanorma Asciidoctor
 through a subclause with option attribute `[%bibitem]`. Any title given to the
 subclause is treated as the title for the bibliographic entry, with language `en`,
-script `Latn`, format `text/plain`, and type `main`. If there is no such title
-for the entry, the subclause title should be left as `{blank}`.
+script `Latn`, format `text/plain`, and type `main`. 
 
 So the following is a very simple reference in Metanorma Asciidoctor:
 
@@ -287,9 +335,28 @@ docid::
 type:: standard
 ----
 
-The anchor crossreference for the bibliographic entry may be encoded as the
+If there is no such title
+for the entry, the subclause title should be left as `{blank}`, and the desired
+title should be given in the hash body:
+
+[source,asciidoc]
+----
+[%bibitem]
+=== {blank}
+id:: iso123
+title::
+language::: fr
+script::: Latn
+format::: text/plain
+type::: alt
+content::: Latex de caoutchouc -- Échantillonnage
+----
+
+Note the use of `content` as a key to represent the contents of the `title` tag.
+
+The anchor crossreference for the bibliographic entry may be encoded as either the
 `id` entry in the definition list, or as the normal Asciidoctor anchor on the
-subclause, which takes priority over it:
+subclause, which takes priority:
 
 [source,asciidoc]
 ----
@@ -302,9 +369,40 @@ docid::
 type:: standard
 ----
 
-Asciidoctor does not currently cope with definition lists more than four levels
+Repeating elements in a hash can be realised as ordered or unordered lists.
+
+[source,asciidoc]
+----
+[[iso123]]
+[%bibitem]
+=== Rubber latex -- Sampling
+docid:: 
+  type::: ISO
+  id::: ISO 123
+language::
+  . en
+  . fr
+----
+
+Metanorma Asciidoctor also supports representing repeating elements  
+by repeating the key for that entry. This will almost always be more
+straightforward to use in Asciidoctor:
+
+[source,asciidoc]
+----
+[[iso123]]
+[%bibitem]
+=== Rubber latex -- Sampling
+docid:: 
+  type::: ISO
+  id::: ISO 123
+language:: en
+language:: fr
+----
+
+Asciidoctor does not recognise definition lists more than four levels
 deep. If deeper nesting is needed, you will need to attach a new definition
-list with a list continuation:
+list with a list continuation, with the definition list depth reset back to one:
 
 [source,asciidoc]
 ----
@@ -327,12 +425,21 @@ completename::
 --
 ----
 
+(This is very awkward, and <<JSONPath>> provides a workaround.)
+
 The most heavily nested parts of a Relaton entry are the contributors,
-series, and relations. To prevent excessive depth of nesting for such
-entries, they can be marked up as subclauses within the entry, with the clause
+series, and relations. 
+Each of these can be marked up as subclauses within the entry, with the clause
 titles "contributor", "series", and "relation". Each subclause contains
 a new definition list, with its definition list reset to zero depth;
 the subclauses can be repeated for multiple instances of the same subentity.
+
+AsciiBib citations can be combined with other Asciidoctor citations in the
+same Metanorma document; but any Asciidoctor citations need be precede
+AsciiBib citations. Each AsciiBib citations constitutes a subclause of its own,
+and Metanorma will (unsuccessfully) attempt to incorporate any trailing material
+in the subclause, including  Asciidoctor citations, into the current AsciiBib
+citation.
 
 The following is Metanorma Asciidoctor markup corresponding to the YAML
 given above:
@@ -549,11 +656,14 @@ formattedref::
   script::: Latn
 ....
 
+[[JSONPath]]
 == JSON Path style definition lists
 
 The foregoing structure requires frequent breakouts into open blocks, to deal
 with the limitation on Asciidoctor nested definition lists. An alternative is to
-represent the nested structure of Relaton records in a simple, one-level definition list, and to use the key for each key-value pair to represent the hierarchical nesting of entries, as a dot-delimited path of keys. For example,
+represent the nested structure of Relaton records in a simple, one-level definition list, 
+and to use the key for each key-value pair to represent the hierarchical nesting of entries, 
+as a dot-delimited path of keys. For example,
 
 [source,asciidoc]
 ----
@@ -573,7 +683,7 @@ can instead be represented as:
 === Rubber latex -- Sampling
 id:: iso123
 docid.type:: ISO
-docid.id::: ISO 123
+docid.id:: ISO 123
 ----
 
 Whenever part of the key is repeated between entries, the entries are assumed to attach to the same parent. If an array of hashes is needed, a blank entry is required for the key of each repeating element: For example,
@@ -601,7 +711,7 @@ can instead be represented as:
 id:: iso123
 docid::
 docid.type:: ISO
-docid.id::: ISO 123
+docid.id:: ISO 123
 docid::
 docid.type:: ABC
 docid.id:: 32784
