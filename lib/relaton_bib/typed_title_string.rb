@@ -17,7 +17,7 @@ module RelatonBib
     # @param script [String]
     def initialize(**args)
       if args[:type] && !TITLE_TYPES.include?(args[:type])
-        raise ArgumentError, %{The type #{args[:type]} is invalid.}
+        warn %{[relaton-bib] title type "#{args[:type]}" is invalid.}
       end
 
       unless args[:title] || args[:content]

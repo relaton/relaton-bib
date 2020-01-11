@@ -1,8 +1,8 @@
 RSpec.describe RelatonBib::TypedTitleString do
   it "raises invalid type argument error" do
     expect do
-      RelatonBib::TypedTitleString.new type: "type"
-    end.to raise_error ArgumentError
+      RelatonBib::TypedTitleString.new type: "type", content: "title"
+    end.to output(/title type "type" is invalid/).to_stderr
   end
 
   it "raises missed title or content argument error" do
