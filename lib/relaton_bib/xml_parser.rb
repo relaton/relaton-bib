@@ -170,10 +170,11 @@ module RelatonBib
       def fetch_dates(item)
         item.xpath("./date").map do |d|
           type = d[:type].to_s.empty? ? "published" : d[:type]
-          RelatonBib::BibliographicDate.new(
-            type: type, on: d.at("on")&.text, from: d.at("from")&.text,
-            to: d.at("to")&.text
-          )
+          if (on = d.at("on"))
+            RelatonBib::BibliographicDate.new(type: type, on: on.text, to: d.at("to")&.text)
+          elsif (from = d.at{"from"})
+            RelatonBib::BibliographicDate.new(type: type, from: from.text, to: d.at("to")&.text)
+          end
         end
       end
 

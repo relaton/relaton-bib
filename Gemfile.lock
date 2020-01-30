@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    relaton-bib (0.5.0)
+    relaton-bib (0.5.1)
       addressable
       bibtex-ruby
       iso639
@@ -12,7 +12,7 @@ GEM
   specs:
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    bibtex-ruby (5.0.1)
+    bibtex-ruby (5.1.1)
       latex-decode (~> 0.0)
     byebug (11.0.1)
     debase (0.2.4.1)
@@ -69,4 +69,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-   2.0.2
+   2.1.4
