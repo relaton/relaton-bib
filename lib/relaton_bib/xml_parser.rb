@@ -168,12 +168,12 @@ module RelatonBib
       end
 
       def fetch_dates(item)
-        item.xpath("./date").map do |d|
+        item.xpath("./date").reduce([]) do |a, d|
           type = d[:type].to_s.empty? ? "published" : d[:type]
           if (on = d.at("on"))
-            RelatonBib::BibliographicDate.new(type: type, on: on.text, to: d.at("to")&.text)
-          elsif (from = d.at{"from"})
-            RelatonBib::BibliographicDate.new(type: type, from: from.text, to: d.at("to")&.text)
+            a << RelatonBib::BibliographicDate.new(type: type, on: on.text, to: d.at("to")&.text)
+          elsif (from = d.at("from"))
+            a << RelatonBib::BibliographicDate.new(type: type, from: from.text, to: d.at("to")&.text)
           end
         end
       end

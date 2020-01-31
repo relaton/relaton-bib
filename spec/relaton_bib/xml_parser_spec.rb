@@ -4,4 +4,26 @@ RSpec.describe RelatonBib::XMLParser do
     item = RelatonBib::XMLParser.from_xml xml
     expect(item.to_xml).to be_equivalent_to xml
   end
+
+  it "parse date from" do
+    xml = <<~XML
+      <bibitem id="id">
+        <title type="main">Title</title>
+        <date type="circulated"><from>2001-02-03</from></date>
+      </bibitem>
+    XML
+    item = RelatonBib::XMLParser.from_xml xml
+    expect(item.date.first.from.to_s).to eq "2001-02-03"
+  end
+
+  it "ignore empty dates" do
+    xml = <<~XML
+      <bibitem id="id">
+        <title type="main">Title</title>
+        <date type="circulated" />
+      </bibitem>
+    XML
+    item = RelatonBib::XMLParser.from_xml xml
+    expect(item.date).to be_empty 
+  end
 end
