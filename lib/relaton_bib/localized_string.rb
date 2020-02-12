@@ -39,7 +39,7 @@ module RelatonBib
 
       builder.parent["language"] = language.join(",") if language&.any?
       builder.parent["script"]   = script.join(",") if script&.any?
-      builder.text content
+      builder.text content.encode(xml: :text)
     end
 
     # @return [Hash]

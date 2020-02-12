@@ -302,7 +302,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
 
   it "warn invalid type argument error" do
     expect { RelatonBib::BibliographicItem.new type: "type" }.to output(
-      /Document type "type" is invalid./,
+      /\[relaton-bib\] document type "type" is invalid./,
     ).to_stderr
   end
 

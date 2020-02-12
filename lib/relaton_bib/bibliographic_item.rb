@@ -171,7 +171,7 @@ module RelatonBib
     # @option link [String] :content
     def initialize(**args)
       if args[:type] && !TYPES.include?(args[:type])
-        warn %{Document type "#{args[:type]}" is invalid.}
+        warn %{[relaton-bib] document type "#{args[:type]}" is invalid.}
       end
 
       @title = (args[:title] || []).map do |t|

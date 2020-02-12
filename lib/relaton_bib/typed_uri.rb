@@ -6,13 +6,18 @@ module RelatonBib
     # @return [Symbol] :src/:obp/:rss
     attr_reader :type
     # @retutn [URI]
-    attr_accessor :content
+    attr_reader :content
 
     # @param type [String] src/obp/rss
     # @param content [String]
     def initialize(type:, content:)
       @type    = type
       @content = Addressable::URI.parse content if content
+    end
+
+    # @parma url [String]
+    def content=(url)
+      @content = Addressable::URI.parse url
     end
 
     # @param builder [Nokogiri::XML::Builder]

@@ -41,7 +41,8 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder
     #
     def to_xml(builder)
-      builder.docidentifier(id, type: type)
+      element = builder.docidentifier id
+      element[:type] = type if type
     end
 
     # @return [Hash]
