@@ -113,6 +113,9 @@ module RelatonBib
     # @return [Date]
     attr_reader :fetched
 
+    # @return [Array<RelatonBib::LocalizedString>]
+    attr_reader :keyword
+
     # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
@@ -136,6 +139,7 @@ module RelatonBib
     # @param classification [Array<RelatonBib::Classification>]
     # @param validity [RelatonBib:Validity, NilClass]
     # @param fetched [Date, NilClass] default nil
+    # @param keyword [Array<String>]
     #
     # @param copyright [Hash, RelatonBib::CopyrightAssociation, NilClass]
     # @option copyright [Hash, RelatonBib::ContributionInfo] :owner
@@ -222,6 +226,7 @@ module RelatonBib
       @classification = args.fetch :classification, []
       @validity       = args[:validity]
       @fetched        = args.fetch :fetched, nil # , Date.today # we should pass the fetched arg from scrappers
+      @keyword        = (args[:keyword] || []).map { |kw| LocalizedString.new(kw) }
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -303,6 +308,7 @@ module RelatonBib
       hash["classification"] = single_element_array(classification) if classification&.any?
       hash["validity"] = validity.to_hash if validity
       hash["fetched"] = fetched.to_s if fetched
+      hash["keyword"] = single_element_array(keyword) if keyword&.any?
       hash
     end
 
@@ -323,6 +329,7 @@ module RelatonBib
       bibtex_date item
       bibtex_series item
       bibtex_classification item
+      item.keywords = keyword.map(&:content).join(", ") if keyword.any?
       bibtex_docidentifier item
       item.timestamp = fetched.to_s if fetched
       bibtex_link item
@@ -455,7 +462,7 @@ module RelatonBib
       classification.each do |c|
         case c.type
         when "type" then item["type"] = c.value
-        when "keyword" then item.keywords = c.value
+        # when "keyword" then item.keywords = c.value
         when "mendeley" then item["mendeley-tags"] = c.value
         end
       end
@@ -520,6 +527,7 @@ module RelatonBib
         extent.each { |e| builder.extent { e.to_xml builder } }
         accesslocation.each { |al| builder.accesslocation al }
         classification.each { |cls| cls.to_xml builder }
+        keyword.each { |kw| builder.keyword { kw.to_xml(builder) } }
         validity&.to_xml builder
         if block_given?
           yield builder

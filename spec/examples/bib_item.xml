@@ -1,5 +1,5 @@
 <bibitem id="ISOTC211" type="standard">
-  <fetched>2020-01-04</fetched>
+  <fetched>2020-02-13</fetched>
   <title type="main" format="text/plain" language="en" script="Latn">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
   <uri type="src">https://www.iso.org/standard/53798.html</uri>
@@ -194,6 +194,8 @@
   <classification type="type">value</classification>
   <classification type="keyword">Keywords</classification>
   <classification type="mendeley">Mendeley Tags</classification>
+  <keyword>Keyword</keyword>
+  <keyword>Key Word</keyword>
   <validity>
     <validityBegins>2010-10-10 12:21</validityBegins>
     <validityEnds>2011-02-03 18:30</validityEnds>

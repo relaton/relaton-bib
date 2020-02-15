@@ -30,7 +30,7 @@ RSpec.describe RelatonBib::BibtexParser do
         doi = {http://standard.org/doi-123},
         comment = {Comment},
         isbn = {isbnId},
-        keywords = {Keyword},
+        keywords = {Keyword, Key Word},
         language = {english},
         lccn = {lccnId},
         file2 = {file://path/file},

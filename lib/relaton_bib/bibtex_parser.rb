@@ -24,7 +24,8 @@ module RelatonBib
             series: fetch_series(bt),
             link: fetch_link(bt),
             language: fetch_language(bt),
-            classification: fetch_classification(bt)
+            classification: fetch_classification(bt),
+            keyword: fetch_keyword(bt)
           )
           h
         end
@@ -225,11 +226,17 @@ module RelatonBib
       def fetch_classification(bibtex)
         cls = []
         cls << Classification.new(type: "type", value: bibtex["type"].to_s) if bibtex["type"]
-        cls << Classification.new(type: "keyword", value: bibtex.keywords.to_s) if bibtex["keywords"]
+        # cls << Classification.new(type: "keyword", value: bibtex.keywords.to_s) if bibtex["keywords"]
         if bibtex["mendeley-tags"]
-        cls << Classification.new(type: "mendeley", value: bibtex["mendeley-tags"].to_s)
+          cls << Classification.new(type: "mendeley", value: bibtex["mendeley-tags"].to_s)
         end
         cls
+      end
+
+      # @param bibtex [BibTeX::Entry]
+      # @return [Array<String>]
+      def fetch_keyword(bibtex)
+        bibtex["keywords"]&.split(", ") || []
       end
     end
   end
