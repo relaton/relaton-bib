@@ -42,7 +42,8 @@ module RelatonBib
           extent: fetch_extent(bibitem),
           accesslocation: bibitem.xpath("./accesslocation").map(&:text),
           classification: fetch_classification(bibitem),
-          keyword: fetch_keyword(bibitem),
+          keyword: bibitem.xpath("keyword").map(&:text),
+          license: bibitem.xpath("license").map(&:text),
           validity: fetch_validity(bibitem),
         }
       end
@@ -123,10 +124,6 @@ module RelatonBib
         item.xpath("classification").map do |cls|
           Classification.new type: cls[:type], value: cls.text
         end
-      end
-
-      def fetch_keyword(item)
-        item.xpath("keyword").map &:text
       end
 
       def fetch_validity(item)

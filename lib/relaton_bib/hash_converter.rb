@@ -26,6 +26,8 @@ module RelatonBib
         accesslocation_hash_to_bib(ret)
         classification_hash_to_bib(ret)
         validity_hash_to_bib(ret)
+        ret[:keyword] = array(ret[:keyword])
+        ret[:license] = array(ret[:license])
         ret
       end
 

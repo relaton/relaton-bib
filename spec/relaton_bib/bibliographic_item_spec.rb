@@ -192,6 +192,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
           RelatonBib::Classification.new(type: "mendeley", value: "Mendeley Tags"),
         ],
         keyword: ["Keyword", "Key Word"],
+        license: ["License"],
         validity: RelatonBib::Validity.new(
           begins: Time.new(2010, 10, 10, 12, 21),
           ends: Time.new(2011, 2, 3, 18,30),

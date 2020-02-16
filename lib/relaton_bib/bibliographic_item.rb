@@ -102,7 +102,7 @@ module RelatonBib
     attr_reader :extent
 
     # @return [Array<Strig>]
-    attr_reader :accesslocation
+    attr_reader :accesslocation, :license
 
     # @return [Array<Relaton::Classification>]
     attr_reader :classification
@@ -227,6 +227,7 @@ module RelatonBib
       @validity       = args[:validity]
       @fetched        = args.fetch :fetched, nil # , Date.today # we should pass the fetched arg from scrappers
       @keyword        = (args[:keyword] || []).map { |kw| LocalizedString.new(kw) }
+      @license        = args.fetch :license, []
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -309,6 +310,7 @@ module RelatonBib
       hash["validity"] = validity.to_hash if validity
       hash["fetched"] = fetched.to_s if fetched
       hash["keyword"] = single_element_array(keyword) if keyword&.any?
+      hash["license"] = single_element_array(license) if license&.any?
       hash
     end
 
@@ -526,6 +528,7 @@ module RelatonBib
         place.each { |pl| pl.to_xml builder }
         extent.each { |e| builder.extent { e.to_xml builder } }
         accesslocation.each { |al| builder.accesslocation al }
+        license.each { |l| builder.license l }
         classification.each { |cls| cls.to_xml builder }
         keyword.each { |kw| builder.keyword { kw.to_xml(builder) } }
         validity&.to_xml builder
