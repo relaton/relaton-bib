@@ -1,5 +1,8 @@
 module RelatonBib
   class Hit
+    # @return [RelatonBib::HitCollection]
+    attr_reader :hit_collection
+
     # @return [Array<Hash>]
     attr_reader :hit
 
@@ -24,9 +27,20 @@ module RelatonBib
       "@title=\"#{@hit[:code]}\">"
     end
 
-    # @return [String]
-    def to_xml(**opts)
-      fetch.to_xml **opts
+    def fetch
+      raise "Not implemented"
+    end
+
+    # @param builder [Nokogiri::XML::Builder]
+    def to_xml(builder = nil, **opts)
+      if builder
+        fetch.to_xml builder, **opts
+      else
+        builder = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
+          fetch.to_xml xml, **opts
+        end
+        builder.doc.root.to_xml
+      end
     end
   end
 end

@@ -9,9 +9,12 @@ RSpec.describe RelatonBib::Hit do
   end
 
   it "to xml" do
-    item = double
-    expect(item).to receive(:to_xml).and_return "<bibdata></bibdata>"
+    item = RelatonBib::BibliographicItem.new
     expect(subject).to receive(:fetch).and_return item
-    expect(subject.to_xml).to eq "<bibdata></bibdata>"
+    expect(subject.to_xml).to eq "<bibitem/>"
+  end
+
+  it "raise not implemented" do
+    expect { subject.fetch }.to raise_error "Not implemented"
   end
 end
