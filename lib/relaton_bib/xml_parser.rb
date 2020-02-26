@@ -7,7 +7,11 @@ module RelatonBib
         doc = Nokogiri::XML(xml)
         doc.remove_namespaces!
         bibitem = doc.at "/bibitem|/bibdata"
-        BibliographicItem.new(item_data(bibitem))
+        if bibitem
+          BibliographicItem.new(item_data(bibitem))
+        else
+          warn "[relato-bib] can't find bibitem or bibdata element in the XML"
+        end
       end
 
       private
