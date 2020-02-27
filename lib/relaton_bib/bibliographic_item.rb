@@ -54,7 +54,7 @@ module RelatonBib
     attr_reader :docnumber
 
     # @return [Array<RelatonBib::BibliographicDate>]
-    attr_reader :date
+    attr_accessor :date
 
     # @return [Array<RelatonBib::ContributionInfo>]
     attr_reader :contributor
