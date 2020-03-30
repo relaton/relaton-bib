@@ -1,6 +1,6 @@
 module RelatonBib
   class TypedTitleString
-    TITLE_TYPES = %w[alternative original unofficial subtitle main].freeze
+    # TITLE_TYPES = %w[alternative original unofficial subtitle main].freeze
 
     # @return [String]
     attr_reader :type
@@ -16,9 +16,9 @@ module RelatonBib
     # @param language [String]
     # @param script [String]
     def initialize(**args)
-      if args[:type] && !TITLE_TYPES.include?(args[:type])
-        warn %{[relaton-bib] title type "#{args[:type]}" is invalid.}
-      end
+      # if args[:type] && !TITLE_TYPES.include?(args[:type])
+      #   warn %{[relaton-bib] title type "#{args[:type]}" is invalid.}
+      # end
 
       unless args[:title] || args[:content]
         raise ArgumentError, %{Keyword "title" or "content" should be passed.}

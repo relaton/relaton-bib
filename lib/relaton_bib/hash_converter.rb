@@ -230,7 +230,7 @@ module RelatonBib
                   end
             FormattedString.new cnt
           end
-          Affilation.new(
+          Affiliation.new(
             organization: Organization.new(org_hash_to_bib(a[:organization])),
             description: a[:description],
           )
@@ -269,7 +269,7 @@ module RelatonBib
         if rel[:bibitem]
           ret[:relation][idx][:bibitem] = bib_item(hash_to_bib(rel[:bibitem], true))
         else
-          warn "bibitem missing: #{rel}"
+          warn "[relaton-bib] bibitem missing: #{rel}"
           ret[:relation][idx][:bibitem] = nil
         end
       end

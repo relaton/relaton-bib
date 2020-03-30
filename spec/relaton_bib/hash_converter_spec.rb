@@ -11,7 +11,7 @@ RSpec.describe RelatonBib::HashConverter do
       affiliation: { description: "Description", organization: { name: "Org" } },
     )
     expect(affiliation).to be_instance_of Array
-    expect(affiliation.first).to be_instance_of RelatonBib::Affilation
+    expect(affiliation.first).to be_instance_of RelatonBib::Affiliation
   end
 
   it "make localized string from hash" do

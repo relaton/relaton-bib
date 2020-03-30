@@ -120,7 +120,7 @@ module RelatonBib
     # @return [RelatonBib::FullName]
     attr_accessor :name
 
-    # @return [Array<RelatonBib::Affilation>]
+    # @return [Array<RelatonBib::Affiliation>]
     attr_accessor :affiliation
 
     # @return [Array<RelatonBib::PersonIdentifier>]
@@ -130,8 +130,9 @@ module RelatonBib
     # @param affiliation [Array<RelatonBib::Affiliation>]
     # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
     # @param identifier [Array<RelatonBib::PersonIdentifier>]
-    def initialize(name:, affiliation: [], contact: [], identifier: [])
-      super(contact: contact)
+    # @param url [String, NilClass]
+    def initialize(name:, affiliation: [], contact: [], identifier: [], url: nil)
+      super(contact: contact, url: url)
       @name        = name
       @affiliation = affiliation
       @identifier = identifier

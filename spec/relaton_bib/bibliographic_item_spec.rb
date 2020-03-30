@@ -58,7 +58,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
               name: RelatonBib::FullName.new(
                 completename: localized_string("A. Bierman"),
               ),
-              affiliation: [RelatonBib::Affilation.new(
+              affiliation: [RelatonBib::Affiliation.new(
                 organization: RelatonBib::Organization.new(
                   name: "IETF",
                   abbreviation: RelatonBib::LocalizedString.new("IETF"),
@@ -92,7 +92,7 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
                 addition: [localized_string("Addition")],
                 prefix: [localized_string("Prefix")],
               ),
-              affiliation: [RelatonBib::Affilation.new(
+              affiliation: [RelatonBib::Affiliation.new(
                 organization: RelatonBib::Organization.new(name: "IETF", abbreviation: "IETF"),
                 description: [localized_string("Description")]
               )],

@@ -199,13 +199,13 @@ module RelatonBib
       end
 
       def get_person(person)
-        affilations = person.xpath("./affiliation").map do |a|
+        affiliations = person.xpath("./affiliation").map do |a|
           org = a.at "./organization"
           desc = a.xpath("./description").map do |e|
             FormattedString.new(content: e.text, language: e[:language],
                                 script: e[:script], format: e[:format])
           end
-          Affilation.new organization: get_org(org), description: desc
+          Affiliation.new organization: get_org(org), description: desc
         end
 
         contact = person.xpath("./address | ./phone | ./email | ./uri").map do |c|
@@ -245,7 +245,7 @@ module RelatonBib
 
         Person.new(
           name: name,
-          affiliation: affilations,
+          affiliation: affiliations,
           contact: contact,
           identifier: identifier,
         )

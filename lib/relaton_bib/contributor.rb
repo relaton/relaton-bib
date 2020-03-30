@@ -82,8 +82,8 @@ module RelatonBib
     end
   end
 
-  # Affilation.
-  class Affilation
+  # Affiliation.
+  class Affiliation
     include RelatonBib
 
     # @return [RelatonBib::LocalizedString, NilClass]
@@ -132,7 +132,7 @@ module RelatonBib
     # @return [Array<RelatonBib::Address, RelatonBib::Contact>]
     attr_reader :contact
 
-    # @param url [String]
+    # @param url [String, NilClass]
     # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
     def initialize(url: nil, contact: [])
       @uri = URI url if url

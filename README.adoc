@@ -85,7 +85,7 @@ item = RelatonBib::BibliographicItem.new(
         name: RelatonBib::FullName.new(
           completename: RelatonBib::LocalizedString.new("A. Bierman", "en"),
         ),
-        affiliation: [RelatonBib::Affilation.new(
+        affiliation: [RelatonBib::Affiliation.new(
           organization: RelatonBib::Organization.new(
             name: "IETF",
             abbreviation: RelatonBib::LocalizedString.new("IETF"),
@@ -119,7 +119,7 @@ item = RelatonBib::BibliographicItem.new(
           addition: [RelatonBib::LocalizedString.new("Addition", "en")],
           prefix: [RelatonBib::LocalizedString.new("Prefix", "en")],
         ),
-        affiliation: [RelatonBib::Affilation.new(
+        affiliation: [RelatonBib::Affiliation.new(
           organization: RelatonBib::Organization.new(name: "IETF", abbreviation: "IETF"),
           description: [RelatonBib::LocalizedString.new("Description", "en")]
         )],
