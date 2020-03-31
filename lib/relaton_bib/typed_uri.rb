@@ -8,9 +8,9 @@ module RelatonBib
     # @retutn [URI]
     attr_reader :content
 
-    # @param type [String] src/obp/rss
+    # @param type [String, NilClass] src/obp/rss
     # @param content [String]
-    def initialize(type:, content:)
+    def initialize(type: nil, content:)
       @type    = type
       @content = Addressable::URI.parse content if content
     end
@@ -22,12 +22,15 @@ module RelatonBib
 
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
-      builder.uri(content.to_s, type: type)
+      doc = builder.uri content.to_s
+      doc[:type] = type if type
     end
 
     # @return [Hash]
     def to_hash
-      { "type" => type, "content" => content.to_s }
+      hash = { "content" => content.to_s }
+      hash["type"] = type.to_s if type
+      hash
     end
   end
 end

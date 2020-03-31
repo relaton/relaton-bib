@@ -217,7 +217,12 @@ module RelatonBib
       @script         = args.fetch :script, []
       @status         = args[:docstatus]
       @relation       = DocRelationCollection.new(args[:relation] || [])
-      @link           = args.fetch(:link, []).map { |s| s.is_a?(Hash) ? TypedUri.new(s) : s }
+      @link           = args.fetch(:link, []).map do |s|
+        if s.is_a?(Hash) then TypedUri.new(s)
+        elsif s.is_a?(String) then TypedUri.new(content: s)
+        else s
+        end
+      end
       @series         = args.fetch :series, []
       @medium         = args[:medium]
       @place          = args.fetch(:place, []).map { |pl| pl.is_a?(String) ? Place.new(name: pl) : pl }
