@@ -81,7 +81,10 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
               abbreviation: "IETF",
               identifier: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
             ),
-            role: [type: "publisher"],
+            role: [
+              { type: "publisher", description: ["Publisher description"] },
+              { type: "editor", description: ["Editor description"] },
+            ],
           ),
           {
             entity: RelatonBib::Person.new(

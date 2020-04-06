@@ -11,16 +11,16 @@ title:
   script: Latn
   format: text/plain
 link:
-- type: src
-  content: https://www.iso.org/standard/53798.html
-- type: obp
-  content: https://www.iso.org/obp/ui/#!iso:std:53798:en
-- type: rss
-  content: https://www.iso.org/contents/data/standard/05/37/53798.detail.rss
-- type: doi
-  content: http://standrd.org/doi-123
-- type: file
-  content: file://path/file
+- content: https://www.iso.org/standard/53798.html
+  type: src
+- content: https://www.iso.org/obp/ui/#!iso:std:53798:en
+  type: obp
+- content: https://www.iso.org/contents/data/standard/05/37/53798.detail.rss
+  type: rss
+- content: http://standrd.org/doi-123
+  type: doi
+- content: file://path/file
+  type: file
 type: standard
 docid:
 - id: TC211
@@ -76,7 +76,11 @@ contributor:
     identifier:
       type: uri
       id: www.ietf.org
-  role: publisher
+  role:
+  - description: Publisher description
+    type: publisher
+  - description: Editor description
+    type: editor
 - person:
     name:
       forename:
@@ -242,7 +246,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2020-02-16'
+fetched: '2020-04-05'
 keyword:
 - Keyword
 - Key Word

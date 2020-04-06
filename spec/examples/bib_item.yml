@@ -104,7 +104,11 @@ contributor:
       identifier:
         type: uri
         id: www.ietf.org
-    role: publisher
+    role:
+      - type: publisher
+        description: Publisher description
+      - type: editor
+        description: Editor description
  
   - person:
       name:
