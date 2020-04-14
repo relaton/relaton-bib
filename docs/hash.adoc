@@ -758,7 +758,7 @@ The following is Metanorma Asciidoctor markup corresponding to the YAML
 given above, using JSON Path style definition lists instead of nested definition lists:
 
 [source,asciidoc]
-....
+----
 [[ISO/TC211]]
 [%bibitem]
 === {blank}
