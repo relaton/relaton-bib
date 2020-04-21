@@ -10,7 +10,7 @@ module RelatonBib
         if bibitem
           BibliographicItem.new(item_data(bibitem))
         else
-          warn "[relato-bib] can't find bibitem or bibdata element in the XML"
+          warn "[relato-bib] WARNING: can't find bibitem or bibdata element in the XML"
         end
       end
 
@@ -257,6 +257,8 @@ module RelatonBib
         end
       end
 
+      # @param item [Nokogiri::XML::Element]
+      # @return [Array<RelatonBib::ContributionInfo>]
       def fetch_contributors(item)
         item.xpath("./contributor").map do |c|
           entity = if (org = c.at "./organization") then get_org(org)
@@ -269,6 +271,8 @@ module RelatonBib
         end
       end
 
+      # @param item [Nokogiri::XML::Element]
+      # @return [Array<RelatonBib::FormattedString>]
       def fetch_abstract(item)
         item.xpath("./abstract").map do |a|
           FormattedString.new(
@@ -277,6 +281,8 @@ module RelatonBib
         end
       end
 
+      # @param item [Nokogiri::XML::Element]
+      # @return [RelatonBib::CopyrightAssociation]
       def fetch_copyright(item)
         cp     = item.at("./copyright") || return
         org    = cp&.at("owner/organization")
@@ -290,30 +296,51 @@ module RelatonBib
         CopyrightAssociation.new(owner: owner, from: from, to: to)
       end
 
+      # @param item [Nokogiri::XML::Element]
+      # @return [Arra<RelatonBib::TypedUri>]
       def fetch_link(item)
         item.xpath("./uri").map do |l|
           TypedUri.new type: l[:type], content: l.text
         end
       end
 
+      # @param item [Nokogiri::XML::Element]
+      # @return [Array<RelatonBib::DocumentRelation>]
       def fetch_relations(item)
         item.xpath("./relation").map do |rel|
-          localities = rel.xpath("./locality").map do |l|
-            ref_to = (rt = l.at("./referenceTo")) ? LocalizedString.new(rt.text) : nil
-            BibItemLocality.new(
-              l[:type],
-              LocalizedString.new(l.at("./referenceFrom").text),
-              ref_to,
-            )
-          end
           DocumentRelation.new(
             type: rel[:type]&.empty? ? nil : rel[:type],
             bibitem: BibliographicItem.new(item_data(rel.at("./bibitem"))),
-            bib_locality: localities,
+            locality: localities(rel),
           )
         end
       end
 
+      # @param rel [Nokogiri::XML::Element]
+      # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
+      def localities(rel)
+        rel.xpath("./locality|./localityStack").map do |lc|
+          if lc[:type]
+            LocalityStack.new [locality(lc)]
+          else
+            LocalityStack.new lc.xpath("./locality").map { |l| locality l }
+          end
+        end
+      end
+
+      # @param loc [Nokogiri::XML::Element]
+      # @return [RelatonBib::Locality]
+      def locality(loc)
+        ref_to = (rt = loc.at("./referenceTo")) ? LocalizedString.new(rt.text) : nil
+        Locality.new(
+          loc[:type],
+          LocalizedString.new(loc.at("./referenceFrom").text),
+          ref_to,
+        )
+      end
+
+      # @param item [Nokogiri::XML::Element]
+      # @return [RelatonBib::FormattedRef, NilClass]
       def fref(item)
         ident = item&.at("./formattedref")
         return unless ident

@@ -167,8 +167,12 @@ module RelatonBib
     #
     # @param relation [Array<Hash>]
     # @option relation [String] :type
-    # @option relation [RelatonBib::BibliographicItem, RelatonIso::IsoBibliographicItem] :bibitem
-    # @option relation [Array<RelatonBib::BibItemLocality>] :bib_locality
+    # @option relation [RelatonBib::BibliographicItem,
+    #                   RelatonIso::IsoBibliographicItem] :bibitem
+    # @option relation [Array<RelatonBib::Locality,
+    #                   RelatonBib::LocalityStack>] :locality
+    # @option relation [Array<RelatonBib::SourceLocality,
+    #                   RelatonBib::SourceLocalityStack>] :source_locality
     #
     # @param link [Array<Hash, RelatonBib::TypedUri>]
     # @option link [String] :type

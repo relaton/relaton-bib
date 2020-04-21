@@ -131,8 +131,14 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
             bibitem: RelatonBib::BibliographicItem.new(
               formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003"),
             ),
-            bib_locality: [
-              RelatonBib::BibItemLocality.new("section", "Reference from"),
+            locality: [
+              RelatonBib::LocalityStack.new(
+                [RelatonBib::Locality.new("section", "Reference from")],
+              ),
+              RelatonBib::LocalityStack.new([
+                RelatonBib::Locality.new("chapter", "1"),
+                RelatonBib::Locality.new("page", "2"),
+              ]),
             ],
           },
           {

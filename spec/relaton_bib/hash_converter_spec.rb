@@ -2,7 +2,7 @@ RSpec.describe RelatonBib::HashConverter do
   it "warn if bibitem missig" do
     expect do
       ret = { relation: [type: "updates"] }
-      RelatonBib::HashConverter.relation_bibitem_hash_to_bib ret, ret[:relation][0], 0
+      RelatonBib::HashConverter.relation_bibitem_hash_to_bib ret[:relation][0]
     end.to output(/bibitem missing/).to_stderr
   end
 
@@ -17,5 +17,11 @@ RSpec.describe RelatonBib::HashConverter do
   it "make localized string from hash" do
     ls = RelatonBib::HashConverter.localizedstring content: "string"
     expect(ls).to be_instance_of RelatonBib::LocalizedString
+  end
+
+  it "make localityStack form unwrapped loclaity" do
+    hash = { locality: [{ type: "section", reference_from: "1" }] }
+    RelatonBib::HashConverter.relation_biblocality_hash_to_bib hash
+    expect(hash[:locality].first).to be_instance_of RelatonBib::LocalityStack
   end
 end

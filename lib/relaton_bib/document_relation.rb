@@ -26,15 +26,15 @@ module RelatonBib
     attr_reader :bibitem
 
     # @return [Array<RelatonBib::BibItemLocality>]
-    attr_reader :bib_locality
+    attr_reader :locality
 
     # @param type [String]
     # @param bibitem [RelatonBib::BibliographicItem, RelatonIso::IsoBibliographicItem]
-    # @param bib_locality [Array<RelatonBib::BibItemLocality>]
-    def initialize(type:, bibitem:, bib_locality: [])
-      type = "obsoletes" if type == "Now withdrawn"
+    # @param locality [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
+    def initialize(type:, bibitem:, locality: [])
+      type          = "obsoletes" if type == "Now withdrawn"
       @type         = type
-      @bib_locality = bib_locality
+      @locality = locality
       @bibitem      = bibitem
     end
 
@@ -44,16 +44,15 @@ module RelatonBib
       opts.delete :note
       builder.relation(type: type) do
         bibitem.to_xml(builder, **opts.merge(embedded: true))
-        bib_locality.each do |l|
-          builder.locality { l.to_xml builder }
-        end
+        locality.each { |l| l.to_xml builder }
       end
     end
 
     # @return [Hash]
     def to_hash
       hash = { "type" => type, "bibitem" => bibitem.to_hash }
-      hash["bib_locality"] = single_element_array(bib_locality) if bib_locality&.any?
+      hash["locality"] = single_element_array(locality) if locality&.any?
+      # hash.merge! locality.to_hash if locality&.any?
       hash
     end
   end

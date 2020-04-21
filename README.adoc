@@ -155,7 +155,7 @@ item = RelatonBib::BibliographicItem.new(
       bibitem: RelatonBib::BibliographicItem.new(
         formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003"),
       ),
-      bib_locality: [
+      locality: [
         RelatonBib::BibItemLocality.new("section", "Reference from"),
       ],
     },
