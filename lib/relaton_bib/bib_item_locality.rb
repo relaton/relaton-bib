@@ -46,11 +46,6 @@ module RelatonBib
     def to_xml(builder)
       builder.locality { |b| super(b) }
     end
-
-    # @return [Hash]
-    # def to_hash
-    #   { "locality" => locality.to_hash }
-    # end
   end
 
   class LocalityStack
@@ -74,6 +69,27 @@ module RelatonBib
     # @returnt [Hash]
     def to_hash
       { "locality_stack" => single_element_array(locality) }
+    end
+  end
+
+  class SourceLocality < BibItemLocality
+    # @param builder [Nokogiri::XML::Builder]
+    def to_xml(builder)
+      builder.sourceLocality { |b| super(b) }
+    end
+  end
+
+  class SourceLocalityStack < LocalityStack
+    # @param builder [Nokogiri::XML::Builder]
+    def to_xml(builder)
+      builder.sourceLocalityStack do |b|
+        locality.each { |l| l.to_xml(b) }
+      end
+    end
+
+    # @returnt [Hash]
+    def to_hash
+      { "source_locality_stack" => single_element_array(locality) }
     end
   end
 end

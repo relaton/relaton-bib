@@ -21,7 +21,13 @@ RSpec.describe RelatonBib::HashConverter do
 
   it "make localityStack form unwrapped loclaity" do
     hash = { locality: [{ type: "section", reference_from: "1" }] }
-    RelatonBib::HashConverter.relation_biblocality_hash_to_bib hash
+    RelatonBib::HashConverter.relation_locality_hash_to_bib hash
     expect(hash[:locality].first).to be_instance_of RelatonBib::LocalityStack
+  end
+
+  it "make sourceLocalityStack form unwrapped sourceLoclaity" do
+    hash = { source_locality: [{ type: "section", reference_from: "1" }] }
+    RelatonBib::HashConverter.relation_source_locality_hash_to_bib hash
+    expect(hash[:source_locality].first).to be_instance_of RelatonBib::SourceLocalityStack
   end
 end

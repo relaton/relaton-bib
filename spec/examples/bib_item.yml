@@ -179,6 +179,12 @@ relation:
           reference_from: "1"
         - type: page
           reference_from: "2"
+    source_locality:
+      source_locality_stack:
+        - type: volume
+          reference_from: "2"
+        - type: chapter
+          reference_from: "3"
   - type: updates
     bibitem:
       type: standard

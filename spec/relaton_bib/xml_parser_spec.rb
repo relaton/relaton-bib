@@ -34,6 +34,24 @@ RSpec.describe RelatonBib::XMLParser do
     expect(item.relation.first.locality.first).to be_instance_of RelatonBib::LocalityStack
   end
 
+  it "parse sourceLocality not inclosed in sourceLocalityStack" do
+    xml = <<~XML
+      <bibitem id="id">
+        <title type="main">Title</title>
+        <relation type="updates">
+          <bibitem>
+            <formattedref format="text/plain">ISO 19115</formattedref>
+          </bibitem>
+          <sourceLocality type="section">
+            <referenceFrom>Reference from</referenceFrom>
+          </sourceLocality>
+        </relation>
+      </bibitem>
+    XML
+    item = RelatonBib::XMLParser.from_xml xml
+    expect(item.relation.first.source_locality.first).to be_instance_of RelatonBib::SourceLocalityStack
+  end
+
   it "ignore empty dates" do
     xml = <<~XML
       <bibitem id="id">

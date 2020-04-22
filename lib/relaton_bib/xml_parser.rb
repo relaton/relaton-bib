@@ -312,6 +312,7 @@ module RelatonBib
             type: rel[:type]&.empty? ? nil : rel[:type],
             bibitem: BibliographicItem.new(item_data(rel.at("./bibitem"))),
             locality: localities(rel),
+            source_locality: source_localities(rel),
           )
         end
       end
@@ -330,13 +331,26 @@ module RelatonBib
 
       # @param loc [Nokogiri::XML::Element]
       # @return [RelatonBib::Locality]
-      def locality(loc)
+      def locality(loc, klass = Locality)
         ref_to = (rt = loc.at("./referenceTo")) ? LocalizedString.new(rt.text) : nil
-        Locality.new(
+        klass.new(
           loc[:type],
           LocalizedString.new(loc.at("./referenceFrom").text),
           ref_to,
         )
+      end
+
+      # @param rel [Nokogiri::XML::Element]
+      # @return [Array<RelatonBib::SourceLocality, RelatonBib::SourceLocalityStack>]
+      def source_localities(rel)
+        rel.xpath("./sourceLocality|./sourceLocalityStack").map do |lc|
+          if lc[:type]
+            SourceLocalityStack.new [locality(lc, SourceLocality)]
+          else
+            sls = lc.xpath("./sourceLocality").map { |l| locality l, SourceLocality }
+            SourceLocalityStack.new sls
+          end
+        end
       end
 
       # @param item [Nokogiri::XML::Element]

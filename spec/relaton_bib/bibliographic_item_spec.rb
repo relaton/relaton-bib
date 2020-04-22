@@ -140,6 +140,12 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
                 RelatonBib::Locality.new("page", "2"),
               ]),
             ],
+            source_locality: [
+              RelatonBib::SourceLocalityStack.new([
+                RelatonBib::SourceLocality.new("volume", "2"),
+                RelatonBib::SourceLocality.new("chapter", "3"),
+              ])
+            ]
           },
           {
             type: "updates",
