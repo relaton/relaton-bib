@@ -200,9 +200,11 @@ link:
     content: https://www.iso.org/obp/ui/#!iso:std:53798:en
   - type: rss
     content: https://www.iso.org/contents/data/standard/05/37/53798.detail.rss
-# relations are an array of type, bibitem, and locality.
+# relations are an array of type, bibitem, locality, and source_locality.
 # bibitem contains any of the attributes of a bibliographic item.
-# locality is an array of locality_stack which is an array of hash of type, reference_from, and optionally reference_to
+# locality is an array of locality_stack which is an array of hash of type,
+#   reference_from, and optionally reference_to
+# source_locality is an array of source_locality_stack which is similar to locality_stack
 relation:
   - type: updates
     bibitem:
@@ -210,8 +212,14 @@ relation:
     locality:
       locality_stack:
         type: page
-        reference_from: 7
-        reference_to: 10
+        reference_from: "7"
+        reference_to: "10"
+    source_locality:
+      source_locality_stack:
+        - type: volume
+          reference_from: "1"
+        - type: chapter
+          reference_from: "2"
   - type: updates
     bibitem:
       type: standard
