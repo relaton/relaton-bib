@@ -10,7 +10,7 @@ module RelatonBib
         if bibitem
           BibliographicItem.new(item_data(bibitem))
         else
-          warn "[relato-bib] WARNING: can't find bibitem or bibdata element in the XML"
+          warn "[relaton-bib] WARNING: can't find bibitem or bibdata element in the XML"
         end
       end
 
