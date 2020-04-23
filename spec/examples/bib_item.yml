@@ -170,9 +170,21 @@ relation:
   - type: updates
     bibitem:
       formattedref: ISO 19115:2003
-    bib_locality:
-      type: section
-      reference_from: Reference from
+    locality:
+      - locality_stack:
+          type: section
+          reference_from: Reference from
+      - locality_stack:
+        - type: chapter
+          reference_from: "1"
+        - type: page
+          reference_from: "2"
+    source_locality:
+      source_locality_stack:
+        - type: volume
+          reference_from: "2"
+        - type: chapter
+          reference_from: "3"
   - type: updates
     bibitem:
       type: standard

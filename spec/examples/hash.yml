@@ -168,9 +168,21 @@ relation:
     formattedref:
       content: ISO 19115:2003
       format: text/plain
-  bib_locality:
-    type: section
-    reference_from: Reference from
+  locality:
+  - locality_stack:
+      type: section
+      reference_from: Reference from
+  - locality_stack:
+    - type: chapter
+      reference_from: '1'
+    - type: page
+      reference_from: '2'
+  source_locality:
+    source_locality_stack:
+    - type: volume
+      reference_from: '2'
+    - type: chapter
+      reference_from: '3'
 - type: updates
   bibitem:
     type: standard
@@ -246,7 +258,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2020-04-05'
+fetched: '2020-04-22'
 keyword:
 - Keyword
 - Key Word

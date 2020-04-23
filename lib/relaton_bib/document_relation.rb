@@ -25,17 +25,22 @@ module RelatonBib
     # @return [RelatonBib::BibliographicItem]
     attr_reader :bibitem
 
-    # @return [Array<RelatonBib::BibItemLocality>]
-    attr_reader :bib_locality
+    # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
+    attr_reader :locality
+
+    # @return [Array<RelatonBib::SourceLocality, RelatonBib::SourceLocalityStack>]
+    attr_reader :source_locality
 
     # @param type [String]
     # @param bibitem [RelatonBib::BibliographicItem, RelatonIso::IsoBibliographicItem]
-    # @param bib_locality [Array<RelatonBib::BibItemLocality>]
-    def initialize(type:, bibitem:, bib_locality: [])
-      type = "obsoletes" if type == "Now withdrawn"
-      @type         = type
-      @bib_locality = bib_locality
-      @bibitem      = bibitem
+    # @param locality [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
+    # @param source_locality [Array<RelatonBib::SourceLocality, RelatonBib::SourceLocalityStack>]
+    def initialize(type:, bibitem:, locality: [], source_locality: [])
+      type             = "obsoletes" if type == "Now withdrawn"
+      @type            = type
+      @locality        = locality
+      @source_locality = source_locality
+      @bibitem         = bibitem
     end
 
     # @param builder [Nokogiri::XML::Builder]
@@ -44,16 +49,18 @@ module RelatonBib
       opts.delete :note
       builder.relation(type: type) do
         bibitem.to_xml(builder, **opts.merge(embedded: true))
-        bib_locality.each do |l|
-          builder.locality { l.to_xml builder }
-        end
+        locality.each { |l| l.to_xml builder }
+        source_locality.each { |l| l.to_xml builder }
       end
     end
 
     # @return [Hash]
     def to_hash
       hash = { "type" => type, "bibitem" => bibitem.to_hash }
-      hash["bib_locality"] = single_element_array(bib_locality) if bib_locality&.any?
+      hash["locality"] = single_element_array(locality) if locality&.any?
+      if source_locality&.any?
+        hash["source_locality"] = single_element_array(source_locality)
+      end
       hash
     end
   end

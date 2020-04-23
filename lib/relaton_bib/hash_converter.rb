@@ -252,40 +252,54 @@ module RelatonBib
         end
       end
 
+      # @param ret [Hash]
       def relations_hash_to_bib(ret)
         return unless ret[:relation]
 
         ret[:relation] = array(ret[:relation])
-        ret[:relation]&.each_with_index do |r, i|
-          relation_bibitem_hash_to_bib(ret, r, i)
-          relation_biblocality_hash_to_bib(ret, r, i)
+        ret[:relation]&.each do |r|
+          relation_bibitem_hash_to_bib(r)
+          relation_locality_hash_to_bib(r)
+          relation_source_locality_hash_to_bib(r)
         end
       end
 
-      # @param ret [Hash]
       # @param rel [Hash] relation
-      # @param idx [Integr] index of relation
-      def relation_bibitem_hash_to_bib(ret, rel, idx)
+      def relation_bibitem_hash_to_bib(rel)
         if rel[:bibitem]
-          ret[:relation][idx][:bibitem] = bib_item(hash_to_bib(rel[:bibitem], true))
+          rel[:bibitem] = BibliographicItem.new hash_to_bib(rel[:bibitem], true)
         else
           warn "[relaton-bib] bibitem missing: #{rel}"
-          ret[:relation][idx][:bibitem] = nil
+          rel[:bibitem] = nil
         end
       end
 
-      # @param item [Hash]
-      # @retirn [RelatonBib::BibliographicItem]
-      def bib_item(item)
-        BibliographicItem.new(item)
+      # @param rel [Hash] relation
+      def relation_locality_hash_to_bib(rel)
+        rel[:locality] = array(rel[:locality])&.map do |bl|
+          ls = if bl[:locality_stack]
+                  array(bl[:locality_stack]).map do |l|
+                    Locality.new(l[:type], l[:reference_from], l[:reference_to])
+                  end
+                else
+                  [Locality.new(bl[:type], bl[:reference_from], bl[:reference_to])]
+                end
+          LocalityStack.new ls
+        end
       end
 
-      def relation_biblocality_hash_to_bib(ret, rel, idx)
-        ret[:relation][idx][:bib_locality] =
-          array(rel[:bib_locality])&.map do |bl|
-            BibItemLocality.new(bl[:type], bl[:reference_from],
-                                bl[:reference_to])
-          end
+      # @param rel [Hash] relation
+      def relation_source_locality_hash_to_bib(rel)
+        rel[:source_locality] = array(rel[:source_locality])&.map do |sl|
+          sls = if sl[:source_locality_stack]
+                  array(sl[:source_locality_stack]).map do |l|
+                    SourceLocality.new(l[:type], l[:reference_from], l[:reference_to])
+                  end
+                else
+                  [SourceLocality.new(sl[:type], sl[:reference_from], sl[:reference_to])]
+                end
+          SourceLocalityStack.new sls
+        end
       end
 
       def series_hash_to_bib(ret)

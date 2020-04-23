@@ -1,20 +1,4 @@
 module RelatonBib
-  # class SpecificLocalityType
-  #   SECTION   = 'section'
-  #   CLAUSE    = 'clause'
-  #   PART      = 'part'
-  #   PARAGRAPH = 'paragraph'
-  #   CHAPTER   = 'chapter'
-  #   PAGE      = 'page'
-  #   WHOLE     = 'whole'
-  #   TABLE     = 'table'
-  #   ANNEX     = 'annex'
-  #   FIGURE    = 'figure'
-  #   NOTE      = 'note'
-  #   EXAMPLE   = 'example'
-  #   # generic String is allowed
-  # end
-
   # Bibliographic item locality.
   class BibItemLocality
     # @return [String]
@@ -30,6 +14,13 @@ module RelatonBib
     # @param referenceFrom [String]
     # @param referenceTo [String, NilClass]
     def initialize(type, reference_from, reference_to = nil)
+      type_ptrn = %r{section|clause|part|paragraph|chapter|page|whole|table|
+        annex|figure|note|list|example|volume|issue|time|
+        locality:[a-zA-Z0-9_]+}x
+      unless type =~ type_ptrn
+        warn "[relaton-bib] WARNING: invalid locality type: #{type}"
+      end
+
       @type           = type
       @reference_from = reference_from
       @reference_to   = reference_to
@@ -47,6 +38,58 @@ module RelatonBib
       hash = { "type" => type, "reference_from" => reference_from }
       hash["reference_to"] = reference_to if reference_to
       hash
+    end
+  end
+
+  class Locality < BibItemLocality
+    # @param builder [Nokogiri::XML::Builder]
+    def to_xml(builder)
+      builder.locality { |b| super(b) }
+    end
+  end
+
+  class LocalityStack
+    include RelatonBib
+
+    # @return [Array<RelatonBib::Locality>]
+    attr_reader :locality
+
+    # @param locality [Array<RelatonBib::Locality>]
+    def initialize(locality)
+      @locality = locality
+    end
+
+    # @param builder [Nokogiri::XML::Builder]
+    def to_xml(builder)
+      builder.localityStack do |b|
+        locality.each { |l| l.to_xml(b) }
+      end
+    end
+
+    # @returnt [Hash]
+    def to_hash
+      { "locality_stack" => single_element_array(locality) }
+    end
+  end
+
+  class SourceLocality < BibItemLocality
+    # @param builder [Nokogiri::XML::Builder]
+    def to_xml(builder)
+      builder.sourceLocality { |b| super(b) }
+    end
+  end
+
+  class SourceLocalityStack < LocalityStack
+    # @param builder [Nokogiri::XML::Builder]
+    def to_xml(builder)
+      builder.sourceLocalityStack do |b|
+        locality.each { |l| l.to_xml(b) }
+      end
+    end
+
+    # @returnt [Hash]
+    def to_hash
+      { "source_locality_stack" => single_element_array(locality) }
     end
   end
 end
