@@ -8,7 +8,7 @@ module RelatonBib
         doc.remove_namespaces!
         bibitem = doc.at "/bibitem|/bibdata"
         if bibitem
-          BibliographicItem.new(item_data(bibitem))
+          bib_item item_data(bibitem)
         else
           warn "[relaton-bib] WARNING: can't find bibitem or bibdata element in the XML"
         end
@@ -310,11 +310,17 @@ module RelatonBib
         item.xpath("./relation").map do |rel|
           DocumentRelation.new(
             type: rel[:type]&.empty? ? nil : rel[:type],
-            bibitem: BibliographicItem.new(item_data(rel.at("./bibitem"))),
+            bibitem: bib_item(item_data(rel.at("./bibitem"))),
             locality: localities(rel),
             source_locality: source_localities(rel),
           )
         end
+      end
+
+      # @param item_hash [Hash]
+      # @return [RelatonBib::BibliographicItem]
+      def bib_item(item_hash)
+        BibliographicItem.new item_hash
       end
 
       # @param rel [Nokogiri::XML::Element]

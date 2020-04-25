@@ -267,11 +267,17 @@ module RelatonBib
       # @param rel [Hash] relation
       def relation_bibitem_hash_to_bib(rel)
         if rel[:bibitem]
-          rel[:bibitem] = BibliographicItem.new hash_to_bib(rel[:bibitem], true)
+          rel[:bibitem] = bib_item hash_to_bib(rel[:bibitem], true)
         else
           warn "[relaton-bib] bibitem missing: #{rel}"
           rel[:bibitem] = nil
         end
+      end
+
+      # @param item_hash [Hash]
+      # @return [RelatonBib::BibliographicItem]
+      def bib_item(item_hash)
+        BibliographicItem.new item_hash
       end
 
       # @param rel [Hash] relation

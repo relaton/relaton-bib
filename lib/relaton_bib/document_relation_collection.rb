@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+require "forwardable"
+
 module RelatonBib
   # Document relation collection
   class DocRelationCollection
     extend Forwardable
 
-    def_delegators :@array, :<<, :[], :first, :empty?, :any?, :size, :each, :detect, :map
+    def_delegators :@array, :<<, :[], :first, :last, :empty?, :any?, :size,
+      :each, :detect, :map, :length
 
     # @param relation [Array<RelatonBib::DocumentRelation, Hash>]
     # @option relation [String] :type
