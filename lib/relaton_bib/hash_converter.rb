@@ -258,6 +258,9 @@ module RelatonBib
 
         ret[:relation] = array(ret[:relation])
         ret[:relation]&.each do |r|
+          if r[:description]
+            r[:description] = FormattedString.new r[:description]
+          end
           relation_bibitem_hash_to_bib(r)
           relation_locality_hash_to_bib(r)
           relation_source_locality_hash_to_bib(r)

@@ -310,11 +310,22 @@ module RelatonBib
         item.xpath("./relation").map do |rel|
           DocumentRelation.new(
             type: rel[:type]&.empty? ? nil : rel[:type],
+            description: relation_description(rel),
             bibitem: bib_item(item_data(rel.at("./bibitem"))),
             locality: localities(rel),
             source_locality: source_localities(rel),
           )
         end
+      end
+
+      # @param rel [Nokogiri::XML::Element]
+      # @return [RelatonBib::FormattedString, NilClass]
+      def relation_description(rel)
+        d = rel.at "./description"
+        return unless d
+
+        FormattedString.new(content: d.text, language: d[:language],
+                            script: d[:script], format: d[:format])
       end
 
       # @param item_hash [Hash]

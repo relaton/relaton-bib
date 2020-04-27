@@ -23,9 +23,12 @@ module RelatonBib
       @array =  relation.map { |r| r.is_a?(Hash) ? DocumentRelation.new(r) : r }
     end
 
+    # @todo We don't have replace type anymore. Suppose we should update this
+    #   method or delete it.
+    #
     # @return [RelatonBib::DocRelationCollection]
-    def replaces
-      DocRelationCollection.new @array.select { |r| r.type == "replace" }
-    end
+    # def replaces
+    #   DocRelationCollection.new @array.select { |r| r.type == "replace" }
+    # end
   end
 end

@@ -185,7 +185,10 @@ relation:
           reference_from: "2"
         - type: chapter
           reference_from: "3"
-  - type: updates
+  - type: obsoletes
+    description:
+      format: text/plain
+      content: supersedes
     bibitem:
       type: standard
       formattedref: ISO 19115:2003/Cor 1:2006

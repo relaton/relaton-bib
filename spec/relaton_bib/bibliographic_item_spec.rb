@@ -148,7 +148,8 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
             ]
           },
           {
-            type: "updates",
+            type: "obsoletes",
+            description: RelatonBib::FormattedString.new(content: "supersedes"),
             bibitem: RelatonBib::BibliographicItem.new(
               type: "standard",
               formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003/Cor 1:2006"),
