@@ -27,8 +27,8 @@ module RelatonBib
     #   method or delete it.
     #
     # @return [RelatonBib::DocRelationCollection]
-    # def replaces
-    #   DocRelationCollection.new @array.select { |r| r.type == "replace" }
-    # end
+    def replaces
+      DocRelationCollection.new(@array.select { |r| r.type == "replace" })
+    end
   end
 end
