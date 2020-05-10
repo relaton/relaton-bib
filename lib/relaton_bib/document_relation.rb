@@ -3,11 +3,13 @@ module RelatonBib
   class DocumentRelation
     include RelatonBib
 
-    TYPES = %w[obsoletes obsoletedBy supersedes supersededBy updates updatedBy
+    TYPES = %w[
+      obsoletes obsoletedBy supersedes supersededBy updates updatedBy
       complements derivedFrom translatedFrom hasTranslation adoptedFrom
       equivalent identical nonequivalent includedIn includes instance
       instanceOf partOf hasPart hasDraft draftOf merges splits amends amendedBy
-      corrects correctedBy revises revisedBy describes describedBy].freeze
+      corrects correctedBy revises revisedBy describes describedBy
+    ].freeze
 
     # @return [String]
     attr_reader :type

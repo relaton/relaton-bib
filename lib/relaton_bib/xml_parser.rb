@@ -91,12 +91,16 @@ module RelatonBib
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 
       def fetch_series(item)
-        item.xpath("./series").map do |sr|
+        item.xpath("./series").reduce([]) do |mem, sr|
           abbr = sr.at "abbreviation"
           abbreviation = abbr ? LocalizedString.new(abbr.text, abbr[:language], abbr[:script]) : nil
-          Series.new(
-            type: sr[:type], formattedref: fref(sr),
-            title: ttitle(sr.at("title")), place: sr.at("place")&.text,
+          formattedref = fref(sr)
+          title = ttitle(sr.at("title"))
+          next mem unless formattedref || title
+
+          mem << Series.new(
+            type: sr[:type], formattedref: formattedref,
+            title: title, place: sr.at("place")&.text,
             organization: sr.at("organization")&.text,
             abbreviation: abbreviation, from: sr.at("from")&.text,
             to: sr.at("to")&.text, number: sr.at("number")&.text,
