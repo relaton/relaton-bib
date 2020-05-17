@@ -18,8 +18,8 @@ module RelatonBib
     # @param substage [String, NilClass, RelatonBib::DocumentStatus::Stage]
     # @param iteration [String, NilClass]
     def initialize(stage:, substage: nil, iteration: nil)
-      @stage = stage.is_a?(Stage) ? stage : Stage.new(stage)
-      @substage = substage.is_a?(Stage) ? substage : Stage.new(substage)
+      @stage = stage.is_a?(Stage) ? stage : Stage.new(value: stage)
+      @substage = substage.is_a?(Stage) ? substage : Stage.new(value: substage)
       @iteration = iteration
     end
 
@@ -50,7 +50,7 @@ module RelatonBib
 
       # @parma value [String]
       # @param abbreviation [String, NilClass]
-      def initialize(value, abbreviation = nil)
+      def initialize(value:, abbreviation: nil)
         @value = value
         @abbreviation = abbreviation
       end

@@ -32,7 +32,9 @@ RSpec.describe "RelatonBib" =>:BibliographicItem do
           RelatonBib::BiblioNote.new(content: "Table Of Contents", type: "tableOfContents"),
         ],
         docstatus: RelatonBib::DocumentStatus.new(
-          stage: "stage", substage: "substage", iteration: "final",
+          stage: RelatonBib::DocumentStatus::Stage.new(value: "30", abbreviation: "CD"),
+          substage: RelatonBib::DocumentStatus::Stage.new(value: "substage"),
+          iteration: "final",
         ),
         date: [
           { type: "issued", on: "2014" },

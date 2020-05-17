@@ -43,8 +43,11 @@ biblionote:
     type: tableOfContents
 
 docstatus:
-  stage: stage
-  substage: substage
+  stage:
+    value: "30"
+    abbreviation: CD
+  substage:
+    value: substage
   iteration: final
 
 date:

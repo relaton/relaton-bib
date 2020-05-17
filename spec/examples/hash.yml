@@ -152,8 +152,11 @@ abstract:
   script: Latn
   format: text/plain
 docstatus:
-  stage: stage
-  substage: substage
+  stage:
+    value: "30"
+    abbreviation: CD
+  substage:
+    value: substage
   iteration: final
 copyright:
   owner:

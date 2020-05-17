@@ -1,6 +1,11 @@
 module RelatonBib
   class HashConverter
     class << self
+      # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+
+      # @param args [Hash]
+      # @param neated [TrueClas, FalseClass] default true
+      # @return [Hash]
       def hash_to_bib(args, nested = false)
         return nil unless args.is_a?(Hash)
 
@@ -30,6 +35,7 @@ module RelatonBib
         ret[:license] = array(ret[:license])
         ret
       end
+      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
       def timestamp_hash(ret)
         ret[:fetched] ||= Date.today.to_s
@@ -151,8 +157,8 @@ module RelatonBib
 
       def docstatus_hash_to_bib(ret)
         ret[:docstatus] && ret[:docstatus] = DocumentStatus.new(
-          stage: ret[:docstatus][:stage],
-          substage: ret[:docstatus][:substage],
+          stage: DocumentStatus::Stage.new(**ret[:docstatus][:stage]),
+          substage: DocumentStatus::Stage.new(**ret[:docstatus][:substage]),
           iteration: ret[:docstatus][:iteration],
         )
       end

@@ -169,12 +169,20 @@ module RelatonBib
         status = item.at("./status")
         return unless status
 
-        stage = status.at "stage"
+        stg = status.at "stage"
         DocumentStatus.new(
-          stage: stage ? stage.text : status.text,
-          substage: status.at("substage")&.text,
+          stage: stg ? stage(stg) : status.text,
+          substage: stage(status.at("substage")),
           iteration: status.at("iteration")&.text,
         )
+      end
+
+      # @param node [Nokogiri::XML::Elemen]
+      # @return [RelatonBib::DocumentStatus::Stage]
+      def stage(elm)
+        return unless elm
+
+        DocumentStatus::Stage.new value: elm.text, abbreviation: elm[:abbreviation]
       end
 
       def fetch_dates(item)
