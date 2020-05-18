@@ -3,7 +3,7 @@
 require "yaml"
 require "jing"
 
-RSpec.describe "RelatonBib" =>:BibliographicItem do
+RSpec.describe "RelatonBib" => :BibliographicItem do
   context "instance" do
     subject do
       item = {

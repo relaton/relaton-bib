@@ -14,12 +14,12 @@ module RelatonBib
     # @return [String, NilClass]
     attr_reader :iteration
 
-    # @param stage [String, RelatonBib::DocumentStatus::Stage]
-    # @param substage [String, NilClass, RelatonBib::DocumentStatus::Stage]
+    # @param stage [String, Hash, RelatonBib::DocumentStatus::Stage]
+    # @param substage [String, Hash, NilClass, RelatonBib::DocumentStatus::Stage]
     # @param iteration [String, NilClass]
     def initialize(stage:, substage: nil, iteration: nil)
-      @stage = stage.is_a?(Stage) ? stage : Stage.new(value: stage)
-      @substage = substage.is_a?(Stage) ? substage : Stage.new(value: substage)
+      @stage = stage_new stage
+      @substage = stage_new substage
       @iteration = iteration
     end
 
@@ -39,6 +39,16 @@ module RelatonBib
       hash["substage"] = substage.to_hash if substage
       hash["iteration"] = iteration if iteration
       hash
+    end
+
+    private
+
+    # @param stg [RelatonBib::DocumentStatus::Stage, Hash, String, NilClass]
+    def stage_new(stg)
+      if stg.is_a?(Stage) then stg
+      elsif stg.is_a?(Hash) then Stage.new(stg)
+      elsif stg.is_a?(String) then Stage.new(value: stg)
+      end
     end
 
     class Stage

@@ -157,10 +157,18 @@ module RelatonBib
 
       def docstatus_hash_to_bib(ret)
         ret[:docstatus] && ret[:docstatus] = DocumentStatus.new(
-          stage: DocumentStatus::Stage.new(**ret[:docstatus][:stage]),
-          substage: DocumentStatus::Stage.new(**ret[:docstatus][:substage]),
+          stage: stage(ret[:docstatus][:stage]),
+          substage: stage(ret[:docstatus][:substage]),
           iteration: ret[:docstatus][:iteration],
         )
+      end
+
+      # @param stg [Hash]
+      # @return [RelatonBib::DocumentStatus::Stage]
+      def stage(stg)
+        return unless stg
+
+        DocumentStatus::Stage.new(**stg)
       end
 
       def contributors_hash_to_bib(ret)
