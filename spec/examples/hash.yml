@@ -153,7 +153,7 @@ abstract:
   format: text/plain
 docstatus:
   stage:
-    value: "30"
+    value: '30'
     abbreviation: CD
   substage:
     value: substage
@@ -228,7 +228,13 @@ series:
     format: text/plain
   number: '7'
 - title:
-    content: Series
+    content:
+    - content: Series
+      language: en
+      script: Latn
+    - content: Séries
+      language: fr
+      script: Latn
     format: text/plain
 medium:
   form: medium form
@@ -264,7 +270,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2020-04-27'
+fetched: '2020-05-25'
 keyword:
 - Keyword
 - Key Word

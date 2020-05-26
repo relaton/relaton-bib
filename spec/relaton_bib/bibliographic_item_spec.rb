@@ -169,7 +169,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
             type: "main",
             title: RelatonBib::TypedTitleString.new(
               type: "original", content: "ISO/IEC FDIS 10118-3", language: "en",
-              script: "Latn", format: "text/plain",
+              script: "Latn", format: "text/plain"
             ),
             place: "Serie's place",
             organization: "Serie's organization",
@@ -186,16 +186,25 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
             ),
           ),
           RelatonBib::Series.new(
-            type: "journal", title: RelatonBib::TypedTitleString.new(content: "Journal"), number: "7"
+            type: "journal",
+            title: RelatonBib::TypedTitleString.new(content: "Journal"),
+            number: "7",
           ),
-          RelatonBib::Series.new(title: RelatonBib::TypedTitleString.new(content: "Series")),
+          RelatonBib::Series.new(title: RelatonBib::TypedTitleString.new(
+            content: [
+              RelatonBib::LocalizedString.new("Series", "en", "Latn"),
+              RelatonBib::LocalizedString.new("Séries", "fr", "Latn"),
+            ],
+          )),
         ],
         medium: RelatonBib::Medium.new(
           form: "medium form", size: "medium size", scale: "medium scale",
         ),
         place: [
           "bib place",
-          RelatonBib::Place.new(name: "Geneva", uri: "geneva.place", region: "Switzelznd")
+          RelatonBib::Place.new(
+            name: "Geneva", uri: "geneva.place", region: "Switzelznd",
+          ),
         ],
         extent: [
           RelatonBib::BibItemLocality.new("section", "Reference from", "Reference to"),
@@ -263,7 +272,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       hash = subject.to_hash
       file = "spec/examples/hash.yml"
       File.write file, hash.to_yaml unless File.exist? file
-      h = RelatonBib::HashConverter.hash_to_bib(YAML.load_file("spec/examples/hash.yml"))
+      h = RelatonBib::HashConverter.hash_to_bib(YAML.load_file(file))
       h[:fetched] = Date.today.to_s
       b = RelatonBib::BibliographicItem.new(h)
       expect(hash).to eq b.to_hash

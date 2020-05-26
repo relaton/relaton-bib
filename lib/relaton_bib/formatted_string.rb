@@ -12,7 +12,7 @@ module RelatonBib
     # @return [String]
     attr_reader :format
 
-    # @param content [String]
+    # @param content [String, Array<RelatonBib::LocalizedString>]
     # @param language [String, NilClass] language code Iso639
     # @param script [String, NilClass] script code Iso15924
     # @param format [String] the content type
@@ -36,8 +36,8 @@ module RelatonBib
       hash = super
       return hash unless format
 
-      hash = { "content" => hash } if hash.is_a? String
-      hash["format"] = format if format
+      hash = { "content" => hash } unless hash.is_a? Hash
+      hash["format"] = format
       hash
     end
   end

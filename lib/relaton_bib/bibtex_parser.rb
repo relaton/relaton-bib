@@ -147,17 +147,16 @@ module RelatonBib
       # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::BiblioNote>]
       def fetch_note(bibtex)
-        note = []
-        note << BiblioNote.new(type: "annote", content: bibtex.annote.to_s) if bibtex["annote"]
-
-        if bibtex["howpublished"]
-          note << BiblioNote.new(type: "howpublished", content: bibtex.howpublished.to_s)
+        bibtex.select do |k, _v|
+          %i[annote howpublished comment note content].include? k
+        end.reduce([]) do |mem, note|
+          type = case note[0]
+                 when :note then nil
+                 when :content then "tableOfContents"
+                 else note[0].to_s
+                 end
+          mem << BiblioNote.new(type: type, content: note[1].to_s)
         end
-
-        note << BiblioNote.new(type: "comment", content: bibtex.comment.to_s) if bibtex["comment"]
-        note << BiblioNote.new(content: bibtex.note.to_s) if bibtex["note"]
-        note << BiblioNote.new(type: "tableOfContents", content: bibtex["content"]) if bibtex["content"]
-        note
       end
 
       # @param bibtex [BibTeX::Entry]
@@ -172,16 +171,19 @@ module RelatonBib
       # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::BibItemLocality>]
       def fetch_extent(bibtex)
-        extent = []
-        extent << BibItemLocality.new("chapter", bibtex.chapter.to_s) if bibtex["chapter"]
-
-        if bibtex["pages"]
-          from, to = bibtex.pages.to_s.split "-"
-          extent << BibItemLocality.new("page", from, to)
+        bibtex.select do |k, _v|
+          %i[chapter pages volume].include? k
+        end.reduce([]) do |mem, loc|
+          if loc[0] == :pages
+            type = "page"
+            from, to = loc[1].to_s.split "-"
+          else
+            type = loc[0].to_s
+            from = loc[1].to_s
+            to = nil
+          end
+          mem << BibItemLocality.new(type, from, to)
         end
-
-        extent << BibItemLocality.new("volume", bibtex.volume.to_s) if bibtex["volume"]
-        extent
       end
 
       # @param bibtex [BibTeX::Entry]
@@ -192,7 +194,7 @@ module RelatonBib
           series << Series.new(
             type: "journal",
             title: TypedTitleString.new(content: bibtex.journal.to_s),
-            number: bibtex["number"]&.to_s
+            number: bibtex["number"]&.to_s,
           )
         end
 

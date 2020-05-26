@@ -31,16 +31,20 @@ module RelatonBib
     # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
     attr_reader :locality
 
-    # @return [Array<RelatonBib::SourceLocality, RelatonBib::SourceLocalityStack>]
+    # @return [Array<RelatonBib::SourceLocality,
+    #   RelatonBib::SourceLocalityStack>]
     attr_reader :source_locality
 
     # @param type [String]
     # @parma description [RelatonBib::FormattedString, NilClass]
-    # @param bibitem [RelatonBib::BibliographicItem, RelatonIso::IsoBibliographicItem]
+    # @param bibitem [RelatonBib::BibliographicItem,
+    #   RelatonIso::IsoBibliographicItem]
     # @param locality [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
-    # @param source_locality [Array<RelatonBib::SourceLocality, RelatonBib::SourceLocalityStack>]
-    def initialize(type:, description: nil, bibitem:, locality: [], source_locality: [])
-      type             = "obsoletes" if type == "Now withdrawn"
+    # @param source_locality [Array<RelatonBib::SourceLocality,
+    #   RelatonBib::SourceLocalityStack>]
+    def initialize(type:, description: nil, bibitem:, locality: [],
+                   source_locality: [])
+      type = "obsoletes" if type == "Now withdrawn"
       unless TYPES.include? type
         warn "[relaton-bib] WARNING: invalid relation type: #{type}"
       end
@@ -50,6 +54,8 @@ module RelatonBib
       @source_locality = source_locality
       @bibitem         = bibitem
     end
+
+    # rubocop:disable Metrics/AbcSize
 
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder, **opts)
@@ -62,6 +68,7 @@ module RelatonBib
         source_locality.each { |l| l.to_xml builder }
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     # @return [Hash]
     def to_hash

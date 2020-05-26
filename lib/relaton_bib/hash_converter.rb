@@ -168,7 +168,8 @@ module RelatonBib
       def stage(stg)
         return unless stg
 
-        DocumentStatus::Stage.new(**stg)
+        args = stg.is_a?(String) ? { value: stg } : stg
+        DocumentStatus::Stage.new(**args)
       end
 
       def contributors_hash_to_bib(ret)
@@ -329,7 +330,7 @@ module RelatonBib
         ret[:series] = array(ret[:series])&.map do |s|
           s[:formattedref] && s[:formattedref] = formattedref(s[:formattedref])
           if s[:title]
-            s[:title] = { content: s[:title] } unless s.is_a?(Hash)
+            s[:title] = { content: s[:title] } unless s[:title].is_a?(Hash)
             s[:title] = typed_title_strig(s[:title])
           end
           s[:abbreviation] && s[:abbreviation] = localizedstring(s[:abbreviation])

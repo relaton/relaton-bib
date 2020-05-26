@@ -159,8 +159,12 @@ module RelatonBib
       def ttitle(title)
         return unless title
 
+        variants = title.xpath("variant").map do |v|
+          LocalizedString.new v.text, v[:language], v[:script]
+        end
+        content = variants.any? ? variants : title.text
         TypedTitleString.new(
-          type: title[:type], content: title.text, language: title[:language],
+          type: title[:type], content: content, language: title[:language],
           script: title[:script], format: title[:format]
         )
       end

@@ -226,7 +226,13 @@ series:
       content: Journal
     number: 7
   - title:
-      content: Series
+      content:
+        - content: Series
+          language: en
+          script: Latn
+        - content: Séries
+          language: fr
+          script: Latn
 
 medium:
   form: medium form
