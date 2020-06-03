@@ -51,7 +51,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
           {
             entity: {
               name: "International Organization for Standardization",
-              url: "www.iso.org", abbreviation: "ISO", subdivision: "division",
+              url: "www.iso.org", abbreviation: "ISO", subdivision: "division"
             },
             role: [{ type: "publisher", description: ["Publisher role"] }],
           },
@@ -65,7 +65,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
                   name: "IETF",
                   abbreviation: RelatonBib::LocalizedString.new("IETF"),
                   identifier: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
-                )
+                ),
               )],
               contact: [
                 RelatonBib::Address.new(
@@ -73,7 +73,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
                   country: "Country", state: "State"
                 ),
                 RelatonBib::Contact.new(type: "phone", value: "223322"),
-              ]
+              ],
             ),
             role: [type: "author"],
           },
@@ -81,7 +81,9 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
             entity: RelatonBib::Organization.new(
               name: "IETF",
               abbreviation: "IETF",
-              identifier: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
+              identifier: [
+                RelatonBib::OrgIdentifier.new("uri", "www.ietf.org"),
+              ],
             ),
             role: [
               { type: "publisher", description: ["Publisher description"] },
@@ -99,7 +101,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
               ),
               affiliation: [RelatonBib::Affiliation.new(
                 organization: RelatonBib::Organization.new(name: "IETF", abbreviation: "IETF"),
-                description: [localized_string("Description")]
+                description: [localized_string("Description")],
               )],
               contact: [
                 RelatonBib::Address.new(
@@ -112,12 +114,13 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
             ),
             role: [type: "author"],
           },
-          { entity: { name: "Institution" }, role: [type: "distributor", description: ["sponsor"]] }
+          { entity: { name: "Institution" },
+            role: [type: "distributor", description: ["sponsor"]] },
         ],
-        copyright: { owner: {
+        copyright: [{ owner: [{
           name: "International Organization for Standardization",
           abbreviation: "ISO", url: "www.iso.org"
-        }, from: "2014", to: "2020" },
+        }], from: "2014", to: "2020", scope: "Scope" }],
         link: [
           { type: "src", content: "https://www.iso.org/standard/53798.html" },
           { type: "obp",
@@ -137,17 +140,17 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
               RelatonBib::LocalityStack.new(
                 [RelatonBib::Locality.new("section", "Reference from")],
               ),
-              RelatonBib::LocalityStack.new([
-                RelatonBib::Locality.new("chapter", "1"),
-                RelatonBib::Locality.new("page", "2"),
-              ]),
+              RelatonBib::LocalityStack.new(
+                [RelatonBib::Locality.new("chapter", "1"),
+                 RelatonBib::Locality.new("page", "2")],
+              ),
             ],
             source_locality: [
-              RelatonBib::SourceLocalityStack.new([
-                RelatonBib::SourceLocality.new("volume", "2"),
-                RelatonBib::SourceLocality.new("chapter", "3"),
-              ])
-            ]
+              RelatonBib::SourceLocalityStack.new(
+                [RelatonBib::SourceLocality.new("volume", "2"),
+                 RelatonBib::SourceLocality.new("chapter", "3")],
+              ),
+            ],
           },
           {
             type: "obsoletes",
@@ -263,7 +266,8 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     end
 
     it "deals with hashes" do
-      h = RelatonBib::HashConverter.hash_to_bib(YAML.load_file("spec/examples/bib_item.yml"))
+      file = "spec/examples/bib_item.yml"
+      h = RelatonBib::HashConverter.hash_to_bib(YAML.load_file(file))
       b = RelatonBib::BibliographicItem.new(h)
       expect(b.to_xml).to be_equivalent_to subject.to_xml
     end
@@ -293,8 +297,8 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         bibtex = subject.to_bibtex
         file = "spec/examples/techreport.bib"
         File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
-        expect(bibtex).to eq File.read(file, encoding: "utf-8")
-          .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        expect(bibtex).to eq File.read(file, encoding: "utf-8").
+          sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       end
 
       it "manual" do
@@ -302,8 +306,8 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         bibtex = subject.to_bibtex
         file = "spec/examples/manual.bib"
         File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
-        expect(bibtex).to eq File.read(file, encoding: "utf-8")
-          .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        expect(bibtex).to eq File.read(file, encoding: "utf-8").
+          sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       end
 
       it "phdthesis" do
@@ -311,8 +315,8 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         bibtex = subject.to_bibtex
         file = "spec/examples/phdthesis.bib"
         File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
-        expect(bibtex).to eq File.read(file, encoding: "utf-8")
-          .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        expect(bibtex).to eq File.read(file, encoding: "utf-8").
+          sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       end
     end
   end
@@ -321,10 +325,11 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     org = RelatonBib::Organization.new(
       name: "Test Org", abbreviation: "TO", url: "test.org",
     )
-    owner = RelatonBib::ContributionInfo.new entity: org
+    owner = [RelatonBib::ContributionInfo.new(entity: org)]
+    copyright = RelatonBib::CopyrightAssociation.new(owner: owner, from: "2018")
     bibitem = RelatonBib::BibliographicItem.new(
       formattedref: RelatonBib::FormattedRef.new(content: "ISO123"),
-      copyright: RelatonBib::CopyrightAssociation.new(owner: owner, from: "2018"),
+      copyright: [copyright],
     )
     expect(bibitem.to_xml).to include "<formattedref format=\"text/plain\">ISO123</formattedref>"
   end
@@ -340,9 +345,9 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       org = RelatonBib::Organization.new(
         name: "Test Org", abbreviation: "TO", url: "test.org",
       )
-      owner = RelatonBib::ContributionInfo.new entity: org
+      owner = [RelatonBib::ContributionInfo.new(entity: org)]
       copy = RelatonBib::CopyrightAssociation.new owner: owner, from: "2019"
-      expect(copy.owner).to be owner
+      expect(copy.owner).to eq owner
     end
   end
 

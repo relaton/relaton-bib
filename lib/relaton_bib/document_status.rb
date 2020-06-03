@@ -5,10 +5,10 @@ require "relaton_bib/localized_string"
 module RelatonBib
   # Document status.
   class DocumentStatus
-    # @return [String]
+    # @return [RelatonBib::DocumentStatus::Stage]
     attr_reader :stage
 
-    # @return [String, NilClass]
+    # @return [RelatonBib::DocumentStatus::Stage, NilClass]
     attr_reader :substage
 
     # @return [String, NilClass]
@@ -44,6 +44,7 @@ module RelatonBib
     private
 
     # @param stg [RelatonBib::DocumentStatus::Stage, Hash, String, NilClass]
+    # @return [RelatonBib::DocumentStatus::Stage]
     def stage_new(stg)
       if stg.is_a?(Stage) then stg
       elsif stg.is_a?(Hash) then Stage.new(stg)

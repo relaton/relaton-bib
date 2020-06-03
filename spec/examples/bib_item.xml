@@ -1,5 +1,5 @@
 <bibitem id="ISOTC211" type="standard">
-  <fetched>2020-05-26</fetched>
+  <fetched>2020-06-02</fetched>
   <title type="main" format="text/plain" language="en" script="Latn">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
   <uri type="src">https://www.iso.org/standard/53798.html</uri>
@@ -134,6 +134,7 @@
         <uri>www.iso.org</uri>
       </organization>
     </owner>
+    <scope>Scope</scope>
   </copyright>
   <relation type="updates">
     <bibitem>

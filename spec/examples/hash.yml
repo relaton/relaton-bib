@@ -160,11 +160,12 @@ docstatus:
   iteration: final
 copyright:
   owner:
-    name: International Organization for Standardization
+  - name: International Organization for Standardization
     abbreviation: ISO
     url: www.iso.org
   from: '2014'
   to: '2020'
+  scope: Scope
 relation:
 - type: updates
   bibitem:
@@ -270,7 +271,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2020-05-25'
+fetched: '2020-06-02'
 keyword:
 - Keyword
 - Key Word

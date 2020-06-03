@@ -83,7 +83,7 @@ module RelatonBib
     # @return [RelatonBib::DocumentStatus, NilClass]
     attr_reader :status
 
-    # @return [RelatonBib::CopyrightAssociation, NilClass]
+    # @return [Array<RelatonBib::CopyrightAssociation>]
     attr_reader :copyright
 
     # @return [RelatonBib::DocRelationCollection]
@@ -141,10 +141,11 @@ module RelatonBib
     # @param fetched [Date, NilClass] default nil
     # @param keyword [Array<String>]
     #
-    # @param copyright [Hash, RelatonBib::CopyrightAssociation, NilClass]
-    # @option copyright [Hash, RelatonBib::ContributionInfo] :owner
-    # @option copyright [String] :form
+    # @param copyright [Array<Hash, RelatonBib::CopyrightAssociation>]
+    # @option copyright [Array<Hash, RelatonBib::ContributionInfo>] :owner
+    # @option copyright [String] :from
     # @option copyright [String, NilClass] :to
+    # @option copyright [String, NilClass] :scope
     #
     # @param date [Array<Hash>]
     # @option date [String] :type
@@ -202,11 +203,8 @@ module RelatonBib
         a.is_a?(Hash) ? FormattedString.new(a) : a
       end
 
-      if args[:copyright]
-        @copyright = if args[:copyright].is_a?(Hash)
-                       CopyrightAssociation.new args[:copyright]
-                     else args[:copyright]
-                     end
+      @copyright = args.fetch(:copyright, []).map do |c|
+        c.is_a?(Hash) ? CopyrightAssociation.new(c) : c
       end
 
       @docidentifier  = args[:docid] || []
@@ -308,7 +306,7 @@ module RelatonBib
       hash["formattedref"] = formattedref.to_hash if formattedref
       hash["abstract"] = single_element_array(abstract) if abstract&.any?
       hash["docstatus"] = status.to_hash if status
-      hash["copyright"] = copyright.to_hash if copyright
+      hash["copyright"] = single_element_array(copyright) if copyright&.any?
       hash["relation"] = single_element_array(relation) if relation&.any?
       hash["series"] = single_element_array(series) if series&.any?
       hash["medium"] = medium.to_hash if medium
@@ -530,7 +528,7 @@ module RelatonBib
         script.each { |s| builder.script s }
         abstract.each { |a| builder.abstract { a.to_xml(builder) } }
         status&.to_xml builder
-        copyright&.to_xml builder
+        copyright&.each { |c| c.to_xml builder }
         relation.each { |r| r.to_xml builder, **opts }
         series.each { |s| s.to_xml builder }
         medium&.to_xml builder

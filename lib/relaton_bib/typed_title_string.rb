@@ -1,14 +1,12 @@
 module RelatonBib
   class TypedTitleString
-    # TITLE_TYPES = %w[alternative original unofficial subtitle main].freeze
-
     # @return [String]
     attr_reader :type
 
     # @return [RelatonBib::FormattedString]
     attr_reader :title
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength
 
     # @param type [String]
     # @param title [RelatonBib::FormattedString, Hash]
@@ -16,10 +14,6 @@ module RelatonBib
     # @param language [String]
     # @param script [String]
     def initialize(**args)
-      # if args[:type] && !TITLE_TYPES.include?(args[:type])
-      #   warn %{[relaton-bib] title type "#{args[:type]}" is invalid.}
-      # end
-
       unless args[:title] || args[:content]
         raise ArgumentError, %{Keyword "title" or "content" should be passed.}
       end
@@ -35,7 +29,7 @@ module RelatonBib
         @title = FormattedString.new(fsargs)
       end
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength
 
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)

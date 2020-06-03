@@ -23,6 +23,7 @@ module RelatonBib
         formattedref_hash_to_bib(ret)
         docstatus_hash_to_bib(ret)
         contributors_hash_to_bib(ret)
+        copyright_hash_to_bib(ret)
         relations_hash_to_bib(ret)
         series_hash_to_bib(ret)
         medium_hash_to_bib(ret)
@@ -58,7 +59,8 @@ module RelatonBib
         ret[:title] = ret[:title].map do |t|
           if t.is_a?(Hash) then t
           else
-            { content: t, language: "en", script: "Latn", format: "text/plain", type: "main" }
+            { content: t, language: "en", script: "Latn", format: "text/plain",
+              type: "main" }
           end
         end
       end
@@ -268,6 +270,16 @@ module RelatonBib
       end
 
       # @param ret [Hash]
+      def copyright_hash_to_bib(ret)
+        return unless ret[:copyright]
+
+        ret[:copyright] = array(ret[:copyright]).map do |c|
+          c[:owner] = array(c[:owner])
+          c
+        end
+      end
+
+      # @param ret [Hash]
       def relations_hash_to_bib(ret)
         return unless ret[:relation]
 
@@ -361,9 +373,9 @@ module RelatonBib
       def validity_hash_to_bib(ret)
         return unless ret[:validity]
 
-        ret[:validity][:begins] && b = Time.parse(ret[:validity][:begins])
-        ret[:validity][:ends] && e = Time.parse(ret[:validity][:ends])
-        ret[:validity][:revision] && r = Time.parse(ret[:validity][:revision])
+        ret[:validity][:begins] && b = Time.parse(ret[:validity][:begins].to_s)
+        ret[:validity][:ends] && e = Time.parse(ret[:validity][:ends].to_s)
+        ret[:validity][:revision] && r = Time.parse(ret[:validity][:revision].to_s)
         ret[:validity] = Validity.new(begins: b, ends: e, revision: r)
       end
 

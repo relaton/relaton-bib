@@ -244,14 +244,9 @@ module RelatonBib
         end
 
         cn = person.at "./name/completename"
-        cname = if cn
-                  LocalizedString.new(cn.text, cn[:language], cn[:script])
-                else
-                  nil
-                end
-
+        cname = cn && LocalizedString.new(cn.text, cn[:language], cn[:script])
         sn = person.at "./name/surname"
-        sname = sn ? LocalizedString.new(sn.text, sn[:language], sn[:script]) : nil
+        sname = sn && LocalizedString.new(sn.text, sn[:language], sn[:script])
 
         name = FullName.new(
           completename: cname, surname: sname,
@@ -291,25 +286,24 @@ module RelatonBib
       # @return [Array<RelatonBib::FormattedString>]
       def fetch_abstract(item)
         item.xpath("./abstract").map do |a|
-          FormattedString.new(
-            content: a.text, language: a[:language], script: a[:script], format: a[:format]
-          )
+          FormattedString.new(content: a.text, language: a[:language],
+                              script: a[:script], format: a[:format])
         end
       end
 
       # @param item [Nokogiri::XML::Element]
-      # @return [RelatonBib::CopyrightAssociation]
+      # @return [Array<RelatonBib::CopyrightAssociation>]
       def fetch_copyright(item)
-        cp     = item.at("./copyright") || return
-        org    = cp&.at("owner/organization")
-        name   = org&.at("name")&.text
-        abbr   = org&.at("abbreviation")&.text
-        url    = org&.at("uri")&.text
-        entity = Organization.new(name: name, abbreviation: abbr, url: url)
-        from   = cp.at("from")&.text
-        to     = cp.at("to")&.text
-        owner  = ContributionInfo.new entity: entity
-        CopyrightAssociation.new(owner: owner, from: from, to: to)
+        item.xpath("./copyright").map do |cp|
+          owner = cp.xpath("owner").map do |o|
+            ContributionInfo.new entity: get_org(o.at("organization"))
+          end
+          from = cp.at("from")&.text
+          to   = cp.at("to")&.text
+          scope = cp.at("scope")&.text
+          CopyrightAssociation.new(owner: owner, from: from, to: to,
+                                   scope: scope)
+        end
       end
 
       # @param item [Nokogiri::XML::Element]
