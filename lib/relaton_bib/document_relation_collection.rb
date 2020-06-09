@@ -8,7 +8,7 @@ module RelatonBib
     extend Forwardable
 
     def_delegators :@array, :<<, :[], :first, :last, :empty?, :any?, :size,
-      :each, :detect, :map, :length
+                   :each, :detect, :map, :length
 
     # @param relation [Array<RelatonBib::DocumentRelation, Hash>]
     # @option relation [String] :type
@@ -20,7 +20,7 @@ module RelatonBib
     #                   RelatonBib::SourceLocalityStack>] :source_locality
     # @option relation [RelatonBib::BibliographicItem, NillClass] :bibitem (nil)
     def initialize(relation)
-      @array =  relation.map { |r| r.is_a?(Hash) ? DocumentRelation.new(r) : r }
+      @array = relation.map { |r| r.is_a?(Hash) ? DocumentRelation.new(r) : r }
     end
 
     # @todo We don't have replace type anymore. Suppose we should update this

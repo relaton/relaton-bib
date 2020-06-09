@@ -225,7 +225,7 @@ series:
   - type: journal
     title:
       content: Journal
-    number: 7
+    number: "7"
   - title:
       content:
         - content: Series
@@ -251,12 +251,12 @@ extent:
     reference_from: Reference from
     reference_to: Reference to
   - type: chapter
-    reference_from: 4
+    reference_from: "4"
   - type: page
-    reference_from: 10
-    reference_to: 20
+    reference_from: "10"
+    reference_to: "20"
   - type: volume
-    reference_from: 1
+    reference_from: "1"
 
 accesslocation:
   - accesslocation1
@@ -280,3 +280,20 @@ validity:
   begins: "2010-10-10 12:21"
   ends: "2011-02-03 18:30"
   revision: "2011-03-04 09:00"
+
+structuredidentifier:
+  - type: type 1
+    agency:
+      - agency 1
+      - agency 2
+    class: class 1
+    docnumber: "123"
+    partnumber: "4"
+    edition: "1"
+    version: "2"
+    supplementtype: type 2
+    supplementnumber: "5"
+    language: en
+    year: "2020"
+  - agency: agency 3
+    docnumber: "456"

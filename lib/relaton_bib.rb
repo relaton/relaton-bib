@@ -10,6 +10,8 @@ module RelatonBib
   class RequestError < StandardError; end
 
   class << self
+    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+
     # @param date [String]
     # @return [Date, NilClass]
     def parse_date(sdate)
@@ -25,6 +27,7 @@ module RelatonBib
       elsif /(?<date>\d{4})/ =~ sdate then Date.strptime date, "%Y" # 2012
       end
     end
+    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
   end
 
   private

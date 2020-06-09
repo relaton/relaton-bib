@@ -160,7 +160,7 @@ docstatus:
   iteration: final
 copyright:
   owner:
-  - name: International Organization for Standardization
+    name: International Organization for Standardization
     abbreviation: ISO
     url: www.iso.org
   from: '2014'
@@ -172,6 +172,7 @@ relation:
     formattedref:
       content: ISO 19115:2003
       format: text/plain
+    doctype: document
   locality:
   - locality_stack:
       type: section
@@ -193,6 +194,7 @@ relation:
     formattedref:
       content: ISO 19115:2003/Cor 1:2006
       format: text/plain
+    doctype: document
   description:
     content: supersedes
     format: text/plain
@@ -202,6 +204,7 @@ relation:
       type: main
       content: Book title
       format: text/plain
+    doctype: document
 series:
 - type: main
   title:
@@ -271,8 +274,25 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2020-06-02'
+fetched: '2020-06-08'
 keyword:
 - Keyword
 - Key Word
 license: License
+doctype: document
+structuredidentifier:
+- docnumber: '123'
+  type: type 1
+  agency:
+  - agency 1
+  - agency 2
+  class: class 1
+  partnumber: '4'
+  edition: '1'
+  version: '2'
+  supplementtype: type 2
+  supplementnumber: '5'
+  language: en
+  year: '2020'
+- docnumber: '456'
+  agency: agency 3

@@ -1,6 +1,3 @@
 [submodule "metanorma-model-iso"]
 	path = metanorma-model-iso
 	url = https://github.com/metanorma/metanorma-model-iso
-[submodule "relaton-models"]
-	path = relaton-models
-	url = https://github.com/relaton/relaton-models

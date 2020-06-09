@@ -24,6 +24,7 @@ require "relaton_bib/biblio_version"
 require "relaton_bib/workers_pool"
 require "relaton_bib/hash_converter"
 require "relaton_bib/place"
+require "relaton_bib/structured_identifier"
 
 module RelatonBib
   # Bibliographic item
@@ -36,7 +37,7 @@ module RelatonBib
                inbook incollection inproceedings journal].freeze
 
     # @return [String, NilClass]
-    attr_reader :id
+    attr_reader :id, :type, :docnumber, :edition, :doctype
 
     # @return [Array<RelatonBib::TypedTitleString>]
     attr_reader :title
@@ -44,23 +45,14 @@ module RelatonBib
     # @return [Array<RelatonBib::TypedUri>]
     attr_reader :link
 
-    # @return [String, NilClass]
-    attr_reader :type
-
     # @return [Array<RelatonBib::DocumentIdentifier>]
     attr_reader :docidentifier
-
-    # @return [String, NilClass] docnumber
-    attr_reader :docnumber
 
     # @return [Array<RelatonBib::BibliographicDate>]
     attr_accessor :date
 
     # @return [Array<RelatonBib::ContributionInfo>]
     attr_reader :contributor
-
-    # @return [String, NillClass]
-    attr_reader :edition
 
     # @return [RelatonBib::BibliongraphicItem::Version, NilClass]
     attr_reader :version
@@ -116,6 +108,9 @@ module RelatonBib
     # @return [Array<RelatonBib::LocalizedString>]
     attr_reader :keyword
 
+    # @return [RelatonBib::StructuredIdentifierCollection]
+    attr_reader :structuredidentifier
+
     # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
@@ -140,6 +135,8 @@ module RelatonBib
     # @param validity [RelatonBib:Validity, NilClass]
     # @param fetched [Date, NilClass] default nil
     # @param keyword [Array<String>]
+    # @param doctype [String]
+    # @param structuredidentifier [RelatonBib::StructuredIdentifierCollection]
     #
     # @param copyright [Array<Hash, RelatonBib::CopyrightAssociation>]
     # @option copyright [Array<Hash, RelatonBib::ContributionInfo>] :owner
@@ -235,6 +232,8 @@ module RelatonBib
       @fetched        = args.fetch :fetched, nil # , Date.today # we should pass the fetched arg from scrappers
       @keyword        = (args[:keyword] || []).map { |kw| LocalizedString.new(kw) }
       @license        = args.fetch :license, []
+      @doctype        = args.fetch :doctype, "document"
+      @structuredidentifier = args[:structuredidentifier]
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -286,6 +285,8 @@ module RelatonBib
       end
     end
 
+    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+
     # @return [Hash]
     def to_hash
       hash = {}
@@ -318,8 +319,13 @@ module RelatonBib
       hash["fetched"] = fetched.to_s if fetched
       hash["keyword"] = single_element_array(keyword) if keyword&.any?
       hash["license"] = single_element_array(license) if license&.any?
+      hash["doctype"] = doctype if doctype
+      if structuredidentifier&.any?
+        hash["structuredidentifier"] = structuredidentifier.to_hash
+      end
       hash
     end
+    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     # @param bibtex [BibTeX::Bibliography, NilClass]
     # @return [String]
@@ -346,6 +352,7 @@ module RelatonBib
       bibtex << item
       bibtex.to_s
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     # If revision_date exists then returns it else returns published date or nil
     # @return [String, NilClass]
@@ -376,6 +383,8 @@ module RelatonBib
       end
     end
 
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+
     # @param [BibTeX::Entry]
     def bibtex_author(item)
       authors = contributor.select do |c|
@@ -386,7 +395,7 @@ module RelatonBib
 
       item.author = authors.map do |a|
         if a.name.surname
-          "#{a.name.surname}, #{a.name.forename.map(&:to_s).join(" ")}"
+          "#{a.name.surname}, #{a.name.forename.map(&:to_s).join(' ')}"
         else
           a.name.completename.to_s
         end
@@ -408,6 +417,7 @@ module RelatonBib
         end
       end
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     # @param [BibTeX::Entry]
     def bibtex_note(item)
@@ -425,7 +435,10 @@ module RelatonBib
     # @param [BibTeX::Entry]
     def bibtex_relation(item)
       rel = relation.detect { |r| r.type == "partOf" }
-      item.booktitle = rel.bibitem.title.detect { |t| t.type == "main" }.title.content if rel
+      if rel
+        title_main = rel.bibitem.title.detect { |t| t.type == "main" }
+        item.booktitle = title_main.title.content
+      end
     end
 
     # @param [BibTeX::Entry]
@@ -539,8 +552,12 @@ module RelatonBib
         classification.each { |cls| cls.to_xml builder }
         keyword.each { |kw| builder.keyword { kw.to_xml(builder) } }
         validity&.to_xml builder
-        if block_given?
-          yield builder
+        if block_given? then yield builder
+        elsif opts[:bibdata]
+          builder.ext do |b|
+            b.doctype doctype
+            structuredidentifier&.to_xml b
+          end
         end
       end
       xml[:id] = id if id && !opts[:bibdata] && !opts[:embedded]

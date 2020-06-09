@@ -34,6 +34,7 @@ module RelatonBib
         validity_hash_to_bib(ret)
         ret[:keyword] = array(ret[:keyword])
         ret[:license] = array(ret[:license])
+        structuredidentifier_hash_to_bib ret
         ret
       end
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
@@ -311,15 +312,16 @@ module RelatonBib
       end
 
       # @param rel [Hash] relation
+      # @return [RelatonBib::LocalityStack]
       def relation_locality_hash_to_bib(rel)
         rel[:locality] = array(rel[:locality])&.map do |bl|
           ls = if bl[:locality_stack]
-                  array(bl[:locality_stack]).map do |l|
-                    Locality.new(l[:type], l[:reference_from], l[:reference_to])
-                  end
-                else
-                  [Locality.new(bl[:type], bl[:reference_from], bl[:reference_to])]
-                end
+                 array(bl[:locality_stack]).map do |l|
+                   Locality.new(l[:type], l[:reference_from], l[:reference_to])
+                 end
+               else
+                 [Locality.new(bl[:type], bl[:reference_from], bl[:reference_to])]
+               end
           LocalityStack.new ls
         end
       end
@@ -338,6 +340,7 @@ module RelatonBib
         end
       end
 
+      # @param ret [Hash]
       def series_hash_to_bib(ret)
         ret[:series] = array(ret[:series])&.map do |s|
           s[:formattedref] && s[:formattedref] = formattedref(s[:formattedref])
@@ -356,20 +359,23 @@ module RelatonBib
         TypedTitleString.new title
       end
 
+      # @param ret [Hash]
       def medium_hash_to_bib(ret)
         ret[:medium] = Medium.new(ret[:medium]) if ret[:medium]
       end
 
+      # @param ret [Hash]
       def classification_hash_to_bib(ret)
-        # ret[:classification] = [ret[:classification]] unless ret[:classification].is_a?(Array)
-        # ret[:classification]&.each_with_index do |c, i|
-        # ret[:classification][i] = RelatonBib::Classification.new(c)
-        # end
         if ret[:classification]
-          ret[:classification] = array(ret[:classification]).map { |cls| Classification.new cls }
+          ret[:classification] = array(ret[:classification]).map do |cls|
+            Classification.new cls
+          end
         end
       end
 
+      # rubocop:disable Metrics/AbcSize
+
+      # @param ret [Hash]
       def validity_hash_to_bib(ret)
         return unless ret[:validity]
 
@@ -377,6 +383,18 @@ module RelatonBib
         ret[:validity][:ends] && e = Time.parse(ret[:validity][:ends].to_s)
         ret[:validity][:revision] && r = Time.parse(ret[:validity][:revision].to_s)
         ret[:validity] = Validity.new(begins: b, ends: e, revision: r)
+      end
+      # rubocop:enable Metrics/AbcSize
+
+      # @param ret [Hash]
+      def structuredidentifier_hash_to_bib(ret)
+        return unless ret[:structuredidentifier]
+
+        sids = array(ret[:structuredidentifier]).map do |si|
+          si[:agency] = array si[:agency]
+          StructuredIdentifier.new si
+        end
+        ret[:structuredidentifier] = StructuredIdentifierCollection.new sids
       end
 
       # @param ogj [Hash, Array, String]
@@ -394,6 +412,8 @@ module RelatonBib
         end
       end
 
+      # @param arr [NilClass, Array, #is_a?]
+      # @return [Array]
       def array(arr)
         return [] unless arr
         return [arr] unless arr.is_a?(Array)
@@ -401,6 +421,9 @@ module RelatonBib
         arr
       end
 
+      # @param name [Hash, String, NilClass]
+      # @param person [Hash]
+      # @return [RelatonBib::LocalizedString]
       def localname(name, person)
         return nil if name.nil?
 
@@ -408,13 +431,12 @@ module RelatonBib
         lang ||= person[:name][:language]
         script = name[:script] if name.is_a?(Hash)
         script ||= person[:name][:script]
-        if name.is_a?(Hash)
-          RelatonBib::LocalizedString.new(name[:content], lang, script)
-        else
-          RelatonBib::LocalizedString.new(name, lang, script)
-        end
+        n = name.is_a?(Hash) ? name[:content] : name
+        RelatonBib::LocalizedString.new(n, lang, script)
       end
 
+      # @param lst [Hash, Array<RelatonBib::LocalizedString>]
+      # @return [RelatonBib::LocalizedString]
       def localizedstring(lst)
         if lst.is_a?(Hash)
           RelatonBib::LocalizedString.new(lst[:content], lst[:language], lst[:script])
@@ -423,6 +445,8 @@ module RelatonBib
         end
       end
 
+      # @param frf [Hash, String]
+      # @return [RelatonBib::FormattedRef]
       def formattedref(frf)
         if frf.is_a?(Hash)
           RelatonBib::FormattedRef.new(frf)

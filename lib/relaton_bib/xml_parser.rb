@@ -20,6 +20,7 @@ module RelatonBib
 
       # @return [Hash]
       def item_data(bibitem)
+        ext = bibitem.at "//ext"
         {
           id: bibitem[:id]&.empty? ? nil : bibitem[:id],
           type: bibitem[:type]&.empty? ? nil : bibitem[:type],
@@ -49,6 +50,8 @@ module RelatonBib
           keyword: bibitem.xpath("keyword").map(&:text),
           license: bibitem.xpath("license").map(&:text),
           validity: fetch_validity(bibitem),
+          doctype: ext&.at("doctype")&.text,
+          structuredidentifier: fetch_structuredidentifier(ext),
         }
       end
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
@@ -351,7 +354,7 @@ module RelatonBib
           if lc[:type]
             LocalityStack.new [locality(lc)]
           else
-            LocalityStack.new lc.xpath("./locality").map { |l| locality l }
+            LocalityStack.new(lc.xpath("./locality").map { |l| locality l })
           end
         end
       end
@@ -359,7 +362,7 @@ module RelatonBib
       # @param loc [Nokogiri::XML::Element]
       # @return [RelatonBib::Locality]
       def locality(loc, klass = Locality)
-        ref_to = (rt = loc.at("./referenceTo")) ? LocalizedString.new(rt.text) : nil
+        ref_to = (rt = loc.at("./referenceTo")) && LocalizedString.new(rt.text)
         klass.new(
           loc[:type],
           LocalizedString.new(loc.at("./referenceFrom").text),
@@ -390,6 +393,29 @@ module RelatonBib
           content: ident&.text, format: ident[:format],
           language: ident[:language], script: ident[:script]
         )
+      end
+
+      # @param ext [Nokogiri::XML::Element]
+      # @return [RelatonBib::StructuredIdentifierCollection]
+      def fetch_structuredidentifier(ext)
+        return unless ext
+
+        sids = ext.xpath("structuredidentifier").map do |si|
+          StructuredIdentifier.new(
+            type: si[:type],
+            agency: si.xpath("agency").map(&:text),
+            class: si.at("class")&.text,
+            docnumber: si.at("docnumber")&.text,
+            partnumber: si.at("partnumber")&.text,
+            edition: si.at("edition")&.text,
+            version: si.at("version")&.text,
+            supplementtype: si.at("supplementtype")&.text,
+            supplementnumber: si.at("supplementnumber")&.text,
+            language: si.at("language")&.text,
+            year: si.at("year")&.text,
+          )
+        end
+        StructuredIdentifierCollection.new sids
       end
     end
   end

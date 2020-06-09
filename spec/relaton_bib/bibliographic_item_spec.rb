@@ -6,231 +6,10 @@ require "jing"
 RSpec.describe "RelatonBib" => :BibliographicItem do
   context "instance" do
     subject do
-      item = {
-        id: "ISOTC211", fetched: Date.today.to_s,
-        title: [
-          { type: "main", content: "Geographic information", language: "en", script: "Latn" },
-          {
-            content: "Information géographique", language: "fr", script: "Latn"
-          },
-        ],
-        type: "standard",
-        docid: [
-          RelatonBib::DocumentIdentifier.new(id: "TC211", type: "ISO"),
-          RelatonBib::DocumentIdentifier.new(id: "ISBN", type: "isbn"),
-          RelatonBib::DocumentIdentifier.new(id: "LCCN", type: "lccn"),
-          RelatonBib::DocumentIdentifier.new(id: "ISSN", type: "issn"),
-        ],
-        docnumber: "123456",
-        edition: "1", language: %w[en fr], script: ["Latn"],
-        version: RelatonBib::BibliographicItem::Version.new("2019-04-01", ["draft"]),
-        biblionote: [
-          RelatonBib::BiblioNote.new(content: "note"),
-          RelatonBib::BiblioNote.new(content: "An note", type: "annote"),
-          RelatonBib::BiblioNote.new(content: "How published", type: "howpublished"),
-          RelatonBib::BiblioNote.new(content: "Comment", type: "comment"),
-          RelatonBib::BiblioNote.new(content: "Table Of Contents", type: "tableOfContents"),
-        ],
-        docstatus: RelatonBib::DocumentStatus.new(
-          stage: RelatonBib::DocumentStatus::Stage.new(value: "30", abbreviation: "CD"),
-          substage: RelatonBib::DocumentStatus::Stage.new(value: "substage"),
-          iteration: "final",
-        ),
-        date: [
-          { type: "issued", on: "2014" },
-          { type: "published", on: "2014-04" },
-          { type: "accessed", on: "2015-05-20" },
-        ],
-        abstract: [
-          { content: "ISO 19115-1:2014 defines the schema required for ...",
-            language: "en", script: "Latn", format: "text/plain" },
-          { content: "L'ISO 19115-1:2014 définit le schéma requis pour ...",
-            language: "fr", script: "Latn", format: "text/plain" },
-        ],
-        contributor: [
-          {
-            entity: {
-              name: "International Organization for Standardization",
-              url: "www.iso.org", abbreviation: "ISO", subdivision: "division"
-            },
-            role: [{ type: "publisher", description: ["Publisher role"] }],
-          },
-          {
-            entity: RelatonBib::Person.new(
-              name: RelatonBib::FullName.new(
-                completename: localized_string("A. Bierman"),
-              ),
-              affiliation: [RelatonBib::Affiliation.new(
-                organization: RelatonBib::Organization.new(
-                  name: "IETF",
-                  abbreviation: RelatonBib::LocalizedString.new("IETF"),
-                  identifier: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
-                ),
-              )],
-              contact: [
-                RelatonBib::Address.new(
-                  street: ["Street"], city: "City", postcode: "123456",
-                  country: "Country", state: "State"
-                ),
-                RelatonBib::Contact.new(type: "phone", value: "223322"),
-              ],
-            ),
-            role: [type: "author"],
-          },
-          RelatonBib::ContributionInfo.new(
-            entity: RelatonBib::Organization.new(
-              name: "IETF",
-              abbreviation: "IETF",
-              identifier: [
-                RelatonBib::OrgIdentifier.new("uri", "www.ietf.org"),
-              ],
-            ),
-            role: [
-              { type: "publisher", description: ["Publisher description"] },
-              { type: "editor", description: ["Editor description"] },
-            ],
-          ),
-          {
-            entity: RelatonBib::Person.new(
-              name: RelatonBib::FullName.new(
-                initial: [localized_string("A.")],
-                surname: localized_string("Bierman"),
-                forename: [localized_string("Forename")],
-                addition: [localized_string("Addition")],
-                prefix: [localized_string("Prefix")],
-              ),
-              affiliation: [RelatonBib::Affiliation.new(
-                organization: RelatonBib::Organization.new(name: "IETF", abbreviation: "IETF"),
-                description: [localized_string("Description")],
-              )],
-              contact: [
-                RelatonBib::Address.new(
-                  street: ["Street"], city: "City", postcode: "123456",
-                  country: "Country", state: "State"
-                ),
-                RelatonBib::Contact.new(type: "phone", value: "223322"),
-              ],
-              identifier: [RelatonBib::PersonIdentifier.new("uri", "www.person.com")],
-            ),
-            role: [type: "author"],
-          },
-          { entity: { name: "Institution" },
-            role: [type: "distributor", description: ["sponsor"]] },
-        ],
-        copyright: [{ owner: [{
-          name: "International Organization for Standardization",
-          abbreviation: "ISO", url: "www.iso.org"
-        }], from: "2014", to: "2020", scope: "Scope" }],
-        link: [
-          { type: "src", content: "https://www.iso.org/standard/53798.html" },
-          { type: "obp",
-            content: "https://www.iso.org/obp/ui/#!iso:std:53798:en" },
-          { type: "rss", content: "https://www.iso.org/contents/data/standard"\
-            "/05/37/53798.detail.rss" },
-          { type: "doi", content: "http://standrd.org/doi-123" },
-          { type: "file", content: "file://path/file" },
-        ],
-        relation: [
-          {
-            type: "updates",
-            bibitem: RelatonBib::BibliographicItem.new(
-              formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003"),
-            ),
-            locality: [
-              RelatonBib::LocalityStack.new(
-                [RelatonBib::Locality.new("section", "Reference from")],
-              ),
-              RelatonBib::LocalityStack.new(
-                [RelatonBib::Locality.new("chapter", "1"),
-                 RelatonBib::Locality.new("page", "2")],
-              ),
-            ],
-            source_locality: [
-              RelatonBib::SourceLocalityStack.new(
-                [RelatonBib::SourceLocality.new("volume", "2"),
-                 RelatonBib::SourceLocality.new("chapter", "3")],
-              ),
-            ],
-          },
-          {
-            type: "obsoletes",
-            description: RelatonBib::FormattedString.new(content: "supersedes"),
-            bibitem: RelatonBib::BibliographicItem.new(
-              type: "standard",
-              formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003/Cor 1:2006"),
-            ),
-          },
-          {
-            type: "partOf",
-            bibitem: RelatonBib::BibliographicItem.new(
-              title: [RelatonBib::TypedTitleString.new(type: "main", content: "Book title")],
-            ),
-          },
-        ],
-        series: [
-          RelatonBib::Series.new(
-            type: "main",
-            title: RelatonBib::TypedTitleString.new(
-              type: "original", content: "ISO/IEC FDIS 10118-3", language: "en",
-              script: "Latn", format: "text/plain"
-            ),
-            place: "Serie's place",
-            organization: "Serie's organization",
-            abbreviation: RelatonBib::LocalizedString.new("ABVR"),
-            from: "2009-02-01",
-            to: "2010-12-20",
-            number: "serie1234",
-            partnumber: "part5678",
-          ),
-          RelatonBib::Series.new(
-            type: "alt",
-            formattedref: RelatonBib::FormattedRef.new(
-              content: "serieref", language: "en", script: "Latn",
-            ),
-          ),
-          RelatonBib::Series.new(
-            type: "journal",
-            title: RelatonBib::TypedTitleString.new(content: "Journal"),
-            number: "7",
-          ),
-          RelatonBib::Series.new(title: RelatonBib::TypedTitleString.new(
-            content: [
-              RelatonBib::LocalizedString.new("Series", "en", "Latn"),
-              RelatonBib::LocalizedString.new("Séries", "fr", "Latn"),
-            ],
-          )),
-        ],
-        medium: RelatonBib::Medium.new(
-          form: "medium form", size: "medium size", scale: "medium scale",
-        ),
-        place: [
-          "bib place",
-          RelatonBib::Place.new(
-            name: "Geneva", uri: "geneva.place", region: "Switzelznd",
-          ),
-        ],
-        extent: [
-          RelatonBib::BibItemLocality.new("section", "Reference from", "Reference to"),
-          RelatonBib::BibItemLocality.new("chapter", "4"),
-          RelatonBib::BibItemLocality.new("page", "10", "20"),
-          RelatonBib::BibItemLocality.new("volume", "1"),
-        ],
-        accesslocation: ["accesslocation1", "accesslocation2"],
-        classification: [
-          RelatonBib::Classification.new(type: "type", value: "value"),
-          RelatonBib::Classification.new(type: "keyword", value: "Keywords"),
-          RelatonBib::Classification.new(type: "mendeley", value: "Mendeley Tags"),
-        ],
-        keyword: ["Keyword", "Key Word"],
-        license: ["License"],
-        validity: RelatonBib::Validity.new(
-          begins: Time.new(2010, 10, 10, 12, 21),
-          ends: Time.new(2011, 2, 3, 18,30),
-          revision: Time.new(2011, 3, 4, 9, 0),
-        )
-      }
+      hash = YAML.load_file "spec/examples/bib_item.yml"
+      hash_bib = RelatonBib::HashConverter.hash_to_bib hash
 
-      RelatonBib::BibliographicItem.new(item)
+      RelatonBib::BibliographicItem.new(hash_bib)
     end
 
     it "is instance of BibliographicItem" do
@@ -251,18 +30,33 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
     it "returns xml string" do
       file = "spec/examples/bib_item.xml"
-      File.write file, subject.to_xml, encoding: "utf-8" unless File.exist? file
+      subject_xml = subject.to_xml
+      File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
       xml = File.read(file, encoding: "utf-8").gsub(
         /<fetched>\d{4}-\d{2}-\d{2}/, "<fetched>#{Date.today}"
       )
-      expect(subject.to_xml).to be_equivalent_to xml
-      schema = Jing.new "relaton-models/grammars/biblio.rng"
+      expect(subject_xml).to be_equivalent_to xml
+      schema = Jing.new "grammars/biblio.rng"
+      errors = schema.validate file
+      expect(errors).to eq []
+    end
+
+    it "returns xml string" do
+      file = "spec/examples/bibdata_item.xml"
+      subject_xml = subject.to_xml bibdata: true
+      File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
+      xml = File.read(file, encoding: "utf-8").gsub(
+        /<fetched>\d{4}-\d{2}-\d{2}/, "<fetched>#{Date.today}"
+      )
+      expect(subject_xml).to be_equivalent_to xml
+      schema = Jing.new "spec/examples/isobib.rng"
       errors = schema.validate file
       expect(errors).to eq []
     end
 
     it "render addition elements" do
-      expect(subject.to_xml { |b| b.element "test" }).to include "<element>test</element>"
+      xml = subject.to_xml { |b| b.element "test" }
+      expect(xml).to include "<element>test</element>"
     end
 
     it "deals with hashes" do
