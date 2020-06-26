@@ -25,6 +25,8 @@ require "relaton_bib/workers_pool"
 require "relaton_bib/hash_converter"
 require "relaton_bib/place"
 require "relaton_bib/structured_identifier"
+require "relaton_bib/editorial_group"
+require "relaton_bib/ics"
 
 module RelatonBib
   # Bibliographic item
@@ -36,11 +38,14 @@ module RelatonBib
                audiovisual film video broadcast graphic_work music patent
                inbook incollection inproceedings journal].freeze
 
+    # @return [TrueClass, FalseClass, NilClass]
+    attr_accessor :all_parts
+
     # @return [String, NilClass]
     attr_reader :id, :type, :docnumber, :edition, :doctype
 
+    # @!attribute [r] title
     # @return [Array<RelatonBib::TypedTitleString>]
-    attr_reader :title
 
     # @return [Array<RelatonBib::TypedUri>]
     attr_reader :link
@@ -108,6 +113,12 @@ module RelatonBib
     # @return [Array<RelatonBib::LocalizedString>]
     attr_reader :keyword
 
+    # @return [RelatonBib::EditorialGroup, nil]
+    attr_reader :editorialgroup
+
+    # @return [Array<RelatonBib:ICS>]
+    attr_reader :ics
+
     # @return [RelatonBib::StructuredIdentifierCollection]
     attr_reader :structuredidentifier
 
@@ -136,6 +147,8 @@ module RelatonBib
     # @param fetched [Date, NilClass] default nil
     # @param keyword [Array<String>]
     # @param doctype [String]
+    # @param editorialgroup [RelatonBib::EditorialGroup, nil]
+    # @param ics [Array<RelatonBib::ICS>]
     # @param structuredidentifier [RelatonBib::StructuredIdentifierCollection]
     #
     # @param copyright [Array<Hash, RelatonBib::CopyrightAssociation>]
@@ -232,7 +245,9 @@ module RelatonBib
       @fetched        = args.fetch :fetched, nil # , Date.today # we should pass the fetched arg from scrappers
       @keyword        = (args[:keyword] || []).map { |kw| LocalizedString.new(kw) }
       @license        = args.fetch :license, []
-      @doctype        = args.fetch :doctype, "document"
+      @doctype        = args[:doctype]
+      @editorialgroup = args[:editorialgroup]
+      @ics            = args.fetch :ics, []
       @structuredidentifier = args[:structuredidentifier]
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
@@ -320,7 +335,9 @@ module RelatonBib
       hash["keyword"] = single_element_array(keyword) if keyword&.any?
       hash["license"] = single_element_array(license) if license&.any?
       hash["doctype"] = doctype if doctype
-      if structuredidentifier&.any?
+      hash["editorialgroup"] = editorialgroup.to_hash if editorialgroup
+      hash["ics"] = single_element_array ics if ics.any?
+      if structuredidentifier&.presence?
         hash["structuredidentifier"] = structuredidentifier.to_hash
       end
       hash
@@ -353,6 +370,73 @@ module RelatonBib
       bibtex.to_s
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+    # @param lang [String] language code Iso639
+    # @return [Array<RelatonIsoBib::TypedTitleString>]
+    def title(lang: nil)
+      if lang then @title.select { |t| t.title.language&.include? lang }
+      else @title
+      end
+    end
+
+    # @param type [Symbol] type of url, can be :src/:obp/:rss
+    # @return [String]
+    def url(type = :src)
+      @link.detect { |s| s.type == type.to_s }.content.to_s
+    end
+
+    def abstract=(value)
+      @abstract = value
+    end
+
+    def deep_clone
+      dump = Marshal.dump self
+      Marshal.load dump
+    end
+
+    def disable_id_attribute
+      @id_attribute = false
+    end
+
+    # remove title part components and abstract
+    def to_all_parts
+      me = deep_clone
+      me.disable_id_attribute
+      me.relation << RelatonBib::DocumentRelation.new(
+        type: "instance", bibitem: self,
+      )
+      me.language.each do |l|
+        me.title.delete_if { |t| t.type == "title-part" }
+        ttl = me.title.select { |t| t.type != "main" && t.title.language&.include?(l) }
+        tm_en = ttl.map { |t| t.title.content }.join " – "
+        me.title.detect { |t| t.type == "main" && t.title.language&.include?(l) }&.title&.content = tm_en
+      end
+      me.abstract = []
+      me.docidentifier.each(&:remove_part)
+      me.docidentifier.each(&:all_parts)
+      me.structuredidentifier.remove_part
+      me.structuredidentifier.all_parts
+      me.docidentifier.each &:remove_date
+      me.structuredidentifier&.remove_date
+      me.all_parts = true
+      me
+    end
+
+    # convert ISO:yyyy reference to reference to most recent
+    # instance of reference, removing date-specific infomration:
+    # date of publication, abstracts. Make dated reference Instance relation
+    # of the redacated document
+    def to_most_recent_reference
+      me = deep_clone
+      disable_id_attribute
+      me.relation << DocumentRelation.new(type: "instance", bibitem: self)
+      me.abstract = []
+      me.date = []
+      me.docidentifier.each &:remove_date
+      me.structuredidentifier&.remove_date
+      me.id&.sub! /-[12]\d\d\d/, ""
+      me
+    end
 
     # If revision_date exists then returns it else returns published date or nil
     # @return [String, NilClass]
@@ -553,9 +637,12 @@ module RelatonBib
         keyword.each { |kw| builder.keyword { kw.to_xml(builder) } }
         validity&.to_xml builder
         if block_given? then yield builder
-        elsif opts[:bibdata]
+        elsif opts[:bibdata] && (doctype || editorialgroup || ics&.any? ||
+                                 structuredidentifier&.presence?)
           builder.ext do |b|
-            b.doctype doctype
+            b.doctype doctype if doctype
+            editorialgroup&.to_xml b
+            ics.each { |i| i.to_xml b }
             structuredidentifier&.to_xml b
           end
         end

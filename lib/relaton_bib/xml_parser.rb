@@ -51,6 +51,8 @@ module RelatonBib
           license: bibitem.xpath("license").map(&:text),
           validity: fetch_validity(bibitem),
           doctype: ext&.at("doctype")&.text,
+          editorialgroup: fetch_editorialgroup(ext),
+          ics: fetch_ics(ext),
           structuredidentifier: fetch_structuredidentifier(ext),
         }
       end
@@ -396,6 +398,29 @@ module RelatonBib
       end
 
       # @param ext [Nokogiri::XML::Element]
+      # @return [RelatonBib::EditorialGroup, nil]
+      def fetch_editorialgroup(ext)
+        return unless ext && (eg = ext.at "editorialgroup")
+
+        eg = eg.xpath("technical-committee").map do |tc|
+          wg = WorkGroup.new(content: tc.text, number: tc[:number]&.to_i,
+                             type: tc[:type])
+          TechnicalCommittee.new wg
+        end
+        EditorialGroup.new eg if eg.any?
+      end
+
+      def fetch_ics(ext)
+        return [] unless ext
+
+        ext.xpath("ics").map do |ics|
+          ICS.new code: ics.at("code").text, text: ics.at("text").text
+        end
+      end
+
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+
+      # @param ext [Nokogiri::XML::Element]
       # @return [RelatonBib::StructuredIdentifierCollection]
       def fetch_structuredidentifier(ext)
         return unless ext
@@ -417,6 +442,7 @@ module RelatonBib
         end
         StructuredIdentifierCollection.new sids
       end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
     end
   end
 end

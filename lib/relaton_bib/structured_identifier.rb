@@ -3,7 +3,7 @@ module RelatonBib
     include RelatonBib
     extend Forwardable
 
-    def_delegators :@collection, :any?, :size, :[]
+    def_delegators :@collection, :any?, :size, :[], :detect
 
     # @param collection [Array<RelatonBib::StructuredIdentifier>]
     def initialize(collection)
@@ -18,6 +18,23 @@ module RelatonBib
     # @return [Array<Hash>]
     def to_hash
       single_element_array @collection
+    end
+
+    # remoe year from docnumber
+    def remove_date
+      @collection.each &:remove_date
+    end
+
+    def remove_part
+      @collection.each &:remove_part
+    end
+
+    def all_parts
+      @collection.each &:all_parts
+    end
+
+    def presence?
+      any?
     end
 
     # @return [RelatonBib::StructuredIdentifierCollection]
@@ -101,5 +118,24 @@ module RelatonBib
       hash
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+    def remove_date
+      if @type == "Chinese Standard"
+        @docnumber.sub!(/-[12]\d\d\d/, "")
+      else
+        @docnumber.sub!(/:[12]\d\d\d/, "")
+      end
+      @year = nil
+    end
+
+    # in docid manipulations, assume ISO as the default: id-part:year
+    def remove_part
+      @partnumber = nil
+      @docnumber = @docnumber.sub(/-\d+/, "")
+    end
+
+    def all_parts
+      @docnumber = @docnumber + " (all parts)"
+    end
   end
 end

@@ -34,6 +34,8 @@ module RelatonBib
         validity_hash_to_bib(ret)
         ret[:keyword] = array(ret[:keyword])
         ret[:license] = array(ret[:license])
+        editorialgroup_hash_to_bib ret
+        ics_hash_to_bib ret
         structuredidentifier_hash_to_bib ret
         ret
       end
@@ -56,12 +58,12 @@ module RelatonBib
       def title_hash_to_bib(ret)
         return unless ret[:title]
 
-        ret[:title] = array(ret[:title])
-        ret[:title] = ret[:title].map do |t|
-          if t.is_a?(Hash) then t
+        ret[:title] = array(ret[:title]).reduce([]) do |m, t|
+          if t.is_a?(Hash) then m << t
           else
-            { content: t, language: "en", script: "Latn", format: "text/plain",
-              type: "main" }
+            m + TypedTitleString.from_string(t)
+            # { content: t, language: "en", script: "Latn", format: "text/plain",
+            #   type: "main" }
           end
         end
       end
@@ -385,6 +387,23 @@ module RelatonBib
         ret[:validity] = Validity.new(begins: b, ends: e, revision: r)
       end
       # rubocop:enable Metrics/AbcSize
+
+      # @param ret [Hash]
+      def editorialgroup_hash_to_bib(ret)
+        return unless ret[:editorialgroup]
+
+        technical_committee = array(ret[:editorialgroup]).map do |wg|
+          TechnicalCommittee.new WorkGroup.new(wg)
+        end
+        ret[:editorialgroup] = EditorialGroup.new technical_committee
+      end
+
+      # @param ret [Hash]
+      def ics_hash_to_bib(ret)
+        return unless ret[:ics]
+
+        ret[:ics] = array(ret[:ics]).map { |ics| ICS.new ics }
+      end
 
       # @param ret [Hash]
       def structuredidentifier_hash_to_bib(ret)

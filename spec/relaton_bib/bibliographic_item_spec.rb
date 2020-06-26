@@ -18,8 +18,14 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
     it "has array of titiles" do
       expect(subject.title).to be_instance_of Array
+      expect(subject.title(lang: "fr")[0].title.content).to eq "Information g\u00E9ographique"
     end
 
+    it "has urls" do
+      expect(subject.url).to eq "https://www.iso.org/standard/53798.html"
+      expect(subject.url(:rss)).to eq "https://www.iso.org/contents/data/"\
+                                          "standard/05/37/53798.detail.rss"
+    end
     it "returns shortref" do
       expect(subject.shortref(subject.docidentifier.first)).to eq "TC211:2014"
     end
@@ -28,7 +34,30 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(subject.abstract(lang: "en")).to be_instance_of RelatonBib::FormattedString
     end
 
-    it "returns xml string" do
+    it "to most recent reference" do
+      item = subject.to_most_recent_reference
+      expect(item.relation[3].bibitem.structuredidentifier[0].year).to eq "2020"
+      expect(item.structuredidentifier[0].year).to be_nil
+    end
+
+    it "to all parts" do
+      item = subject.to_all_parts
+      expect(item).to_not be subject
+      expect(item.all_parts).to be true
+      expect(item.relation.last.type).to eq "instance"
+      expect(item.title.detect { |t| t.type == "title-part" }). to be_nil
+      expect(item.title.detect { |t| t.type == "main" }.title.content).to eq "Geographic information"
+      expect(item.abstract).to be_empty
+      expect(item.docidentifier.detect { |d| d.id =~ /-\d/ }).to be_nil
+      expect(item.docidentifier.detect { |d| d.id !~ %r{(all parts)} }).to be_nil
+      expect(item.docidentifier.detect { |d| d.id =~ /:[12]\d\d\d/ }).to be_nil
+      expect(item.structuredidentifier.detect { |d| !d.partnumber.nil? }).to be_nil
+      expect(item.structuredidentifier.detect { |d| d.docnumber =~ /-\d/ }).to be_nil
+      expect(item.structuredidentifier.detect { |d| d.docnumber !~ %r{(all parts)} }).to be_nil
+      expect(item.structuredidentifier.detect { |d| d.docnumber =~ /:[12]\d\d\d/ }).to be_nil
+    end
+
+    it "returns bibitem xml string" do
       file = "spec/examples/bib_item.xml"
       subject_xml = subject.to_xml
       File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
@@ -41,7 +70,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(errors).to eq []
     end
 
-    it "returns xml string" do
+    it "returns bibdata xml string" do
       file = "spec/examples/bibdata_item.xml"
       subject_xml = subject.to_xml bibdata: true
       File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
@@ -70,10 +99,9 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       hash = subject.to_hash
       file = "spec/examples/hash.yml"
       File.write file, hash.to_yaml unless File.exist? file
-      h = RelatonBib::HashConverter.hash_to_bib(YAML.load_file(file))
-      h[:fetched] = Date.today.to_s
-      b = RelatonBib::BibliographicItem.new(h)
-      expect(hash).to eq b.to_hash
+      h = YAML.load_file(file)
+      h["fetched"] = Date.today.to_s
+      expect(hash).to eq h
       expect(hash["revdate"]).to eq "2019-04-01"
     end
 
@@ -82,8 +110,8 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         bibtex = subject.to_bibtex
         file = "spec/examples/misc.bib"
         File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
-        expect(bibtex).to eq File.read(file, encoding: "utf-8")
-          .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        expect(bibtex).to eq File.read(file, encoding: "utf-8").
+          sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       end
 
       it "techreport" do

@@ -1,6 +1,7 @@
 <bibdata type="standard">
-  <fetched>2020-06-08</fetched>
-  <title type="main" format="text/plain" language="en" script="Latn">Geographic information</title>
+  <fetched>2020-06-25</fetched>
+  <title type="title-main" format="text/plain">Geographic information</title>
+  <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
   <uri type="src">https://www.iso.org/standard/53798.html</uri>
   <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
@@ -232,6 +233,13 @@
   </validity>
   <ext>
     <doctype>document</doctype>
+    <editorialgroup>
+      <technical-committee number="1" type="Type">Editorial group</technical-committee>
+    </editorialgroup>
+    <ics>
+      <code>01</code>
+      <text>First</text>
+    </ics>
     <structuredidentifier type="type 1">
       <agency>agency 1</agency>
       <agency>agency 2</agency>

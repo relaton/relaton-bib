@@ -38,7 +38,7 @@ module RelatonBib
     if array.size > 1
       array.map { |e| e.is_a?(String) ? e : e.to_hash }
     else
-      array[0].is_a?(String) ? array[0] : array[0].to_hash
+      array.first&.is_a?(String) ? array[0] : array.first&.to_hash
     end
   end
 end
