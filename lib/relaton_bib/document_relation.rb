@@ -45,7 +45,7 @@ module RelatonBib
     def initialize(type:, description: nil, bibitem:, locality: [],
                    source_locality: [])
       type = "obsoletes" if type == "Now withdrawn"
-      unless TYPES.include? type
+      unless self.class::TYPES.include? type
         warn "[relaton-bib] WARNING: invalid relation type: #{type}"
       end
       @type            = type
