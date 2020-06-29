@@ -414,7 +414,7 @@ module RelatonBib
         return [] unless ext
 
         ext.xpath("ics").map do |ics|
-          ICS.new code: ics.at("code").text, text: ics.at("text").text
+          ICS.new code: ics.at("code")&.text, text: ics.at("text")&.text
         end
       end
 
