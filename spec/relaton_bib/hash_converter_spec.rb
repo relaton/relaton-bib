@@ -33,12 +33,12 @@ RSpec.describe RelatonBib::HashConverter do
 
   it "parse validity time" do
     r = RelatonBib::HashConverter.parse_validity_time({ begins: 1999 }, :begins)
-    expect(r.to_s).to eq "1999-01-01 00:00:00 +0100"
+    expect(r.to_s).to match /^1999-01-01/
     r = RelatonBib::HashConverter.parse_validity_time({ ends: 1999 }, :ends)
-    expect(r.to_s).to eq "1999-12-31 00:00:00 +0100"
+    expect(r.to_s).to match /^1999-12-31/
     r = RelatonBib::HashConverter.parse_validity_time({ begins: "1999-02" }, :begins)
-    expect(r.to_s).to eq "1999-02-01 00:00:00 +0100"
+    expect(r.to_s).to match /^1999-02-01/
     r = RelatonBib::HashConverter.parse_validity_time({ ends: "1999-02" }, :ends)
-    expect(r.to_s).to eq "1999-02-28 00:00:00 +0100"
+    expect(r.to_s).to match /^1999-02-28/
   end
 end
