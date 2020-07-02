@@ -375,18 +375,29 @@ module RelatonBib
         end
       end
 
-      # rubocop:disable Metrics/AbcSize
-
       # @param ret [Hash]
       def validity_hash_to_bib(ret)
         return unless ret[:validity]
 
-        ret[:validity][:begins] && b = Time.parse(ret[:validity][:begins].to_s)
-        ret[:validity][:ends] && e = Time.parse(ret[:validity][:ends].to_s)
-        ret[:validity][:revision] && r = Time.parse(ret[:validity][:revision].to_s)
+        b = parse_validity_time(ret[:validity], :begins)
+        e = parse_validity_time(ret[:validity], :ends)
+        r = parse_validity_time(ret[:validity], :revision)
         ret[:validity] = Validity.new(begins: b, ends: e, revision: r)
       end
-      # rubocop:enable Metrics/AbcSize
+
+      def parse_validity_time(val, period)
+        t = val[period]&.to_s
+        return unless t
+
+        p = period == :ends ? -1 : 1
+        case t
+        when /^\d{4}$/
+          Date.new(t.to_i, p, p).to_time
+        when /^(?<year>\d{4})-(?<month>\d{1,2})$/
+          Date.new($~[:year].to_i, $~[:month].to_i, p).to_time
+        else Time.parse t
+        end
+      end
 
       # @param ret [Hash]
       def editorialgroup_hash_to_bib(ret)

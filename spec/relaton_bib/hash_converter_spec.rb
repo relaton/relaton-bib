@@ -30,4 +30,15 @@ RSpec.describe RelatonBib::HashConverter do
     RelatonBib::HashConverter.relation_source_locality_hash_to_bib hash
     expect(hash[:source_locality].first).to be_instance_of RelatonBib::SourceLocalityStack
   end
+
+  it "parse validity time" do
+    r = RelatonBib::HashConverter.parse_validity_time({ begins: 1999 }, :begins)
+    expect(r.to_s).to eq "1999-01-01 00:00:00 +0100"
+    r = RelatonBib::HashConverter.parse_validity_time({ ends: 1999 }, :ends)
+    expect(r.to_s).to eq "1999-12-31 00:00:00 +0100"
+    r = RelatonBib::HashConverter.parse_validity_time({ begins: "1999-02" }, :begins)
+    expect(r.to_s).to eq "1999-02-01 00:00:00 +0100"
+    r = RelatonBib::HashConverter.parse_validity_time({ ends: "1999-02" }, :ends)
+    expect(r.to_s).to eq "1999-02-28 00:00:00 +0100"
+  end
 end

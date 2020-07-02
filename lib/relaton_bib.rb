@@ -10,24 +10,27 @@ module RelatonBib
   class RequestError < StandardError; end
 
   class << self
-    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
 
-    # @param date [String]
+    # @param date [String, Integer, Date]
     # @return [Date, NilClass]
-    def parse_date(sdate)
-      if sdate.is_a?(Date) then sdate
-      elsif /(?<date>\w+\s\d{4})/ =~ sdate # February 2012
-        Date.strptime(date, "%B %Y")
-      elsif /(?<date>\w+\s\d{1,2},\s\d{4})/ =~ sdate # February 11, 2012
-        Date.strptime(date, "%B %d, %Y")
-      elsif /(?<date>\d{4}-\d{2}-\d{2})/ =~ sdate # 2012-02-11
-        Date.parse(date)
-      elsif /(?<date>\d{4}-\d{2})/ =~ sdate # 2012-02
+    def parse_date(date)
+      return date if date.is_a?(Date)
+
+      sdate = date.to_s
+      case sdate
+      when /(?<date>\w+\s\d{4})/ # February 2012
+        Date.strptime($~[:date], "%B %Y")
+      when /(?<date>\w+\s\d{1,2},\s\d{4})/ # February 11, 2012
+        Date.strptime($~[:date], "%B %d, %Y")
+      when /(?<date>\d{4}-\d{2}-\d{2})/ # 2012-02-11
+        Date.parse($~[:date])
+      when /(?<date>\d{4}-\d{2})/ # 2012-02
         Date.strptime date, "%Y-%m"
-      elsif /(?<date>\d{4})/ =~ sdate then Date.strptime date, "%Y" # 2012
+      when /(?<date>\d{4})/ then Date.strptime $~[:date], "%Y" # 2012
       end
     end
-    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
   end
 
   private
