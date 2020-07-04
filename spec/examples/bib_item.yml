@@ -18,6 +18,7 @@ docid:
     type: lccn
   - id: ISSN
     type: issn
+    scope: series
 
 docnumber: "123456"
 edition: "1"

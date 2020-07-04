@@ -5,13 +5,15 @@ module RelatonBib
     attr_reader :id
 
     # @return [String, NilClass]
-    attr_reader :type
+    attr_reader :type, :scope
 
     # @param id [String]
     # @param type [String, NilClass]
-    def initialize(id:, type: nil)
-      @id   = id
-      @type = type
+    # @param scoope [String, NilClass]
+    def initialize(id:, type: nil, scope: nil)
+      @id    = id
+      @type  = type
+      @scope = scope
     end
 
     # in docid manipulations, assume ISO as the default: id-part:year
@@ -43,12 +45,14 @@ module RelatonBib
     def to_xml(builder)
       element = builder.docidentifier id
       element[:type] = type if type
+      element[:scope] = scope if scope
     end
 
     # @return [Hash]
     def to_hash
       hash = { "id" => id }
       hash["type"] = type if type
+      hash["scope"] = scope if scope
       hash
     end
   end

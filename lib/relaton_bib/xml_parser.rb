@@ -153,7 +153,7 @@ module RelatonBib
       # @return [Array<RelatonBib::DocumentIdentifier>]
       def fetch_docid(item)
         item.xpath("./docidentifier").map do |did|
-          DocumentIdentifier.new(id: did.text, type: did[:type])
+          DocumentIdentifier.new(id: did.text, type: did[:type], scope: did[:scope])
         end
       end
 
