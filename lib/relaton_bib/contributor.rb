@@ -54,6 +54,20 @@ module RelatonBib
       hash["postcode"] = postcode if postcode
       hash
     end
+
+    # @param prefix [String]
+    # @param count [Integer] number of addresses
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize
+      pref = prefix.empty? ? "address" : prefix + ".address"
+      out = count > 1 ? "#{pref}::\n" : ""
+      street.each { |st| out += "#{pref}.street:: #{st}\n" }
+      out += "#{pref}.city:: #{city}\n"
+      out += "#{pref}.state:: #{state}\n" if state
+      out += "#{pref}.country:: #{country}\n"
+      out += "#{pref}.postcode:: #{postcode}\n" if postcode
+      out
+    end
   end
 
   # Contact class.
@@ -79,6 +93,17 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       { "type" => type, "value" => value }
+    end
+
+    # @param prefix [String]
+    # @param count [Integer] number of contacts
+    # @return [string]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = count > 1 ? "#{pref}contact::\n" : ""
+      out += "#{pref}contact.type:: #{type}\n"
+      out += "#{pref}contact.value:: #{value}\n"
+      out
     end
   end
 
@@ -117,8 +142,24 @@ module RelatonBib
     def to_hash
       hash = organization.to_hash
       hash["name"] = name.to_hash if name
-      hash["description"] = single_element_array(description) if description&.any?
+      if description&.any?
+        hash["description"] = single_element_array(description)
+      end
       hash
+    end
+
+    # @param prefix [String]
+    # @param count [Integer]
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = count > 1 ? "#{pref}affiliation::\n" : ""
+      out += name.to_asciibib "#{pref}affiliation.name" if name
+      description.each do |d|
+        out += d.to_asciibib "#{pref}affiliation.description", description.size
+      end
+      out += organization.to_asciibib "#{pref}affiliation.*"
+      out
     end
   end
 
@@ -156,6 +197,19 @@ module RelatonBib
       hash["url"] = uri.to_s if uri
       hash["contact"] = single_element_array(contact) if contact&.any?
       hash
+    end
+
+    # @param prefix [String]
+    # @return [String]
+    def to_asciibib(prefix = "") # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = ""
+      out += "#{pref}url:: #{uri}\n" if uri
+      addr = contact.select { |c| c.is_a? RelatonBib::Address }
+      addr.each { |ct| out += ct.to_asciibib prefix, addr.size }
+      cont = contact.select { |c| c.is_a? RelatonBib::Contact }
+      cont.each { |ct| out += ct.to_asciibib prefix, cont.size }
+      out
     end
   end
 end

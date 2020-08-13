@@ -48,11 +48,11 @@ module RelatonBib
       unless self.class::TYPES.include? type
         warn "[relaton-bib] WARNING: invalid relation type: #{type}"
       end
-      @type            = type
-      @description     = description
-      @locality        = locality
+      @type = type
+      @description = description
+      @locality = locality
       @source_locality = source_locality
-      @bibitem         = bibitem
+      @bibitem = bibitem
     end
 
     # rubocop:disable Metrics/AbcSize
@@ -79,6 +79,16 @@ module RelatonBib
         hash["source_locality"] = single_element_array(source_locality)
       end
       hash
+    end
+
+    # @param prefix [String]
+    # @return [String]
+    def to_asciibib(prefix = "")
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = "#{prefix}.type:: #{type}\n"
+      out += description.to_asciibib "#{pref}desctiption" if description
+      out += bibitem.to_asciibib "#{pref}bibitem" if bibitem
+      out
     end
   end
 end

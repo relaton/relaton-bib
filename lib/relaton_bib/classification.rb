@@ -25,5 +25,16 @@ module RelatonBib
       hash["type"] = type if type
       hash
     end
+
+    # @param prefix [String]
+    # @param count [Integer] number of classifications
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? "classification" : prefix + ".classification"
+      out = count > 1 ? "#{pref}::\n" : ""
+      out += "#{pref}.type:: #{type}\n" if type
+      out += "#{pref}.value:: #{value}\n"
+      out
+    end
   end
 end

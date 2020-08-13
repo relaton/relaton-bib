@@ -237,13 +237,18 @@ module RelatonBib
       end
       @series         = args.fetch :series, []
       @medium         = args[:medium]
-      @place          = args.fetch(:place, []).map { |pl| pl.is_a?(String) ? Place.new(name: pl) : pl }
+      @place          = args.fetch(:place, []).map do |pl|
+        pl.is_a?(String) ? Place.new(name: pl) : pl
+      end
       @extent         = args[:extent] || []
       @accesslocation = args.fetch :accesslocation, []
       @classification = args.fetch :classification, []
       @validity       = args[:validity]
-      @fetched        = args.fetch :fetched, nil # , Date.today # we should pass the fetched arg from scrappers
-      @keyword        = (args[:keyword] || []).map { |kw| LocalizedString.new(kw) }
+      # we should pass the fetched arg from scrappers
+      @fetched        = args.fetch :fetched, nil
+      @keyword        = (args[:keyword] || []).map do |kw|
+        LocalizedString.new(kw)
+      end
       @license        = args.fetch :license, []
       @doctype        = args[:doctype]
       @editorialgroup = args[:editorialgroup]
@@ -278,7 +283,7 @@ module RelatonBib
     end
 
     # @return [String]
-    def shortref(identifier, **opts)
+    def shortref(identifier, **opts) # rubocop:disable Metrics/CyclomaticComplexity
       pubdate = date.select { |d| d.type == "published" }
       year = if opts[:no_year] || pubdate.empty? then ""
              else ":" + pubdate&.first&.on&.year.to_s
@@ -300,10 +305,8 @@ module RelatonBib
       end
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-
     # @return [Hash]
-    def to_hash
+    def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       hash = {}
       hash["id"] = id if id
       hash["title"] = single_element_array(title) if title&.any?
@@ -312,7 +315,9 @@ module RelatonBib
       hash["docid"] = single_element_array(docidentifier) if docidentifier&.any?
       hash["docnumber"] = docnumber if docnumber
       hash["date"] = single_element_array(date) if date&.any?
-      hash["contributor"] = single_element_array(contributor) if contributor&.any?
+      if contributor&.any?
+        hash["contributor"] = single_element_array(contributor)
+      end
       hash["edition"] = edition if edition
       hash["version"] = version.to_hash if version
       hash["revdate"] = revdate if revdate
@@ -328,8 +333,12 @@ module RelatonBib
       hash["medium"] = medium.to_hash if medium
       hash["place"] = single_element_array(place) if place&.any?
       hash["extent"] = single_element_array(extent) if extent&.any?
-      hash["accesslocation"] = single_element_array(accesslocation) if accesslocation&.any?
-      hash["classification"] = single_element_array(classification) if classification&.any?
+      if accesslocation&.any?
+        hash["accesslocation"] = single_element_array(accesslocation)
+      end
+      if classification&.any?
+        hash["classification"] = single_element_array(classification)
+      end
       hash["validity"] = validity.to_hash if validity
       hash["fetched"] = fetched.to_s if fetched
       hash["keyword"] = single_element_array(keyword) if keyword&.any?
@@ -342,11 +351,10 @@ module RelatonBib
       end
       hash
     end
-    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     # @param bibtex [BibTeX::Bibliography, NilClass]
     # @return [String]
-    def to_bibtex(bibtex = nil)
+    def to_bibtex(bibtex = nil) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
       item = BibTeX::Entry.new
       item.type = bibtex_type
       item.key = id
@@ -369,7 +377,6 @@ module RelatonBib
       bibtex << item
       bibtex.to_s
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     # @param lang [String] language code Iso639
     # @return [Array<RelatonIsoBib::TypedTitleString>]
@@ -391,7 +398,7 @@ module RelatonBib
 
     def deep_clone
       dump = Marshal.dump self
-      Marshal.load dump
+      Marshal.load dump # rubocop:disable Security/MarshalLoad
     end
 
     def disable_id_attribute
@@ -399,17 +406,19 @@ module RelatonBib
     end
 
     # remove title part components and abstract
-    def to_all_parts
+    def to_all_parts # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
       me = deep_clone
       me.disable_id_attribute
-      me.relation << RelatonBib::DocumentRelation.new(
-        type: "instance", bibitem: self,
-      )
+      me.relation << DocumentRelation.new(type: "instance", bibitem: self)
       me.language.each do |l|
         me.title.delete_if { |t| t.type == "title-part" }
-        ttl = me.title.select { |t| t.type != "main" && t.title.language&.include?(l) }
+        ttl = me.title.select do |t|
+          t.type != "main" && t.title.language&.include?(l)
+        end
         tm_en = ttl.map { |t| t.title.content }.join " – "
-        me.title.detect { |t| t.type == "main" && t.title.language&.include?(l) }&.title&.content = tm_en
+        me.title.detect do |t|
+          t.type == "main" && t.title.language&.include?(l)
+        end&.title&.content = tm_en
       end
       me.abstract = []
       me.docidentifier.each(&:remove_part)
@@ -440,12 +449,59 @@ module RelatonBib
 
     # If revision_date exists then returns it else returns published date or nil
     # @return [String, NilClass]
-    def revdate
+    def revdate # rubocop:disable Metrics/CyclomaticComplexity
       @revdate ||= if version&.revision_date
                      version.revision_date
                    else
                      date.detect { |d| d.type == "published" }&.on&.to_s
                    end
+    end
+
+    # @param prefix [String]
+    # @return [String]
+    def to_asciibib(prefix = "") # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = prefix.empty? ? "[%bibitem]\n== {blank}\n" : ""
+      out += "#{pref}id:: #{id}\n" if id
+      out += "#{pref}fetched:: #{fetched}\n" if fetched
+      title.each { |t| out += t.to_asciibib(prefix, title.size) }
+      out += "#{pref}type:: #{type}\n" if type
+      docidentifier.each do |di|
+        out += di.to_asciibib prefix, docidentifier.size
+      end
+      out += "#{pref}docnumber:: #{docnumber}\n" if docnumber
+      out += "#{pref}edition:: #{edition}\n" if edition
+      language.each { |l| out += "#{pref}language:: #{l}\n" }
+      script.each { |s| out += "#{pref}script:: #{s}\n" }
+      out += version.to_asciibib prefix if version
+      biblionote&.each { |b| out += b.to_asciibib prefix, biblionote.size }
+      out += status.to_asciibib prefix if status
+      date.each { |d| out += d.to_asciibib prefix, date.size }
+      abstract.each do |a|
+        out += a.to_asciibib "#{pref}abstract", abstract.size
+      end
+      copyright.each { |c| out += c.to_asciibib prefix, copyright.size }
+      link.each { |l| out += l.to_asciibib prefix, link.size }
+      out += medium.to_asciibib prefix if medium
+      place.each { |pl| out += pl.to_asciibib prefix, place.size }
+      extent.each { |ex| out += ex.to_asciibib "#{pref}extent", extent.size }
+      accesslocation.each { |al| out += "#{pref}accesslocation:: #{al}\n" }
+      classification.each do |cl|
+        out += cl.to_asciibib prefix, classification.size
+      end
+      out += validity.to_asciibib prefix if validity
+      contributor.each do |c|
+        out += c.to_asciibib "contributor.*", contributor.size
+      end
+      out += relation.to_asciibib prefix if relation
+      series.each { |s| out += s.to_asciibib prefix, series.size }
+      out += "#{pref}doctype:: #{doctype}\n" if doctype
+      out += "#{pref}formattedref:: #{formattedref}\n" if formattedref
+      keyword.each { |kw| out += kw.to_asciibib "#{pref}keyword", keyword.size }
+      out += editorialgroup.to_asciibib prefix if editorialgroup
+      ics.each { |i| out += i.to_asciibib prefix, ics.size }
+      out += structuredidentifier.to_asciibib prefix if structuredidentifier
+      out
     end
 
     private
@@ -470,7 +526,7 @@ module RelatonBib
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 
     # @param [BibTeX::Entry]
-    def bibtex_author(item)
+    def bibtex_author(item) # rubocop:disable Metrics/CyclomaticComplexity
       authors = contributor.select do |c|
         c.entity.is_a?(Person) && c.role.map(&:type).include?("author")
       end.map &:entity
@@ -487,7 +543,7 @@ module RelatonBib
     end
 
     # @param [BibTeX::Entry]
-    def bibtex_contributor(item)
+    def bibtex_contributor(item) # rubocop:disable Metrics/CyclomaticComplexity
       contributor.each do |c|
         rls = c.role.map(&:type)
         if rls.include?("publisher") then item.publisher = c.entity.name
@@ -504,7 +560,7 @@ module RelatonBib
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     # @param [BibTeX::Entry]
-    def bibtex_note(item)
+    def bibtex_note(item) # rubocop:disable Metrics/CyclomaticComplexity
       biblionote.each do |n|
         case n.type
         when "annote" then item.annote = n.content

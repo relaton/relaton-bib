@@ -30,5 +30,17 @@ module RelatonBib
     def replaces
       DocRelationCollection.new(@array.select { |r| r.type == "replace" })
     end
+
+    # @param prefix [String]
+    # @return [String]
+    def to_asciibib(prefix = "")
+      pref = prefix.empty? ? "relation" : prefix + ".relation"
+      out = ""
+      @array.each do |r|
+        out += size > 1 ? "#{pref}::\n" : ""
+        out += r.to_asciibib pref
+      end
+      out
+    end
   end
 end

@@ -33,7 +33,7 @@ module RelatonBib
         o.is_a?(Hash) ? ContributionInfo.new(entity: Organization.new(o)) : o
       end
 
-      @from  = Date.strptime(from.to_s, "%Y") if from.to_s =~ /\d{4}/
+      @from  = Date.strptime(from.to_s, "%Y") if from.to_s.match? /\d{4}/
       @to    = Date.strptime(to.to_s, "%Y") unless to.to_s.empty?
       @scope = scope
     end
@@ -59,6 +59,19 @@ module RelatonBib
       hash["to"] = to.year.to_s if to
       hash["scope"] = scope if scope
       hash
+    end
+
+    # @param prefix [String]
+    # @param count [Iteger] number of copyright elements
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      pref = prefix.empty? ? "copyright" : prefix + ".copyright"
+      out = count > 1 ? "#{pref}::\n" : ""
+      owner.each { |ow| out += ow.to_asciibib "#{pref}.owner", owner.size }
+      out += "#{pref}.from:: #{from.year}\n" if from
+      out += "#{pref}.to:: #{to.year}\n" if to
+      out += "#{pref}.scope:: #{scope}\n" if scope
+      out
     end
   end
 end

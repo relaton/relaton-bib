@@ -22,5 +22,16 @@ module RelatonBib
     def to_hash
       { "code" => code, "text" => text }
     end
+
+    # @param prefix [String]
+    # @param count [Integer] number of ics
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? "ics" : prefix + ".ics"
+      out = count > 1 ? "#{pref}::\n" : ""
+      out += "#{pref}.code:: #{code}\n"
+      out += "#{pref}.text:: #{text}\n"
+      out
+    end
   end
 end

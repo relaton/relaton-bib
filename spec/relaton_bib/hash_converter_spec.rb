@@ -8,7 +8,7 @@ RSpec.describe RelatonBib::HashConverter do
 
   it "make affiliation description from string" do
     affiliation = RelatonBib::HashConverter.affiliation_hash_to_bib(
-      affiliation: { description: "Description", organization: { name: "Org" } },
+      affiliation: { description: "Description", organization: { name: "Org" } }
     )
     expect(affiliation).to be_instance_of Array
     expect(affiliation.first).to be_instance_of RelatonBib::Affiliation
@@ -28,7 +28,9 @@ RSpec.describe RelatonBib::HashConverter do
   it "make sourceLocalityStack form unwrapped sourceLoclaity" do
     hash = { source_locality: [{ type: "section", reference_from: "1" }] }
     RelatonBib::HashConverter.relation_source_locality_hash_to_bib hash
-    expect(hash[:source_locality].first).to be_instance_of RelatonBib::SourceLocalityStack
+    expect(hash[:source_locality].first).to be_instance_of(
+      RelatonBib::SourceLocalityStack
+    )
   end
 
   it "parse validity time" do
@@ -36,9 +38,13 @@ RSpec.describe RelatonBib::HashConverter do
     expect(r.to_s).to match /^1999-01-01/
     r = RelatonBib::HashConverter.parse_validity_time({ ends: 1999 }, :ends)
     expect(r.to_s).to match /^1999-12-31/
-    r = RelatonBib::HashConverter.parse_validity_time({ begins: "1999-02" }, :begins)
+    r = RelatonBib::HashConverter.parse_validity_time(
+      { begins: "1999-02" }, :begins
+    )
     expect(r.to_s).to match /^1999-02-01/
-    r = RelatonBib::HashConverter.parse_validity_time({ ends: "1999-02" }, :ends)
+    r = RelatonBib::HashConverter.parse_validity_time(
+      { ends: "1999-02" }, :ends
+    )
     expect(r.to_s).to match /^1999-02-28/
   end
 end

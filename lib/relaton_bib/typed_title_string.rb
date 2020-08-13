@@ -6,14 +6,12 @@ module RelatonBib
     # @return [RelatonBib::FormattedString]
     attr_reader :title
 
-    # rubocop:disable Metrics/MethodLength
-
     # @param type [String]
     # @param title [RelatonBib::FormattedString, Hash]
     # @param content [String]
     # @param language [String]
     # @param script [String]
-    def initialize(**args)
+    def initialize(**args) # rubocop:disable Metrics/MethodLength
       unless args[:title] || args[:content]
         raise ArgumentError, %{Keyword "title" or "content" should be passed.}
       end
@@ -29,7 +27,6 @@ module RelatonBib
         @title = FormattedString.new(fsargs)
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     # @param title [String]
     # @return [Array<self>]
@@ -50,15 +47,13 @@ module RelatonBib
       case ttls.size
       when 0, 1 then [nil, ttls.first.to_s, nil]
       else intro_or_part ttls
-      # when 2, 3 then intro_or_part ttls
-      # else [ttls[0], ttls[1], ttls[2..-1].join(" -- ")]
       end
     end
 
     # @param ttls [Array<String>]
     # @return [Array<Strin, nil>]
     def self.intro_or_part(ttls)
-      if /^(Part|Partie) \d+:/ =~ ttls[1]
+      if /^(Part|Partie) \d+:/.match? ttls[1]
         [nil, ttls[0], ttls[1..-1].join(" -- ")]
       else
         parts = ttls.slice(2..-1)
@@ -85,6 +80,17 @@ module RelatonBib
         hash.merge! th
       end
       hash
+    end
+
+    # @param prefix [String]
+    # @param count [Integer] number of titles
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = count > 1 ? "#{pref}title::\n" : ""
+      out += "#{pref}title.type:: #{type}\n" if type
+      out += title.to_asciibib "#{pref}title"
+      out
     end
   end
 end

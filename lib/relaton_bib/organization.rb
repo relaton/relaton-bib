@@ -3,11 +3,6 @@
 require "relaton_bib/contributor"
 
 module RelatonBib
-  # module OrgIdentifierType
-  #   ORCID = 'orcid'
-  #   URI   = 'uri'
-  # end
-
   # Organization identifier.
   class OrgIdentifier
     ORCID = "orcid"
@@ -39,6 +34,17 @@ module RelatonBib
     def to_hash
       { "type" => type, "id" => value }
     end
+
+    # @param prefix [String]
+    # @param count [Integer]
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = count > 1 ? "#{pref}identifier::\m" : ""
+      out += "#{pref}identifier.type:: #{type}\n"
+      out += "#{pref}identifier.value:: #{value}\n"
+      out
+    end
   end
 
   # Organization.
@@ -61,7 +67,7 @@ module RelatonBib
     # @param url [String]
     # @param identifier [Array<RelatonBib::OrgIdentifier>]
     # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
-    def initialize(**args)
+    def initialize(**args) # rubocop:disable Metrics/AbcSize
       raise ArgumentError, "missing keyword: name" unless args[:name]
 
       super(url: args[:url], contact: args.fetch(:contact, []))
@@ -78,7 +84,7 @@ module RelatonBib
     end
 
     # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder)
+    def to_xml(builder) # rubocop:disable Metrics/AbcSize
       builder.organization do
         name.each do |n|
           builder.name { |b| n.to_xml b }
@@ -98,6 +104,20 @@ module RelatonBib
       hash["identifier"] = single_element_array(identifier) if identifier&.any?
       hash["subdivision"] = subdivision.to_hash if subdivision
       { "organization" => hash.merge(super) }
+    end
+
+    # @param prefix [String]
+    # @param count [Integer]
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      pref = prefix.sub /\*$/, "organization"
+      out = count > 1 ? "#{pref}::\m" : ""
+      name.each { |n| out += n.to_asciibib "#{pref}.name", name.size }
+      out += abbreviation.to_asciibib "#{pref}.abbreviation" if abbreviation
+      out += subdivision.to_asciibib "#{pref}.subdivision" if subdivision
+      identifier.each { |n| out += n.to_asciibib pref, identifier.size }
+      out += super pref
+      out
     end
 
     private

@@ -32,5 +32,16 @@ module RelatonBib
       hash["type"] = type.to_s if type
       hash
     end
+
+    # @param prefix [String]
+    # @param count [Integer] number of links
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? "link" : prefix + ".link"
+      out = count > 1 ? "#{pref}::\n" : ""
+      out += "#{pref}.type:: #{type}\n" if type
+      out += "#{pref}.content:: #{content}\n"
+      out
+    end
   end
 end

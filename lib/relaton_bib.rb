@@ -10,11 +10,9 @@ module RelatonBib
   class RequestError < StandardError; end
 
   class << self
-    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
-
     # @param date [String, Integer, Date]
     # @return [Date, NilClass]
-    def parse_date(date)
+    def parse_date(date) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
       return date if date.is_a?(Date)
 
       sdate = date.to_s
@@ -30,14 +28,13 @@ module RelatonBib
       when /(?<date>\d{4})/ then Date.strptime $~[:date], "%Y" # 2012
       end
     end
-    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
   end
 
   private
 
   # @param array [Array]
   # @return [Array<String>, String]
-  def single_element_array(array)
+  def single_element_array(array) # rubocop:disable Metrics/CyclomaticComplexity
     if array.size > 1
       array.map { |e| e.is_a?(String) ? e : e.to_hash }
     else

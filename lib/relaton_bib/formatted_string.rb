@@ -40,5 +40,16 @@ module RelatonBib
       hash["format"] = format
       hash
     end
+
+    # @param prefix [String]
+    # @param count [Integer] number of elements
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? prefix : prefix + "."
+      # out = count > 1 ? "#{prefix}::\n" : ""
+      out = super
+      out += "#{pref}format:: #{format}\n" if format
+      out
+    end
   end
 end

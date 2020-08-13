@@ -45,12 +45,12 @@ module RelatonBib
     end
 
     # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder)
+    def to_xml(builder) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       builder.name do
         if completename
           builder.completename { completename.to_xml builder }
         else
-          prefix.each { |p| builder.prefix { p.to_xml builder } } 
+          prefix.each { |p| builder.prefix { p.to_xml builder } }
           forename.each { |f| builder.forename { f.to_xml builder } }
           initial.each { |i| builder.initial { i.to_xml builder } }
           builder.surname { surname.to_xml builder }
@@ -60,7 +60,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
       hash = {}
       hash["forename"] = single_element_array(forename) if forename&.any?
       hash["initial"] = single_element_array(initial) if initial&.any?
@@ -69,6 +69,23 @@ module RelatonBib
       hash["prefix"] = single_element_array(prefix) if prefix&.any?
       hash["completename"] = completename.to_hash if completename
       hash
+    end
+
+    # @param pref [String]
+    # @return [String]
+    def to_asciibib(pref) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+      prf = pref.empty? ? pref : pref + "."
+      out = forename.map do |fn|
+        fn.to_asciibib "#{prf}forename", forename.size
+      end.join
+      initial.each { |i| out += i.to_asciibib "#{prf}initial", initial.size }
+      out += surname.to_asciibib "#{prf}surname" if surname
+      addition.each do |ad|
+        out += ad.to_asciibib "#{prf}addition", addition.size
+      end
+      prefix.each { |pr| out += pr.to_asciibib "#{prf}prefix", prefix.size }
+      out += completename.to_asciibib "#{prf}completename" if completename
+      out
     end
   end
 
@@ -89,13 +106,15 @@ module RelatonBib
 
   # Person identifier.
   class PersonIdentifier
-    # @return [RelatonBib::PersonIdentifierType::ISNI, RelatonBib::PersonIdentifierType::URI]
+    # @return [RelatonBib::PersonIdentifierType::ISNI,
+    #   RelatonBib::PersonIdentifierType::URI]
     attr_accessor :type
 
     # @return [String]
     attr_accessor :value
 
-    # @param type [RelatonBib::PersonIdentifierType::ISNI, RelatonBib::PersonIdentifierType::URI]
+    # @param type [RelatonBib::PersonIdentifierType::ISNI,
+    #   RelatonBib::PersonIdentifierType::URI]
     # @param value [String]
     def initialize(type, value)
       PersonIdentifierType.check type
@@ -112,6 +131,17 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       { "type" => type, "id" => value }
+    end
+
+    # @param prefix [String]
+    # @param count [Integer] number of ids
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = count > 1 ? "#{prefix}::\n" : ""
+      out += "#{pref}type:: #{type}\n"
+      out += "#{pref}value:: #{value}\n"
+      out
     end
   end
 
@@ -131,7 +161,8 @@ module RelatonBib
     # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
     # @param identifier [Array<RelatonBib::PersonIdentifier>]
     # @param url [String, NilClass]
-    def initialize(name:, affiliation: [], contact: [], identifier: [], url: nil)
+    def initialize(name:, affiliation: [], contact: [], identifier: [],
+                   url: nil)
       super(contact: contact, url: url)
       @name        = name
       @affiliation = affiliation
@@ -151,9 +182,24 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       hash = { "name" => name.to_hash }
-      hash["affiliation"] = single_element_array(affiliation) if affiliation&.any?
+      if affiliation&.any?
+        hash["affiliation"] = single_element_array(affiliation)
+      end
       hash["identifier"] = single_element_array(identifier) if identifier&.any?
       { "person" => hash.merge(super) }
+    end
+
+    # @param prefix [String]
+    # @count [Integer] number of persons
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize
+      pref = prefix.sub /\*$/, "person"
+      out = count > 1 ? "#{pref}::\n" : ""
+      out += name.to_asciibib pref
+      affiliation.each { |af| out += af.to_asciibib pref, affiliation.size }
+      identifier.each { |id| out += id.to_asciibib pref, identifier.size }
+      out += super pref
+      out
     end
   end
 end
