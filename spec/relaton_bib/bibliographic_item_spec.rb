@@ -160,7 +160,9 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       file = "spec/examples/ascii.bib"
       bib = subject.to_asciibib
       File.write file, bib, encoding: "UTF-8" unless File.exist? file
-      expect(bib).to eq File.read file, encoding: "UTF-8"
+      expect(bib).to eq File.read(file, encoding: "UTF-8").gsub(
+        /(?<=fetched::\s)\d{4}-\d{2}-\d{2}/, Date.today.to_s
+      )
     end
   end
 
