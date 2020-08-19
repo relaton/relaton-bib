@@ -8,10 +8,11 @@ on:
   pull_request:
     branches: [ '**' ]
 
+env:
+  JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
+
 jobs:
   test-linux:
-    env:
-      JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
     name: Test on Ruby ${{ matrix.ruby }} Ubuntu
     runs-on: ubuntu-latest
     strategy:
