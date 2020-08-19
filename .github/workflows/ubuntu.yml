@@ -11,7 +11,7 @@ on:
 jobs:
   test-linux:
     name: Test on Ruby ${{ matrix.ruby }} Ubuntu
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -34,5 +34,6 @@ jobs:
           gem install bundler
           bundle install --jobs 4 --retry 3
       - name: Run specs
+        run: unset JAVA_TOOL_OPTIONS
         run: |
           bundle exec rake
