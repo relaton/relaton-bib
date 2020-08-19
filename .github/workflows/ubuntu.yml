@@ -10,6 +10,8 @@ on:
 
 jobs:
   test-linux:
+    env:
+      JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
     name: Test on Ruby ${{ matrix.ruby }} Ubuntu
     runs-on: ubuntu-latest
     strategy:
@@ -17,8 +19,6 @@ jobs:
       matrix:
         ruby: [ '2.6', '2.5', '2.4' ]
     steps:
-      env:
-        JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
       - uses: actions/checkout@master
       - name: Checkout submodules
         shell: bash
