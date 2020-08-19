@@ -12,13 +12,13 @@ jobs:
   test-linux:
     name: Test on Ruby ${{ matrix.ruby }} Ubuntu
     runs-on: ubuntu-latest
-    env:
-      JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
     strategy:
       fail-fast: false
       matrix:
         ruby: [ '2.6', '2.5', '2.4' ]
     steps:
+      env:
+        JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
       - uses: actions/checkout@master
       - name: Checkout submodules
         shell: bash
