@@ -34,6 +34,6 @@ jobs:
           gem install bundler
           bundle install --jobs 4 --retry 3
       - name: Run specs
-        run: unset JAVA_TOOL_OPTIONS
         run: |
+          unset JAVA_TOOL_OPTIONS
           bundle exec rake
