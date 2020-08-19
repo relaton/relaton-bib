@@ -21,5 +21,16 @@ module RelatonBib
     def to_hash
       workgroup.to_hash
     end
+
+    # @param prefix [String]
+    # @param count [Integer] number of technical committees
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? prefix : prefix + "."
+      pref += "technical_committee"
+      out = count > 1 ? "#{pref}::\n" : ""
+      out += workgroup.to_asciibib pref
+      out
+    end
   end
 end

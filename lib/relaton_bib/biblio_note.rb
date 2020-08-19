@@ -29,5 +29,16 @@ module RelatonBib
       hash["type"] = type
       hash
     end
+
+    # @param prefix [String]
+    # @param count [Integer] number of notes
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = count > 1 ? "#{pref}biblionote::\n" : ""
+      out + "#{pref}biblionote.type:: #{type}\n" if type
+      out += super "#{pref}biblionote"
+      out
+    end
   end
 end

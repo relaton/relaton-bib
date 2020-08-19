@@ -41,6 +41,16 @@ module RelatonBib
       hash
     end
 
+    # @param prefix [String]
+    # @return [String]
+    def to_asciibib(prefix = "")
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = "#{pref}docstatus.stage:: #{stage.value}\n"
+      out += "#{pref}docstatus.substage:: #{substage.value}\n" if substage
+      out += "#{pref}docstatus.iteration:: #{iteration}\n" if iteration
+      out
+    end
+
     private
 
     # @param stg [RelatonBib::DocumentStatus::Stage, Hash, String, NilClass]

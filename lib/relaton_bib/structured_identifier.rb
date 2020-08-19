@@ -20,6 +20,17 @@ module RelatonBib
       single_element_array @collection
     end
 
+    # @param prefix [String]
+    # @return [String]
+    def to_asciibib(prefix = "")
+      pref = prefix.empty? ? prefix : prefix + "."
+      pref += "structured_identifier"
+      @collection.reduce("") do |out, si|
+        out += "#{pref}::\n" if @collection.size > 1
+        out + si.to_asciibib(pref)
+      end
+    end
+
     # remoe year from docnumber
     def remove_date
       @collection.each &:remove_date
@@ -118,6 +129,25 @@ module RelatonBib
       hash
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+    # @param prefix [String]
+    # @return [String]
+    def to_asciibib(prefix) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength,Metrics/PerceivedComplexity
+      out = "#{prefix}.docnumber:: #{docnumber}\n"
+      agency.each { |a| out += "#{prefix}.agency:: #{a}\n" }
+      out += "#{prefix}.type:: #{type}\n" if type
+      out += "#{prefix}.class:: #{klass}\n" if klass
+      out += "#{prefix}.partnumber:: #{partnumber}\n" if partnumber
+      out += "#{prefix}.edition:: #{edition}\n" if edition
+      out += "#{prefix}.version:: #{version}\n" if version
+      out += "#{prefix}.supplementtype:: #{supplementtype}\n" if supplementtype
+      if supplementnumber
+        out += "#{prefix}.supplementnumber:: #{supplementnumber}\n"
+      end
+      out += "#{prefix}.language:: #{language}\n" if language
+      out += "#{prefix}.year:: #{year}\n" if year
+      out
+    end
 
     def remove_date
       if @type == "Chinese Standard"

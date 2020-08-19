@@ -37,5 +37,16 @@ module RelatonBib
       hash["revision"] = revision.strftime(FORMAT) if revision
       hash
     end
+
+    # @param prefix [String]
+    # @return [String]
+    def to_asciibib(prefix = "")
+      pref = prefix.empty? ? "validity." : prefix + ".validity."
+      out = ""
+      out += "#{pref}begins:: #{begins.strftime(FORMAT)}\n" if begins
+      out += "#{pref}ends:: #{ends.strftime(FORMAT)}\n" if ends
+      out += "#{pref}revision:: #{revision.strftime(FORMAT)}\n" if revision
+      out
+    end
   end
 end

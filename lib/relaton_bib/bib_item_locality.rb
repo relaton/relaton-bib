@@ -17,7 +17,7 @@ module RelatonBib
       type_ptrn = %r{section|clause|part|paragraph|chapter|page|whole|table|
         annex|figure|note|list|example|volume|issue|time|
         locality:[a-zA-Z0-9_]+}x
-      unless type =~ type_ptrn
+      unless type.match? type_ptrn
         warn "[relaton-bib] WARNING: invalid locality type: #{type}"
       end
 
@@ -38,6 +38,18 @@ module RelatonBib
       hash = { "type" => type, "reference_from" => reference_from }
       hash["reference_to"] = reference_to if reference_to
       hash
+    end
+
+    # @param prefix [String]
+    # @param count [Integeg] number of localities
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = count > 1 ? "#{prefix}::\n" : ""
+      out += "#{pref}type:: #{type}\n"
+      out += "#{pref}reference_from:: #{reference_from}\n"
+      out += "#{pref}reference_to:: #{reference_to}\n" if reference_to
+      out
     end
   end
 

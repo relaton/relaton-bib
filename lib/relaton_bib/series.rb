@@ -39,7 +39,8 @@ module RelatonBib
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 
-    # @param type [String, NilClass] title or formattedref argument should be passed
+    # @param type [String, NilClass] title or formattedref argument should be
+    #   passed
     # @param formattedref [RelatonBib::FormattedRef, NilClass]
     # @param title [RelatonBib::TypedTitleString, NilClass]
     # @param place [String, NilClass]
@@ -50,7 +51,8 @@ module RelatonBib
     # @param number [String, NilClass]
     # @param partnumber [String, NilClass]
     def initialize(**args)
-      unless args[:title].is_a?(RelatonBib::TypedTitleString) || args[:formattedref]
+      unless args[:title].is_a?(RelatonBib::TypedTitleString) ||
+          args[:formattedref]
         raise ArgumentError, "argument `title` or `formattedref` should present"
       end
 
@@ -74,7 +76,7 @@ module RelatonBib
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder)
+    def to_xml(builder) # rubocop:disable Metrics/MethodLength
       xml = builder.series do
         if formattedref
           formattedref.to_xml builder
@@ -95,7 +97,7 @@ module RelatonBib
     # rubocop:enable Metrics/PerceivedComplexity
 
     # @return [Hash]
-    def to_hash
+    def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       hash = {}
       hash["type"] = type if type
       hash["formattedref"] = formattedref.to_hash if formattedref
@@ -108,6 +110,25 @@ module RelatonBib
       hash["number"] = number if number
       hash["partnumber"] = partnumber if partnumber
       hash
+    end
+
+    # @param prefix [String]
+    # @param count [Integer]
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength,Metrics/PerceivedComplexity
+      pref = prefix.empty? ? "series" : prefix + ".series"
+      out = count > 1 ? "#{pref}::\n" : ""
+      out += "#{pref}.type:: #{type}\n" if type
+      out += formattedref.to_asciibib pref if formattedref
+      out += title.to_asciibib pref if title
+      out += "#{pref}.place:: #{place}\n" if place
+      out += "#{pref}.organization:: #{organization}\n" if organization
+      out += abbreviation.to_asciibib "#{pref}.abbreviation" if abbreviation
+      out += "#{pref}.from:: #{from}\n" if from
+      out += "#{pref}.to:: #{to}\n" if to
+      out += "#{pref}.number:: #{number}\n" if number
+      out += "#{pref}.partnumber:: #{partnumber}\n" if partnumber
+      out
     end
   end
 end

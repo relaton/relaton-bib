@@ -29,5 +29,16 @@ module RelatonBib
       hash["scale"] = scale if scale
       hash
     end
+
+    # @param prefix [String]
+    # @return [String]
+    def to_asciibib(prefix = "")
+      pref = prefix.empty? ? "medium." : prefix + ".medium."
+      out = ""
+      out += "#{pref}form:: #{form}\n" if form
+      out += "#{pref}size:: #{size}\n" if size
+      out += "#{pref}scale:: #{scale}\n" if scale
+      out
+    end
   end
 end

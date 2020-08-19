@@ -37,7 +37,9 @@ RSpec.describe RelatonBib::XMLParser do
       </bibitem>
     XML
     item = RelatonBib::XMLParser.from_xml xml
-    expect(item.relation.first.locality.first).to be_instance_of RelatonBib::LocalityStack
+    expect(item.relation.first.locality.first).to be_instance_of(
+      RelatonBib::LocalityStack
+    )
   end
 
   it "parse sourceLocality not inclosed in sourceLocalityStack" do
@@ -55,7 +57,9 @@ RSpec.describe RelatonBib::XMLParser do
       </bibitem>
     XML
     item = RelatonBib::XMLParser.from_xml xml
-    expect(item.relation.first.source_locality.first).to be_instance_of RelatonBib::SourceLocalityStack
+    expect(item.relation.first.source_locality.first).to be_instance_of(
+      RelatonBib::SourceLocalityStack
+    )
   end
 
   it "ignore empty dates" do
@@ -66,13 +70,14 @@ RSpec.describe RelatonBib::XMLParser do
       </bibitem>
     XML
     item = RelatonBib::XMLParser.from_xml xml
-    expect(item.date).to be_empty 
+    expect(item.date).to be_empty
   end
 
   it "warn if XML doesn't have bibitem or bibdata element" do
     item = ""
-    expect { item = RelatonBib::XMLParser.from_xml "" }.to output(/can't find bibitem/)
-      .to_stderr
+    expect { item = RelatonBib::XMLParser.from_xml "" }.to output(
+      /can't find bibitem/
+    ).to_stderr
     expect(item).to be_nil
   end
 end

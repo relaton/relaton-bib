@@ -60,6 +60,19 @@ module RelatonBib
       hash
     end
 
+    # @param prefix [String]
+    # @param count [Integer] number of dates
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = count > 1 ? "#{pref}date::\n" : ""
+      out += "#{pref}date.type:: #{type}\n"
+      out += "#{pref}date.on:: #{on}\n" if on
+      out += "#{pref}date.from:: #{from}\n" if from
+      out += "#{pref}date.to:: #{to}\n" if to
+      out
+    end
+
     private
 
     # Formats date

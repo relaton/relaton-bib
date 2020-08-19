@@ -55,5 +55,17 @@ module RelatonBib
       hash["scope"] = scope if scope
       hash
     end
+
+    # @param prefix [String]
+    # @param count [Integer] number of docids
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = count > 1 ? "#{pref}docid::\n" : ""
+      out += "#{pref}docid.type:: #{type}\n" if type
+      out += "#{pref}docid.scope:: #{scope}\n" if scope
+      out += "#{pref}docid.id:: #{id}\n"
+      out
+    end
   end
 end

@@ -32,5 +32,15 @@ module RelatonBib
       hash["type"] = type if type
       hash
     end
+
+    # @param prefix [String]
+    # @return [String]
+    def to_asciibib(prefix = "")
+      pref = prefix.empty? ? prefix : prefix + "."
+      out = "#{pref}content:: #{content}\n"
+      out += "#{pref}number:: #{number}\n" if number
+      out += "#{pref}type:: #{type}\n" if type
+      out
+    end
   end
 end

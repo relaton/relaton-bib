@@ -33,5 +33,17 @@ module RelatonBib
         name
       end
     end
+
+    # @param prefix [String]
+    # @param count [Integer] number of places
+    # @return [Stirng]
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? "place" : prefix + ".place"
+      out = count > 1 ? "#{pref}::\n" : ""
+      out += "#{pref}.name:: #{name}\n"
+      out += "#{pref}.uri:: #{uri}\n" if uri
+      out += "#{pref}.region:: #{region}\n" if region
+      out
+    end
   end
 end

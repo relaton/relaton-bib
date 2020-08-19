@@ -32,6 +32,18 @@ module RelatonBib
         hash["draft"] = single_element_array(draft) if draft&.any?
         hash
       end
+
+      # @param prefix [String]
+      # @return [String]
+      def to_asciibib(prefix = "")
+        pref = prefix.empty? ? prefix : prefix + "."
+        out = ""
+        if revision_date
+          out += "#{pref}version.revision_date:: #{revision_date}\n"
+        end
+        draft&.each { |d| out += "#{pref}version.draft:: #{d}\n" }
+        out
+      end
     end
   end
 end

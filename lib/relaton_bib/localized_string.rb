@@ -17,10 +17,11 @@ module RelatonBib
     # @param content [String, Array<RelatonBib::LocalizedString>]
     # @param language [String] language code Iso639
     # @param script [String] script code Iso15924
-    def initialize(content, language = nil, script = nil)
-      unless content.is_a?(String) || content.is_a?(Array) &&
-          (inv = content.reject { |c| c.is_a?(LocalizedString) || c.is_a?(Hash) }).
-              none? && content.any?
+    def initialize(content, language = nil, script = nil) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+      if content.is_a? Array
+        inv = content.reject { |c| c.is_a?(LocalizedString) || c.is_a?(Hash) }
+      end
+      unless content.is_a?(String) || inv&.none? && content.any?
         klass = content.is_a?(Array) ? inv.first.class : content.class
         raise ArgumentError, "invalid LocalizedString content type: #{klass}"
       end
@@ -48,7 +49,7 @@ module RelatonBib
     end
 
     # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder)
+    def to_xml(builder) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
       return unless content
 
       if content.is_a?(Array)
@@ -61,7 +62,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
       if content.is_a? String
         return content unless language || script
 
@@ -70,6 +71,22 @@ module RelatonBib
         hash["script"] = single_element_array(script) if script&.any?
         hash
       else content.map &:to_hash
+      end
+    end
+
+    # @param prefix [String]
+    # @param count [Integer] number of elements
+    # @return [String]
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      pref = prefix.empty? ? prefix : prefix + "."
+      if content.is_a? String
+        out = count > 1 ? "#{prefix}::\n" : ""
+        out += "#{pref}conten:: #{content}\n"
+        language&.each { |l| out += "#{pref}language:: #{l}\n" }
+        script&.each { |s| out += "#{pref}script:: #{s}\n" }
+        out
+      else
+        content.map { |c| c.to_asciibib "#{pref}variant", content.size }.join
       end
     end
   end
