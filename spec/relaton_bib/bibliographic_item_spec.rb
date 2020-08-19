@@ -157,7 +157,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     end
 
     it "convert item to AsciiBib" do
-      file = "spec/examples/ascii.bib"
+      file = "spec/examples/asciibib.adoc"
       bib = subject.to_asciibib
       File.write file, bib, encoding: "UTF-8" unless File.exist? file
       expect(bib).to eq File.read(file, encoding: "UTF-8").gsub(

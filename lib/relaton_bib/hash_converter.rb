@@ -4,7 +4,7 @@ module RelatonBib
       # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
 
       # @param args [Hash]
-      # @param neated [TrueClas, FalseClass] default true
+      # @param neated [TrueClas, FalseClass] default false
       # @return [Hash]
       def hash_to_bib(args, nested = false)
         return nil unless args.is_a?(Hash)

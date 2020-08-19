@@ -10,7 +10,8 @@ module RelatonBib
         if bibitem
           bib_item item_data(bibitem)
         else
-          warn "[relaton-bib] WARNING: can't find bibitem or bibdata element in the XML"
+          warn "[relaton-bib] WARNING: can't find bibitem or bibdata element "\
+          "in the XML"
         end
       end
 
@@ -19,7 +20,7 @@ module RelatonBib
       # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
 
       # @return [Hash]
-      def item_data(bibitem)
+      def item_data(bibitem) # rubocop:disable Metrics/CyclomaticComplexity
         ext = bibitem.at "//ext"
         {
           id: bibitem[:id]&.empty? ? nil : bibitem[:id],
@@ -80,25 +81,28 @@ module RelatonBib
             type: n[:type],
             format: n[:format],
             language: n[:language],
-            script: n[:script],
+            script: n[:script]
           )
         end
       end
 
       def fetch_language(item)
-        item.xpath("./language").reduce([]) { |a, l| l.text.empty? ? a : a << l.text }
+        item.xpath("./language").reduce([]) do |a, l|
+          l.text.empty? ? a : a << l.text
+        end
       end
 
       def fetch_script(item)
-        item.xpath("./script").reduce([]) { |a, s| s.text.empty? ? a : a << s.text }
+        item.xpath("./script").reduce([]) do |a, s|
+          s.text.empty? ? a : a << s.text
+        end
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-
-      def fetch_series(item)
+      def fetch_series(item) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
         item.xpath("./series").reduce([]) do |mem, sr|
           abbr = sr.at "abbreviation"
-          abbreviation = abbr ? LocalizedString.new(abbr.text, abbr[:language], abbr[:script]) : nil
+          abbreviation = abbr &&
+            LocalizedString.new(abbr.text, abbr[:language], abbr[:script])
           formattedref = fref(sr)
           title = ttitle(sr.at("title"))
           next mem unless formattedref || title
@@ -113,7 +117,6 @@ module RelatonBib
           )
         end
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def fetch_medium(item)
         medium = item.at("./medium")
@@ -143,9 +146,12 @@ module RelatonBib
         vl = item.at("./validity")
         return unless vl
 
-        begins = (b = vl.at("validityBegins")) ? Time.strptime(b.text, "%Y-%m-%d %H:%M") : nil
-        ends = (e = vl.at("validityEnds")) ? Time.strptime(e.text, "%Y-%m-%d %H:%M") : nil
-        revision = (r = vl.at("revision")) ? Time.strptime(r.text, "%Y-%m-%d %H:%M") : nil
+        begins = (b = vl.at("validityBegins")) &&
+          Time.strptime(b.text, "%Y-%m-%d %H:%M")
+        ends = (e = vl.at("validityEnds")) &&
+          Time.strptime(e.text, "%Y-%m-%d %H:%M")
+        revision = (r = vl.at("revision")) &&
+          Time.strptime(r.text, "%Y-%m-%d %H:%M")
         Validity.new begins: begins, ends: ends, revision: revision
       end
 
@@ -153,7 +159,8 @@ module RelatonBib
       # @return [Array<RelatonBib::DocumentIdentifier>]
       def fetch_docid(item)
         item.xpath("./docidentifier").map do |did|
-          DocumentIdentifier.new(id: did.text, type: did[:type], scope: did[:scope])
+          DocumentIdentifier.new(id: did.text, type: did[:type],
+                                 scope: did[:scope])
         end
       end
 
@@ -182,7 +189,7 @@ module RelatonBib
         DocumentStatus.new(
           stage: stg ? stage(stg) : status.text,
           substage: stage(status.at("substage")),
-          iteration: status.at("iteration")&.text,
+          iteration: status.at("iteration")&.text
         )
       end
 
@@ -191,21 +198,24 @@ module RelatonBib
       def stage(elm)
         return unless elm
 
-        DocumentStatus::Stage.new value: elm.text, abbreviation: elm[:abbreviation]
+        DocumentStatus::Stage.new(value: elm.text,
+                                  abbreviation: elm[:abbreviation])
       end
 
-      def fetch_dates(item)
+      def fetch_dates(item) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
         item.xpath("./date").reduce([]) do |a, d|
           type = d[:type].to_s.empty? ? "published" : d[:type]
           if (on = d.at("on"))
-            a << RelatonBib::BibliographicDate.new(type: type, on: on.text, to: d.at("to")&.text)
+            a << RelatonBib::BibliographicDate.new(type: type, on: on.text,
+                                                   to: d.at("to")&.text)
           elsif (from = d.at("from"))
-            a << RelatonBib::BibliographicDate.new(type: type, from: from.text, to: d.at("to")&.text)
+            a << RelatonBib::BibliographicDate.new(type: type, from: from.text,
+                                                   to: d.at("to")&.text)
           end
         end
       end
 
-      def get_org(org)
+      def get_org(org) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         names = org.xpath("name").map do |n|
           { content: n.text, language: n[:language], script: n[:script] }
         end
@@ -219,7 +229,7 @@ module RelatonBib
                          identifier: identifier)
       end
 
-      def get_person(person)
+      def get_person(person) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
         affiliations = person.xpath("./affiliation").map do |a|
           org = a.at "./organization"
           desc = a.xpath("./description").map do |e|
@@ -229,7 +239,7 @@ module RelatonBib
           Affiliation.new organization: get_org(org), description: desc
         end
 
-        contact = person.xpath("./address | ./phone | ./email | ./uri").map do |c|
+        contact = person.xpath("./address|./phone|./email|./uri").map do |c|
           if c.name == "address"
             streets = c.xpath("./street").map(&:text)
             Address.new(
@@ -237,7 +247,7 @@ module RelatonBib
               city: c.at("./city")&.text,
               state: c.at("./state")&.text,
               country: c.at("./country")&.text,
-              postcode: c.at("./postcode")&.text,
+              postcode: c.at("./postcode")&.text
             )
           else
             Contact.new(type: c.name, value: c.text)
@@ -255,15 +265,17 @@ module RelatonBib
 
         name = FullName.new(
           completename: cname, surname: sname,
-          initial: name_part(person, "initial"), forename: name_part(person, "forename"),
-          addition: name_part(person, "addition"), prefix: name_part(person, "prefix")
+          initial: name_part(person, "initial"),
+          forename: name_part(person, "forename"),
+          addition: name_part(person, "addition"),
+          prefix: name_part(person, "prefix")
         )
 
         Person.new(
           name: name,
           affiliation: affiliations,
           contact: contact,
-          identifier: identifier,
+          identifier: identifier
         )
       end
 
@@ -281,7 +293,8 @@ module RelatonBib
                    elsif (person = c.at "./person") then get_person(person)
                    end
           role = c.xpath("./role").map do |r|
-            { type: r[:type], description: r.xpath("./description").map(&:text) }
+            { type: r[:type],
+              description: r.xpath("./description").map(&:text) }
           end
           ContributionInfo.new entity: entity, role: role
         end
@@ -320,15 +333,17 @@ module RelatonBib
       end
 
       # @param item [Nokogiri::XML::Element]
+      # @param klass [RelatonBib::DocumentRelation.class,
+      #   RelatonNist::DocumentRelation.class]
       # @return [Array<RelatonBib::DocumentRelation>]
-      def fetch_relations(item)
+      def fetch_relations(item, klass = DocumentRelation)
         item.xpath("./relation").map do |rel|
-          DocumentRelation.new(
+          klass.new(
             type: rel[:type]&.empty? ? nil : rel[:type],
             description: relation_description(rel),
             bibitem: bib_item(item_data(rel.at("./bibitem"))),
             locality: localities(rel),
-            source_locality: source_localities(rel),
+            source_locality: source_localities(rel)
           )
         end
       end
@@ -368,18 +383,21 @@ module RelatonBib
         klass.new(
           loc[:type],
           LocalizedString.new(loc.at("./referenceFrom").text),
-          ref_to,
+          ref_to
         )
       end
 
       # @param rel [Nokogiri::XML::Element]
-      # @return [Array<RelatonBib::SourceLocality, RelatonBib::SourceLocalityStack>]
+      # @return [Array<RelatonBib::SourceLocality,
+      #   RelatonBib::SourceLocalityStack>]
       def source_localities(rel)
         rel.xpath("./sourceLocality|./sourceLocalityStack").map do |lc|
           if lc[:type]
             SourceLocalityStack.new [locality(lc, SourceLocality)]
           else
-            sls = lc.xpath("./sourceLocality").map { |l| locality l, SourceLocality }
+            sls = lc.xpath("./sourceLocality").map do |l|
+              locality l, SourceLocality
+            end
             SourceLocalityStack.new sls
           end
         end
@@ -418,11 +436,9 @@ module RelatonBib
         end
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-
       # @param ext [Nokogiri::XML::Element]
       # @return [RelatonBib::StructuredIdentifierCollection]
-      def fetch_structuredidentifier(ext)
+      def fetch_structuredidentifier(ext) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
         return unless ext
 
         sids = ext.xpath("structuredidentifier").map do |si|
@@ -437,12 +453,11 @@ module RelatonBib
             supplementtype: si.at("supplementtype")&.text,
             supplementnumber: si.at("supplementnumber")&.text,
             language: si.at("language")&.text,
-            year: si.at("year")&.text,
+            year: si.at("year")&.text
           )
         end
         StructuredIdentifierCollection.new sids
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
     end
   end
 end
