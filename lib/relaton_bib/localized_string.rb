@@ -81,7 +81,7 @@ module RelatonBib
       pref = prefix.empty? ? prefix : prefix + "."
       if content.is_a? String
         out = count > 1 ? "#{prefix}::\n" : ""
-        out += "#{pref}conten:: #{content}\n"
+        out += "#{pref}content:: #{content}\n"
         language&.each { |l| out += "#{pref}language:: #{l}\n" }
         script&.each { |s| out += "#{pref}script:: #{s}\n" }
         out

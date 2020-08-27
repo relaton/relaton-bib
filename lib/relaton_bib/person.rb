@@ -75,6 +75,7 @@ module RelatonBib
     # @return [String]
     def to_asciibib(pref) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
       prf = pref.empty? ? pref : pref + "."
+      prf += "name."
       out = forename.map do |fn|
         fn.to_asciibib "#{prf}forename", forename.size
       end.join

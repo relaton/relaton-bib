@@ -1,17 +1,17 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2020-08-13
+fetched:: 2020-08-27
 title::
 title.type:: title-main
-title.conten:: Geographic information
+title.content:: Geographic information
 title.format:: text/plain
 title::
 title.type:: main
-title.conten:: Geographic information
+title.content:: Geographic information
 title.format:: text/plain
 title::
-title.conten:: Information géographique
+title.content:: Information géographique
 title.language:: fr
 title.script:: Latn
 title.format:: text/plain
@@ -37,15 +37,15 @@ script:: Latn
 version.revision_date:: 2019-04-01
 version.draft:: draft
 biblionote::
-biblionote.conten:: note
+biblionote.content:: note
 biblionote::
-biblionote.conten:: An note
+biblionote.content:: An note
 biblionote::
-biblionote.conten:: How published
+biblionote.content:: How published
 biblionote::
-biblionote.conten:: Comment
+biblionote.content:: Comment
 biblionote::
-biblionote.conten:: Table Of Contents
+biblionote.content:: Table Of Contents
 docstatus.stage:: 30
 docstatus.substage:: substage
 docstatus.iteration:: final
@@ -59,17 +59,17 @@ date::
 date.type:: accessed
 date.on:: 2015-05-20
 abstract::
-abstract.conten:: ISO 19115-1:2014 defines the schema required for ...
+abstract.content:: ISO 19115-1:2014 defines the schema required for ...
 abstract.language:: en
 abstract.script:: Latn
 abstract.format:: text/plain
 abstract::
-abstract.conten:: L'ISO 19115-1:2014 définit le schéma requis pour ...
+abstract.content:: L'ISO 19115-1:2014 définit le schéma requis pour ...
 abstract.language:: fr
 abstract.script:: Latn
 abstract.format:: text/plain
-copyright.owner.name.conten:: International Organization for Standardization
-copyright.owner.abbreviation.conten:: ISO
+copyright.owner.name.content:: International Organization for Standardization
+copyright.owner.abbreviation.content:: ISO
 copyright.owner.url:: www.iso.org
 copyright.role.type:: publisher
 copyright.from:: 2014
@@ -128,17 +128,17 @@ validity.begins:: 2010-10-10 12:21
 validity.ends:: 2011-02-03 18:30
 validity.revision:: 2011-03-04 09:00
 contributor::
-contributor.organization.name.conten:: International Organization for Standardization
-contributor.organization.abbreviation.conten:: ISO
-contributor.organization.subdivision.conten:: division
+contributor.organization.name.content:: International Organization for Standardization
+contributor.organization.abbreviation.content:: ISO
+contributor.organization.subdivision.content:: division
 contributor.organization.url:: www.iso.org
-contributor.role.description.conten:: Publisher role
+contributor.role.description.content:: Publisher role
 contributor.role.type:: publisher
 contributor::
-contributor.person.completename.conten:: A. Bierman
-contributor.person.completename.language:: en
-contributor.person.affiliation.organization.name.conten:: IETF
-contributor.person.affiliation.organization.abbreviation.conten:: IETF
+contributor.person.name.completename.content:: A. Bierman
+contributor.person.name.completename.language:: en
+contributor.person.affiliation.organization.name.content:: IETF
+contributor.person.affiliation.organization.abbreviation.content:: IETF
 contributor.person.affiliation.organization.identifier.type:: uri
 contributor.person.affiliation.organization.identifier.value:: www.ietf.org
 contributor.person.address.street:: Street
@@ -150,31 +150,31 @@ contributor.person.contact.type:: phone
 contributor.person.contact.value:: 223322
 contributor.role.type:: author
 contributor::
-contributor.organization.name.conten:: IETF
-contributor.organization.abbreviation.conten:: IETF
+contributor.organization.name.content:: IETF
+contributor.organization.abbreviation.content:: IETF
 contributor.organization.identifier.type:: uri
 contributor.organization.identifier.value:: www.ietf.org
 contributor::
-contributor.role.description.conten:: Publisher description
+contributor.role.description.content:: Publisher description
 contributor.role.type:: publisher
 contributor::
-contributor.role.description.conten:: Editor description
+contributor.role.description.content:: Editor description
 contributor.role.type:: editor
 contributor::
-contributor.person.forename.conten:: Forename
-contributor.person.forename.language:: en
-contributor.person.initial.conten:: A.
-contributor.person.initial.language:: en
-contributor.person.surname.conten:: Bierman
-contributor.person.surname.language:: en
-contributor.person.addition.conten:: Addition
-contributor.person.addition.language:: en
-contributor.person.prefix.conten:: Prefix
-contributor.person.prefix.language:: en
-contributor.person.affiliation.description.conten:: Description
+contributor.person.name.forename.content:: Forename
+contributor.person.name.forename.language:: en
+contributor.person.name.initial.content:: A.
+contributor.person.name.initial.language:: en
+contributor.person.name.surname.content:: Bierman
+contributor.person.name.surname.language:: en
+contributor.person.name.addition.content:: Addition
+contributor.person.name.addition.language:: en
+contributor.person.name.prefix.content:: Prefix
+contributor.person.name.prefix.language:: en
+contributor.person.affiliation.description.content:: Description
 contributor.person.affiliation.description.language:: en
-contributor.person.affiliation.organization.name.conten:: IETF
-contributor.person.affiliation.organization.abbreviation.conten:: IETF
+contributor.person.affiliation.organization.name.content:: IETF
+contributor.person.affiliation.organization.abbreviation.content:: IETF
 contributor.person.type:: uri
 contributor.person.value:: www.person.com
 contributor.person.address.street:: Street
@@ -186,63 +186,63 @@ contributor.person.contact.type:: phone
 contributor.person.contact.value:: 223322
 contributor.role.type:: author
 contributor::
-contributor.organization.name.conten:: Institution
-contributor.role.description.conten:: sponsor
+contributor.organization.name.content:: Institution
+contributor.role.description.content:: sponsor
 contributor.role.type:: distributor
 relation::
 relation.type:: updates
 relation.bibitem.formattedref:: ISO 19115:2003
 relation::
 relation.type:: obsoletes
-relation.desctiption.conten:: supersedes
+relation.desctiption.content:: supersedes
 relation.desctiption.format:: text/plain
 relation.bibitem.type:: standard
 relation.bibitem.formattedref:: ISO 19115:2003/Cor 1:2006
 relation::
 relation.type:: partOf
 relation.bibitem.title.type:: main
-relation.bibitem.title.conten:: Book title
+relation.bibitem.title.content:: Book title
 relation.bibitem.title.format:: text/plain
 series::
 series.type:: main
 series.title.type:: original
-series.title.conten:: ISO/IEC FDIS 10118-3
+series.title.content:: ISO/IEC FDIS 10118-3
 series.title.language:: en
 series.title.script:: Latn
 series.title.format:: text/plain
 series.place:: Serie's place
 series.organization:: Serie's organization
-series.abbreviation.conten:: ABVR
+series.abbreviation.content:: ABVR
 series.from:: 2009-02-01
 series.to:: 2010-12-20
 series.number:: serie1234
 series.partnumber:: part5678
 series::
 series.type:: alt
-series.formattedref.conten:: serieref
+series.formattedref.content:: serieref
 series.formattedref.language:: en
 series.formattedref.script:: Latn
 series.formattedref.format:: text/plain
 series::
 series.type:: journal
-series.title.conten:: Journal
+series.title.content:: Journal
 series.title.format:: text/plain
 series.number:: 7
 series::
 series.title.variant::
-series.title.variant.conten:: Series
+series.title.variant.content:: Series
 series.title.variant.language:: en
 series.title.variant.script:: Latn
 series.title.variant::
-series.title.variant.conten:: Séries
+series.title.variant.content:: Séries
 series.title.variant.language:: fr
 series.title.variant.script:: Latn
 series.title.format:: text/plain
 doctype:: document
 keyword::
-keyword.conten:: Keyword
+keyword.content:: Keyword
 keyword::
-keyword.conten:: Key Word
+keyword.content:: Key Word
 editorialgroup.technical_committee.content:: Editorial group
 editorialgroup.technical_committee.number:: 1
 editorialgroup.technical_committee.type:: Type
