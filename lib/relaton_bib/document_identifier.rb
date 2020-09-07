@@ -20,21 +20,20 @@ module RelatonBib
     def remove_part
       case @type
       when "Chinese Standard" then @id.sub!(/\.\d+/, "")
-      else
-        @id.sub!(/-\d+/, "")
+      when "ISO" then @id.sub!(/-\w+/, "")
+      when "URN" then @id.sub!(/(std:[^:]+:\d+):.+/, '\1')
       end
     end
 
     def remove_date
       case @type
       when "Chinese Standard" then @id.sub!(/-[12]\d\d\d/, "")
-      else
-        @id.sub!(/:[12]\d\d\d/, "")
+      when "ISO" then @id.sub!(/:[12]\d\d\d/, "")
       end
     end
 
     def all_parts
-      @id += " (all parts)"
+      @id += " (all parts)" if type != "URN"
     end
 
     #

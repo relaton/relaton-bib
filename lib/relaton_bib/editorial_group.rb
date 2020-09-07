@@ -32,5 +32,10 @@ module RelatonBib
         tc.to_asciibib pref, technical_committee.size
       end.join
     end
+
+    # @return [true]
+    def presence?
+      true
+    end
   end
 end

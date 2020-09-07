@@ -344,7 +344,7 @@ module RelatonBib
       hash["keyword"] = single_element_array(keyword) if keyword&.any?
       hash["license"] = single_element_array(license) if license&.any?
       hash["doctype"] = doctype if doctype
-      hash["editorialgroup"] = editorialgroup.to_hash if editorialgroup
+      hash["editorialgroup"] = editorialgroup.to_hash if editorialgroup&.presence?
       hash["ics"] = single_element_array ics if ics.any?
       if structuredidentifier&.presence?
         hash["structuredidentifier"] = structuredidentifier.to_hash

@@ -1,6 +1,8 @@
 RSpec.describe RelatonBib::DocumentIdentifier do
   context "ISO" do
-    subject { RelatonBib::DocumentIdentifier.new id: "1111-2:2014", type: "ISO" }
+    subject do
+      RelatonBib::DocumentIdentifier.new(id: "1111-2:2014", type: "ISO")
+    end
 
     it "remove part" do
       subject.remove_part
@@ -15,8 +17,23 @@ RSpec.describe RelatonBib::DocumentIdentifier do
     end
   end
 
+  context "URN" do
+    subject do
+      RelatonBib::DocumentIdentifier.new(type: "URN",
+                                         id: "urn:iso:std:iso:1111:ed-1")
+    end
+
+    it "remove part" do
+      subject.remove_part
+      expect(subject.id).to eq "urn:iso:std:iso:1111"
+    end
+  end
+
   context "GB" do
-    subject { RelatonBib::DocumentIdentifier.new id: "1111.2-2014", type: "Chinese Standard" }
+    subject do
+      RelatonBib::DocumentIdentifier.new(id: "1111.2-2014",
+                                         type: "Chinese Standard")
+    end
 
     it "remove part" do
       subject.remove_part
