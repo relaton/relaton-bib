@@ -20,20 +20,26 @@ module RelatonBib
     def remove_part
       case @type
       when "Chinese Standard" then @id.sub!(/\.\d+/, "")
-      when "ISO" then @id.sub!(/-\w+/, "")
-      when "URN" then @id.sub!(/(std:[^:]+:\d+):.+/, '\1')
+      when "ISO", "IEC" then @id.sub!(/-[^:]+/, "")
+      when "URN" then remove_urn_part
       end
     end
 
     def remove_date
       case @type
       when "Chinese Standard" then @id.sub!(/-[12]\d\d\d/, "")
-      when "ISO" then @id.sub!(/:[12]\d\d\d/, "")
+      when "ISO", "IEC" then @id.sub!(/:[12]\d\d\d/, "")
+      when "URN"
+        @id.sub!(/^(urn:iec:std:[^:]+:[^:]+:)[^:]*/, '\1')
       end
     end
 
     def all_parts
-      @id += " (all parts)" if type != "URN"
+      if type == "URN"
+        @id.sub!(%r{^(urn:iec:std(?::[^:]*){4}).*}, '\1:ser')
+      else
+        @id += " (all parts)"
+      end
     end
 
     #
@@ -65,6 +71,25 @@ module RelatonBib
       out += "#{pref}docid.scope:: #{scope}\n" if scope
       out += "#{pref}docid.id:: #{id}\n"
       out
+    end
+
+    private
+
+    def remove_urn_part # rubocop:disable Metrics/MethodLength
+      @id.sub!(%r{^
+        (urn:iso:std:[^:]+ # ISO prefix and originator
+          (?::(?:data|guide|isp|iwa|pas|r|tr|ts|tta)) # type
+          ?:\d+) # docnumber
+        (?::-[^:]+)? # partnumber
+        (?::(draft|cancelled|stage-[^:]+))? # status
+        (?::ed-\d+)?(?::v[^:]+)? # edition and version
+        (?::\w{2}(?:,\w{2})*)? # langauge
+      }x, '\1') # remove partnumber, status, version, and language
+      @id.sub!(%r{^
+        (urn:iec:std:[^:]+ # IEC prefix and originator
+          ?:\d+) # docnumber
+        (?:-[^:]+)? # partnumber
+      }x, '\1') # remove partnumber
     end
   end
 end
