@@ -268,6 +268,9 @@ module RelatonBib
       end
     end
 
+    # @param id [RelatonBib::DocumentIdentifier]
+    # @param attribute [boolean, nil]
+    # @return [String]
     def makeid(id, attribute)
       return nil if attribute && !@id_attribute
 
@@ -282,8 +285,12 @@ module RelatonBib
       idstr.strip
     end
 
+    # @param identifier [RelatonBib::DocumentIdentifier]
+    # @param options [Hash]
+    # @option options [boolean, nil] :no_year
+    # @option options [boolean, nil] :all_parts
     # @return [String]
-    def shortref(identifier, **opts) # rubocop:disable Metrics/CyclomaticComplexity
+    def shortref(identifier, **opts) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/PerceivedComplexity
       pubdate = date.select { |d| d.type == "published" }
       year = if opts[:no_year] || pubdate.empty? then ""
              else ":" + pubdate&.first&.on&.year.to_s
@@ -344,7 +351,9 @@ module RelatonBib
       hash["keyword"] = single_element_array(keyword) if keyword&.any?
       hash["license"] = single_element_array(license) if license&.any?
       hash["doctype"] = doctype if doctype
-      hash["editorialgroup"] = editorialgroup.to_hash if editorialgroup&.presence?
+      if editorialgroup&.presence?
+        hash["editorialgroup"] = editorialgroup.to_hash
+      end
       hash["ics"] = single_element_array ics if ics.any?
       if structuredidentifier&.presence?
         hash["structuredidentifier"] = structuredidentifier.to_hash
@@ -406,7 +415,7 @@ module RelatonBib
     end
 
     # remove title part components and abstract
-    def to_all_parts # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+    def to_all_parts # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength,Metrics/PerceivedComplexity
       me = deep_clone
       me.disable_id_attribute
       me.relation << DocumentRelation.new(type: "instance", bibitem: self)
@@ -449,7 +458,7 @@ module RelatonBib
 
     # If revision_date exists then returns it else returns published date or nil
     # @return [String, NilClass]
-    def revdate # rubocop:disable Metrics/CyclomaticComplexity
+    def revdate # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       @revdate ||= if version&.revision_date
                      version.revision_date
                    else
@@ -526,7 +535,7 @@ module RelatonBib
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 
     # @param [BibTeX::Entry]
-    def bibtex_author(item) # rubocop:disable Metrics/CyclomaticComplexity
+    def bibtex_author(item) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       authors = contributor.select do |c|
         c.entity.is_a?(Person) && c.role.map(&:type).include?("author")
       end.map &:entity
@@ -560,7 +569,7 @@ module RelatonBib
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     # @param [BibTeX::Entry]
-    def bibtex_note(item) # rubocop:disable Metrics/CyclomaticComplexity
+    def bibtex_note(item) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize
       biblionote.each do |n|
         case n.type
         when "annote" then item.annote = n.content
@@ -677,6 +686,9 @@ module RelatonBib
         builder.edition edition if edition
         version&.to_xml builder
         biblionote.each { |n| n.to_xml builder }
+        opts[:note]&.each do |n|
+          builder.note(n[:text], format: "text/plain", type: n[:type])
+        end
         language.each { |l| builder.language l }
         script.each { |s| builder.script s }
         abstract.each { |a| builder.abstract { a.to_xml(builder) } }

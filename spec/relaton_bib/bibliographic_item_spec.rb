@@ -101,6 +101,12 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(xml).to include "<element>test</element>"
     end
 
+    it "add note to xml" do
+      xml = subject.to_xml note: [{ text: "Note", type: "note" }]
+      expect(xml).to include "<note format=\"text/plain\" type=\"note\">"\
+      "Note</note>"
+    end
+
     it "deals with hashes" do
       file = "spec/examples/bib_item.yml"
       h = RelatonBib::HashConverter.hash_to_bib(YAML.load_file(file))

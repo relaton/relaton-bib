@@ -245,6 +245,11 @@ item.title
  #<RelatonBib::TypedTitleString:0x007fa49a35bf38
   @title=#<RelatonBib::FormattedString:0x007fa49a35bdd0 @content="Information géographique", @format=nil, @language=["fr"], @script=["Latn"]>,
   @type=nil>]
+
+item.title lang: "fr"
+=> [#<RelatonBib::TypedTitleString:0x007fa49a35bf38
+  @title=#<RelatonBib::FormattedString:0x007fa49a35bdd0 @content="Information géographique", @format=nil, @language=["fr"], @script=["Latn"]>,
+  @type=nil>]
 ----
 
 === BibliographicItem Formatted Strings
@@ -263,7 +268,7 @@ item.abstract(lang: "en").to_s
 
 [source,ruby]
 ----
-item.shortref item
+item.shortref item.docidentifier.first
 => "ISO/TC211:2014"
 ----
 
@@ -272,10 +277,10 @@ item.shortref item
 [source,ruby]
 ----
 item.to_xml
-=> "<bibitem id=\"ISO/TC211\" type=\"standard\">
+=> "<bibitem id="ISO/TC211" type="standard">
       <fetched>2019-04-30</fetched>
-      <title type=\"main\" language=\"en\" script=\"Latn\">Geographic information</title>
-      <title language=\"fr\" script=\"Latn\">Information géographique</title>
+      <title type="main" language="en" script="Latn">Geographic information</title>
+      <title language="fr" script="Latn">Information géographique</title>
       ...
     </bibitem>"
 ----
@@ -285,9 +290,9 @@ Default root element is `bibitem`. With argument `bibdata: true` the XML wrapped
 [source,ruby]
 ----
 item.to_xml bibdata: true
-=> "<bibdata type=\"standard\">
+=> "<bibdata type="standard">
       <fetched>2019-04-30</fetched>
-      <title type=\"main\" language=\"en\" script=\"Latn\">Geographic information</title>
+      <title type="main" language="en" script="Latn">Geographic information</title>
       ...
     </bibdata>"
 ----
@@ -296,12 +301,12 @@ item.to_xml bibdata: true
 
 By default date elements are formatted as year (yyyy). Option `:date_format` allows to output date elements in `:short` (yyyy-mm) and `:full` (yyyy-mm-dd) additiona formats.
 
-[surce,ruby]
+[source,ruby]
 ----
 item.to_xml date_format: :short
-=> "<bibitem id=\"ISO/TC211\" type=\"standard\">
+=> "<bibitem id="ISO/TC211" type="standard">
       <fetched>2019-04-30</fetched>
-      <title type=\"main\" language=\"en\" script=\"Latn\">Geographic information</title>
+      <title type="main" language="en" script="Latn">Geographic information</title>
       ...
       <date type="issued">
         <on>2014-01</on>
@@ -313,9 +318,10 @@ item.to_xml date_format: :short
         <on>2015-05</on>
       </date>
       ...
+    </bibitem>"
 
 item.to_xml date_format: :full
-=> "<bibitem id=\"ISO/TC211\" type=\"standard\">
+=> "<bibitem id="ISO/TC211" type="standard">
       ...
       <date type="issued">
         <on>2014-01-01</on>
@@ -327,6 +333,19 @@ item.to_xml date_format: :full
         <on>2015-05-20</on>
       </date>
       ...
+    </bibitem>"
+----
+
+==== Adding notes
+
+[source,ruby]
+----
+item.to_xml note: [{ text: "Note", type: "note" }]
+=>"<bibitem id="ISO19115-1-2014">
+  ...
+  <note format="text/plain" type="note">Note</note>
+  ...
+</bibitem>"
 ----
 
 === Create bibliographic item form YAML
