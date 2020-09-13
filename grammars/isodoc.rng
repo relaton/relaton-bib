@@ -42,8 +42,11 @@
     </define>
     <define name="xref">
       <element name="xref">
+        <!-- attribute target { xsd:IDREF }, -->
         <attribute name="target">
-          <data type="IDREF"/>
+          <data type="string">
+            <param name="pattern">\i\c*|\c+#\c+</param>
+          </data>
         </attribute>
         <optional>
           <attribute name="type">
@@ -578,6 +581,8 @@
             <ref name="ol"/>
             <ref name="dl"/>
             <ref name="formula"/>
+            <ref name="quote"/>
+            <ref name="sourcecode"/>
           </choice>
         </oneOrMore>
       </element>
@@ -661,6 +666,16 @@
             </choice>
           </attribute>
         </optional>
+        <optional>
+          <attribute name="valign">
+            <choice>
+              <value>top</value>
+              <value>middle</value>
+              <value>bottom</value>
+              <value>baseline</value>
+            </choice>
+          </attribute>
+        </optional>
         <choice>
           <zeroOrMore>
             <choice>
@@ -694,6 +709,16 @@
               <value>left</value>
               <value>right</value>
               <value>center</value>
+            </choice>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="valign">
+            <choice>
+              <value>top</value>
+              <value>middle</value>
+              <value>bottom</value>
+              <value>baseline</value>
             </choice>
           </attribute>
         </optional>
@@ -923,6 +948,9 @@
         <attribute name="script"/>
       </optional>
       <optional>
+        <attribute name="type"/>
+      </optional>
+      <optional>
         <attribute name="obligation">
           <choice>
             <value>normative</value>
@@ -961,9 +989,6 @@
   </define>
   <define name="content-subsection">
     <element name="clause">
-      <optional>
-        <attribute name="type"/>
-      </optional>
       <ref name="Content-Section"/>
     </element>
   </define>
@@ -993,6 +1018,9 @@
       </attribute>
     </optional>
     <optional>
+      <attribute name="type"/>
+    </optional>
+    <optional>
       <ref name="section-title"/>
     </optional>
     <group>
@@ -1011,9 +1039,6 @@
   </define>
   <define name="clause">
     <element name="clause">
-      <optional>
-        <attribute name="type"/>
-      </optional>
       <ref name="Clause-Section"/>
     </element>
   </define>
@@ -1043,17 +1068,23 @@
       </attribute>
     </optional>
     <optional>
+      <attribute name="type"/>
+    </optional>
+    <optional>
       <ref name="section-title"/>
     </optional>
     <group>
-      <group>
-        <zeroOrMore>
-          <ref name="BasicBlock"/>
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="note"/>
-        </zeroOrMore>
-      </group>
+      <choice>
+        <group>
+          <zeroOrMore>
+            <ref name="BasicBlock"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="note"/>
+          </zeroOrMore>
+        </group>
+        <ref name="amend"/>
+      </choice>
       <zeroOrMore>
         <choice>
           <ref name="clause-subsection"/>
@@ -1179,6 +1210,9 @@
       </optional>
       <optional>
         <attribute name="script"/>
+      </optional>
+      <optional>
+        <attribute name="type"/>
       </optional>
       <optional>
         <attribute name="obligation">
@@ -1499,6 +1533,81 @@
   <define name="termdocsource">
     <element name="termdocsource">
       <ref name="CitationType"/>
+    </element>
+  </define>
+  <define name="amend">
+    <element name="amend">
+      <optional>
+        <attribute name="id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+      <attribute name="change">
+        <choice>
+          <value>add</value>
+          <value>modify</value>
+          <value>delete</value>
+        </choice>
+      </attribute>
+      <optional>
+        <attribute name="path"/>
+      </optional>
+      <optional>
+        <attribute name="path_end"/>
+      </optional>
+      <optional>
+        <attribute name="title"/>
+      </optional>
+      <optional>
+        <element name="location">
+          <zeroOrMore>
+            <ref name="locality"/>
+          </zeroOrMore>
+        </element>
+      </optional>
+      <zeroOrMore>
+        <ref name="autonumber"/>
+      </zeroOrMore>
+      <optional>
+        <element name="description">
+          <zeroOrMore>
+            <ref name="BasicBlock"/>
+          </zeroOrMore>
+        </element>
+      </optional>
+      <optional>
+        <element name="replacement">
+          <zeroOrMore>
+            <ref name="BasicBlock"/>
+          </zeroOrMore>
+        </element>
+      </optional>
+      <optional>
+        <element name="description">
+          <zeroOrMore>
+            <ref name="BasicBlock"/>
+          </zeroOrMore>
+        </element>
+      </optional>
+    </element>
+  </define>
+  <define name="autonumber">
+    <element name="autonumber">
+      <attribute name="type">
+        <choice>
+          <value>requirement</value>
+          <value>recommendation</value>
+          <value>permission</value>
+          <value>table</value>
+          <value>figure</value>
+          <value>admonition</value>
+          <value>formula</value>
+          <value>sourcecode</value>
+          <value>example</value>
+          <value>note</value>
+        </choice>
+      </attribute>
+      <text/>
     </element>
   </define>
 </grammar>
