@@ -87,7 +87,7 @@ module RelatonBib
       }x, '\1') # remove partnumber, status, version, and language
       @id.sub!(%r{^
         (urn:iec:std:[^:]+ # IEC prefix and originator
-          ?:\d+) # docnumber
+          :\d+) # docnumber
         (?:-[^:]+)? # partnumber
       }x, '\1') # remove partnumber
     end
