@@ -6,7 +6,8 @@ module RelatonBib
   # Bibliographic date.
   class BibliographicDate
     TYPES = %w[published accessed created implemented obsoleted confirmed
-               updated issued transmitted copied unchanged circulated adapted].freeze
+               updated issued transmitted copied unchanged circulated adapted
+               vote-started vote-ended].freeze
 
     # @return [String]
     attr_reader :type

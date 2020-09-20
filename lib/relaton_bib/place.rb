@@ -25,7 +25,7 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       if uri || region
-        hash = { name: name }
+        hash = { "name" => name }
         hash["uri"] = uri if uri
         hash["region"] = region if region
         hash

@@ -245,7 +245,7 @@ medium:
   scale: medium scale
 place:
 - bib place
-- :name: Geneva
+- name: Geneva
   uri: geneva.place
   region: Switzelznd
 extent:

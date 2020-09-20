@@ -202,7 +202,9 @@ module RelatonBib
                                   abbreviation: elm[:abbreviation])
       end
 
-      def fetch_dates(item) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      # @param node [Nokogiri::XML::Elemen]
+      # @return [Array<RelatonBib::BibliographicDate>]
+      def fetch_dates(item) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
         item.xpath("./date").reduce([]) do |a, d|
           type = d[:type].to_s.empty? ? "published" : d[:type]
           if (on = d.at("on"))
@@ -229,7 +231,7 @@ module RelatonBib
                          identifier: identifier)
       end
 
-      def get_person(person) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
+      def get_person(person) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
         affiliations = person.xpath("./affiliation").map do |a|
           org = a.at "./organization"
           desc = a.xpath("./description").map do |e|

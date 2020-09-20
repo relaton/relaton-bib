@@ -34,7 +34,7 @@ module RelatonBib
 
   # @param array [Array]
   # @return [Array<String>, String]
-  def single_element_array(array) # rubocop:disable Metrics/CyclomaticComplexity
+  def single_element_array(array) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     if array.size > 1
       array.map { |e| e.is_a?(String) ? e : e.to_hash }
     else
