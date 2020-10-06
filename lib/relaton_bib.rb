@@ -1,3 +1,4 @@
+require "forwardable"
 require "relaton_bib/version"
 require "relaton_bib/deep_dup"
 require "relaton_bib/bibliographic_item"

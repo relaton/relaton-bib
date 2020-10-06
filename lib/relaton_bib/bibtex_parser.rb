@@ -6,7 +6,7 @@ module RelatonBib
     class << self
       # @param bibtex [String]
       # @return [Hash{String=>RelatonBib::BibliographicItem}]
-      def from_bibtex(bibtex)
+      def from_bibtex(bibtex) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
         BibTeX.parse(bibtex).reduce({}) do |h, bt|
           h[bt.key] = BibliographicItem.new(
             id: bt.key,
@@ -35,7 +35,7 @@ module RelatonBib
 
       # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::DocumentIdentifier>]
-      def fetch_docid(bibtex)
+      def fetch_docid(bibtex) # rubocop:disable Metrics/AbcSize
         docid = []
         docid << DocumentIdentifier.new(id: bibtex.isbn.to_s, type: "isbn") if bibtex["isbn"]
         docid << DocumentIdentifier.new(id: bibtex.lccn.to_s, type: "lccn") if bibtex["lccn"]
@@ -67,17 +67,17 @@ module RelatonBib
       end
 
       # @param bibtex [BibTeX::Entry]
-      # @return [Array<Hash>]
+      # @return [RelatonBib::TypedTitleStringCollection]
       def fetch_title(bibtex)
         title = []
         title << { type: "main", content: bibtex.title.to_s } if bibtex["title"]
         title << { type: "main", content: bibtex.subtitle.to_s } if bibtex["subtitle"]
-        title
+        TypedTitleStringCollection.new title
       end
 
       # @param bibtex [BibTeX::Entry]
       # @return [Array<Hash>]
-      def fetch_contributor(bibtex)
+      def fetch_contributor(bibtex) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
         contributor = []
         fetch_person(bibtex["author"]).each do |entity|
           contributor << { entity: entity, role: [{ type: "author" }] }
@@ -94,7 +94,7 @@ module RelatonBib
         if bibtex["institution"]
           contributor << {
             entity: { name: bibtex.institution.to_s },
-            role: [{ type: "distributor", description: ["sponsor"] }]
+            role: [{ type: "distributor", description: ["sponsor"] }],
           }
         end
 
@@ -145,11 +145,11 @@ module RelatonBib
       end
 
       # @param bibtex [BibTeX::Entry]
-      # @return [Array<RelatonBib::BiblioNote>]
+      # @return [RelatonBib::BiblioNoteCollection]
       def fetch_note(bibtex)
         bibtex.select do |k, _v|
           %i[annote howpublished comment note content].include? k
-        end.reduce([]) do |mem, note|
+        end.reduce(BiblioNoteCollection.new([])) do |mem, note|
           type = case note[0]
                  when :note then nil
                  when :content then "tableOfContents"
@@ -164,13 +164,14 @@ module RelatonBib
       def fetch_relation(bibtex)
         return [] unless bibtex["booktitle"]
 
-        title = TypedTitleString.new(type: "main", content: bibtex.booktitle.to_s)
-        [{ type: "partOf", bibitem: BibliographicItem.new(title: [title]) }]
+        ttl = TypedTitleString.new(type: "main", content: bibtex.booktitle.to_s)
+        title = TypedTitleStringCollection.new [ttl]
+        [{ type: "partOf", bibitem: BibliographicItem.new(title: title) }]
       end
 
       # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::BibItemLocality>]
-      def fetch_extent(bibtex)
+      def fetch_extent(bibtex) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
         bibtex.select do |k, _v|
           %i[chapter pages volume].include? k
         end.reduce([]) do |mem, loc|
@@ -188,13 +189,13 @@ module RelatonBib
 
       # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::Series>]
-      def fetch_series(bibtex)
+      def fetch_series(bibtex) # rubocop:disable Metrics/MethodLength
         series = []
         if bibtex["journal"]
           series << Series.new(
             type: "journal",
             title: TypedTitleString.new(content: bibtex.journal.to_s),
-            number: bibtex["number"]&.to_s,
+            number: bibtex["number"]&.to_s
           )
         end
 
@@ -207,7 +208,7 @@ module RelatonBib
 
       # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::TypedUri>]
-      def fetch_link(bibtex)
+      def fetch_link(bibtex) # rubocop:disable Metrics/AbcSize
         link = []
         link << TypedUri.new(type: "src", content: bibtex.url.to_s) if bibtex["url"]
         link << TypedUri.new(type: "doi", content: bibtex.doi.to_s) if bibtex["doi"]

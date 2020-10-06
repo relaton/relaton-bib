@@ -45,7 +45,7 @@ module RelatonBib
     attr_reader :id, :type, :docnumber, :edition, :doctype
 
     # @!attribute [r] title
-    # @return [Array<RelatonBib::TypedTitleString>]
+    # @return [RelatonBib::TypedTitleStringCollection]
 
     # @return [Array<RelatonBib::TypedUri>]
     attr_reader :link
@@ -59,10 +59,10 @@ module RelatonBib
     # @return [Array<RelatonBib::ContributionInfo>]
     attr_reader :contributor
 
-    # @return [RelatonBib::BibliongraphicItem::Version, NilClass]
+    # @return [RelatonBib::BibliographicItem::Version, NilClass]
     attr_reader :version
 
-    # @return [Array<RelatonBib::BiblioNote>]
+    # @return [RelatonBib::BiblioNoteCollection]
     attr_reader :biblionote
 
     # @return [Array<String>] language Iso639 code
@@ -126,7 +126,8 @@ module RelatonBib
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     # @param id [String, NilClass]
-    # @param title [Array<RelatonBib::TypedTitleString>]
+    # @param title [RelatonBib::TypedTitleStringCollection,
+    #   Array<Hash, RelatonBib::TypedTitleString>]
     # @param formattedref [RelatonBib::FormattedRef, NilClass]
     # @param type [String, NilClass]
     # @param docid [Array<RelatonBib::DocumentIdentifier>]
@@ -136,7 +137,7 @@ module RelatonBib
     # @param docstatus [RelatonBib::DocumentStatus, NilClass]
     # @param edition [String, NilClass]
     # @param version [RelatonBib::BibliographicItem::Version, NilClass]
-    # @param biblionote [Array<RelatonBib::BiblioNote>]
+    # @param biblionote [RelatonBib::BiblioNoteCollection]
     # @param series [Array<RelatonBib::Series>]
     # @param medium [RelatonBib::Medium, NilClas]
     # @param place [Array<String, RelatonBib::Place>]
@@ -193,9 +194,7 @@ module RelatonBib
         warn %{[relaton-bib] document type "#{args[:type]}" is invalid.}
       end
 
-      @title = (args[:title] || []).map do |t|
-        t.is_a?(Hash) ? TypedTitleString.new(t) : t
-      end
+      @title = TypedTitleStringCollection.new(args[:title])
 
       @date = (args[:date] || []).map do |d|
         d.is_a?(Hash) ? BibliographicDate.new(d) : d
@@ -224,7 +223,7 @@ module RelatonBib
       @docnumber      = args[:docnumber]
       @edition        = args[:edition]
       @version        = args[:version]
-      @biblionote     = args.fetch :biblionote, []
+      @biblionote     = args.fetch :biblionote, BiblioNoteCollection.new([])
       @language       = args.fetch :language, []
       @script         = args.fetch :script, []
       @status         = args[:docstatus]
@@ -262,7 +261,7 @@ module RelatonBib
     # @return [RelatonBib::FormattedString, Array<RelatonBib::FormattedString>]
     def abstract(lang: nil)
       if lang
-        @abstract.detect { |a| a.language.include? lang }
+        @abstract.detect { |a| a.language&.include? lang }
       else
         @abstract
       end
@@ -300,14 +299,18 @@ module RelatonBib
       "#{makeid(identifier, false)}#{year}"
     end
 
-    # @param builder [Nokogiri::XML::Builder, NillClass] (nil)
-    # @return [String]
-    def to_xml(builder = nil, **opts, &block)
-      if builder
-        render_xml builder, **opts, &block
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] :builder XML builder
+    # @option opts [Boolean] :bibdata
+    # @option opts [Symbol, NilClass] :date_format (:short), :full
+    # @option opts [String, Symbol] :lang language
+    # @return [String] XML
+    def to_xml(**opts, &block)
+      if opts[:builder]
+        render_xml **opts, &block
       else
         Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
-          render_xml xml, **opts, &block
+          render_xml builder: xml, **opts, &block
         end.doc.root.to_xml
       end
     end
@@ -387,12 +390,10 @@ module RelatonBib
       bibtex.to_s
     end
 
-    # @param lang [String] language code Iso639
-    # @return [Array<RelatonIsoBib::TypedTitleString>]
+    # @param lang [String, nil] language code Iso639
+    # @return [RelatonIsoBib::TypedTitleStringCollection]
     def title(lang: nil)
-      if lang then @title.select { |t| t.title.language&.include? lang }
-      else @title
-      end
+      @title.lang lang
     end
 
     # @param type [Symbol] type of url, can be :src/:obp/:rss
@@ -420,7 +421,7 @@ module RelatonBib
       me.disable_id_attribute
       me.relation << DocumentRelation.new(type: "instance", bibitem: self)
       me.language.each do |l|
-        me.title.delete_if { |t| t.type == "title-part" }
+        me.title.delete_title_part!
         ttl = me.title.select do |t|
           t.type != "main" && t.title.language&.include?(l)
         end
@@ -665,13 +666,16 @@ module RelatonBib
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     # rubocop:disable Style/NestedParenthesizedCalls, Metrics/BlockLength
 
-    # @param builder [Nokogiri::XML::Builder]
-    # @return [String]
-    def render_xml(builder, **opts)
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] :builder XML builder
+    # @option opts [Boolean] bibdata
+    # @option opts [Symbol, NilClass] :date_format (:short), :full
+    # @option opts [String] :lang language
+    def render_xml(**opts)
       root = opts[:bibdata] ? :bibdata : :bibitem
-      xml = builder.send(root) do
+      xml = opts[:builder].send(root) do |builder|
         builder.fetched fetched if fetched
-        title.each { |t| builder.title { t.to_xml builder } }
+        title.to_xml **opts
         formattedref&.to_xml builder
         link.each { |s| s.to_xml builder }
         docidentifier.each { |di| di.to_xml builder }
@@ -679,21 +683,23 @@ module RelatonBib
         date.each { |d| d.to_xml builder, **opts }
         contributor.each do |c|
           builder.contributor do
-            c.role.each { |r| r.to_xml builder }
-            c.to_xml builder
+            c.role.each { |r| r.to_xml **opts }
+            c.to_xml **opts
           end
         end
         builder.edition edition if edition
         version&.to_xml builder
-        biblionote.each { |n| n.to_xml builder }
+        biblionote.to_xml **opts
         opts[:note]&.each do |n|
           builder.note(n[:text], format: "text/plain", type: n[:type])
         end
         language.each { |l| builder.language l }
         script.each { |s| builder.script s }
-        abstract.each { |a| builder.abstract { a.to_xml(builder) } }
+        abstr = abstract.select { |ab| ab.language&.include? opts[:lang] }
+        abstr = abstract unless abstr.any?
+        abstr.each { |a| builder.abstract { a.to_xml(builder) } }
         status&.to_xml builder
-        copyright&.each { |c| c.to_xml builder }
+        copyright&.each { |c| c.to_xml **opts }
         relation.each { |r| r.to_xml builder, **opts }
         series.each { |s| s.to_xml builder }
         medium&.to_xml builder
@@ -702,7 +708,9 @@ module RelatonBib
         accesslocation.each { |al| builder.accesslocation al }
         license.each { |l| builder.license l }
         classification.each { |cls| cls.to_xml builder }
-        keyword.each { |kw| builder.keyword { kw.to_xml(builder) } }
+        kwrd = keyword.select { |kw| kw.language&.include? opts[:lang] }
+        kwrd = keyword unless kwrd.any?
+        kwrd.each { |kw| builder.keyword { kw.to_xml(builder) } }
         validity&.to_xml builder
         if block_given? then yield builder
         elsif opts[:bibdata] && (doctype || editorialgroup || ics&.any? ||

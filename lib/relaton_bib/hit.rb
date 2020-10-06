@@ -20,7 +20,7 @@ module RelatonBib
 
     # @return [String]
     def inspect
-      "<#{self.class}:#{format('%#.14x', object_id << 1)} "\
+      "<#{self.class}:#{format('%<id>#.14x', id: object_id << 1)} "\
       "@text=\"#{@hit_collection&.text}\" "\
       "@fetched=\"#{!@fetch.nil?}\" "\
       "@fullIdentifier=\"#{@fetch&.shortref(nil)}\" "\
@@ -31,13 +31,17 @@ module RelatonBib
       raise "Not implemented"
     end
 
-    # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder = nil, **opts)
-      if builder
-        fetch.to_xml builder, **opts
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] :builder XML builder
+    # @option opts [Boolean] :bibdata
+    # @option opts [String, Symbol] :lang language
+    # @return [String] XML
+    def to_xml(**opts)
+      if opts[:builder]
+        fetch.to_xml **opts
       else
         builder = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
-          fetch.to_xml xml, **opts
+          fetch.to_xml **opts.merge(builder: xml)
         end
         builder.doc.root.to_xml
       end

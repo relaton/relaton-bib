@@ -20,7 +20,7 @@ module RelatonBib
       # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
 
       # @return [Hash]
-      def item_data(bibitem) # rubocop:disable Metrics/CyclomaticComplexity
+      def item_data(bibitem) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         ext = bibitem.at "//ext"
         {
           id: bibitem[:id]&.empty? ? nil : bibitem[:id],
@@ -75,7 +75,7 @@ module RelatonBib
       end
 
       def fetch_note(item)
-        item.xpath("./note").map do |n|
+        bnotes = item.xpath("./note").map do |n|
           BiblioNote.new(
             content: n.text,
             type: n[:type],
@@ -84,6 +84,7 @@ module RelatonBib
             script: n[:script]
           )
         end
+        BiblioNoteCollection.new bnotes
       end
 
       def fetch_language(item)
@@ -98,7 +99,7 @@ module RelatonBib
         end
       end
 
-      def fetch_series(item) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
+      def fetch_series(item) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/MethodLength,Metrics/PerceivedComplexity
         item.xpath("./series").reduce([]) do |mem, sr|
           abbr = sr.at "abbreviation"
           abbreviation = abbr &&
@@ -164,10 +165,15 @@ module RelatonBib
         end
       end
 
+      # @param item [Nokogiri::XML::Element]
+      # @return [RelatonBib::TypedTitleStringCollection]
       def fetch_titles(item)
-        item.xpath("./title").map { |t| ttitle t }
+        ttl = item.xpath("./title").map { |t| ttitle t }
+        TypedTitleStringCollection.new ttl
       end
 
+      # @param title [Nokogiri::XML::Element]
+      # @return [RelatonBib::TypedTitleString]
       def ttitle(title)
         return unless title
 
@@ -224,9 +230,10 @@ module RelatonBib
         identifier = org.xpath("./identifier").map do |i|
           OrgIdentifier.new(i[:type], i.text)
         end
+        subdiv = org.xpath("subdivision").map &:text
         Organization.new(name: names,
                          abbreviation: org.at("abbreviation")&.text,
-                         subdivision: org.at("subdivision")&.text,
+                         subdivision: subdiv,
                          url: org.at("uri")&.text,
                          identifier: identifier)
       end

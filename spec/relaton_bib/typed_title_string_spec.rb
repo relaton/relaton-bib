@@ -13,7 +13,7 @@ RSpec.describe RelatonBib::TypedTitleString do
     subject do
       RelatonBib::TypedTitleString.new(
         type: "main",
-        title: RelatonBib::FormattedString.new(content: "Title", format: nil),
+        title: RelatonBib::FormattedString.new(content: "Title", format: nil)
       )
     end
 

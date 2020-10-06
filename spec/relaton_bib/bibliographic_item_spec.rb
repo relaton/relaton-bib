@@ -17,7 +17,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     end
 
     it "has array of titiles" do
-      expect(subject.title).to be_instance_of Array
+      expect(subject.title).to be_instance_of RelatonBib::TypedTitleStringCollection
       expect(subject.title(lang: "fr")[0].title.content).to eq(
         "Information g\u00E9ographique"
       )
@@ -94,6 +94,14 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       schema = Jing.new "spec/examples/isobib.rng"
       errors = schema.validate file
       expect(errors).to eq []
+    end
+
+    it "render only French laguage tagged string" do
+      file = "spec/examples/bibdata_item_fr.xml"
+      xml = subject.to_xml bibdata: true, lang: "fr"
+      File.write file, xml, encoding: "UTF-8" unless File.exist? file
+      expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
+        .sub /(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s
     end
 
     it "render addition elements" do

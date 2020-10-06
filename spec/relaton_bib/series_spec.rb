@@ -7,7 +7,8 @@ RSpec.describe RelatonBib::Series do
 
   it "raises invalid type atgument error" do
     expect do
-      RelatonBib::Series.new title: RelatonBib::TypedTitleString.new(content: "title"), type: "type"
+      title = RelatonBib::TypedTitleString.new(content: "title")
+      RelatonBib::Series.new title: title, type: "type"
     end.to output(/Series type is invalid: type/).to_stderr
   end
 end

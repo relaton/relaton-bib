@@ -49,7 +49,7 @@ module RelatonBib
     end
 
     # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+    def to_xml(builder) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       return unless content
 
       if content.is_a?(Array)
@@ -62,7 +62,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+    def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       if content.is_a? String
         return content unless language || script
 
@@ -77,7 +77,7 @@ module RelatonBib
     # @param prefix [String]
     # @param count [Integer] number of elements
     # @return [String]
-    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       pref = prefix.empty? ? prefix : prefix + "."
       if content.is_a? String
         out = count > 1 ? "#{prefix}::\n" : ""
