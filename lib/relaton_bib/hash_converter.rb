@@ -58,7 +58,8 @@ module RelatonBib
       def title_hash_to_bib(ret)
         return unless ret[:title]
 
-        ret[:title] = array(ret[:title]).reduce([]) do |m, t|
+        ret[:title] = array(ret[:title])
+          .reduce(TypedTitleStringCollection.new) do |m, t|
           if t.is_a?(Hash) then m << t
           else
             m + TypedTitleString.from_string(t)
@@ -139,20 +140,14 @@ module RelatonBib
         )
       end
 
-      def biblionote_hash_to_bib(ret) # rubocop:disable Metrics/MethodLength
+      def biblionote_hash_to_bib(ret) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
         return unless ret[:biblionote]
 
         ret[:biblionote] = array(ret[:biblionote])
-        (ret[:biblionote])&.each_with_index do |n, i|
-          ret[:biblionote][i] = if n.is_a?(String)
-                                  BiblioNote.new content: n
-                                else
-                                  BiblioNote.new(
-                                    content: n[:content], type: n[:type],
-                                    language: n[:language], script: n[:script],
-                                    format: n[:format]
-                                  )
-                                end
+          .reduce(BiblioNoteCollection.new([])) do |mem, n|
+          mem << if n.is_a?(String) then BiblioNote.new content: n
+                 else BiblioNote.new(n)
+                 end
         end
       end
 
@@ -178,7 +173,7 @@ module RelatonBib
         DocumentStatus::Stage.new(**args)
       end
 
-      def contributors_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+      def contributors_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength,Metrics/PerceivedComplexity
         return unless ret[:contributor]
 
         ret[:contributor] = array(ret[:contributor])
@@ -208,6 +203,9 @@ module RelatonBib
 
         org[:identifier] = array(org[:identifier])&.map do |a|
           OrgIdentifier.new(a[:type], a[:id])
+        end
+        org[:subdivision] = array(org[:subdivision]).map do |sd|
+          LocalizedString.new sd
         end
         org
       end

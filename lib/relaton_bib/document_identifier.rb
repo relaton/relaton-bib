@@ -45,10 +45,15 @@ module RelatonBib
     #
     # Add docidentifier xml element
     #
-    # @param [Nokogiri::XML::Builder] builder
-    #
-    def to_xml(builder)
-      element = builder.docidentifier id
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] :builder XML builder
+    # @option opts [String] :lang language
+    def to_xml(**opts) # rubocop:disable Metrics/AbcSize
+      lid = if type == "URN" && opts[:lang]
+              id.sub %r{(?<=:)(?:\w{2},)*?(#{opts[:lang]})(?:,\w{2})*}, '\1'
+            else id
+            end
+      element = opts[:builder].docidentifier lid
       element[:type] = type if type
       element[:scope] = scope if scope
     end

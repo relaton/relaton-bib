@@ -63,7 +63,7 @@ module RelatonBib
       opts.delete :note
       builder.relation(type: type) do
         builder.description { description.to_xml builder } if description
-        bibitem.to_xml(builder, **opts.merge(embedded: true))
+        bibitem.to_xml(**opts.merge(builder: builder, embedded: true))
         locality.each { |l| l.to_xml builder }
         source_locality.each { |l| l.to_xml builder }
       end
@@ -71,7 +71,7 @@ module RelatonBib
     # rubocop:enable Metrics/AbcSize
 
     # @return [Hash]
-    def to_hash
+    def to_hash # rubocop:disable Metrics/AbcSize
       hash = { "type" => type, "bibitem" => bibitem.to_hash }
       hash["description"] = description.to_hash if description
       hash["locality"] = single_element_array(locality) if locality&.any?

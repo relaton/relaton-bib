@@ -44,23 +44,33 @@ module RelatonBib
       @completename = args[:completename]
     end
 
-    # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      builder.name do
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] :builder XML builder
+    # @option opts [String] :lang language
+    def to_xml(**opts) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+      opts[:builder].name do |builder|
         if completename
           builder.completename { completename.to_xml builder }
         else
-          prefix.each { |p| builder.prefix { p.to_xml builder } }
-          forename.each { |f| builder.forename { f.to_xml builder } }
-          initial.each { |i| builder.initial { i.to_xml builder } }
+          pref = prefix.select { |p| p.language&.include? opts[:lang] }
+          pref = prefix unless pref.any?
+          pref.each { |p| builder.prefix { p.to_xml builder } }
+          frnm = forename.select { |f| f.language&.include? opts[:lang] }
+          frnm = forename unless frnm.any?
+          frnm.each { |f| builder.forename { f.to_xml builder } }
+          init = initial.select { |i| i.language&.include? opts[:lang] }
+          init = initial unless init.any?
+          init.each { |i| builder.initial { i.to_xml builder } }
           builder.surname { surname.to_xml builder }
-          addition.each { |a| builder.addition { a.to_xml builder } }
+          addn = addition.select { |a| a.language&.include? opts[:lang] }
+          addn = addition unless addn.any?
+          addn.each { |a| builder.addition { a.to_xml builder } }
         end
       end
     end
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+    def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       hash = {}
       hash["forename"] = single_element_array(forename) if forename&.any?
       hash["initial"] = single_element_array(initial) if initial&.any?
@@ -73,7 +83,7 @@ module RelatonBib
 
     # @param pref [String]
     # @return [String]
-    def to_asciibib(pref) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+    def to_asciibib(pref) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
       prf = pref.empty? ? pref : pref + "."
       prf += "name."
       out = forename.map do |fn|
@@ -170,11 +180,13 @@ module RelatonBib
       @identifier = identifier
     end
 
-    # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder)
-      builder.person do
-        name.to_xml builder
-        affiliation.each { |a| a.to_xml builder }
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] :builder XML builder
+    # @option opts [String, Symbol] :lang language
+    def to_xml(**opts)
+      opts[:builder].person do |builder|
+        name.to_xml **opts
+        affiliation.each { |a| a.to_xml **opts }
         identifier.each { |id| id.to_xml builder }
         contact.each { |contact| contact.to_xml builder }
       end

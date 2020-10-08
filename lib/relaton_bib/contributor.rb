@@ -129,12 +129,16 @@ module RelatonBib
       @description  = description
     end
 
-    # @params builder [Nokogiri::XML::Builder]
-    def to_xml(builder)
-      builder.affiliation do
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] :builder XML builder
+    # @option opts [String] :lang language
+    def to_xml(**opts) # rubocop:disable Metrics/AbcSize
+      opts[:builder].affiliation do |builder|
         builder.name { name.to_xml builder } if name
-        description.each { |d| builder.description { d.to_xml builder } }
-        organization.to_xml builder
+        desc = description.select { |d| d.language&.include? opts[:lang] }
+        desc = description unless desc.any?
+        desc.each { |d| builder.description { d.to_xml builder } }
+        organization.to_xml **opts
       end
     end
 
@@ -151,7 +155,7 @@ module RelatonBib
     # @param prefix [String]
     # @param count [Integer]
     # @return [String]
-    def to_asciibib(prefix = "", count = 1)
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize
       pref = prefix.empty? ? prefix : prefix + "."
       out = count > 1 ? "#{pref}affiliation::\n" : ""
       out += name.to_asciibib "#{pref}affiliation.name" if name

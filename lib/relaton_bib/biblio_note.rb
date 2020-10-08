@@ -1,4 +1,31 @@
 module RelatonBib
+  class BiblioNoteCollection
+    extend Forwardable
+
+    def_delegators :@array, :[], :first, :last, :empty?, :any?, :size,
+                   :each, :map, :detect, :length
+
+    def initialize(notes)
+      @array = notes
+    end
+
+    # @param bibnote [RelatonBib::BiblioNote]
+    # @return [self]
+    def <<(bibnote)
+      @array << bibnote
+      self
+    end
+
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] XML builder
+    # @option opts [String] :lang language
+    def to_xml(**opts)
+      bnc = @array.select { |bn| bn.language&.include? opts[:lang] }
+      bnc = @array unless bnc.any?
+      bnc.each { |bn| bn.to_xml opts[:builder] }
+    end
+  end
+
   class BiblioNote < FormattedString
     # @return [String, NilClass]
     attr_reader :type

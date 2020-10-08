@@ -55,7 +55,7 @@ module RelatonBib
     # @return [RelatonBib::LocalizedString, NilClass]
     attr_reader :abbreviation
 
-    # @return [RelatonBib::LocalizedString, NilClass]
+    # @return [Array<RelatonBib::LocalizedString>]
     attr_reader :subdivision
 
     # @return [Array<RelatonBib::OrgIdentifier>]
@@ -63,11 +63,11 @@ module RelatonBib
 
     # @param name [String, Hash, Array<String, Hash>]
     # @param abbreviation [RelatoBib::LocalizedString, String]
-    # @param subdivision [RelatoBib::LocalizedString, String]
+    # @param subdivision [Array<RelatoBib::LocalizedString>]
     # @param url [String]
     # @param identifier [Array<RelatonBib::OrgIdentifier>]
     # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
-    def initialize(**args) # rubocop:disable Metrics/AbcSize
+    def initialize(**args) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       raise ArgumentError, "missing keyword: name" unless args[:name]
 
       super(url: args[:url], contact: args.fetch(:contact, []))
@@ -79,17 +79,23 @@ module RelatonBib
               end
 
       @abbreviation = localized_string args[:abbreviation]
-      @subdivision  = localized_string args[:subdivision]
+      @subdivision  = (args[:subdivision] || []).map do |sd|
+        localized_string sd
+      end
       @identifier   = args.fetch(:identifier, [])
     end
 
-    # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder) # rubocop:disable Metrics/AbcSize
-      builder.organization do
-        name.each do |n|
-          builder.name { |b| n.to_xml b }
-        end
-        builder.subdivision { |s| subdivision.to_xml s } if subdivision
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] :builder XML builder
+    # @option opts [String] :lang language
+    def to_xml(**opts) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength
+      opts[:builder].organization do |builder|
+        nm = name.select { |n| n.language&.include? opts[:lang] }
+        nm = name unless nm.any?
+        nm.each { |n| builder.name { |b| n.to_xml b } }
+        sbdv = subdivision.select { |sd| sd.language&.include? opts[:lang] }
+        sbdv = subdivision unless sbdv.any?
+        sbdv.each { |sd| builder.subdivision { sd.to_xml builder } }
         builder.abbreviation { |a| abbreviation.to_xml a } if abbreviation
         builder.uri url if uri
         identifier.each { |identifier| identifier.to_xml builder }
@@ -98,23 +104,28 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_hash # rubocop:disable Metrics/AbcSize
       hash = { "name" => single_element_array(name) }
       hash["abbreviation"] = abbreviation.to_hash if abbreviation
       hash["identifier"] = single_element_array(identifier) if identifier&.any?
-      hash["subdivision"] = subdivision.to_hash if subdivision
+      if subdivision&.any?
+        hash["subdivision"] = single_element_array(subdivision)
+      end
       { "organization" => hash.merge(super) }
     end
 
     # @param prefix [String]
     # @param count [Integer]
     # @return [String]
-    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
       pref = prefix.sub /\*$/, "organization"
       out = count > 1 ? "#{pref}::\m" : ""
       name.each { |n| out += n.to_asciibib "#{pref}.name", name.size }
       out += abbreviation.to_asciibib "#{pref}.abbreviation" if abbreviation
-      out += subdivision.to_asciibib "#{pref}.subdivision" if subdivision
+      subdivision.each do |sd|
+        out += "#{pref}.subdivision::" if subdivision.size > 1
+        out += sd.to_asciibib "#{pref}.subdivision"
+      end
       identifier.each { |n| out += n.to_asciibib pref, identifier.size }
       out += super pref
       out

@@ -36,12 +36,17 @@ module RelatonBib
       self
     end
 
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] :builder XML builder
+    # @option opts [Boolean] :bibdata
+    # @option opts [String, Symbol] :lang language
+    # @return [String] XML
     def to_xml(**opts)
       builder = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
         xml.documents do
           @array.each do |hit|
             hit.fetch
-            hit.to_xml xml, **opts
+            hit.to_xml **opts.merge(builder: xml)
           end
         end
       end
@@ -49,8 +54,8 @@ module RelatonBib
     end
 
     def select(&block)
-      me = self.deep_dup
-      array_dup = self.instance_variable_get(:@array).deep_dup
+      me = deep_dup
+      array_dup = instance_variable_get(:@array).deep_dup
       me.instance_variable_set(:@array, array_dup)
       array_dup.select!(&block)
       me

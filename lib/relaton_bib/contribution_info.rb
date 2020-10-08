@@ -31,11 +31,15 @@ module RelatonBib
       end
     end
 
-    # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder)
-      builder.role(type: type) do
-        description.each do |d|
-          builder.description { |desc| d.to_xml(desc) }
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] :builder XML builder
+    # @option opts [String] :lang language
+    def to_xml(**opts) # rubocop:disable Metrics/AbcSize
+      opts[:builder].role(type: type) do |builder|
+        desc = description.select { |d| d.language&.include? opts[:lang] }
+        desc = description unless desc.any?
+        desc.each do |d|
+          builder.description { |b| d.to_xml(b) }
         end
       end
     end
@@ -83,9 +87,11 @@ module RelatonBib
       @role   = role.map { |r| ContributorRole.new(**r) }
     end
 
-    # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder)
-      entity.to_xml builder
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] :builder XML builder
+    # @option opts [String, Symbol] :lang language
+    def to_xml(**opts)
+      entity.to_xml **opts
     end
 
     # @return [Hash]

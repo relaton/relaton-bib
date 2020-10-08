@@ -1,4 +1,70 @@
 module RelatonBib
+  class TypedTitleStringCollection
+    extend Forwardable
+
+    def_delegators :@array, :[], :first, :last, :empty?, :any?, :size,
+                   :each, :detect, :map, :length
+
+    # @param title [Array<RelatonBib::TypedTitleString, Hash>]
+    def initialize(title = [])
+      @array = (title || []).map do |t|
+        t.is_a?(Hash) ? TypedTitleString.new(t) : t
+      end
+    end
+
+    # @param lang [String, nil] language code Iso639
+    # @return [RelatonIsoBib::TypedTitleStringCollection]
+    def lang(lang = nil)
+      if lang
+        TypedTitleStringCollection.new select_lang(lang)
+      else self
+      end
+    end
+
+    def delete_title_part!
+      titles.delete_if { |t| t.type == "title-part" }
+    end
+
+    # @return [RelatonBib::TypedTitleStringCollection]
+    def select
+      TypedTitleStringCollection.new(titles.select { |t| yield t })
+    end
+
+    # @param title [RelatonBib::TypedTitleString]
+    # @return [self]
+    def <<(title)
+      titles << title
+      self
+    end
+
+    # @param tcoll [RelatonBib::TypedTitleStringCollection]
+    # @return [RelatonBib::TypedTitleStringCollection]
+    def +(tcoll)
+      TypedTitleStringCollection.new titles + tcoll.titles
+    end
+
+    def titles
+      @array
+    end
+
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] XML builder
+    # @option opts [String, Symbol] :lang language
+    def to_xml(**opts)
+      tl = select_lang(opts[:lang])
+      tl = titles unless tl.any?
+      tl.each { |t| opts[:builder].title { t.to_xml opts[:builder] } }
+    end
+
+    private
+
+    # @param lang [String]
+    # @return [Array<RelatonBib::TypedTitleString]
+    def select_lang(lang)
+      titles.select { |t| t.title.language&.include? lang }
+    end
+  end
+
   class TypedTitleString
     # @return [String]
     attr_reader :type
@@ -38,6 +104,7 @@ module RelatonBib
       end.compact
       tts << new(type: "main", content: ttls.compact.join(" - "),
                  language: lang, script: script)
+      TypedTitleStringCollection.new tts
     end
 
     # @param title [String]

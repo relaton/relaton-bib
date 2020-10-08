@@ -38,19 +38,21 @@ module RelatonBib
       @scope = scope
     end
 
-    # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder)
-      builder.copyright do
+    # @param opts [Hash]
+    # @option opts [Nokogiri::XML::Builder] :builder XML builder
+    # @option opts [String, Symbol] :lang language
+    def to_xml(**opts)
+      opts[:builder].copyright do |builder|
         builder.from from ? from.year : "unknown"
         builder.to to.year if to
-        owner.each { |o| builder.owner { o.to_xml builder } }
+        owner.each { |o| builder.owner { o.to_xml **opts } }
         builder.scope scope if scope
       end
     end
     # rubocop:enable Metrics/AbcSize
 
     # @return [Hash]
-    def to_hash
+    def to_hash # rubocop:disable Metrics/AbcSize
       owners = single_element_array(owner.map { |o| o.to_hash["organization"] })
       hash = {
         "owner" => owners,
