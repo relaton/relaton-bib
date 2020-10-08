@@ -17,7 +17,9 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     end
 
     it "has array of titiles" do
-      expect(subject.title).to be_instance_of RelatonBib::TypedTitleStringCollection
+      expect(subject.title).to be_instance_of(
+        RelatonBib::TypedTitleStringCollection
+      )
       expect(subject.title(lang: "fr")[0].title.content).to eq(
         "Information g\u00E9ographique"
       )
