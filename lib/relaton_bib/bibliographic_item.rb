@@ -678,7 +678,7 @@ module RelatonBib
         title.to_xml **opts
         formattedref&.to_xml builder
         link.each { |s| s.to_xml builder }
-        docidentifier.each { |di| di.to_xml builder }
+        docidentifier.each { |di| di.to_xml **opts }
         builder.docnumber docnumber if docnumber
         date.each { |d| d.to_xml builder, **opts }
         contributor.each do |c|

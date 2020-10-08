@@ -1,7 +1,4 @@
 # frozen_string_literal: true
-
-require "relaton_bib/localized_string"
-
 module RelatonBib
   # Document status.
   class DocumentStatus

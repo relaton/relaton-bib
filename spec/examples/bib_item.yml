@@ -19,6 +19,8 @@ docid:
   - id: ISSN
     type: issn
     scope: series
+  - id: urn:iso:std:iso:123:stage-90.93:ed-3:en,fr
+    type: URN
 
 docnumber: "123456"
 edition: "1"

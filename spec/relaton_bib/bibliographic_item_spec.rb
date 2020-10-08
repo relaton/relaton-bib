@@ -55,8 +55,8 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       )
       expect(item.abstract).to be_empty
       expect(item.docidentifier.detect { |d| d.id =~ /-\d/ }).to be_nil
-      expect(item.docidentifier.detect { |d| d.id !~ %r{(all parts)} })
-        .to be_nil
+      expect(item.docidentifier.reject { |d| d.id =~ %r{(all parts)} }.size)
+        .to eq 1
       expect(item.docidentifier.detect { |d| d.id =~ /:[12]\d\d\d/ }).to be_nil
       expect(item.structuredidentifier.detect { |d| !d.partnumber.nil? })
         .to be_nil
