@@ -42,7 +42,6 @@
     </define>
     <define name="xref">
       <element name="xref">
-        <!-- attribute target { xsd:IDREF }, -->
         <attribute name="target">
           <data type="string">
             <param name="pattern">\i\c*|\c+#\c+</param>
@@ -864,6 +863,13 @@
   </define>
   <define name="standard-document">
     <element name="standard-document">
+      <attribute name="version"/>
+      <attribute name="type">
+        <choice>
+          <value>semantic</value>
+          <value>presentation</value>
+        </choice>
+      </attribute>
       <ref name="bibdata"/>
       <optional>
         <ref name="boilerplate"/>
