@@ -3,7 +3,8 @@ module RelatonBib
     include RelatonBib
     extend Forwardable
 
-    def_delegators :@collection, :any?, :size, :[], :detect
+    def_delegators :@collection, :any?, :size, :[], :detect, :map, :each,
+                   :reduce
 
     # @param collection [Array<RelatonBib::StructuredIdentifier>]
     def initialize(collection)

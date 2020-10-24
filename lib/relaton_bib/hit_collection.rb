@@ -4,7 +4,8 @@ module RelatonBib
   class HitCollection
     extend Forwardable
 
-    def_delegators :@array, :<<, :[], :first, :empty?, :any?, :size, :each, :each_slice
+    def_delegators :@array, :<<, :[], :first, :empty?, :any?, :size, :each,
+                   :each_slice, :reduce
 
     # @return [TrueClass, FalseClass]
     attr_reader :fetched

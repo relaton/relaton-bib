@@ -6,7 +6,7 @@ module RelatonBib
     extend Forwardable
 
     def_delegators :@array, :<<, :[], :first, :last, :empty?, :any?, :size,
-                   :each, :detect, :map, :length
+                   :each, :detect, :map, :reduce, :length
 
     # @param relation [Array<RelatonBib::DocumentRelation, Hash>]
     # @option relation [String] :type

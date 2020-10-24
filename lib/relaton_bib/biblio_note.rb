@@ -3,7 +3,7 @@ module RelatonBib
     extend Forwardable
 
     def_delegators :@array, :[], :first, :last, :empty?, :any?, :size,
-                   :each, :map, :detect, :length
+                   :each, :map, :reduce, :detect, :length
 
     def initialize(notes)
       @array = notes

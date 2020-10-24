@@ -3,7 +3,7 @@ module RelatonBib
     extend Forwardable
 
     def_delegators :@array, :[], :first, :last, :empty?, :any?, :size,
-                   :each, :detect, :map, :length
+                   :each, :detect, :map, :reduce, :length
 
     # @param title [Array<RelatonBib::TypedTitleString, Hash>]
     def initialize(title = [])
@@ -29,6 +29,12 @@ module RelatonBib
     def select
       TypedTitleStringCollection.new(titles.select { |t| yield t })
     end
+
+    # @param init [Array, Hash]
+    # @return [RelatonBib::TypedTitleStringCollection]
+    # def reduce(init)
+    #   self.class.new @array.reduce(init) { |m, t| yield m, t }
+    # end
 
     # @param title [RelatonBib::TypedTitleString]
     # @return [self]
