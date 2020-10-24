@@ -67,14 +67,13 @@ module RelatonBib
     end
 
     # @param prefix [String]
-    # @param count [Integer] number of docids
     # @return [String]
-    def to_asciibib(prefix = "", count = 1)
+    def to_asciibib(prefix = "")
       pref = prefix.empty? ? prefix : prefix + "."
-      out = count > 1 ? "#{pref}docid::\n" : ""
-      out += "#{pref}docid.type:: #{type}\n" if type
-      out += "#{pref}docid.scope:: #{scope}\n" if scope
-      out += "#{pref}docid.id:: #{id}\n"
+      out = "docid:: {"
+      out += "#{pref}type: \"#{type}\", "
+      out += "#{pref}scope: \"#{scope}\", " if scope
+      out += "#{pref}id: \"#{id}\"}"
       out
     end
 

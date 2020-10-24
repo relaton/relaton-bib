@@ -1,7 +1,7 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2020-10-08
+fetched:: 2020-10-24
 title::
 title.type:: title-main
 title.content:: Geographic information
@@ -16,23 +16,7 @@ title.language:: fr
 title.script:: Latn
 title.format:: text/plain
 type:: standard
-docid::
-docid.type:: ISO
-docid.id:: TC211
-docid::
-docid.type:: isbn
-docid.id:: ISBN
-docid::
-docid.type:: lccn
-docid.id:: LCCN
-docid::
-docid.type:: issn
-docid.scope:: series
-docid.id:: ISSN
-docid::
-docid.type:: URN
-docid.id:: urn:iso:std:iso:123:stage-90.93:ed-3:en,fr
-docnumber:: 123456
+[docid:: {type: "ISO", id: "TC211"}, docid:: {type: "isbn", id: "ISBN"}, docid:: {type: "lccn", id: "LCCN"}, docid:: {type: "issn", scope: "series", id: "ISSN"}, docid:: {type: "URN", id: "urn:iso:std:iso:123:stage-90.93:ed-3:en,fr"}]docnumber:: 123456
 edition:: 1
 language:: en
 language:: fr

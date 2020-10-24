@@ -476,8 +476,8 @@ module RelatonBib
       out += "#{pref}fetched:: #{fetched}\n" if fetched
       title.each { |t| out += t.to_asciibib(prefix, title.size) }
       out += "#{pref}type:: #{type}\n" if type
-      docidentifier.each do |di|
-        out += di.to_asciibib prefix, docidentifier.size
+      if docidentifier.any?
+        out += "[#{docidentifier.map { |di| di.to_asciibib prefix }.join ', '}]"
       end
       out += "#{pref}docnumber:: #{docnumber}\n" if docnumber
       out += "#{pref}edition:: #{edition}\n" if edition
