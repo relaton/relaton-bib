@@ -1,7 +1,7 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2020-10-08
+fetched:: 2020-10-28
 title::
 title.type:: title-main
 title.content:: Geographic information
@@ -32,6 +32,7 @@ docid.id:: ISSN
 docid::
 docid.type:: URN
 docid.id:: urn:iso:std:iso:123:stage-90.93:ed-3:en,fr
+docid:: XYZ
 docnumber:: 123456
 edition:: 1
 language:: en

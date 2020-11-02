@@ -71,11 +71,12 @@ module RelatonBib
     # @return [String]
     def to_asciibib(prefix = "", count = 1)
       pref = prefix.empty? ? prefix : prefix + "."
+      return "#{pref}docid:: #{id}\n" unless type || scope
+
       out = count > 1 ? "#{pref}docid::\n" : ""
       out += "#{pref}docid.type:: #{type}\n" if type
       out += "#{pref}docid.scope:: #{scope}\n" if scope
-      out += "#{pref}docid.id:: #{id}\n"
-      out
+      out + "#{pref}docid.id:: #{id}\n"
     end
 
     private

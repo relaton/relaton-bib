@@ -35,6 +35,7 @@ docid:
   scope: series
 - id: urn:iso:std:iso:123:stage-90.93:ed-3:en,fr
   type: URN
+- id: XYZ
 docnumber: '123456'
 date:
 - type: issued
@@ -275,7 +276,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2020-10-08'
+fetched: '2020-10-28'
 keyword:
 - Keyword
 - Key Word
