@@ -1,7 +1,7 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2020-10-28
+fetched:: 2020-11-10
 title::
 title.type:: title-main
 title.content:: Geographic information
@@ -55,10 +55,10 @@ docstatus.substage:: substage
 docstatus.iteration:: final
 date::
 date.type:: issued
-date.on:: 2014-01-01
+date.on:: 2014
 date::
 date.type:: published
-date.on:: 2014-04-01
+date.on:: 2014-04
 date::
 date.type:: accessed
 date.on:: 2015-05-20

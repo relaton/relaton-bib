@@ -13,21 +13,24 @@ module RelatonBib
 
   class << self
     # @param date [String, Integer, Date]
-    # @return [Date, NilClass]
-    def parse_date(date) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
+    # @param str [Boolean]
+    # @return [Date, nil]
+    def parse_date(date, str = true) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
       return date if date.is_a?(Date)
 
-      sdate = date.to_s
-      case sdate
+      case date.to_s
       when /(?<date>\w+\s\d{4})/ # February 2012
-        Date.strptime($~[:date], "%B %Y")
+        d = Date.strptime($~[:date], "%B %Y")
+        str ? d.strftime("%Y-%m") : d
       when /(?<date>\w+\s\d{1,2},\s\d{4})/ # February 11, 2012
-        Date.strptime($~[:date], "%B %d, %Y")
+        d = Date.strptime($~[:date], "%B %d, %Y")
+        str ? d.strftime("%Y-%m-%d") : d
       when /(?<date>\d{4}-\d{2}-\d{2})/ # 2012-02-11
-        Date.parse($~[:date])
+        str ? $~[:date] : Date.strptime($~[:date], "%Y-%m-%d")
       when /(?<date>\d{4}-\d{2})/ # 2012-02
-        Date.strptime date, "%Y-%m"
-      when /(?<date>\d{4})/ then Date.strptime $~[:date], "%Y" # 2012
+        str ? $~[:date] : Date.strptime($~[:date], "%Y-%m")
+      when /(?<date>\d{4})/ # 2012
+        str ? $~[:date] : Date.strptime($~[:date], "%Y")
       end
     end
   end

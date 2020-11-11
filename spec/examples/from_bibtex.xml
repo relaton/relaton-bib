@@ -9,10 +9,10 @@
   <docidentifier type="lccn">lccnId</docidentifier>
   <docidentifier type="issn">issnId</docidentifier>
   <date type="published">
-    <on>2005</on>
+    <on>2005-05-01</on>
   </date>
   <date type="accessed">
-    <on>2019</on>
+    <on>2019-12-11</on>
   </date>
   <contributor>
     <role type="author"/>
@@ -74,8 +74,8 @@
   <edition>2</edition>
   <note type="annote">An Note</note>
   <note type="howpublished">How Published Note</note>
-  <note type="comment">Comment</note>
   <note>Note</note>
+  <note type="comment">Comment</note>
   <note type="tableOfContents">Content</note>
   <language>en</language>
   <relation type="partOf">

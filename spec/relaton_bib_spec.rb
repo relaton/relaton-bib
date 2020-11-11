@@ -5,7 +5,7 @@ RSpec.describe RelatonBib do
 
   context "parse date" do
     it "February 2012" do
-      expect(RelatonBib.parse_date("February 2012").to_s).to eq "2012-02-01"
+      expect(RelatonBib.parse_date("February 2012").to_s).to eq "2012-02"
     end
 
     it "February 11, 2012" do
@@ -17,7 +17,7 @@ RSpec.describe RelatonBib do
     end
 
     it "2012-02" do
-      expect(RelatonBib.parse_date("2012-02").to_s).to eq "2012-02-01"
+      expect(RelatonBib.parse_date("2012-02").to_s).to eq "2012-02"
     end
   end
 end
