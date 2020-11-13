@@ -292,7 +292,7 @@ module RelatonBib
     def shortref(identifier, **opts) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/PerceivedComplexity
       pubdate = date.select { |d| d.type == "published" }
       year = if opts[:no_year] || pubdate.empty? then ""
-             else ":" + pubdate&.first&.on&.year.to_s
+             else ":" + pubdate&.first&.on(:year).to_s
              end
       year += ": All Parts" if opts[:all_parts] || @all_parts
 
@@ -610,8 +610,8 @@ module RelatonBib
       date.each do |d|
         case d.type
         when "published"
-          item.year = d.on.year
-          item.month = d.on.month
+          item.year = d.on :year
+          item.month = d.on :month
         when "accessed" then item.urldate = d.on.to_s
         end
       end
