@@ -58,7 +58,7 @@ RSpec.describe RelatonBib::BibliographicDate do
   end
 
   it "handle full date" do
-    item = RelatonBib::BibliographicDate.new(type: "published", on: "2014-11-22")
+    item = RelatonBib::BibliographicDate.new type: "published", on: "2014-11-22"
     xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
       item.to_xml builder, date_format: :full
     end.doc.root.to_xml
@@ -77,5 +77,11 @@ RSpec.describe RelatonBib::BibliographicDate do
     expect(xml).to be_equivalent_to <<~XML
       <date type="published"><on>2014-01-01</on></date>
     XML
+  end
+
+  it "handle date not matched any patterns" do
+    item = RelatonBib::BibliographicDate.new type: "published", on: ""
+    item.instance_variable_set :@on, "Nov 2020"
+    expect(item.on(:month)).to eq "Nov 2020"
   end
 end

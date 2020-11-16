@@ -15,7 +15,7 @@ module RelatonBib
     # @param date [String, Integer, Date]
     # @param str [Boolean]
     # @return [Date, nil]
-    def parse_date(date, str = true) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
+    def parse_date(date, str = true) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity,Metrics/AbcSize
       return date if date.is_a?(Date)
 
       case date.to_s

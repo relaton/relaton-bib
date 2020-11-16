@@ -31,12 +31,12 @@ module RelatonBib
     # @return [String, Date, nil]
     def from(part = nil)
       d = instance_variable_get "@#{__callee__}".to_sym
-      return d unless part
+      return d unless part && d
 
       date = parse_date(d)
       return date if part == :date
 
-      date.send part
+      date.is_a?(Date) ? date.send(part) : date
     end
 
     alias_method :to, :from
@@ -87,20 +87,23 @@ module RelatonBib
     # @param format [Symbol, nil] :full (yyyy-mm-dd), :short (yyyy-mm) or nil
     # @return [String]
     def date_format(date, format = nil)
-      case format
-      when :short then parse_date(date).strftime "%Y-%m"
-      when :full then parse_date(date).strftime "%Y-%m-%d"
-      else date
-      end
+      tmplt = case format
+              when :short then "%Y-%m"
+              when :full then "%Y-%m-%d"
+              else return date
+              end
+      d = parse_date(date)
+      d.is_a?(Date) ? d.strftime(tmplt) : d
     end
 
     # @param date [String]
     # @return [Date]
     def parse_date(date)
       case date
-      when /\d{4}-\d{2}-\d{2}/ then Date.parse(date) # 2012-02-11
-      when /\d{4}-\d{2}/ then Date.strptime(date, "%Y-%m") # 2012-02
-      when /\d{4}/ then Date.strptime(date, "%Y") # 2012
+      when /^\d{4}-\d{2}-\d{2}/ then Date.parse(date) # 2012-02-11
+      when /^\d{4}-\d{2}/ then Date.strptime(date, "%Y-%m") # 2012-02
+      when /^\d{4}/ then Date.strptime(date, "%Y") # 2012
+      else date
       end
     end
   end
