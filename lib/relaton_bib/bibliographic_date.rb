@@ -88,8 +88,8 @@ module RelatonBib
     # @return [String]
     def date_format(date, format = nil)
       case format
-      when :short then parse_date(date).strftime "%Y-%m"
-      when :full then parse_date(date).strftime "%Y-%m-%d"
+      when :short then parse_date(date)&.strftime "%Y-%m"
+      when :full then parse_date(date)&.strftime "%Y-%m-%d"
       else date
       end
     end
