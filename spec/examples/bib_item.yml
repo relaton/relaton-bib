@@ -145,8 +145,6 @@ contributor:
       identifier:
         type: uri
         id: www.person.com
-    role:
-      - author
 
   - organization:
       name: Institution

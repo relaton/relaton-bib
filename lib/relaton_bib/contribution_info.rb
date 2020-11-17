@@ -81,8 +81,11 @@ module RelatonBib
     attr_reader :entity
 
     # @param entity [RelatonBib::Person, RelatonBib::Organization]
-    # @param role [Array<String>]
-    def initialize(entity:, role: [{ type: "publisher" }])
+    # @param role [Array<Hash>]
+    def initialize(entity:, role: [])
+      if role.empty?
+        role << { type: entity.is_a?(Person) ? "author" : "publisher" }
+      end
       @entity = entity
       @role   = role.map { |r| ContributorRole.new(**r) }
     end
