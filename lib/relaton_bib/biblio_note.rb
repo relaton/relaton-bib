@@ -62,9 +62,10 @@ module RelatonBib
     # @return [String]
     def to_asciibib(prefix = "", count = 1)
       pref = prefix.empty? ? prefix : prefix + "."
-      out = count > 1 ? "#{pref}biblionote::\n" : ""
-      out + "#{pref}biblionote.type:: #{type}\n" if type
-      out += super "#{pref}biblionote"
+      has_attrs = !(type.nil? || type.empty?)
+      out = count > 1 && has_attrs ? "#{pref}biblionote::\n" : ""
+      out += "#{pref}biblionote.type:: #{type}\n" if type
+      out += super "#{pref}biblionote", 1, has_attrs
       out
     end
   end

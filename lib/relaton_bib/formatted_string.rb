@@ -44,7 +44,8 @@ module RelatonBib
     # @param prefix [String]
     # @param count [Integer] number of elements
     # @return [String]
-    def to_asciibib(prefix = "", count = 1)
+    def to_asciibib(prefix = "", count = 1, has_attrs = false)
+      has_attrs ||= !(format.nil? || format.empty?)
       pref = prefix.empty? ? prefix : prefix + "."
       # out = count > 1 ? "#{prefix}::\n" : ""
       out = super

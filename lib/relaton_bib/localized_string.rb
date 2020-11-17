@@ -77,9 +77,13 @@ module RelatonBib
     # @param prefix [String]
     # @param count [Integer] number of elements
     # @return [String]
-    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    def to_asciibib(prefix = "", count = 1, has_attrs = false) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength
       pref = prefix.empty? ? prefix : prefix + "."
       if content.is_a? String
+        unless language&.any? || script&.any? || has_attrs
+          return "#{prefix}:: #{content}\n"
+        end
+
         out = count > 1 ? "#{prefix}::\n" : ""
         out += "#{pref}content:: #{content}\n"
         language&.each { |l| out += "#{pref}language:: #{l}\n" }
