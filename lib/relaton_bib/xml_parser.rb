@@ -177,14 +177,20 @@ module RelatonBib
       def ttitle(title)
         return unless title
 
-        variants = title.xpath("variant").map do |v|
-          LocalizedString.new v.text, v[:language], v[:script]
-        end
-        content = variants.any? ? variants : title.text
+        content = variants(title)
+        content = title.text unless content.any?
         TypedTitleString.new(
           type: title[:type], content: content, language: title[:language],
           script: title[:script], format: title[:format]
         )
+      end
+
+      # @param title [Nokogiri::XML::Element]
+      # @return [Array<RelatonBib::LocalizedString>]
+      def variants(elm)
+        elm.xpath("variant").map do |v|
+          LocalizedString.new v.text, v[:language], v[:script]
+        end
       end
 
       def fetch_status(item)

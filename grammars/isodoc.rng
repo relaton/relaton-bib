@@ -24,6 +24,14 @@
     <start>
       <ref name="standard-document"/>
     </start>
+    <define name="doctype">
+      <element name="doctype">
+        <optional>
+          <attribute name="abbreviation"/>
+        </optional>
+        <ref name="DocumentType"/>
+      </element>
+    </define>
     <define name="hyperlink">
       <element name="link">
         <attribute name="target">
@@ -138,6 +146,11 @@
         </optional>
         <optional>
           <attribute name="keep-lines-together">
+            <data type="boolean"/>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="key">
             <data type="boolean"/>
           </attribute>
         </optional>
@@ -1164,49 +1177,7 @@
   </define>
   <define name="annex">
     <element name="annex">
-      <optional>
-        <attribute name="id">
-          <data type="ID"/>
-        </attribute>
-      </optional>
-      <optional>
-        <attribute name="language"/>
-      </optional>
-      <optional>
-        <attribute name="script"/>
-      </optional>
-      <optional>
-        <attribute name="inline-header">
-          <data type="boolean"/>
-        </attribute>
-      </optional>
-      <attribute name="obligation">
-        <choice>
-          <value>normative</value>
-          <value>informative</value>
-        </choice>
-      </attribute>
-      <optional>
-        <ref name="section-title"/>
-      </optional>
-      <group>
-        <group>
-          <zeroOrMore>
-            <ref name="BasicBlock"/>
-          </zeroOrMore>
-          <zeroOrMore>
-            <ref name="note"/>
-          </zeroOrMore>
-        </group>
-        <zeroOrMore>
-          <choice>
-            <ref name="annex-subsection"/>
-            <ref name="terms"/>
-            <ref name="definitions"/>
-            <ref name="references"/>
-          </choice>
-        </zeroOrMore>
-      </group>
+      <ref name="Annex-Section"/>
     </element>
   </define>
   <define name="terms">
