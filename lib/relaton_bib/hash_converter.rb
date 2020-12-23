@@ -120,12 +120,12 @@ module RelatonBib
         end
       end
 
-      def docid_hash_to_bib(ret)
+      def docid_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize
         return unless ret[:docid]
 
         ret[:docid] = array(ret[:docid])
         ret[:docid]&.each_with_index do |id, i|
-          type = id[:type] || id[:id].match(/^\w+\s/)&.to_s
+          type = id[:type] || id[:id].match(/^\w+(?=\s)/)&.to_s
           ret[:docid][i] = DocumentIdentifier.new(id: id[:id], type: type,
                                                   scope: id[:scope])
         end
@@ -219,7 +219,7 @@ module RelatonBib
         )
       end
 
-      def fullname_hash_to_bib(person) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      def fullname_hash_to_bib(person) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
         n = person[:name]
         FullName.new(
           forename: array(n[:forename])&.map { |f| localname(f, person) },

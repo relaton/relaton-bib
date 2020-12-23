@@ -399,7 +399,7 @@ module RelatonBib
     # @param type [Symbol] type of url, can be :src/:obp/:rss
     # @return [String]
     def url(type = :src)
-      @link.detect { |s| s.type == type.to_s }.content.to_s
+      @link.detect { |s| s.type == type.to_s }&.content&.to_s
     end
 
     def abstract=(value)
