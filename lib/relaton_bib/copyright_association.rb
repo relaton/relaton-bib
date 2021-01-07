@@ -30,7 +30,7 @@ module RelatonBib
       end
 
       @owner = owner.map do |o|
-        o.is_a?(Hash) ? ContributionInfo.new(entity: Organization.new(o)) : o
+        o.is_a?(Hash) ? ContributionInfo.new(entity: Organization.new(**o)) : o
       end
 
       @from  = Date.strptime(from.to_s, "%Y") if from.to_s.match? /\d{4}/

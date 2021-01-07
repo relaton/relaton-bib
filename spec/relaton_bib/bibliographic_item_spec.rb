@@ -9,7 +9,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       hash = YAML.load_file "spec/examples/bib_item.yml"
       hash_bib = RelatonBib::HashConverter.hash_to_bib hash
 
-      RelatonBib::BibliographicItem.new(hash_bib)
+      RelatonBib::BibliographicItem.new(**hash_bib)
     end
 
     it "is instance of BibliographicItem" do
@@ -120,7 +120,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     it "deals with hashes" do
       file = "spec/examples/bib_item.yml"
       h = RelatonBib::HashConverter.hash_to_bib(YAML.load_file(file))
-      b = RelatonBib::BibliographicItem.new(h)
+      b = RelatonBib::BibliographicItem.new(**h)
       expect(b.to_xml).to be_equivalent_to subject.to_xml
     end
 

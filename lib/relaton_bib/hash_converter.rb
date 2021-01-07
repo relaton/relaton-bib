@@ -97,7 +97,7 @@ module RelatonBib
         return unless ret[:place]
 
         ret[:place] = array(ret[:place]).map do |pl|
-          pl.is_a?(String) ? Place.new(name: pl) : Place.new(pl)
+          pl.is_a?(String) ? Place.new(name: pl) : Place.new(**pl)
         end
       end
 
@@ -146,7 +146,7 @@ module RelatonBib
         ret[:biblionote] = array(ret[:biblionote])
           .reduce(BiblioNoteCollection.new([])) do |mem, n|
           mem << if n.is_a?(String) then BiblioNote.new content: n
-                 else BiblioNote.new(n)
+                 else BiblioNote.new(**n)
                  end
         end
       end
@@ -247,10 +247,10 @@ module RelatonBib
                       script: d[:script], format: d[:format] }
                   else { content: d }
                   end
-            FormattedString.new cnt
+            FormattedString.new **cnt
           end
           Affiliation.new(
-            organization: Organization.new(org_hash_to_bib(a[:organization])),
+            organization: Organization.new(**org_hash_to_bib(a[:organization])),
             description: a[:description]
           )
         end
@@ -288,7 +288,7 @@ module RelatonBib
         ret[:relation] = array(ret[:relation])
         ret[:relation]&.each do |r|
           if r[:description]
-            r[:description] = FormattedString.new r[:description]
+            r[:description] = FormattedString.new **r[:description]
           end
           relation_bibitem_hash_to_bib(r)
           relation_locality_hash_to_bib(r)
@@ -309,7 +309,7 @@ module RelatonBib
       # @param item_hash [Hash]
       # @return [RelatonBib::BibliographicItem]
       def bib_item(item_hash)
-        BibliographicItem.new item_hash
+        BibliographicItem.new **item_hash
       end
 
       # @param rel [Hash] relation
@@ -356,26 +356,26 @@ module RelatonBib
           end
           s[:abbreviation] &&
             s[:abbreviation] = localizedstring(s[:abbreviation])
-          Series.new(s)
+          Series.new(**s)
         end
       end
 
       # @param title [Hash]
       # @return [RelatonBib::TypedTitleString]
       def typed_title_strig(title)
-        TypedTitleString.new title
+        TypedTitleString.new **title
       end
 
       # @param ret [Hash]
       def medium_hash_to_bib(ret)
-        ret[:medium] = Medium.new(ret[:medium]) if ret[:medium]
+        ret[:medium] = Medium.new(**ret[:medium]) if ret[:medium]
       end
 
       # @param ret [Hash]
       def classification_hash_to_bib(ret)
         if ret[:classification]
           ret[:classification] = array(ret[:classification]).map do |cls|
-            Classification.new cls
+            Classification.new **cls
           end
         end
       end
@@ -409,7 +409,7 @@ module RelatonBib
         return unless ret[:editorialgroup]
 
         technical_committee = array(ret[:editorialgroup]).map do |wg|
-          TechnicalCommittee.new WorkGroup.new(wg)
+          TechnicalCommittee.new WorkGroup.new(**wg)
         end
         ret[:editorialgroup] = EditorialGroup.new technical_committee
       end
@@ -418,7 +418,7 @@ module RelatonBib
       def ics_hash_to_bib(ret)
         return unless ret[:ics]
 
-        ret[:ics] = array(ret[:ics]).map { |ics| ICS.new ics }
+        ret[:ics] = array(ret[:ics]).map { |ics| ICS.new **ics }
       end
 
       # @param ret [Hash]
@@ -427,7 +427,7 @@ module RelatonBib
 
         sids = array(ret[:structuredidentifier]).map do |si|
           si[:agency] = array si[:agency]
-          StructuredIdentifier.new si
+          StructuredIdentifier.new **si
         end
         ret[:structuredidentifier] = StructuredIdentifierCollection.new sids
       end
@@ -485,7 +485,7 @@ module RelatonBib
       # @return [RelatonBib::FormattedRef]
       def formattedref(frf)
         if frf.is_a?(Hash)
-          RelatonBib::FormattedRef.new(frf)
+          RelatonBib::FormattedRef.new(**frf)
         else
           RelatonBib::FormattedRef.new(content: frf)
         end

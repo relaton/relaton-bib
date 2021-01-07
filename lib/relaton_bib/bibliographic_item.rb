@@ -197,23 +197,23 @@ module RelatonBib
       @title = TypedTitleStringCollection.new(args[:title])
 
       @date = (args[:date] || []).map do |d|
-        d.is_a?(Hash) ? BibliographicDate.new(d) : d
+        d.is_a?(Hash) ? BibliographicDate.new(**d) : d
       end
 
       @contributor = (args[:contributor] || []).map do |c|
         if c.is_a? Hash
-          e = c[:entity].is_a?(Hash) ? Organization.new(c[:entity]) : c[:entity]
+          e = c[:entity].is_a?(Hash) ? Organization.new(**c[:entity]) : c[:entity]
           ContributionInfo.new(entity: e, role: c[:role])
         else c
         end
       end
 
       @abstract = (args[:abstract] || []).map do |a|
-        a.is_a?(Hash) ? FormattedString.new(a) : a
+        a.is_a?(Hash) ? FormattedString.new(**a) : a
       end
 
       @copyright = args.fetch(:copyright, []).map do |c|
-        c.is_a?(Hash) ? CopyrightAssociation.new(c) : c
+        c.is_a?(Hash) ? CopyrightAssociation.new(**c) : c
       end
 
       @docidentifier  = args[:docid] || []
@@ -229,7 +229,7 @@ module RelatonBib
       @status         = args[:docstatus]
       @relation       = DocRelationCollection.new(args[:relation] || [])
       @link           = args.fetch(:link, []).map do |s|
-        if s.is_a?(Hash) then TypedUri.new(s)
+        if s.is_a?(Hash) then TypedUri.new(**s)
         elsif s.is_a?(String) then TypedUri.new(content: s)
         else s
         end
