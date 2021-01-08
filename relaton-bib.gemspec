@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "simplecov"
 
   spec.add_dependency "addressable"
-  spec.add_dependency "bibtex-ruby"
+  spec.add_dependency "bibtex-ruby", "~> 6.0"
   spec.add_dependency "iso639"
   spec.add_dependency "nokogiri"
 end
