@@ -8,7 +8,7 @@ module RelatonBib
     # @param title [Array<RelatonBib::TypedTitleString, Hash>]
     def initialize(title = [])
       @array = (title || []).map do |t|
-        t.is_a?(Hash) ? TypedTitleString.new(t) : t
+        t.is_a?(Hash) ? TypedTitleString.new(**t) : t
       end
     end
 
@@ -96,7 +96,7 @@ module RelatonBib
         fsargs = args.select do |k, _v|
           %i[content language script format].include? k
         end
-        @title = FormattedString.new(fsargs)
+        @title = FormattedString.new(**fsargs)
       end
     end
 
