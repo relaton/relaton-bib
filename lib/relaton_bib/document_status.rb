@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module RelatonBib
   # Document status.
   class DocumentStatus
@@ -54,7 +55,7 @@ module RelatonBib
     # @return [RelatonBib::DocumentStatus::Stage]
     def stage_new(stg)
       if stg.is_a?(Stage) then stg
-      elsif stg.is_a?(Hash) then Stage.new(stg)
+      elsif stg.is_a?(Hash) then Stage.new(**stg)
       elsif stg.is_a?(String) then Stage.new(value: stg)
       end
     end

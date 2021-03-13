@@ -82,7 +82,7 @@ module RelatonBib
       @subdivision  = (args[:subdivision] || []).map do |sd|
         localized_string sd
       end
-      @identifier   = args.fetch(:identifier, [])
+      @identifier = args.fetch(:identifier, [])
     end
 
     # @param opts [Hash]

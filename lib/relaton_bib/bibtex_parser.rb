@@ -1,4 +1,8 @@
-require "bibtex"
+if RUBY_VERSION < "3"
+  require "bibtex"
+else
+  warn "[relaton-bib] WARNING: BibTex isn't supported with Ruby 3+"
+end
 require "iso639"
 
 module RelatonBib
@@ -101,14 +105,14 @@ module RelatonBib
         if bibtex["organization"]
           contributor << {
             entity: { name: bibtex.organization.to_s },
-            role: [{ type: "distributor", description: ["sponsor"] }]
+            role: [{ type: "distributor", description: ["sponsor"] }],
           }
         end
 
         if bibtex["school"]
           contributor << {
             entity: { name: bibtex.school.to_s },
-            role: [{ type: "distributor", description: ["sponsor"] }]
+            role: [{ type: "distributor", description: ["sponsor"] }],
           }
         end
         contributor

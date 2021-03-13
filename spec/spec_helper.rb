@@ -1,6 +1,6 @@
-require "simplecov"
-SimpleCov.start do
-  add_filter "/spec/"
+if RUBY_VERSION < "3"
+  require "simplecov"
+  SimpleCov.start { add_filter "/spec/" }
 end
 
 require "bundler/setup"

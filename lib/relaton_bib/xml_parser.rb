@@ -326,7 +326,7 @@ module RelatonBib
 
       # @param item [Nokogiri::XML::Element]
       # @return [Array<RelatonBib::CopyrightAssociation>]
-      def fetch_copyright(item)
+      def fetch_copyright(item) # rubocop:disable Metrics/AbcSize
         item.xpath("./copyright").map do |cp|
           owner = cp.xpath("owner").map do |o|
             ContributionInfo.new entity: get_org(o.at("organization"))
@@ -376,7 +376,7 @@ module RelatonBib
       # @param item_hash [Hash]
       # @return [RelatonBib::BibliographicItem]
       def bib_item(item_hash)
-        BibliographicItem.new item_hash
+        BibliographicItem.new **item_hash
       end
 
       # @param rel [Nokogiri::XML::Element]
@@ -453,7 +453,7 @@ module RelatonBib
 
       # @param ext [Nokogiri::XML::Element]
       # @return [RelatonBib::StructuredIdentifierCollection]
-      def fetch_structuredidentifier(ext) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
+      def fetch_structuredidentifier(ext) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
         return unless ext
 
         sids = ext.xpath("structuredidentifier").map do |si|
