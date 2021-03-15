@@ -1,8 +1,4 @@
-if RUBY_VERSION < "3"
-  require "bibtex"
-else
-  warn "[relaton-bib] WARNING: BibTex isn't supported with Ruby 3+"
-end
+require "bibtex"
 require "iso639"
 
 module RelatonBib

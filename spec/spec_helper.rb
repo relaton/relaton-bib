@@ -1,7 +1,5 @@
-if RUBY_VERSION < "3"
-  require "simplecov"
-  SimpleCov.start { add_filter "/spec/" }
-end
+require "simplecov"
+SimpleCov.start { add_filter "/spec/" }
 
 require "bundler/setup"
 require "relaton_bib"
