@@ -7,9 +7,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
   context "instance" do
     subject do
       hash = YAML.load_file "spec/examples/bib_item.yml"
-      hash_bib = RelatonBib::HashConverter.hash_to_bib hash
-
-      RelatonBib::BibliographicItem.new(**hash_bib)
+      RelatonBib::BibliographicItem.from_hash(hash)
     end
 
     it "is instance of BibliographicItem" do

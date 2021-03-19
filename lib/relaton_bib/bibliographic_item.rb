@@ -257,6 +257,13 @@ module RelatonBib
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
+    # @param hash [Hash]
+    # @return [RelatonBipm::BipmBibliographicItem]
+    def self.from_hash(hash)
+      item_hash = ::RelatonBib::HashConverter.hash_to_bib(hash)
+      new **item_hash
+    end
+
     # @param lang [String] language code Iso639
     # @return [RelatonBib::FormattedString, Array<RelatonBib::FormattedString>]
     def abstract(lang: nil)
