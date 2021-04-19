@@ -217,7 +217,7 @@ module RelatonBib
       # @param node [Nokogiri::XML::Elemen]
       # @return [Array<RelatonBib::BibliographicDate>]
       def fetch_dates(item) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-        item.xpath("./date").reduce([]) do |a, d|
+        item.xpath("./date").each_with_object([]) do |d, a|
           type = d[:type].to_s.empty? ? "published" : d[:type]
           if (on = d.at("on"))
             a << RelatonBib::BibliographicDate.new(type: type, on: on.text,
