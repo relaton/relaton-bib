@@ -5,7 +5,7 @@ module RelatonBib
   # Series class.
   #
   class Series
-    TYPES = %w[main alt].freeze
+    # TYPES = %w[main alt].freeze
 
     # @return [String, NilClass] allowed values: "main" or "alt"
     attr_reader :type
@@ -56,9 +56,9 @@ module RelatonBib
         raise ArgumentError, "argument `title` or `formattedref` should present"
       end
 
-      if args[:type] && !TYPES.include?(args[:type])
-        warn "[relaton-bib] Series type is invalid: #{args[:type]}"
-      end
+      # if args[:type] && !TYPES.include?(args[:type])
+      #   warn "[relaton-bib] Series type is invalid: #{args[:type]}"
+      # end
 
       @type         = args[:type] # if %w[main alt].include? args[:type]
       @title        = args[:title]
