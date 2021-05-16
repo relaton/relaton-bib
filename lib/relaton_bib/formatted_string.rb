@@ -7,7 +7,7 @@ module RelatonBib
   class FormattedString < LocalizedString
     FORMATS = %w[text/plain text/html application/docbook+xml
                  application/tei+xml text/x-asciidoc text/markdown
-                 application/x-isodoc+xml].freeze
+                 application/x-metanorma+xml].freeze
 
     # @return [String]
     attr_reader :format

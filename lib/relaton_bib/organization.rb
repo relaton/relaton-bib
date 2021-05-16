@@ -5,8 +5,8 @@ require "relaton_bib/contributor"
 module RelatonBib
   # Organization identifier.
   class OrgIdentifier
-    ORCID = "orcid"
-    URI   = "uri"
+    # ORCID = "orcid"
+    # URI   = "uri"
 
     # @return [String]
     attr_reader :type
@@ -14,12 +14,12 @@ module RelatonBib
     # @return [String]
     attr_reader :value
 
-    # @param type [String] "orcid" or "uri"
+    # @param type [String]
     # @param value [String]
     def initialize(type, value)
-      unless [ORCID, URI].include? type
-        raise ArgumentError, 'Invalid type. It should be "orsid" or "uri".'
-      end
+      # unless [ORCID, URI].include? type
+      #   raise ArgumentError, 'Invalid type. It should be "orsid" or "uri".'
+      # end
 
       @type  = type
       @value = value

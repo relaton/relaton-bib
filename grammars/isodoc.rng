@@ -56,6 +56,13 @@
           </data>
         </attribute>
         <optional>
+          <attribute name="to">
+            <data type="string">
+              <param name="pattern">\i\c*|\c+#\c+</param>
+            </data>
+          </attribute>
+        </optional>
+        <optional>
           <attribute name="type">
             <ref name="ReferenceFormat"/>
           </attribute>
@@ -79,6 +86,35 @@
         <text/>
       </element>
     </define>
+    <define name="erefType">
+      <optional>
+        <attribute name="normative">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <attribute name="citeas"/>
+      <attribute name="type">
+        <ref name="ReferenceFormat"/>
+      </attribute>
+      <optional>
+        <attribute name="alt"/>
+      </optional>
+      <optional>
+        <attribute name="case">
+          <choice>
+            <value>capital</value>
+            <value>lowercase</value>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="droploc">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <ref name="CitationType"/>
+      <text/>
+    </define>
     <define name="ul">
       <element name="ul">
         <attribute name="id">
@@ -95,7 +131,7 @@
           </attribute>
         </optional>
         <oneOrMore>
-          <ref name="li"/>
+          <ref name="ul_li"/>
         </oneOrMore>
         <zeroOrMore>
           <ref name="note"/>
@@ -245,6 +281,12 @@
           <attribute name="keep-lines-together">
             <data type="boolean"/>
           </attribute>
+        </optional>
+        <optional>
+          <attribute name="width"/>
+        </optional>
+        <optional>
+          <ref name="colgroup"/>
         </optional>
         <optional>
           <ref name="tname"/>
@@ -762,10 +804,137 @@
         <ref name="paragraph"/>
       </element>
     </define>
+    <define name="em">
+      <element name="em">
+        <zeroOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="stem"/>
+            <ref name="index"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="strong">
+      <element name="strong">
+        <zeroOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="stem"/>
+            <ref name="index"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="tt">
+      <element name="tt">
+        <zeroOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="index"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="keyword">
+      <element name="keyword">
+        <zeroOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="index"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="strike">
+      <element name="strike">
+        <zeroOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="index"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="underline">
+      <element name="underline">
+        <zeroOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="index"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="smallcap">
+      <element name="smallcap">
+        <zeroOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="index"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="pagebreak">
+      <element name="pagebreak">
+        <optional>
+          <attribute name="orientation">
+            <choice>
+              <value>landscape</value>
+              <value>portrait</value>
+            </choice>
+          </attribute>
+        </optional>
+      </element>
+    </define>
   </include>
   <!-- end overrides -->
+  <define name="colgroup">
+    <element name="colgroup">
+      <oneOrMore>
+        <ref name="col"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="col">
+    <element name="col">
+      <attribute name="width"/>
+    </element>
+  </define>
+  <define name="BibItemType" combine="choice">
+    <value>internal</value>
+  </define>
   <define name="TextElement" combine="choice">
-    <ref name="concept"/>
+    <choice>
+      <ref name="concept"/>
+      <ref name="add"/>
+      <ref name="del"/>
+    </choice>
+  </define>
+  <define name="add">
+    <element name="add">
+      <choice>
+        <ref name="PureTextElement"/>
+        <ref name="eref"/>
+        <ref name="stem"/>
+        <ref name="keyword"/>
+        <ref name="xref"/>
+        <ref name="hyperlink"/>
+      </choice>
+    </element>
+  </define>
+  <define name="del">
+    <element name="del">
+      <choice>
+        <ref name="PureTextElement"/>
+        <ref name="eref"/>
+        <ref name="stem"/>
+        <ref name="keyword"/>
+        <ref name="xref"/>
+        <ref name="hyperlink"/>
+      </choice>
+    </element>
   </define>
   <define name="concept">
     <element name="concept">
@@ -784,7 +953,171 @@
       <ref name="requirement"/>
       <ref name="recommendation"/>
       <ref name="permission"/>
+      <ref name="imagemap"/>
+      <ref name="svgmap"/>
+      <ref name="inputform"/>
     </choice>
+  </define>
+  <define name="inputform">
+    <element name="form">
+      <attribute name="id">
+        <data type="ID"/>
+      </attribute>
+      <attribute name="name"/>
+      <attribute name="action"/>
+      <zeroOrMore>
+        <choice>
+          <ref name="TextElement"/>
+          <ref name="FormInput"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="FormInput">
+    <choice>
+      <ref name="input"/>
+      <ref name="formlabel"/>
+      <ref name="select"/>
+      <ref name="textarea"/>
+    </choice>
+  </define>
+  <define name="InputType">
+    <choice>
+      <value>button</value>
+      <value>checkbox</value>
+      <value>date</value>
+      <value>file</value>
+      <value>password</value>
+      <value>radio</value>
+      <value>submit</value>
+      <value>text</value>
+    </choice>
+  </define>
+  <define name="input">
+    <element name="input">
+      <attribute name="type">
+        <ref name="InputType"/>
+      </attribute>
+      <optional>
+        <attribute name="checked">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="disabled">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="readonly">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="maxlength">
+          <data type="int"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="minlength">
+          <data type="int"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="name"/>
+      </optional>
+      <optional>
+        <attribute name="value"/>
+      </optional>
+      <optional>
+        <attribute name="id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+    </element>
+  </define>
+  <define name="formlabel">
+    <element name="label">
+      <attribute name="for">
+        <data type="IDREF"/>
+      </attribute>
+      <zeroOrMore>
+        <ref name="PureTextElement"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="select">
+    <element name="select">
+      <optional>
+        <attribute name="name"/>
+      </optional>
+      <optional>
+        <attribute name="value"/>
+      </optional>
+      <optional>
+        <attribute name="id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="disabled">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="multiple">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="size">
+          <data type="int"/>
+        </attribute>
+      </optional>
+      <oneOrMore>
+        <ref name="option"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="option">
+    <element name="option">
+      <optional>
+        <attribute name="disabled">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="value"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="PureTextElement"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="textarea">
+    <element name="textarea">
+      <optional>
+        <attribute name="name"/>
+      </optional>
+      <optional>
+        <attribute name="value"/>
+      </optional>
+      <optional>
+        <attribute name="id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="rows">
+          <data type="int"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="cols">
+          <data type="int"/>
+        </attribute>
+      </optional>
+    </element>
   </define>
   <define name="bibliography">
     <element name="bibliography">
@@ -813,6 +1146,9 @@
         <attribute name="inline-header">
           <data type="boolean"/>
         </attribute>
+      </optional>
+      <optional>
+        <attribute name="number"/>
       </optional>
       <optional>
         <attribute name="obligation">
@@ -869,9 +1205,11 @@
       <element name="code">
         <text/>
       </element>
-      <element name="text">
-        <text/>
-      </element>
+      <optional>
+        <element name="text">
+          <text/>
+        </element>
+      </optional>
     </element>
   </define>
   <define name="standard-document">
@@ -885,6 +1223,9 @@
       </attribute>
       <ref name="bibdata"/>
       <optional>
+        <ref name="misccontainer"/>
+      </optional>
+      <optional>
         <ref name="boilerplate"/>
       </optional>
       <optional>
@@ -894,9 +1235,19 @@
       <zeroOrMore>
         <ref name="annex"/>
       </zeroOrMore>
+      <optional>
+        <ref name="bibliography"/>
+      </optional>
       <zeroOrMore>
-        <ref name="references"/>
+        <ref name="indexsect"/>
       </zeroOrMore>
+    </element>
+  </define>
+  <define name="misccontainer">
+    <element name="misc-container">
+      <oneOrMore>
+        <ref name="AnyElement"/>
+      </oneOrMore>
     </element>
   </define>
   <define name="preface">
@@ -919,6 +1270,11 @@
   </define>
   <define name="introduction">
     <element name="introduction">
+      <ref name="Content-Section"/>
+    </element>
+  </define>
+  <define name="indexsect">
+    <element name="indexsect">
       <ref name="Content-Section"/>
     </element>
   </define>
@@ -1042,6 +1398,9 @@
       </attribute>
     </optional>
     <optional>
+      <attribute name="number"/>
+    </optional>
+    <optional>
       <attribute name="type"/>
     </optional>
     <optional>
@@ -1093,6 +1452,9 @@
     </optional>
     <optional>
       <attribute name="type"/>
+    </optional>
+    <optional>
+      <attribute name="number"/>
     </optional>
     <optional>
       <ref name="section-title"/>
@@ -1195,6 +1557,9 @@
       </optional>
       <optional>
         <attribute name="type"/>
+      </optional>
+      <optional>
+        <attribute name="number"/>
       </optional>
       <optional>
         <attribute name="obligation">
@@ -1524,6 +1889,7 @@
           <value>add</value>
           <value>modify</value>
           <value>delete</value>
+          <value>replace</value>
         </choice>
       </attribute>
       <optional>
@@ -1554,6 +1920,11 @@
       </optional>
       <optional>
         <element name="newcontent">
+          <optional>
+            <attribute name="id">
+              <data type="ID"/>
+            </attribute>
+          </optional>
           <zeroOrMore>
             <ref name="BasicBlock"/>
           </zeroOrMore>
@@ -1585,6 +1956,89 @@
         </choice>
       </attribute>
       <text/>
+    </element>
+  </define>
+  <define name="imagemap">
+    <element name="imagemap">
+      <ref name="figure"/>
+      <zeroOrMore>
+        <element name="area">
+          <attribute name="type">
+            <choice>
+              <value>rect</value>
+              <value>circle</value>
+              <value>ellipse</value>
+              <value>poly</value>
+            </choice>
+          </attribute>
+          <choice>
+            <ref name="xref"/>
+            <ref name="hyperlink"/>
+            <ref name="eref"/>
+          </choice>
+          <oneOrMore>
+            <element name="coords">
+              <attribute name="x">
+                <data type="float"/>
+              </attribute>
+              <attribute name="y">
+                <data type="float"/>
+              </attribute>
+            </element>
+          </oneOrMore>
+          <optional>
+            <element name="radius">
+              <attribute name="x">
+                <data type="float"/>
+              </attribute>
+              <optional>
+                <attribute name="y">
+                  <data type="float"/>
+                </attribute>
+              </optional>
+            </element>
+          </optional>
+        </element>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="svgmap">
+    <element name="svgmap">
+      <ref name="figure"/>
+      <zeroOrMore>
+        <element name="target">
+          <attribute name="href">
+            <data type="anyURI"/>
+          </attribute>
+          <choice>
+            <ref name="xref"/>
+            <ref name="hyperlink"/>
+            <ref name="eref"/>
+          </choice>
+        </element>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="ul_li">
+    <element name="li">
+      <optional>
+        <attribute name="id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="uncheckedcheckbox">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="checkedcheckbox">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <oneOrMore>
+        <ref name="BasicBlock"/>
+      </oneOrMore>
     </element>
   </define>
 </grammar>

@@ -44,7 +44,7 @@ module RelatonBib
     # @param count [Integeg] number of localities
     # @return [String]
     def to_asciibib(prefix = "", count = 1)
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       out = count > 1 ? "#{prefix}::\n" : ""
       out += "#{pref}type:: #{type}\n"
       out += "#{pref}reference_from:: #{reference_from}\n"

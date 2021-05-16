@@ -13,7 +13,7 @@ module RelatonBib
       derives describes describedBy catalogues cataloguedBy hasSuccessor
       successorOf adaptedFrom hasAdaptation adoptedFrom adoptedAs reviewOf
       hasReview commentaryOf hasCommentary related complements complementOf
-      obsoletes obsoletedBy cited isCitedIn
+      obsoletes obsoletedBy cites isCitedIn
     ].freeze
 
     # @return [String]

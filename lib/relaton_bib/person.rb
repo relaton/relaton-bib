@@ -102,15 +102,17 @@ module RelatonBib
 
   # Person identifier type.
   module PersonIdentifierType
-    ISNI = "isni"
-    URI  = "uri"
+    ISNI  = "isni"
+    ORCID = "orcid"
+    URI   = "uri"
 
     # Checks type.
     # @param type [String]
     # @raise [ArgumentError] if type isn't "isni" or "uri"
     def self.check(type)
-      unless [ISNI, URI].include? type
-        raise ArgumentError, 'Invalid type. It should be "isni" or "uri".'
+      unless [ISNI, ORCID, URI].include? type
+        raise ArgumentError, 'Invalid type. It should be "isni", "orcid", "\
+          "or "uri".'
       end
     end
   end
@@ -118,6 +120,7 @@ module RelatonBib
   # Person identifier.
   class PersonIdentifier
     # @return [RelatonBib::PersonIdentifierType::ISNI,
+    #   RelatonBib::PersonIdentifierType::ORCID,
     #   RelatonBib::PersonIdentifierType::URI]
     attr_accessor :type
 
@@ -125,6 +128,7 @@ module RelatonBib
     attr_accessor :value
 
     # @param type [RelatonBib::PersonIdentifierType::ISNI,
+    #   RelatonBib::PersonIdentifierType::ORCID,
     #   RelatonBib::PersonIdentifierType::URI]
     # @param value [String]
     def initialize(type, value)

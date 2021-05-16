@@ -31,13 +31,32 @@
       </attribute>
     </optional>
     <optional>
+      <attribute name="number"/>
+    </optional>
+    <optional>
       <attribute name="subsequence"/>
+    </optional>
+    <optional>
+      <attribute name="keep-with-next">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="keep-lines-together">
+        <data type="boolean"/>
+      </attribute>
     </optional>
     <attribute name="id">
       <data type="ID"/>
     </attribute>
     <optional>
       <attribute name="filename"/>
+    </optional>
+    <optional>
+      <attribute name="model"/>
+    </optional>
+    <optional>
+      <attribute name="type"/>
     </optional>
     <optional>
       <ref name="reqtitle"/>
@@ -48,9 +67,9 @@
     <optional>
       <ref name="subject"/>
     </optional>
-    <optional>
+    <zeroOrMore>
       <ref name="reqinherit"/>
-    </optional>
+    </zeroOrMore>
     <zeroOrMore>
       <ref name="classification"/>
     </zeroOrMore>
@@ -132,6 +151,16 @@
     </optional>
     <optional>
       <attribute name="exclude">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="keep-with-next">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="keep-lines-together">
         <data type="boolean"/>
       </attribute>
     </optional>

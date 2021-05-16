@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
-  <include href="biblio.rng"/>
-  <start>
-    <ref name="document"/>
-  </start>
+  <include href="biblio.rng">
+    <start>
+      <ref name="document"/>
+    </start>
+  </include>
   <define name="document">
     <element name="document">
       <optional>
@@ -43,13 +44,16 @@
       </attribute>
     </optional>
     <optional>
-      <ref name="section-title"/>
+      <attribute name="language"/>
     </optional>
     <optional>
-      <ref name="BasicBlock"/>
+      <attribute name="script"/>
+    </optional>
+    <optional>
+      <ref name="section-title"/>
     </optional>
     <zeroOrMore>
-      <ref name="note"/>
+      <ref name="BasicBlock"/>
     </zeroOrMore>
   </define>
   <define name="references">
@@ -92,6 +96,10 @@
       <ref name="example"/>
       <ref name="review"/>
       <ref name="pre"/>
+      <ref name="note"/>
+      <ref name="pagebreak"/>
+      <ref name="hr"/>
+      <ref name="bookmark"/>
     </choice>
   </define>
   <define name="paragraph">
@@ -188,6 +196,14 @@
           <data type="boolean"/>
         </attribute>
       </optional>
+      <optional>
+        <attribute name="subsequence"/>
+      </optional>
+      <optional>
+        <attribute name="inequality">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
       <ref name="stem"/>
       <optional>
         <ref name="dl"/>
@@ -242,6 +258,9 @@
         </attribute>
       </optional>
       <optional>
+        <attribute name="subsequence"/>
+      </optional>
+      <optional>
         <attribute name="lang"/>
       </optional>
       <optional>
@@ -267,6 +286,9 @@
         <data type="ID"/>
       </attribute>
       <optional>
+        <attribute name="alt"/>
+      </optional>
+      <optional>
         <ref name="tname"/>
       </optional>
       <text/>
@@ -286,7 +308,13 @@
         </attribute>
       </optional>
       <optional>
+        <attribute name="subsequence"/>
+      </optional>
+      <optional>
         <attribute name="alt"/>
+      </optional>
+      <optional>
+        <attribute name="summary"/>
       </optional>
       <optional>
         <attribute name="uri">
@@ -313,12 +341,16 @@
   </define>
   <define name="tname">
     <element name="name">
-      <text/>
-    </element>
-  </define>
-  <define name="tclass">
-    <element name="name">
-      <text/>
+      <oneOrMore>
+        <choice>
+          <ref name="PureTextElement"/>
+          <ref name="eref"/>
+          <ref name="stem"/>
+          <ref name="keyword"/>
+          <ref name="xref"/>
+          <ref name="hyperlink"/>
+        </choice>
+      </oneOrMore>
     </element>
   </define>
   <define name="thead">
@@ -370,6 +402,16 @@
           </choice>
         </attribute>
       </optional>
+      <optional>
+        <attribute name="valign">
+          <choice>
+            <value>top</value>
+            <value>middle</value>
+            <value>bottom</value>
+            <value>baseline</value>
+          </choice>
+        </attribute>
+      </optional>
       <choice>
         <zeroOrMore>
           <ref name="TextElement"/>
@@ -397,6 +439,16 @@
           </choice>
         </attribute>
       </optional>
+      <optional>
+        <attribute name="valign">
+          <choice>
+            <value>top</value>
+            <value>middle</value>
+            <value>bottom</value>
+            <value>baseline</value>
+          </choice>
+        </attribute>
+      </optional>
       <choice>
         <zeroOrMore>
           <ref name="TextElement"/>
@@ -416,6 +468,12 @@
         <attribute name="unnumbered">
           <data type="boolean"/>
         </attribute>
+      </optional>
+      <optional>
+        <attribute name="subsequence"/>
+      </optional>
+      <optional>
+        <ref name="tname"/>
       </optional>
       <oneOrMore>
         <choice>
@@ -481,17 +539,25 @@
         </attribute>
       </optional>
       <optional>
+        <attribute name="subsequence"/>
+      </optional>
+      <optional>
+        <attribute name="class"/>
+      </optional>
+      <optional>
         <ref name="source"/>
       </optional>
       <optional>
         <ref name="tname"/>
       </optional>
-      <optional>
-        <ref name="tclass"/>
-      </optional>
       <choice>
         <ref name="image"/>
+        <ref name="video"/>
+        <ref name="audio"/>
         <ref name="pre"/>
+        <oneOrMore>
+          <ref name="paragraph-with-footnote"/>
+        </oneOrMore>
         <zeroOrMore>
           <ref name="figure"/>
         </zeroOrMore>
@@ -529,6 +595,8 @@
       <ref name="pagebreak"/>
       <ref name="bookmark"/>
       <ref name="image"/>
+      <ref name="index"/>
+      <ref name="index-xref"/>
     </choice>
   </define>
   <define name="PureTextElement">
@@ -553,14 +621,20 @@
   <define name="em">
     <element name="em">
       <zeroOrMore>
-        <ref name="PureTextElement"/>
+        <choice>
+          <ref name="PureTextElement"/>
+          <ref name="stem"/>
+        </choice>
       </zeroOrMore>
     </element>
   </define>
   <define name="strong">
     <element name="strong">
       <zeroOrMore>
-        <ref name="PureTextElement"/>
+        <choice>
+          <ref name="PureTextElement"/>
+          <ref name="stem"/>
+        </choice>
       </zeroOrMore>
     </element>
   </define>
@@ -651,6 +725,65 @@
   <define name="pagebreak">
     <element name="pagebreak">
       <empty/>
+    </element>
+  </define>
+  <define name="index">
+    <element name="index">
+      <optional>
+        <attribute name="to">
+          <data type="IDREF"/>
+        </attribute>
+      </optional>
+      <element name="primary">
+        <oneOrMore>
+          <ref name="PureTextElement"/>
+        </oneOrMore>
+      </element>
+      <optional>
+        <element name="secondary">
+          <oneOrMore>
+            <ref name="PureTextElement"/>
+          </oneOrMore>
+        </element>
+      </optional>
+      <optional>
+        <element name="tertiary">
+          <oneOrMore>
+            <ref name="PureTextElement"/>
+          </oneOrMore>
+        </element>
+      </optional>
+    </element>
+  </define>
+  <define name="index-xref">
+    <element name="index-xref">
+      <attribute name="also">
+        <data type="boolean"/>
+      </attribute>
+      <element name="primary">
+        <oneOrMore>
+          <ref name="PureTextElement"/>
+        </oneOrMore>
+      </element>
+      <optional>
+        <element name="secondary">
+          <oneOrMore>
+            <ref name="PureTextElement"/>
+          </oneOrMore>
+        </element>
+      </optional>
+      <optional>
+        <element name="tertiary">
+          <oneOrMore>
+            <ref name="PureTextElement"/>
+          </oneOrMore>
+        </element>
+      </optional>
+      <element name="target">
+        <oneOrMore>
+          <ref name="PureTextElement"/>
+        </oneOrMore>
+      </element>
     </element>
   </define>
   <!-- bare ID element, used for referencing arbitrary spans of text -->
@@ -779,6 +912,9 @@
         <attribute name="alt"/>
       </optional>
       <optional>
+        <attribute name="title"/>
+      </optional>
+      <optional>
         <attribute name="longdesc">
           <data type="anyURI"/>
         </attribute>
@@ -786,7 +922,7 @@
     </element>
   </define>
   <define name="video">
-    <element name="image">
+    <element name="video">
       <attribute name="id">
         <data type="ID"/>
       </attribute>
@@ -817,6 +953,9 @@
         <attribute name="alt"/>
       </optional>
       <optional>
+        <attribute name="title"/>
+      </optional>
+      <optional>
         <attribute name="longdesc">
           <data type="anyURI"/>
         </attribute>
@@ -827,7 +966,7 @@
     </element>
   </define>
   <define name="audio">
-    <element name="image">
+    <element name="audio">
       <attribute name="id">
         <data type="ID"/>
       </attribute>
@@ -840,6 +979,9 @@
       </optional>
       <optional>
         <attribute name="alt"/>
+      </optional>
+      <optional>
+        <attribute name="title"/>
       </optional>
       <optional>
         <attribute name="longdesc">
@@ -925,6 +1067,9 @@
           <value>alphabet_upper</value>
         </choice>
       </attribute>
+      <optional>
+        <attribute name="start"/>
+      </optional>
       <oneOrMore>
         <ref name="li"/>
       </oneOrMore>
