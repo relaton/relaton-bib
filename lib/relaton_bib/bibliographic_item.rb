@@ -260,7 +260,7 @@ module RelatonBib
     # @param hash [Hash]
     # @return [RelatonBipm::BipmBibliographicItem]
     def self.from_hash(hash)
-      item_hash = ::RelatonBib::HashConverter.hash_to_bib(hash)
+      item_hash = Object.const_get(self.name.split("::")[0])::HashConverter.hash_to_bib(hash)
       new **item_hash
     end
 
