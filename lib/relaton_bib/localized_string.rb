@@ -18,12 +18,8 @@ module RelatonBib
     # @param language [String] language code Iso639
     # @param script [String] script code Iso15924
     def initialize(content, language = nil, script = nil) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-      if content.is_a? Array
-        inv = content.reject { |c| c.is_a?(LocalizedString) || c.is_a?(Hash) }
-      end
-      unless content.is_a?(String) || inv&.none? && content.any?
-        klass = content.is_a?(Array) ? inv.first.class : content.class
-        raise ArgumentError, "invalid LocalizedString content type: #{klass}"
+      if content.is_a?(Array) && content.none?
+        raise ArgumentError, "LocalizedString content is empty"
       end
       @language = language.is_a?(String) ? [language] : language
       @script = script.is_a?(String) ? [script] : script
@@ -31,6 +27,8 @@ module RelatonBib
                    content.map do |c|
                      if c.is_a?(Hash)
                        LocalizedString.new c[:content], c[:language], c[:script]
+                     elsif c.is_a?(String)
+                       LocalizedString.new c
                      else c
                      end
                    end

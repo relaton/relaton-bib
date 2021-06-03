@@ -2,7 +2,7 @@ RSpec.describe RelatonBib::LocalizedString do
   it "raise ArgumentError" do
     expect do
       RelatonBib::LocalizedString.new []
-    end.to raise_error ArgumentError, "invalid LocalizedString content type: NilClass"
+    end.to raise_error ArgumentError, "LocalizedString content is empty"
   end
 
   context "instance" do
