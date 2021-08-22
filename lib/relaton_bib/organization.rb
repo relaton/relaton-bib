@@ -40,7 +40,7 @@ module RelatonBib
     # @return [String]
     def to_asciibib(prefix = "", count = 1)
       pref = prefix.empty? ? prefix : prefix + "."
-      out = count > 1 ? "#{pref}identifier::\m" : ""
+      out = count > 1 ? "#{pref}identifier::\n" : ""
       out += "#{pref}identifier.type:: #{type}\n"
       out += "#{pref}identifier.value:: #{value}\n"
       out
@@ -119,7 +119,7 @@ module RelatonBib
     # @return [String]
     def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
       pref = prefix.sub /\*$/, "organization"
-      out = count > 1 ? "#{pref}::\m" : ""
+      out = count > 1 ? "#{pref}::\n" : ""
       name.each { |n| out += n.to_asciibib "#{pref}.name", name.size }
       out += abbreviation.to_asciibib "#{pref}.abbreviation" if abbreviation
       subdivision.each do |sd|
