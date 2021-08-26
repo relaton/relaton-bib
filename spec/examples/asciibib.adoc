@@ -1,7 +1,7 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2020-11-16
+fetched:: 2021-08-03
 title::
 title.type:: title-main
 title.content:: Geographic information
@@ -246,11 +246,14 @@ series.title.variant.language:: fr
 series.title.variant.script:: Latn
 series.title.format:: text/plain
 doctype:: document
+subdoctype:: subdocument
 keyword:: Keyword
 keyword:: Key Word
-editorialgroup.technical_committee.content:: Editorial group
+editorialgroup.technical_committee.name:: Editorial group
 editorialgroup.technical_committee.number:: 1
 editorialgroup.technical_committee.type:: Type
+editorialgroup.technical_committee.identifier:: Identifier
+editorialgroup.technical_committee.prefix:: Prefix
 ics.code:: 01
 ics.text:: First
 structured_identifier::

@@ -42,7 +42,7 @@ module RelatonBib
     attr_accessor :all_parts
 
     # @return [String, NilClass]
-    attr_reader :id, :type, :docnumber, :edition, :doctype
+    attr_reader :id, :type, :docnumber, :edition, :doctype, :subdoctype
 
     # @!attribute [r] title
     # @return [RelatonBib::TypedTitleStringCollection]
@@ -148,6 +148,7 @@ module RelatonBib
     # @param fetched [Date, NilClass] default nil
     # @param keyword [Array<String>]
     # @param doctype [String]
+    # @param subdoctype [String]
     # @param editorialgroup [RelatonBib::EditorialGroup, nil]
     # @param ics [Array<RelatonBib::ICS>]
     # @param structuredidentifier [RelatonBib::StructuredIdentifierCollection]
@@ -229,8 +230,9 @@ module RelatonBib
       @status         = args[:docstatus]
       @relation       = DocRelationCollection.new(args[:relation] || [])
       @link           = args.fetch(:link, []).map do |s|
-        if s.is_a?(Hash) then TypedUri.new(**s)
-        elsif s.is_a?(String) then TypedUri.new(content: s)
+        case s
+        when Hash then TypedUri.new(**s)
+        when String then TypedUri.new(content: s)
         else s
         end
       end
@@ -250,6 +252,7 @@ module RelatonBib
       end
       @license        = args.fetch :license, []
       @doctype        = args[:doctype]
+      @subdoctype     = args[:subdoctype]
       @editorialgroup = args[:editorialgroup]
       @ics            = args.fetch :ics, []
       @structuredidentifier = args[:structuredidentifier]
@@ -260,8 +263,8 @@ module RelatonBib
     # @param hash [Hash]
     # @return [RelatonBipm::BipmBibliographicItem]
     def self.from_hash(hash)
-      item_hash = Object.const_get(self.name.split("::")[0])::HashConverter.hash_to_bib(hash)
-      new **item_hash
+      item_hash = Object.const_get(name.split("::")[0])::HashConverter.hash_to_bib(hash)
+      new(**item_hash)
     end
 
     # @param lang [String] language code Iso639
@@ -286,7 +289,7 @@ module RelatonBib
       # contribs = publishers.map { |p| p&.entity&.abbreviation }.join '/'
       # idstr = "#{contribs}#{delim}#{id.project_number}"
       # idstr = id.project_number.to_s
-      idstr = id.id.gsub(/:/, "-").gsub /\s/, ""
+      idstr = id.id.gsub(/:/, "-").gsub(/\s/, "")
       # if id.part_number&.size&.positive? then idstr += "-#{id.part_number}"
       idstr.strip
     end
@@ -299,7 +302,7 @@ module RelatonBib
     def shortref(identifier, **opts) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/PerceivedComplexity
       pubdate = date.select { |d| d.type == "published" }
       year = if opts[:no_year] || pubdate.empty? then ""
-             else ":" + pubdate&.first&.on(:year).to_s
+             else ":#{pubdate&.first&.on(:year)}"
              end
       year += ": All Parts" if opts[:all_parts] || @all_parts
 
@@ -314,7 +317,7 @@ module RelatonBib
     # @return [String] XML
     def to_xml(**opts, &block)
       if opts[:builder]
-        render_xml **opts, &block
+        render_xml(**opts, &block)
       else
         Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
           render_xml builder: xml, **opts, &block
@@ -361,6 +364,7 @@ module RelatonBib
       hash["keyword"] = single_element_array(keyword) if keyword&.any?
       hash["license"] = single_element_array(license) if license&.any?
       hash["doctype"] = doctype if doctype
+      hash["subdoctype"] = subdoctype if subdoctype
       if editorialgroup&.presence?
         hash["editorialgroup"] = editorialgroup.to_hash
       end
@@ -460,7 +464,7 @@ module RelatonBib
       me.date = []
       me.docidentifier.each &:remove_date
       me.structuredidentifier&.remove_date
-      me.id&.sub! /-[12]\d\d\d/, ""
+      me.id&.sub!(/-[12]\d\d\d/, "")
       me
     end
 
@@ -477,7 +481,7 @@ module RelatonBib
     # @param prefix [String]
     # @return [String]
     def to_asciibib(prefix = "") # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       out = prefix.empty? ? "[%bibitem]\n== {blank}\n" : ""
       out += "#{pref}id:: #{id}\n" if id
       out += "#{pref}fetched:: #{fetched}\n" if fetched
@@ -513,6 +517,7 @@ module RelatonBib
       out += relation.to_asciibib prefix if relation
       series.each { |s| out += s.to_asciibib prefix, series.size }
       out += "#{pref}doctype:: #{doctype}\n" if doctype
+      out += "#{pref}subdoctype:: #{subdoctype}\n" if subdoctype
       out += "#{pref}formattedref:: #{formattedref}\n" if formattedref
       keyword.each { |kw| out += kw.to_asciibib "#{pref}keyword", keyword.size }
       out += editorialgroup.to_asciibib prefix if editorialgroup
@@ -682,21 +687,21 @@ module RelatonBib
       root = opts[:bibdata] ? :bibdata : :bibitem
       xml = opts[:builder].send(root) do |builder|
         builder.fetched fetched if fetched
-        title.to_xml **opts
+        title.to_xml(**opts)
         formattedref&.to_xml builder
         link.each { |s| s.to_xml builder }
-        docidentifier.each { |di| di.to_xml **opts }
+        docidentifier.each { |di| di.to_xml(**opts) }
         builder.docnumber docnumber if docnumber
         date.each { |d| d.to_xml builder, **opts }
         contributor.each do |c|
           builder.contributor do
-            c.role.each { |r| r.to_xml **opts }
-            c.to_xml **opts
+            c.role.each { |r| r.to_xml(**opts) }
+            c.to_xml(**opts)
           end
         end
         builder.edition edition if edition
         version&.to_xml builder
-        biblionote.to_xml **opts
+        biblionote.to_xml(**opts)
         opts[:note]&.each do |n|
           builder.note(n[:text], format: "text/plain", type: n[:type])
         end
@@ -706,7 +711,7 @@ module RelatonBib
         abstr = abstract unless abstr.any?
         abstr.each { |a| builder.abstract { a.to_xml(builder) } }
         status&.to_xml builder
-        copyright&.each { |c| c.to_xml **opts }
+        copyright&.each { |c| c.to_xml(**opts) }
         relation.each { |r| r.to_xml builder, **opts }
         series.each { |s| s.to_xml builder }
         medium&.to_xml builder
@@ -724,6 +729,7 @@ module RelatonBib
                                  structuredidentifier&.presence?)
           builder.ext do |b|
             b.doctype doctype if doctype
+            b.subdoctype subdoctype if subdoctype
             editorialgroup&.to_xml b
             ics.each { |i| i.to_xml b }
             structuredidentifier&.to_xml b

@@ -276,16 +276,19 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2020-11-10'
+fetched: '2021-08-03'
 keyword:
 - Keyword
 - Key Word
 license: License
 doctype: document
+subdoctype: subdocument
 editorialgroup:
-  content: Editorial group
+  name: Editorial group
   number: 1
   type: Type
+  identifier: Identifier
+  prefix: Prefix
 ics:
   code: '01'
   text: First

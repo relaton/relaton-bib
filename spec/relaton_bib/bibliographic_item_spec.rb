@@ -16,10 +16,10 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
     it "has array of titiles" do
       expect(subject.title).to be_instance_of(
-        RelatonBib::TypedTitleStringCollection
+        RelatonBib::TypedTitleStringCollection,
       )
       expect(subject.title(lang: "fr")[0].title.content).to eq(
-        "Information g\u00E9ographique"
+        "Information g\u00E9ographique",
       )
     end
 
@@ -34,7 +34,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
     it "returns abstract with en language" do
       expect(subject.abstract(lang: "en")).to be_instance_of(
-        RelatonBib::FormattedString
+        RelatonBib::FormattedString,
       )
     end
 
@@ -49,9 +49,9 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(item).to_not be subject
       expect(item.all_parts).to be true
       expect(item.relation.last.type).to eq "instance"
-      expect(item.title.detect { |t| t.type == "title-part" }). to be_nil
+      expect(item.title.detect { |t| t.type == "title-part" }).to be_nil
       expect(item.title.detect { |t| t.type == "main" }.title.content).to eq(
-        "Geographic information"
+        "Geographic information",
       )
       expect(item.abstract).to be_empty
       expect(item.docidentifier.detect { |d| d.id =~ /-\d/ }).to be_nil
@@ -63,10 +63,10 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(item.structuredidentifier.detect { |d| d.docnumber =~ /-\d/ })
         .to be_nil
       expect(
-        item.structuredidentifier.detect { |d| d.docnumber !~ %r{(all parts)} }
+        item.structuredidentifier.detect { |d| d.docnumber !~ %r{(all parts)} },
       ).to be_nil
       expect(
-        item.structuredidentifier.detect { |d| d.docnumber =~ /:[12]\d\d\d/ }
+        item.structuredidentifier.detect { |d| d.docnumber =~ /:[12]\d\d\d/ },
       ).to be_nil
     end
 
@@ -101,7 +101,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       xml = subject.to_xml bibdata: true, lang: "fr"
       File.write file, xml, encoding: "UTF-8" unless File.exist? file
       expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
-        .sub /(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s
+        .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
     end
 
     it "render addition elements" do
@@ -182,29 +182,29 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
   it "initialize with copyright object" do
     org = RelatonBib::Organization.new(
-      name: "Test Org", abbreviation: "TO", url: "test.org"
+      name: "Test Org", abbreviation: "TO", url: "test.org",
     )
     owner = [RelatonBib::ContributionInfo.new(entity: org)]
     copyright = RelatonBib::CopyrightAssociation.new(owner: owner, from: "2018")
     bibitem = RelatonBib::BibliographicItem.new(
       formattedref: RelatonBib::FormattedRef.new(content: "ISO123"),
-      copyright: [copyright]
+      copyright: [copyright],
     )
     expect(bibitem.to_xml).to include(
-      "<formattedref format=\"text/plain\">ISO123</formattedref>"
+      "<formattedref format=\"text/plain\">ISO123</formattedref>",
     )
   end
 
   it "warn invalid type argument error" do
     expect { RelatonBib::BibliographicItem.new type: "type" }.to output(
-      /\[relaton-bib\] document type "type" is invalid./
+      /\[relaton-bib\] document type "type" is invalid./,
     ).to_stderr
   end
 
   context RelatonBib::CopyrightAssociation do
     it "initialise with owner object" do
       org = RelatonBib::Organization.new(
-        name: "Test Org", abbreviation: "TO", url: "test.org"
+        name: "Test Org", abbreviation: "TO", url: "test.org",
       )
       owner = [RelatonBib::ContributionInfo.new(entity: org)]
       copy = RelatonBib::CopyrightAssociation.new owner: owner, from: "2019"

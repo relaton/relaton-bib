@@ -8,6 +8,7 @@ title:
 
 type: standard
 doctype: document
+subdoctype: subdocument
 
 docid:
   - id: TC211
@@ -285,9 +286,11 @@ validity:
   revision: "2011-03-04 09:00"
 
 editorialgroup:
-  - content: Editorial group
+  - name: Editorial group
     number: 1
     type: Type
+    identifier: Identifier
+    prefix: Prefix
 
 ics:
   - code: "01"

@@ -27,7 +27,7 @@ module RelatonBib
     # @param prefix [String]
     # @return [String]
     def to_asciibib(prefix = "")
-      pref = prefix.empty? ? "editorialgroup" : prefix + ".editorialgroup"
+      pref = prefix.empty? ? "editorialgroup" : "#{prefix}.editorialgroup"
       technical_committee.map do |tc|
         tc.to_asciibib pref, technical_committee.size
       end.join

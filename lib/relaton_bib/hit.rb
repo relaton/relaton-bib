@@ -21,10 +21,10 @@ module RelatonBib
     # @return [String]
     def inspect
       "<#{self.class}:#{format('%<id>#.14x', id: object_id << 1)} "\
-      "@text=\"#{@hit_collection&.text}\" "\
-      "@fetched=\"#{!@fetch.nil?}\" "\
-      "@fullIdentifier=\"#{@fetch&.shortref(nil)}\" "\
-      "@title=\"#{@hit[:code]}\">"
+                              "@text=\"#{@hit_collection&.text}\" "\
+                                    "@fetched=\"#{!@fetch.nil?}\" "\
+                    "@fullIdentifier=\"#{@fetch&.shortref(nil)}\" "\
+                    "@title=\"#{@hit[:code]}\">"
     end
 
     def fetch
@@ -38,10 +38,10 @@ module RelatonBib
     # @return [String] XML
     def to_xml(**opts)
       if opts[:builder]
-        fetch.to_xml **opts
+        fetch.to_xml(**opts)
       else
         builder = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
-          fetch.to_xml **opts.merge(builder: xml)
+          fetch.to_xml(**opts.merge(builder: xml))
         end
         builder.doc.root.to_xml
       end

@@ -10,7 +10,7 @@ module RelatonBib
 
     # @param type [String, NilClass] src/obp/rss
     # @param content [String]
-    def initialize(type: nil, content:)
+    def initialize(content:, type: nil)
       @type    = type
       @content = Addressable::URI.parse content if content
     end

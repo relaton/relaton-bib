@@ -10,7 +10,7 @@ module RelatonBib
     # @param prefix [String]
     # @return [String]
     def to_asciibib(prefix = "")
-      pref = prefix.empty? ? "formattedref" : prefix + ".formattedref"
+      pref = prefix.empty? ? "formattedref" : "#{prefix}.formattedref"
       super pref
     end
   end

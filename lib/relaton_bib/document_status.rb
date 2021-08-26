@@ -42,7 +42,7 @@ module RelatonBib
     # @param prefix [String]
     # @return [String]
     def to_asciibib(prefix = "")
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       out = "#{pref}docstatus.stage:: #{stage.value}\n"
       out += "#{pref}docstatus.substage:: #{substage.value}\n" if substage
       out += "#{pref}docstatus.iteration:: #{iteration}\n" if iteration
@@ -54,9 +54,10 @@ module RelatonBib
     # @param stg [RelatonBib::DocumentStatus::Stage, Hash, String, NilClass]
     # @return [RelatonBib::DocumentStatus::Stage]
     def stage_new(stg)
-      if stg.is_a?(Stage) then stg
-      elsif stg.is_a?(Hash) then Stage.new(**stg)
-      elsif stg.is_a?(String) then Stage.new(value: stg)
+      case stg
+      when Stage then stg
+      when Hash then Stage.new(**stg)
+      when String then Stage.new(value: stg)
       end
     end
 

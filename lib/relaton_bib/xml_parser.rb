@@ -52,6 +52,7 @@ module RelatonBib
           license: bibitem.xpath("license").map(&:text),
           validity: fetch_validity(bibitem),
           doctype: ext&.at("doctype")&.text,
+          subdoctype: ext&.at("subdoctype")&.text,
           editorialgroup: fetch_editorialgroup(ext),
           ics: fetch_ics(ext),
           structuredidentifier: fetch_structuredidentifier(ext),
@@ -81,7 +82,7 @@ module RelatonBib
             type: n[:type],
             format: n[:format],
             language: n[:language],
-            script: n[:script]
+            script: n[:script],
           )
         end
         BiblioNoteCollection.new bnotes
@@ -201,7 +202,7 @@ module RelatonBib
         DocumentStatus.new(
           stage: stg ? stage(stg) : status.text,
           substage: stage(status.at("substage")),
-          iteration: status.at("iteration")&.text
+          iteration: status.at("iteration")&.text,
         )
       end
 
@@ -262,7 +263,7 @@ module RelatonBib
               city: c.at("./city")&.text,
               state: c.at("./state")&.text,
               country: c.at("./country")&.text,
-              postcode: c.at("./postcode")&.text
+              postcode: c.at("./postcode")&.text,
             )
           else
             Contact.new(type: c.name, value: c.text)
@@ -290,7 +291,7 @@ module RelatonBib
           name: name,
           affiliation: affiliations,
           contact: contact,
-          identifier: identifier
+          identifier: identifier,
         )
       end
 
@@ -358,7 +359,7 @@ module RelatonBib
             description: relation_description(rel),
             bibitem: bib_item(item_data(rel.at("./bibitem"))),
             locality: localities(rel),
-            source_locality: source_localities(rel)
+            source_locality: source_localities(rel),
           )
         end
       end
@@ -376,7 +377,7 @@ module RelatonBib
       # @param item_hash [Hash]
       # @return [RelatonBib::BibliographicItem]
       def bib_item(item_hash)
-        BibliographicItem.new **item_hash
+        BibliographicItem.new(**item_hash)
       end
 
       # @param rel [Nokogiri::XML::Element]
@@ -398,7 +399,7 @@ module RelatonBib
         klass.new(
           loc[:type],
           LocalizedString.new(loc.at("./referenceFrom").text),
-          ref_to
+          ref_to,
         )
       end
 
@@ -436,8 +437,10 @@ module RelatonBib
         return unless ext && (eg = ext.at "editorialgroup")
 
         eg = eg.xpath("technical-committee").map do |tc|
-          wg = WorkGroup.new(content: tc.text, number: tc[:number]&.to_i,
-                             type: tc[:type])
+          wg = WorkGroup.new(
+            name: tc.text, number: tc[:number]&.to_i, type: tc[:type],
+            identifier: tc[:identifier], prefix: tc[:prefix]
+          )
           TechnicalCommittee.new wg
         end
         EditorialGroup.new eg if eg.any?
@@ -468,7 +471,7 @@ module RelatonBib
             supplementtype: si.at("supplementtype")&.text,
             supplementnumber: si.at("supplementnumber")&.text,
             language: si.at("language")&.text,
-            year: si.at("year")&.text
+            year: si.at("year")&.text,
           )
         end
         StructuredIdentifierCollection.new sids
