@@ -1,5 +1,5 @@
 <bibdata type="standard">
-  <fetched>2021-08-02</fetched>
+  <fetched>2021-08-30</fetched>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
   <uri type="src">https://www.iso.org/standard/53798.html</uri>
   <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
@@ -37,7 +37,7 @@
     <role type="author"/>
     <person>
       <name>
-        <completename language="en">A. Bierman</completename>
+        <completename language="en" script="Latn">A. Bierman</completename>
       </name>
       <affiliation>
         <organization>
@@ -73,11 +73,11 @@
     <role type="author"/>
     <person>
       <name>
-        <prefix language="en">Prefix</prefix>
-        <forename language="en">Forename</forename>
-        <initial language="en">A.</initial>
-        <surname language="en">Bierman</surname>
-        <addition language="en">Addition</addition>
+        <prefix language="en" script="Latn">Prefix</prefix>
+        <forename language="en" script="Latn">Forename</forename>
+        <initial language="en" script="Latn">A.</initial>
+        <surname language="en" script="Latn">Bierman</surname>
+        <addition language="en" script="Latn">Addition</addition>
       </name>
       <affiliation>
         <description language="en">Description</description>

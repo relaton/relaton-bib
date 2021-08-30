@@ -297,7 +297,7 @@ module RelatonBib
 
       def name_part(person, part)
         person.xpath("./name/#{part}").map do |np|
-          LocalizedString.new np.text, np[:language]
+          LocalizedString.new np.text, np[:language], np[:script]
         end
       end
 

@@ -89,6 +89,7 @@ contributor:
         completename: 
           content: A. Bierman
           language: en
+          script: Latn
       affiliation:
         - organization:
             name: IETF
@@ -122,6 +123,7 @@ contributor:
   - person:
       name:
         language: en
+        script: Latn
         initial: A.
         surname: Bierman
         forename: Forename

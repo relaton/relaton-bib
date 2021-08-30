@@ -1,7 +1,7 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2021-08-03
+fetched:: 2021-08-30
 title::
 title.type:: title-main
 title.content:: Geographic information
@@ -144,6 +144,7 @@ contributor.role.type:: publisher
 contributor::
 contributor.person.name.completename.content:: A. Bierman
 contributor.person.name.completename.language:: en
+contributor.person.name.completename.script:: Latn
 contributor.person.affiliation.organization.name:: IETF
 contributor.person.affiliation.organization.abbreviation:: IETF
 contributor.person.affiliation.organization.identifier.type:: uri
@@ -170,14 +171,19 @@ contributor.role.type:: editor
 contributor::
 contributor.person.name.forename.content:: Forename
 contributor.person.name.forename.language:: en
+contributor.person.name.forename.script:: Latn
 contributor.person.name.initial.content:: A.
 contributor.person.name.initial.language:: en
+contributor.person.name.initial.script:: Latn
 contributor.person.name.surname.content:: Bierman
 contributor.person.name.surname.language:: en
+contributor.person.name.surname.script:: Latn
 contributor.person.name.addition.content:: Addition
 contributor.person.name.addition.language:: en
+contributor.person.name.addition.script:: Latn
 contributor.person.name.prefix.content:: Prefix
 contributor.person.name.prefix.language:: en
+contributor.person.name.prefix.script:: Latn
 contributor.person.affiliation.description.content:: Description
 contributor.person.affiliation.description.language:: en
 contributor.person.affiliation.organization.name:: IETF

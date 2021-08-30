@@ -58,6 +58,7 @@ contributor:
       completename:
         content: A. Bierman
         language: en
+        script: Latn
     affiliation:
       organization:
         name: IETF
@@ -91,18 +92,23 @@ contributor:
       forename:
         content: Forename
         language: en
+        script: Latn
       initial:
         content: A.
         language: en
+        script: Latn
       surname:
         content: Bierman
         language: en
+        script: Latn
       addition:
         content: Addition
         language: en
+        script: Latn
       prefix:
         content: Prefix
         language: en
+        script: Latn
     affiliation:
       organization:
         name: IETF
@@ -276,7 +282,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2021-08-03'
+fetched: '2021-08-30'
 keyword:
 - Keyword
 - Key Word
