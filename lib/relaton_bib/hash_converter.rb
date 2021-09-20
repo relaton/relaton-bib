@@ -207,6 +207,7 @@ module RelatonBib
         org[:subdivision] = array(org[:subdivision]).map do |sd|
           LocalizedString.new sd
         end
+        org[:contact] = contacts_hash_to_bib(org)
         org
       end
 
@@ -256,10 +257,10 @@ module RelatonBib
         end
       end
 
-      def contacts_hash_to_bib(person) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-        return [] unless person[:contact]
+      def contacts_hash_to_bib(entity) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        return [] unless entity[:contact]
 
-        array(person[:contact]).map do |a|
+        array(entity[:contact]).map do |a|
           if a[:city] || a[:country]
             RelatonBib::Address.new(
               street: Array(a[:street]), city: a[:city], postcode: a[:postcode],
