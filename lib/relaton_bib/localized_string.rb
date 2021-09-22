@@ -21,14 +21,15 @@ module RelatonBib
       if content.is_a?(Array) && content.none?
         raise ArgumentError, "LocalizedString content is empty"
       end
+
       @language = language.is_a?(String) ? [language] : language
       @script = script.is_a?(String) ? [script] : script
       @content = if content.is_a?(Array)
                    content.map do |c|
-                     if c.is_a?(Hash)
+                     case c
+                     when Hash
                        LocalizedString.new c[:content], c[:language], c[:script]
-                     elsif c.is_a?(String)
-                       LocalizedString.new c
+                     when String then LocalizedString.new c
                      else c
                      end
                    end
@@ -38,7 +39,7 @@ module RelatonBib
 
     # @return [String]
     def to_s
-      content.is_a?(String) ? content : content.first.to_s
+      content.is_a?(Array) ? content.first.to_s : content.to_s
     end
 
     # @return [TrueClass, FalseClass]
