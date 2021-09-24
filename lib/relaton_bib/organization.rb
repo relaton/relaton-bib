@@ -99,7 +99,7 @@ module RelatonBib
         builder.abbreviation { |a| abbreviation.to_xml a } if abbreviation
         builder.uri url if uri
         identifier.each { |identifier| identifier.to_xml builder }
-        super
+        super builder
       end
     end
 
