@@ -36,6 +36,10 @@ docid:
 - id: urn:iso:std:iso:123:stage-90.93:ed-3:en,fr
   type: URN
 - id: XYZ
+- id: 10.17487/rfc1149
+  type: DOI
+- id: draft-ietf-somewg-someprotocol-07
+  type: Internet-Draft
 docnumber: '123456'
 date:
 - type: issued
@@ -248,6 +252,10 @@ series:
       language: fr
       script: Latn
     format: text/plain
+- title:
+    content: RFC
+    format: text/plain
+  number: '4'
 medium:
   form: medium form
   size: medium size
@@ -282,7 +290,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2021-08-30'
+fetched: '2021-10-08'
 keyword:
 - Keyword
 - Key Word

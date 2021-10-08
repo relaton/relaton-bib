@@ -54,7 +54,10 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         "Geographic information",
       )
       expect(item.abstract).to be_empty
-      expect(item.docidentifier.detect { |d| d.id =~ /-\d/ }).to be_nil
+      id_with_part = item.docidentifier.detect do |d|
+        d.type != "Internet-Draft" && d.id =~ /-\d/
+      end
+      expect(id_with_part).to be_nil
       expect(item.docidentifier.reject { |d| d.id =~ %r{(all parts)} }.size)
         .to eq 1
       expect(item.docidentifier.detect { |d| d.id =~ /:[12]\d\d\d/ }).to be_nil
@@ -112,7 +115,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     it "add note to xml" do
       xml = subject.to_xml note: [{ text: "Note", type: "note" }]
       expect(xml).to include "<note format=\"text/plain\" type=\"note\">"\
-      "Note</note>"
+                             "Note</note>"
     end
 
     it "deals with hashes" do
@@ -177,6 +180,13 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(bib).to eq File.read(file, encoding: "UTF-8").gsub(
         /(?<=fetched::\s)\d{4}-\d{2}-\d{2}/, Date.today.to_s
       )
+    end
+
+    it "convert item to BibXML (RFC)" do
+      file = "spec/examples/rfc.xml"
+      rfc = subject.to_bibxml
+      File.write file, rfc, encoding: "UTF-8" unless File.exist? file
+      expect(rfc).to be_equivalent_to File.read file, encoding: "UTF-8"
     end
   end
 

@@ -23,6 +23,10 @@ docid:
   - id: urn:iso:std:iso:123:stage-90.93:ed-3:en,fr
     type: URN
   - id: XYZ
+  - id: 10.17487/rfc1149
+    type: DOI
+  - id: draft-ietf-somewg-someprotocol-07
+    type: Internet-Draft
 
 docnumber: "123456"
 edition: "1"
@@ -240,6 +244,9 @@ series:
         - content: Séries
           language: fr
           script: Latn
+  - title:
+      content: RFC
+    number: "4"
 
 medium:
   form: medium form

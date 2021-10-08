@@ -1,5 +1,5 @@
 <bibitem id="ISOTC211" type="standard">
-  <fetched>2021-08-30</fetched>
+  <fetched>2021-10-08</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -14,6 +14,8 @@
   <docidentifier type="issn" scope="series">ISSN</docidentifier>
   <docidentifier type="URN">urn:iso:std:iso:123:stage-90.93:ed-3:en,fr</docidentifier>
   <docidentifier>XYZ</docidentifier>
+  <docidentifier type="DOI">10.17487/rfc1149</docidentifier>
+  <docidentifier type="Internet-Draft">draft-ietf-somewg-someprotocol-07</docidentifier>
   <docnumber>123456</docnumber>
   <date type="issued">
     <on>2014</on>
@@ -198,6 +200,10 @@
       <variant language="en" script="Latn">Series</variant>
       <variant language="fr" script="Latn">Séries</variant>
     </title>
+  </series>
+  <series>
+    <title format="text/plain">RFC</title>
+    <number>4</number>
   </series>
   <medium>
     <form>medium form</form>

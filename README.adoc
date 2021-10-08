@@ -416,6 +416,45 @@ title.format:: text/plain
 ...
 ----
 
+=== Export bibliographic item to BibXML (RFC)
+
+[source,ruby]
+----
+item.to_bibxml
+<reference anchor="ISOTC211" target="https://www.iso.org/standard/53798.html">
+  <front>
+    <title>Geographic information</title>
+    <seriesInfo name="DOI" value="10.17487/rfc1149"/>
+    <seriesInfo name="Internet-Draft" value="draft-ietf-somewg-someprotocol-07"/>
+    <seriesInfo name="RFC" value="4"/>
+    <author>
+      <organization abbrev="ISO">International Organization for Standardization</organization>
+    </author>
+    <author fullname="A. Bierman">
+      <organization abbrev="IETF">IETF</organization>
+      <address>
+        <postal>123456</postal>
+        <phone>223322</phone>
+      </address>
+    </author>
+    <author role="editor">
+      <organization abbrev="IETF">IETF</organization>
+    </author>
+    <author initials="A." surname="Bierman">
+      <organization abbrev="IETF">IETF</organization>
+      <address>
+        <postal>123456</postal>
+        <phone>223322</phone>
+      </address>
+    </author>
+    <author>
+      <organization>Institution</organization>
+    </author>
+    <date year="2014" month="April" day="1"/>
+  </front>
+</reference>
+----
+
 == Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
@@ -429,4 +468,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/metano
 == License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-

@@ -1,7 +1,7 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2021-08-30
+fetched:: 2021-10-08
 title::
 title.type:: title-main
 title.content:: Geographic information
@@ -33,6 +33,12 @@ docid::
 docid.type:: URN
 docid.id:: urn:iso:std:iso:123:stage-90.93:ed-3:en,fr
 docid:: XYZ
+docid::
+docid.type:: DOI
+docid.id:: 10.17487/rfc1149
+docid::
+docid.type:: Internet-Draft
+docid.id:: draft-ietf-somewg-someprotocol-07
 docnumber:: 123456
 edition:: 1
 language:: en
@@ -251,6 +257,10 @@ series.title.variant.content:: Séries
 series.title.variant.language:: fr
 series.title.variant.script:: Latn
 series.title.format:: text/plain
+series::
+series.title.content:: RFC
+series.title.format:: text/plain
+series.number:: 4
 doctype:: document
 subdoctype:: subdocument
 keyword:: Keyword

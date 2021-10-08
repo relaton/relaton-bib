@@ -7,7 +7,7 @@ module RelatonBib
     # @return [Array<RelatonBib::TechnicalCommittee>]
     attr_accessor :technical_committee
 
-    # @param technical_committee [Array<RelatonBib::TecnicalCommittee>]
+    # @param technical_committee [Array<RelatonBib::TechnicalCommittee>]
     def initialize(technical_committee)
       @technical_committee = technical_committee
     end

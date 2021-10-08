@@ -325,6 +325,23 @@ module RelatonBib
       end
     end
 
+    #
+    # Render BibXML (RFC)
+    #
+    # @param [Nokogiri::XML::Builder, nil] builder
+    #
+    # @return [String] <description>
+    #
+    def to_bibxml(builder = nil)
+      if builder
+        render_bibxml builder
+      else
+        Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
+          render_bibxml xml
+        end
+      end.doc.root.to_xml
+    end
+
     # @return [Hash]
     def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       hash = {}
@@ -740,8 +757,107 @@ module RelatonBib
       xml[:type] = type if type
       xml
     end
+    # rubocop:enable Style/NestedParenthesizedCalls, Metrics/BlockLength
+
+    #
+    # Render BibXML (RFC)
+    #
+    # @param [Nokogiri::XML::Builder] builder
+    #
+    def render_bibxml(builder)
+      target = link.detect { |l| l.type == "src" } || link.detect { |l| l.type == "doi" }
+      bxml = builder.reference(anchor: id) do |xml|
+        xml.front do
+          xml.title title[0].title.content if title.any?
+          render_seriesinfo xml
+          render_authors xml
+          render_date xml
+        end
+      end
+      bxml[:target] = target.content.to_s if target
+    end
+
+    def render_date(builder)
+      dt = date.detect { |d| d.type == "published" }
+      return unless dt
+
+      elm = builder.date
+      y = dt.on(:year) || dt.from(:year) || dt.to(:year)
+      elm[:year] = y if y
+      m = dt.on(:month) || dt.from(:month) || dt.to(:month)
+      elm[:month] = Date::MONTHNAMES[m] if m
+      d = dt.on(:day) || dt.from(:day) || dt.to(:day)
+      elm[:day] = d if d
+    end
+
+    def render_seriesinfo(builder)
+      names = ["DOI", "Internet-Draft"]
+      docidentifier.each do |di|
+        if names.include? di.type
+          builder.seriesInfo(name: di.type, value: di.id)
+        end
+      end
+      snames = ["ANSI", "BCP", "RFC", "STD"]
+      series.each do |s|
+        next unless s.title && snames.include?(s.title.title.to_s)
+
+        si = builder.seriesInfo(name: s.title.title.to_s)
+        si[:value] = s.number if s.number
+      end
+    end
+
+    def render_authors(builder)
+      contributor.each do |c|
+        builder.author do |xml|
+          xml.parent[:role] = "editor" if c.role.detect { |r| r.type == "editor" }
+          if c.entity.is_a?(Person) then render_person xml, c.entity
+          else render_organization xml, c.entity
+          end
+          render_address xml, c
+        end
+      end
+    end
+
+    def render_address(builder, contrib)
+      addr = contrib.entity.contact.reject do |cn|
+        cn.is_a?(Address) && cn.postcode.nil?
+      end
+      if addr.any?
+        builder.address do |xml|
+          address = addr.detect { |cn| cn.is_a? Address }
+          xml.postal address.postcode if address.postcode
+          render_contact xml, addr
+        end
+      end
+    end
+
+    def render_contact(builder, addr)
+      %w[phone email uri].each do |type|
+        cont = addr.detect { |cn| cn.is_a?(Contact) && cn.type == type }
+        builder.phone cont.value if cont
+      end
+    end
+
+    def render_person(builder, person)
+      render_organization builder, person.affiliation.first&.organization
+      if person.name.completename
+        builder.parent[:fullname] = person.name.completename
+      end
+      if person.name.initial.any?
+        builder.parent[:initials] = person.name.initial.map(&:content).join
+      end
+      if person.name.surname
+        builder.parent[:surname] = person.name.surname
+      end
+    end
+
+    def render_organization(builder, org)
+      return unless org
+
+      o = builder.organization org.name.first&.content
+      o[:abbrev] = org.abbreviation if org.abbreviation
+    end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-    # rubocop:enable Style/NestedParenthesizedCalls, Metrics/BlockLength
   end
 end
