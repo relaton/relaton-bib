@@ -366,6 +366,18 @@ RelatonBib::BibliographicItem.from_hash hash
 ...
 ----
 
+=== Create bibliographic item from BibXML
+
+[source,ruby]
+----
+bibxml = File.read "spec/examples/rfc.xml"
+=> <reference anchor=...
+
+RelatonBib::BibXMLParser.parse bibxml
+=> #<RelatonBib::BibliographicItem:0x00007f9d0c75b268
+...
+----
+
 === Export bibliographic item to Hash
 
 [source,ruby]
