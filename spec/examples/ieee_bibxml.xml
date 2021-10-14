@@ -1,7 +1,6 @@
 <reference anchor="IEEE.11073-10201-2020">
   <front>
     <title>ISO/IEC/IEEE International Standard - Health informatics--Device interoperability--Part 10201:Point-of-care medical device communication--Domain information model</title>
-    <seriesInfo name="IEEE" value="11073-10201-2020"/>
     <seriesInfo name="DOI" value="10.1109/IEEESTD.2020.9102466"/>
     <date year="2020" month="May" day="25"/>
     <abstract>
