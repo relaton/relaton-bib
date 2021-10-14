@@ -22,7 +22,7 @@ RSpec.describe RelatonBib::LocalizedString do
       end
       expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
         <localized_string language="en" script="Latn">
-          content &amp;amp; character to escape
+          content &amp; character to escape
         </localized_string>
       XML
     end

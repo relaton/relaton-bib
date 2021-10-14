@@ -138,7 +138,7 @@ module RelatonBib
         desc = description.select { |d| d.language&.include? opts[:lang] }
         desc = description unless desc.any?
         desc.each { |d| builder.description { d.to_xml builder } }
-        organization.to_xml **opts
+        organization.to_xml(**opts)
       end
     end
 

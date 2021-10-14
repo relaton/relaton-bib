@@ -6,6 +6,7 @@ require "relaton_bib/localized_string"
 require "relaton_bib/bibliographic_item"
 require "relaton_bib/hit_collection"
 require "relaton_bib/hit"
+require "relaton_bib/bibxml_parser"
 
 module RelatonBib
   class Error < StandardError; end

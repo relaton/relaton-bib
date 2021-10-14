@@ -766,17 +766,48 @@ module RelatonBib
     #
     def render_bibxml(builder)
       target = link.detect { |l| l.type == "src" } || link.detect { |l| l.type == "doi" }
-      bxml = builder.reference(anchor: id) do |xml|
+      bxml = builder.reference(anchor: anchor) do |xml|
         xml.front do
           xml.title title[0].title.content if title.any?
           render_seriesinfo xml
           render_authors xml
           render_date xml
+          render_workgroup xml
+          render_keyword xml
+          render_abstract xml
         end
       end
       bxml[:target] = target.content.to_s if target
     end
 
+    def anchor
+      did = docidentifier.detect { |di| di.type == "rfc-anchor" }
+      return did.id if did
+
+      type = docidentifier[0].type
+      "#{type}.#{docnumber}"
+    end
+
+    def render_keyword(builder)
+      keyword.each do |kw|
+        builder.keyword kw.content
+      end
+    end
+
+    def render_workgroup(builder)
+      editorialgroup&.technical_committee&.each do |tc|
+        builder.workgroup tc.workgroup.name
+      end
+    end
+
+    # @param [Nokogiri::XML::Builder] builder
+    def render_abstract(builder)
+      return unless abstract.any?
+
+      builder.abstract { |xml| xml << abstract[0].content }
+    end
+
+    # @param [Nokogiri::XML::Builder] builder
     def render_date(builder)
       dt = date.detect { |d| d.type == "published" }
       return unless dt
@@ -790,10 +821,10 @@ module RelatonBib
       elm[:day] = d if d
     end
 
+    # @param [Nokogiri::XML::Builder] builder
     def render_seriesinfo(builder)
-      names = ["DOI", "Internet-Draft"]
       docidentifier.each do |di|
-        if names.include? di.type
+        if BibXMLParser::SERIESINFONAMES.include? di.type
           builder.seriesInfo(name: di.type, value: di.id)
         end
       end
@@ -806,6 +837,7 @@ module RelatonBib
       end
     end
 
+    # @param [Nokogiri::XML::Builder] builder
     def render_authors(builder)
       contributor.each do |c|
         builder.author do |xml|
@@ -818,26 +850,40 @@ module RelatonBib
       end
     end
 
+    # @param [Nokogiri::XML::Builder] builder
+    # @param [RelatonBib::ContributionInfo] contrib
     def render_address(builder, contrib)
-      addr = contrib.entity.contact.reject do |cn|
-        cn.is_a?(Address) && cn.postcode.nil?
-      end
-      if addr.any?
+      # addr = contrib.entity.contact.reject do |cn|
+      #   cn.is_a?(Address) && cn.postcode.nil?
+      # end
+      if contrib.entity.contact.any?
         builder.address do |xml|
-          address = addr.detect { |cn| cn.is_a? Address }
-          xml.postal address.postcode if address.postcode
-          render_contact xml, addr
+          address = contrib.entity.contact.detect { |cn| cn.is_a? Address }
+          if address
+            xml.postal do
+              xml.city address.city if address.city
+              xml.code address.postcode if address.postcode
+              xml.country address.country if address.country
+              xml.region address.state if address.state
+              xml.street address.street[0] if address.street.any?
+            end
+          end
+          render_contact xml, contrib.entity.contact
         end
       end
     end
 
+    # @param [Nokogiri::XML::Builder] builder
+    # @param [Array<RelatonBib::Address, RelatonBib::Contact>] addr
     def render_contact(builder, addr)
       %w[phone email uri].each do |type|
         cont = addr.detect { |cn| cn.is_a?(Contact) && cn.type == type }
-        builder.phone cont.value if cont
+        builder.send type, cont.value if cont
       end
     end
 
+    # @param [Nokogiri::XML::Builder] builder
+    # @param [RelatonBib::Person] person
     def render_person(builder, person)
       render_organization builder, person.affiliation.first&.organization
       if person.name.completename
@@ -851,11 +897,13 @@ module RelatonBib
       end
     end
 
+    # @param [Nokogiri::XML::Builder] builder
+    # @param [RelatonBib::Organization] org
     def render_organization(builder, org)
       return unless org
 
       o = builder.organization org.name.first&.content
-      o[:abbrev] = org.abbreviation if org.abbreviation
+      o[:abbrev] = org.abbreviation.content if org.abbreviation
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

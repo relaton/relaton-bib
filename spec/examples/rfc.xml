@@ -1,4 +1,4 @@
-<reference anchor="ISOTC211" target="https://www.iso.org/standard/53798.html">
+<reference anchor="ISO.123456" target="https://www.iso.org/standard/53798.html">
   <front>
     <title>Geographic information</title>
     <seriesInfo name="DOI" value="10.17487/rfc1149"/>
@@ -10,7 +10,13 @@
     <author fullname="A. Bierman">
       <organization abbrev="IETF">IETF</organization>
       <address>
-        <postal>123456</postal>
+        <postal>
+          <city>City</city>
+          <code>123456</code>
+          <country>Country</country>
+          <region>State</region>
+          <street>Street</street>
+        </postal>
         <phone>223322</phone>
       </address>
     </author>
@@ -20,7 +26,13 @@
     <author initials="A." surname="Bierman">
       <organization abbrev="IETF">IETF</organization>
       <address>
-        <postal>123456</postal>
+        <postal>
+          <city>City</city>
+          <code>123456</code>
+          <country>Country</country>
+          <region>State</region>
+          <street>Street</street>
+        </postal>
         <phone>223322</phone>
       </address>
     </author>
@@ -28,5 +40,9 @@
       <organization>Institution</organization>
     </author>
     <date year="2014" month="April" day="1"/>
+    <workgroup>Editorial group</workgroup>
+    <keyword>Keyword</keyword>
+    <keyword>Key Word</keyword>
+    <abstract>ISO 19115-1:2014 defines the schema required for ...</abstract>
   </front>
 </reference>
