@@ -804,7 +804,7 @@ module RelatonBib
     def render_abstract(builder)
       return unless abstract.any?
 
-      builder.abstract { |xml| xml << abstract[0].content }
+      builder.abstract { |xml| xml << abstract[0].content.gsub(/(<\/?)p(>)/, '\1t\2') }
     end
 
     # @param [Nokogiri::XML::Builder] builder

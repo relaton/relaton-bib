@@ -139,7 +139,7 @@ module RelatonBib
     def abstracts(ref)
       ref.xpath("./front/abstract").map do |a|
         FormattedString.new(
-          content: a.children.to_s,
+          content: a.children.to_s.gsub(/(<\/?)t(>)/, '\1p\2'),
           language: language(ref), script: "Latn", format: "text/html"
         )
       end
