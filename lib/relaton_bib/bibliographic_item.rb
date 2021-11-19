@@ -828,10 +828,11 @@ module RelatonBib
           builder.seriesInfo(name: di.type, value: di.id)
         end
       end
-      snames = ["ANSI", "BCP", "RFC", "STD"]
-      series.each do |s|
-        next unless s.title && snames.include?(s.title.title.to_s)
-
+      di_types = docidentifier.map(&:type)
+      series.select do |s|
+        s.title && !di_types.include?(s.title.title.to_s) &&
+          !BibXMLParser::SERIESINFONAMES.include?(s.title.title.to_s)
+      end.uniq { |s| s.title.title.to_s }.each do |s|
         si = builder.seriesInfo(name: s.title.title.to_s)
         si[:value] = s.number if s.number
       end

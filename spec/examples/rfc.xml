@@ -3,6 +3,9 @@
     <title>Geographic information</title>
     <seriesInfo name="DOI" value="10.17487/rfc1149"/>
     <seriesInfo name="Internet-Draft" value="draft-ietf-somewg-someprotocol-07"/>
+    <seriesInfo name="ISO/IEC FDIS 10118-3" value="serie1234"/>
+    <seriesInfo name="Journal" value="7"/>
+    <seriesInfo name="Series"/>
     <seriesInfo name="RFC" value="4"/>
     <author>
       <organization abbrev="ISO">International Organization for Standardization</organization>

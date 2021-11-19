@@ -72,6 +72,8 @@ module RelatonBib
   end
 
   class TypedTitleString
+    ARGS = %i[content language script format].freeze
+
     # @return [String]
     attr_reader :type
 
@@ -93,9 +95,7 @@ module RelatonBib
       if args[:title]
         @title = args[:title]
       else
-        fsargs = args.select do |k, _v|
-          %i[content language script format].include? k
-        end
+        fsargs = args.select { |k, _v| ARGS.include? k }
         @title = FormattedString.new(**fsargs)
       end
     end
