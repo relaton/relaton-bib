@@ -159,10 +159,11 @@ module RelatonBib
     # @option copyright [String, NilClass] :to
     # @option copyright [String, NilClass] :scope
     #
-    # @param date [Array<Hash>]
+    # @param date [Array<Hash, RelatonBib::BibliographicDate>]
     # @option date [String] :type
-    # @option date [String] :from
-    # @option date [String] :to
+    # @option date [String, nil] :from required if :on is nil
+    # @option date [String, nil] :to
+    # @option date [String, nil] :on required if :from is nil
     #
     # @param contributor [Array<Hash>]
     # @option contributor [RealtonBib::Organization, RelatonBib::Person]
@@ -176,7 +177,7 @@ module RelatonBib
     # @option abstract [String] :content
     # @option abstract [String] :language
     # @option abstract [String] :script
-    # @option abstract [String] :type
+    # @option abstract [String] :format
     #
     # @param relation [Array<Hash>]
     # @option relation [String] :type

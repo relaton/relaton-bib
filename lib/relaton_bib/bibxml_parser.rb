@@ -67,11 +67,12 @@ module RelatonBib
     #
     def docids(reference, ver) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/AbcSize
       ret = []
-      sfid = reference.at("./seriesInfo[@name='#{self::FLAVOR}']", "./front/seriesInfo[@name='#{self::FLAVOR}']")
+      sfid = reference.at("./seriesInfo[@name='#{self::FLAVOR}']",
+                          "./front/seriesInfo[@name='#{self::FLAVOR}']")
       if sfid
         ret << DocumentIdentifier.new(type: sfid[:name], id: sfid[:value])
       elsif self::FLAVOR && (id = (reference[:anchor] || reference[:docName] || reference[:number]))
-        ret << DocumentIdentifier.new( type: self::FLAVOR, id: id.sub(/^(RFC)/, "\\1 "))
+        ret << DocumentIdentifier.new(type: self::FLAVOR, id: id.sub(/^(RFC)/, "\\1 "))
       end
       if (id = reference[:anchor])
         ret << DocumentIdentifier.new(type: "rfc-anchor", id: id)
@@ -288,6 +289,8 @@ module RelatonBib
       d = [date[:year], month(date[:month]), (date[:day] || 1)].compact.join "-"
       date = Time.parse(d).strftime "%Y-%m-%d"
       [BibliographicDate.new(type: "published", on: date)]
+    rescue ArgumentError
+      []
     end
 
     # @param reference [Nokogiri::XML::Element]

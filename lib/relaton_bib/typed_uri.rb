@@ -5,7 +5,7 @@ module RelatonBib
   class TypedUri
     # @return [Symbol] :src/:obp/:rss
     attr_reader :type
-    # @retutn [URI]
+    # @retutn [Addressable::URI]
     attr_reader :content
 
     # @param type [String, NilClass] src/obp/rss
@@ -37,7 +37,7 @@ module RelatonBib
     # @param count [Integer] number of links
     # @return [String]
     def to_asciibib(prefix = "", count = 1)
-      pref = prefix.empty? ? "link" : prefix + ".link"
+      pref = prefix.empty? ? "link" : "#{prefix}.link"
       out = count > 1 ? "#{pref}::\n" : ""
       out += "#{pref}.type:: #{type}\n" if type
       out += "#{pref}.content:: #{content}\n"

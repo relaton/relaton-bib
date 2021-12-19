@@ -14,9 +14,9 @@ module RelatonBib
   class RequestError < StandardError; end
 
   class << self
-    # @param date [String, Integer, Date]
-    # @param str [Boolean]
-    # @return [Date, nil]
+    # @param date [String, Integer, Date] date
+    # @param str [Boolean] return string or Date
+    # @return [Date, String, nil] date
     def parse_date(date, str = true) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity,Metrics/AbcSize
       return date if date.is_a?(Date)
 
