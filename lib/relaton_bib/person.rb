@@ -189,8 +189,8 @@ module RelatonBib
     # @option opts [String, Symbol] :lang language
     def to_xml(**opts)
       opts[:builder].person do |builder|
-        name.to_xml **opts
-        affiliation.each { |a| a.to_xml **opts }
+        name.to_xml(**opts)
+        affiliation.each { |a| a.to_xml(**opts) }
         identifier.each { |id| id.to_xml builder }
         contact.each { |contact| contact.to_xml builder }
       end
@@ -210,7 +210,7 @@ module RelatonBib
     # @count [Integer] number of persons
     # @return [String]
     def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize
-      pref = prefix.sub /\*$/, "person"
+      pref = prefix.sub(/\*$/, "person")
       out = count > 1 ? "#{pref}::\n" : ""
       out += name.to_asciibib pref
       affiliation.each { |af| out += af.to_asciibib pref, affiliation.size }
