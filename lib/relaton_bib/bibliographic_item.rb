@@ -331,7 +331,7 @@ module RelatonBib
     #
     # @param [Nokogiri::XML::Builder, nil] builder
     #
-    # @return [String] <description>
+    # @return [String, Nokogiri::XML::Builder::NodeBuilder] XML
     #
     def to_bibxml(builder = nil)
       if builder
@@ -339,8 +339,8 @@ module RelatonBib
       else
         Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
           render_bibxml xml
-        end
-      end.doc.root.to_xml
+        end.doc.root.to_xml
+      end
     end
 
     # @return [Hash]
@@ -761,13 +761,40 @@ module RelatonBib
     # rubocop:enable Style/NestedParenthesizedCalls, Metrics/BlockLength
 
     #
-    # Render BibXML (RFC)
+    # Render BibXML (RFC, BCP)
     #
     # @param [Nokogiri::XML::Builder] builder
     #
     def render_bibxml(builder)
       target = link.detect { |l| l.type == "src" } || link.detect { |l| l.type == "doi" }
-      bxml = builder.reference(anchor: anchor) do |xml|
+      bxml = if docnumber&.match(/^BCP/) || docidentifier[0].id.include?("BCP")
+               render_bibxml_refgroup(builder)
+             else
+               render_bibxml_ref(builder)
+             end
+      bxml[:target] = target.content.to_s if target
+    end
+
+    #
+    # Render BibXML (BCP)
+    #
+    # @param [Nokogiri::XML::Builder] builder
+    #
+    def render_bibxml_refgroup(builder)
+      builder.referencegroup(anchor: anchor) do |b|
+        relation.each do |r|
+          r.bibitem.to_bibxml(b) if r.type == "includes"
+        end
+      end
+    end
+
+    #
+    # Render BibXML (RFC)
+    #
+    # @param [Nokogiri::XML::Builder] builder
+    #
+    def render_bibxml_ref(builder)
+      builder.reference(anchor: anchor) do |xml|
         xml.front do
           xml.title title[0].title.content if title.any?
           render_seriesinfo xml
@@ -778,7 +805,6 @@ module RelatonBib
           render_abstract xml
         end
       end
-      bxml[:target] = target.content.to_s if target
     end
 
     def anchor
