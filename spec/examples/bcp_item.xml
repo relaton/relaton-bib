@@ -1,5 +1,5 @@
-<referencegroup anchor="BCP1" target="https://www.rfc-editor.org/info/bcp1">
-  <reference anchor="RFC1" target="https://www.rfc-editor.org/info/rfc1">
+<referencegroup anchor="BCP001" target="https://www.rfc-editor.org/info/bcp1">
+  <reference anchor="RFC0001" target="https://www.rfc-editor.org/info/rfc1">
     <front>
       <title>Included RFC0001</title>
       <seriesInfo name="BCP" value="1"/>
@@ -12,7 +12,7 @@
       </abstract>
     </front>
   </reference>
-  <reference anchor="RFC2" target="https://www.rfc-editor.org/info/rfc2">
+  <reference anchor="RFC0002" target="https://www.rfc-editor.org/info/rfc2">
     <front>
       <title>Included RFC0002</title>
       <seriesInfo name="BCP" value="1"/>

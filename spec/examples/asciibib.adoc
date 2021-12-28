@@ -1,7 +1,7 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2021-10-08
+fetched:: 2021-12-27
 title::
 title.type:: title-main
 title.content:: Geographic information
@@ -18,7 +18,7 @@ title.format:: text/plain
 type:: standard
 docid::
 docid.type:: ISO
-docid.id:: TC211
+docid.id:: ISO TC 211
 docid::
 docid.type:: isbn
 docid.id:: ISBN
@@ -39,7 +39,7 @@ docid.id:: 10.17487/rfc1149
 docid::
 docid.type:: Internet-Draft
 docid.id:: draft-ietf-somewg-someprotocol-07
-docnumber:: 123456
+docnumber:: TC211
 edition:: 1
 language:: en
 language:: fr

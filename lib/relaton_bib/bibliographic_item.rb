@@ -766,7 +766,8 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder
     #
     def render_bibxml(builder)
-      target = link.detect { |l| l.type == "src" } || link.detect { |l| l.type == "doi" }
+      target = link.detect { |l| l.type == "src" } ||
+        link.detect { |l| l.type == "doi" }
       bxml = if docnumber&.match(/^BCP/) || docidentifier[0].id.include?("BCP")
                render_bibxml_refgroup(builder)
              else
@@ -781,7 +782,7 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder
     #
     def render_bibxml_refgroup(builder)
-      builder.referencegroup(anchor: anchor) do |b|
+      builder.referencegroup(**ref_attrs) do |b|
         relation.each do |r|
           r.bibitem.to_bibxml(b) if r.type == "includes"
         end
@@ -794,7 +795,7 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder
     #
     def render_bibxml_ref(builder)
-      builder.reference(anchor: anchor) do |xml|
+      builder.reference(**ref_attrs) do |xml|
         xml.front do
           xml.title title[0].title.content if title.any?
           render_seriesinfo xml
@@ -807,18 +808,27 @@ module RelatonBib
       end
     end
 
-    def anchor
-      did = docidentifier.detect { |di| di.type == "rfc-anchor" }
-      return did.id if did
+    def ref_attrs
+      discopes = %w[anchor docName number]
+      attrs = docidentifier.each_with_object({}) do |di, h|
+        next unless discopes.include?(di.scope)
 
-      type = docidentifier[0].type
-      "#{type}.#{docnumber}"
+        h[di.scope] = di.id
+      end
+      # did = docidentifier.detect { |di| di.type == "rfc-anchor" }
+      return attrs if attrs.any?
+
+      docidentifier.first&.tap do |di|
+        return { anchor: di.id }
+      end
     end
 
+    # def id_to_ref_attr(id)
+    #   id.sub(/^(RFC|BCP)\s/, '\1').sub(/^(\d?[A-Z]+)\s/, '\1.')
+    # end
+
     def render_keyword(builder)
-      keyword.each do |kw|
-        builder.keyword kw.content
-      end
+      keyword.each { |kw| builder.keyword kw.content }
     end
 
     def render_workgroup(builder)

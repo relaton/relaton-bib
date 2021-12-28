@@ -26,10 +26,10 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     it "has urls" do
       expect(subject.url).to eq "https://www.iso.org/standard/53798.html"
       expect(subject.url(:rss)).to eq "https://www.iso.org/contents/data/"\
-                                          "standard/05/37/53798.detail.rss"
+                                      "standard/05/37/53798.detail.rss"
     end
     it "returns shortref" do
-      expect(subject.shortref(subject.docidentifier.first)).to eq "TC211:2014"
+      expect(subject.shortref(subject.docidentifier.first)).to eq "ISOTC211:2014"
     end
 
     it "returns abstract with en language" do

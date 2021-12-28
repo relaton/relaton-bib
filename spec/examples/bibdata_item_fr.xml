@@ -1,12 +1,12 @@
 <bibdata type="standard">
-  <fetched>2021-10-08</fetched>
+  <fetched>2021-12-27</fetched>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
   <uri type="src">https://www.iso.org/standard/53798.html</uri>
   <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
   <uri type="rss">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
   <uri type="doi">http://standrd.org/doi-123</uri>
   <uri type="file">file://path/file</uri>
-  <docidentifier type="ISO">TC211</docidentifier>
+  <docidentifier type="ISO">ISO TC 211</docidentifier>
   <docidentifier type="isbn">ISBN</docidentifier>
   <docidentifier type="lccn">LCCN</docidentifier>
   <docidentifier type="issn" scope="series">ISSN</docidentifier>
@@ -14,7 +14,7 @@
   <docidentifier>XYZ</docidentifier>
   <docidentifier type="DOI">10.17487/rfc1149</docidentifier>
   <docidentifier type="Internet-Draft">draft-ietf-somewg-someprotocol-07</docidentifier>
-  <docnumber>123456</docnumber>
+  <docnumber>TC211</docnumber>
   <date type="issued">
     <on>2014</on>
   </date>

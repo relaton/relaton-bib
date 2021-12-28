@@ -6,10 +6,8 @@ title:
 type: standard
 
 docid:
-  - id: BCP 001
-    type: BCP
-  - id: BCP1
-    type: rfc-anchor
+  - id: BCP001
+    type: IETF
 
 docnumber: BCP001
 
@@ -31,8 +29,6 @@ relation:
       docid:
         - id: RFC0001
           type: IETF
-        - id: RFC1
-          type: rfc-anchor
       link:
         - type: src
           content: https://www.rfc-editor.org/info/rfc1
@@ -69,8 +65,6 @@ relation:
       docid:
         - id: RFC0002
           type: IETF
-        - id: RFC2
-          type: rfc-anchor
       link:
         - type: src
           content: https://www.rfc-editor.org/info/rfc2

@@ -45,7 +45,7 @@ module RelatonBib
     end
 
     # @param attrs [Hash]
-    # @return [RelatonBib::IetfBibliographicItem]
+    # @return [RelatonBib::BibliographicItem]
     def bib_item(**attrs)
       # attrs[:place] = ["Fremont, CA"]
       BibliographicItem.new(**attrs)
@@ -70,13 +70,21 @@ module RelatonBib
       sfid = reference.at("./seriesInfo[@name='#{self::FLAVOR}']",
                           "./front/seriesInfo[@name='#{self::FLAVOR}']")
       if sfid
-        ret << DocumentIdentifier.new(type: sfid[:name], id: sfid[:value])
-      elsif self::FLAVOR && (id = (reference[:anchor] || reference[:docName] || reference[:number]))
-        ret << DocumentIdentifier.new(type: self::FLAVOR, id: id.sub(/^(RFC)/, "\\1 "))
+        type = sfid[:name]
+        id = sfid[:value]
+        scope = "series"
+      else # if self::FLAVOR
+        id, scope = if reference[:anchor] then [reference[:anchor], "anchor"]
+                    elsif reference[:docName] then [reference[:docName], "docName"]
+                    elsif reference[:number] then [reference[:number], "number"]
+                    end
+        id&.match(/^(3GPP|W3C|[A-Z]{2,})(?:\.(?=[A-Z])|(?=\d))/)
+        type = self::FLAVOR || ($~ && $~[1])
       end
-      if (id = reference[:anchor])
-        ret << DocumentIdentifier.new(type: "rfc-anchor", id: id)
-      end
+      ret << DocumentIdentifier.new(type: type, id: id, scope: scope) if id
+      # if (id = reference[:anchor])
+      #   ret << DocumentIdentifier.new(type: "rfc-anchor", id: id)
+      # end
       ret + reference.xpath("./seriesInfo", "./front/seriesInfo").map do |si|
         next unless SERIESINFONAMES.include? si[:name]
 
@@ -139,7 +147,8 @@ module RelatonBib
     # @return [Array<RelatonBib::FormattedString>]
     def abstracts(ref)
       ref.xpath("./front/abstract").map do |a|
-        c = a.children.to_s.gsub(/\s*(<\/?)t(>)\s*/, '\1p\2').gsub(/\n/, "").squeeze " "
+        c = a.children.to_s.gsub(/\s*(<\/?)t(>)\s*/, '\1p\2')
+          .gsub(/[\t\n]/, " ").squeeze " "
         FormattedString.new(content: c, language: language(ref), script: "Latn",
                             format: "text/html")
       end
@@ -244,7 +253,7 @@ module RelatonBib
     # @rerurn [RelatonBib::Address]
     def address(postal) # rubocop:disable Metrics/CyclomaticComplexity
       street = [
-        (postal.at("./postalLine") || postal.at("./street"))&.text
+        (postal.at("./postalLine") || postal.at("./street"))&.text,
       ].compact
       Address.new(
         street: street,

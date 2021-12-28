@@ -11,7 +11,7 @@ doctype: document
 subdoctype: subdocument
 
 docid:
-  - id: TC211
+  - id: ISO TC 211
     type: ISO
   - id: ISBN
     type: isbn
@@ -28,7 +28,7 @@ docid:
   - id: draft-ietf-somewg-someprotocol-07
     type: Internet-Draft
 
-docnumber: "123456"
+docnumber: "TC211"
 edition: "1"
 
 language:
