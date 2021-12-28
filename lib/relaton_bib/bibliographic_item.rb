@@ -813,7 +813,7 @@ module RelatonBib
       attrs = docidentifier.each_with_object({}) do |di, h|
         next unless discopes.include?(di.scope)
 
-        h[di.scope] = di.id
+        h[di.scope.to_sym] = di.id
       end
       # did = docidentifier.detect { |di| di.type == "rfc-anchor" }
       return attrs if attrs.any?
