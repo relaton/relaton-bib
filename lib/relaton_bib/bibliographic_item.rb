@@ -815,17 +815,12 @@ module RelatonBib
 
         h[di.scope.to_sym] = di.id
       end
-      # did = docidentifier.detect { |di| di.type == "rfc-anchor" }
       return attrs if attrs.any?
 
       docidentifier.first&.tap do |di|
         return { anchor: di.id }
       end
     end
-
-    # def id_to_ref_attr(id)
-    #   id.sub(/^(RFC|BCP)\s/, '\1').sub(/^(\d?[A-Z]+)\s/, '\1.')
-    # end
 
     def render_keyword(builder)
       keyword.each { |kw| builder.keyword kw.content }

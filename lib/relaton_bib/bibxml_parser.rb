@@ -67,21 +67,31 @@ module RelatonBib
     #
     def docids(reference, ver) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/AbcSize
       ret = []
-      sfid = reference.at("./seriesInfo[@name='#{self::FLAVOR}']",
-                          "./front/seriesInfo[@name='#{self::FLAVOR}']")
-      if sfid
-        type = sfid[:name]
-        id = sfid[:value]
-        scope = "series"
-      else # if self::FLAVOR
-        id, scope = if reference[:anchor] then [reference[:anchor], "anchor"]
-                    elsif reference[:docName] then [reference[:docName], "docName"]
-                    elsif reference[:number] then [reference[:number], "number"]
-                    end
-        id&.match(/^(3GPP|W3C|[A-Z]{2,})(?:\.(?=[A-Z])|(?=\d))/)
-        type = self::FLAVOR || ($~ && $~[1])
+      # sfid = reference.at("./seriesInfo[@name='#{self::FLAVOR}']",
+      #                     "./front/seriesInfo[@name='#{self::FLAVOR}']")
+      # if sfid
+      #   type = sfid[:name]
+      #   id = sfid[:value]
+      #   # scope = "series"
+      # else # if self::FLAVOR
+        # id, scope = if reference[:anchor] then [reference[:anchor], "anchor"]
+        #             elsif reference[:docName] then [reference[:docName], "docName"]
+        #             elsif reference[:number] then [reference[:number], "number"]
+        #             end
+      id = reference["anchor"] || reference["docName"] || reference["number"]
+      type_match = id&.match(/^(3GPP|W3C|[A-Z]{2,})(?:\.(?=[A-Z])|(?=\d))/)
+      type = self::FLAVOR || (type_match && type_match[1])
+      ret << DocumentIdentifier.new(type: type, id: id) if id
+      %w[anchor docName number].each do |atr|
+        if reference[atr]
+          ret << DocumentIdentifier.new(id: reference[atr], type: type, scope: atr)
+        end
       end
-      ret << DocumentIdentifier.new(type: type, id: id, scope: scope) if id
+      # end
+      # if id
+      #   ret << DocumentIdentifier.new(type: type, id: id)
+      #   ret << DocumentIdentifier.new(type: type, id: id, scope: scope) if scope
+      # end
       # if (id = reference[:anchor])
       #   ret << DocumentIdentifier.new(type: "rfc-anchor", id: id)
       # end
