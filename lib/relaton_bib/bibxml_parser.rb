@@ -81,7 +81,10 @@ module RelatonBib
       id = reference["anchor"] || reference["docName"] || reference["number"]
       type_match = id&.match(/^(3GPP|W3C|[A-Z]{2,})(?:\.(?=[A-Z])|(?=\d))/)
       type = self::FLAVOR || (type_match && type_match[1])
-      ret << DocumentIdentifier.new(type: type, id: id) if id
+      if id
+        pid = id.sub(/^(3GPP|W3C|[A-Z]{2,})\.?/, '\1 ')
+        ret << DocumentIdentifier.new(type: type, id: pid)
+      end
       %w[anchor docName number].each do |atr|
         if reference[atr]
           ret << DocumentIdentifier.new(id: reference[atr], type: type, scope: atr)

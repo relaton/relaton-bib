@@ -20,7 +20,7 @@ module RelatonBib
     def remove_part
       case @type
       when "Chinese Standard" then @id.sub!(/\.\d+/, "")
-      when "ISO", "IEC" then @id.sub!(/-[^:]+/, "")
+      when "ISO", "IEC", "BSI" then @id.sub!(/-[^:]+/, "")
       when "URN" then remove_urn_part
       end
     end
@@ -28,7 +28,7 @@ module RelatonBib
     def remove_date
       case @type
       when "Chinese Standard" then @id.sub!(/-[12]\d\d\d/, "")
-      when "ISO", "IEC" then @id.sub!(/:[12]\d\d\d/, "")
+      when "ISO", "IEC", "BSI" then @id.sub!(/:[12]\d\d\d/, "")
       when "URN"
         @id.sub!(/^(urn:iec:std:[^:]+:[^:]+:)[^:]*/, '\1')
       end
@@ -69,8 +69,8 @@ module RelatonBib
     # @param prefix [String]
     # @param count [Integer] number of docids
     # @return [String]
-    def to_asciibib(prefix = "", count = 1)
-      pref = prefix.empty? ? prefix : prefix + "."
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/CyclomaticComplexity
+      pref = prefix.empty? ? prefix : "#{prefix}."
       return "#{pref}docid:: #{id}\n" unless type || scope
 
       out = count > 1 ? "#{pref}docid::\n" : ""
