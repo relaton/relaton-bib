@@ -82,7 +82,9 @@ module RelatonBib
       type_match = id&.match(/^(3GPP|W3C|[A-Z]{2,})(?:\.(?=[A-Z])|(?=\d))/)
       type = self::FLAVOR || (type_match && type_match[1])
       if id
-        pid = id.sub(/^(3GPP|W3C|[A-Z]{2,})\.?/, '\1 ')
+        /^(?<pref>I-D|3GPP|W3C|[A-Z]{2,})\.?(?<num>.+)/ =~ id
+        num.sub!(/^-?0+/, "") if %w[RFC BCP FYI STD].include?(pref)
+        pid = pref ? "#{pref} #{num}" : id
         ret << DocumentIdentifier.new(type: type, id: pid)
       end
       %w[anchor docName number].each do |atr|
