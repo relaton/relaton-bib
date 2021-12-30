@@ -818,7 +818,7 @@ module RelatonBib
       return attrs if attrs.any?
 
       docidentifier.first&.tap do |di|
-        return { anchor: di.id }
+        return { anchor: di.id.gsub(" ", ".") }
       end
     end
 

@@ -1,4 +1,4 @@
-<reference anchor="ISO TC 211" target="https://www.iso.org/standard/53798.html">
+<reference anchor="ISO.TC.211" target="https://www.iso.org/standard/53798.html">
   <front>
     <title>Geographic information</title>
     <seriesInfo name="DOI" value="10.17487/rfc1149"/>
