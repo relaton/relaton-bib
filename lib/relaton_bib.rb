@@ -42,10 +42,10 @@ module RelatonBib
   # @param array [Array]
   # @return [Array<String>, String]
   def single_element_array(array)
-    if array.size > 1
-      array.map { |e| e.is_a?(String) ? e : e.to_hash }
-    else
-      array.first.is_a?(String) ? array[0] : array.first&.to_hash
-    end
+    # if array.size > 1
+    array.map { |e| e.is_a?(String) ? e : e.to_hash }
+    # else
+    #   array.first.is_a?(String) ? array[0] : array.first&.to_hash
+    # end
   end
 end
