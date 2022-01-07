@@ -935,8 +935,15 @@ module RelatonBib
     def render_organization(builder, org)
       return unless org
 
-      o = builder.organization org.name.first&.content
-      o[:abbrev] = org.abbreviation.content if org.abbreviation
+      ab = org.abbreviation&.content
+      on = org.name.first&.content
+      orgname = if ab == "IEEE" || on == "Istitute of Electrical and Electronics Engineers"
+                  "IEEE"
+                elsif ab == "W3C" || on == "World Wide Web Consortium" then "W3C"
+                else on || ab
+                end
+      o = builder.organization orgname
+      o[:abbrev] = ab if ab
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

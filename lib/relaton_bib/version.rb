@@ -1,3 +1,3 @@
 module RelatonBib
-  VERSION = "1.9.17".freeze
+  VERSION = "1.9.18".freeze
 end

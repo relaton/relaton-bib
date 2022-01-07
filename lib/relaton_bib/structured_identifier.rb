@@ -70,17 +70,18 @@ module RelatonBib
 
     # rubocop:disable Metrics/MethodLength
 
-    # @param type [String, NilClass]
-    # @param agency [Array<String>]
-    # @parma class [Stirng, NilClass]
-    # @parma docnumber [String]
-    # @param partnumber [String, NilClass]
-    # @param edition [String, NilClass]
-    # @param version [String, NilClass]
-    # @param supplementtype [String, NilClass]
-    # @param supplementnumber [String, NilClass]
-    # @param language [String, NilClass]
-    # @param year [String, NilClass]
+    # @param docnumber [String]
+    # @param args [Hash]
+    # @option args [String, nil] :type
+    # @option args [Array<String>] :agency
+    # @option args [Stirng, nil] :class
+    # @option args [String, nil] :partnumber
+    # @option args [String, nil] :edition
+    # @option args [String, nil] :version
+    # @option args [String, nil] :supplementtype
+    # @option args [String, nil] :supplementnumber
+    # @option args [String, nil] :language
+    # @option args [String, nil] :year
     def initialize(docnumber:, **args)
       @type = args[:type]
       @agency = args[:agency]

@@ -1,5 +1,5 @@
 <bibdata type="standard">
-  <fetched>2021-12-27</fetched>
+  <fetched>2022-01-07</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -68,9 +68,9 @@
       <description>Editor description</description>
     </role>
     <organization>
-      <name>IETF</name>
-      <abbreviation>IETF</abbreviation>
-      <identifier type="uri">www.ietf.org</identifier>
+      <name>Institute of Electrical and Electronics Engineers</name>
+      <abbreviation>IEEE</abbreviation>
+      <identifier type="uri">www.ieee.org</identifier>
     </organization>
   </contributor>
   <contributor>
@@ -106,7 +106,7 @@
       <description>sponsor</description>
     </role>
     <organization>
-      <name>Institution</name>
+      <name>World Wide Web Consortium</name>
     </organization>
   </contributor>
   <edition>1</edition>

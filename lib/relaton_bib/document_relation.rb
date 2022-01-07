@@ -36,7 +36,7 @@ module RelatonBib
     attr_reader :source_locality
 
     # @param type [String]
-    # @parma description [RelatonBib::FormattedString, NilClass]
+    # @param description [RelatonBib::FormattedString, NilClass]
     # @param bibitem [RelatonBib::BibliographicItem,
     #   RelatonIso::IsoBibliographicItem]
     # @param locality [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]

@@ -24,7 +24,7 @@
       </address>
     </author>
     <author role="editor">
-      <organization abbrev="IETF">IETF</organization>
+      <organization abbrev="IEEE">IEEE</organization>
     </author>
     <author initials="A." surname="Bierman">
       <organization abbrev="IETF">IETF</organization>
@@ -40,7 +40,7 @@
       </address>
     </author>
     <author>
-      <organization>Institution</organization>
+      <organization>W3C</organization>
     </author>
     <date year="2014" month="April" day="1"/>
     <workgroup>Editorial group</workgroup>

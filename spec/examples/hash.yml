@@ -91,11 +91,11 @@ contributor:
   - author
 - organization:
     name:
-    - IETF
-    abbreviation: IETF
+    - Institute of Electrical and Electronics Engineers
+    abbreviation: IEEE
     identifier:
     - type: uri
-      id: www.ietf.org
+      id: www.ieee.org
   role:
   - description:
     - Publisher description
@@ -160,7 +160,7 @@ contributor:
   - author
 - organization:
     name:
-    - Institution
+    - World Wide Web Consortium
   role:
   - description:
     - sponsor
@@ -332,7 +332,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2022-01-06'
+fetched: '2022-01-07'
 keyword:
 - Keyword
 - Key Word

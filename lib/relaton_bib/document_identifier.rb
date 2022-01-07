@@ -9,7 +9,7 @@ module RelatonBib
 
     # @param id [String]
     # @param type [String, NilClass]
-    # @param scoope [String, NilClass]
+    # @param scope [String, NilClass]
     def initialize(id:, type: nil, scope: nil)
       @id    = id
       @type  = type

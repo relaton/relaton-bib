@@ -15,7 +15,7 @@ module RelatonBib
       @content = Addressable::URI.parse content if content
     end
 
-    # @parma url [String]
+    # @param url [String]
     def content=(url)
       @content = Addressable::URI.parse url
     end

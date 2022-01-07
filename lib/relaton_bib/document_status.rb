@@ -68,7 +68,7 @@ module RelatonBib
       # @return [String, NilClass]
       attr_reader :abbreviation
 
-      # @parma value [String]
+      # @param value [String]
       # @param abbreviation [String, NilClass]
       def initialize(value:, abbreviation: nil)
         @value = value

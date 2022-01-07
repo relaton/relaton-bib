@@ -1,7 +1,7 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2021-12-27
+fetched:: 2022-01-07
 title::
 title.type:: title-main
 title.content:: Geographic information
@@ -164,10 +164,10 @@ contributor.person.contact.type:: phone
 contributor.person.contact.value:: 223322
 contributor.role.type:: author
 contributor::
-contributor.organization.name:: IETF
-contributor.organization.abbreviation:: IETF
+contributor.organization.name:: Institute of Electrical and Electronics Engineers
+contributor.organization.abbreviation:: IEEE
 contributor.organization.identifier.type:: uri
-contributor.organization.identifier.value:: www.ietf.org
+contributor.organization.identifier.value:: www.ieee.org
 contributor::
 contributor.role.description:: Publisher description
 contributor.role.type:: publisher
@@ -205,7 +205,7 @@ contributor.person.contact.type:: phone
 contributor.person.contact.value:: 223322
 contributor.role.type:: author
 contributor::
-contributor.organization.name:: Institution
+contributor.organization.name:: World Wide Web Consortium
 contributor.role.description:: sponsor
 contributor.role.type:: distributor
 relation::
