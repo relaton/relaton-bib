@@ -56,7 +56,7 @@ module RelatonBib
       else
         builder.parent["language"] = language.join(",") if language&.any?
         builder.parent["script"]   = script.join(",") if script&.any?
-        builder.parent << content # .encode(xml: :text)
+        builder.parent << content.encode # (xml: :text)
       end
     end
 
