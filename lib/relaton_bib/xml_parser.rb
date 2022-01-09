@@ -1,3 +1,8 @@
+# encoding: utf-8
+
+Encoding.default_internal = Encoding::UTF_8
+Encoding.default_external = Encoding::UTF_8
+
 require "nokogiri"
 
 module RelatonBib
@@ -11,7 +16,7 @@ module RelatonBib
           bib_item item_data(bibitem)
         else
           warn "[relaton-bib] WARNING: can't find bibitem or bibdata element "\
-          "in the XML"
+               "in the XML"
         end
       end
 
@@ -320,7 +325,8 @@ module RelatonBib
       # @return [Array<RelatonBib::FormattedString>]
       def fetch_abstract(item)
         item.xpath("./abstract").map do |a|
-          FormattedString.new(content: a.children.to_s, language: a[:language],
+          c = a.children.to_s
+          FormattedString.new(content: c, language: a[:language],
                               script: a[:script], format: a[:format])
         end
       end

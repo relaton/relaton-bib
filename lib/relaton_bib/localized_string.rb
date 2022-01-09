@@ -56,8 +56,12 @@ module RelatonBib
       else
         builder.parent["language"] = language.join(",") if language&.any?
         builder.parent["script"]   = script.join(",") if script&.any?
-        builder.parent << content.encode # (xml: :text)
+        builder.parent << escaped_content # .encode(xml: :text)
       end
+    end
+
+    def escaped_content
+      content.encode("UTF-8") # .gsub(/&/, "&amp;").gsub(/"/, "&quot;").gsub(/'/, "&apos;")
     end
 
     # @return [Hash]
@@ -77,7 +81,7 @@ module RelatonBib
     # @param count [Integer] number of elements
     # @return [String]
     def to_asciibib(prefix = "", count = 1, has_attrs = false) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       if content.is_a? String
         unless language&.any? || script&.any? || has_attrs
           return "#{prefix}:: #{content}\n"
