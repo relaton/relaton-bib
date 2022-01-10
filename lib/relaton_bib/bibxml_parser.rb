@@ -2,6 +2,10 @@ module RelatonBib
   module BibXMLParser
     SERIESINFONAMES = ["DOI", "Internet-Draft"].freeze
     FLAVOR = nil
+    ORGNAMES = {
+      "IEEE" => "Istitute of Electrical and Electronics Engineers",
+      "W3C" => "World Wide Web Consortium",
+    }.freeze
 
     def parse(bibxml, url: nil, is_relation: false, ver: nil)
       doc = Nokogiri::XML bibxml
@@ -209,7 +213,8 @@ module RelatonBib
       #   "front/author[not(@surname)][not(@fullname)]/organization",
       # ).map do |org|
       org = contrib.at("./organization")
-      { entity: new_org(org.text, org[:abbrev]), role: [contributor_role(contrib)] }
+      name = ORGNAMES[org.text] || org.text
+      { entity: new_org(name, org[:abbrev]), role: [contributor_role(contrib)] }
       # end
     end
 

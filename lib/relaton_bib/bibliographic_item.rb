@@ -937,10 +937,8 @@ module RelatonBib
 
       ab = org.abbreviation&.content
       on = org.name.first&.content
-      orgname = if ab == "IEEE" || on == "Istitute of Electrical and Electronics Engineers"
-                  "IEEE"
-                elsif ab == "W3C" || on == "World Wide Web Consortium" then "W3C"
-                else on || ab
+      orgname = if BibXMLParser::ORGNAMES.key?(ab) then ab
+                else BibXMLParser::ORGNAMES.key(on) || on || ab
                 end
       o = builder.organization orgname
       o[:abbrev] = ab if ab
