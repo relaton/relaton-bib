@@ -46,6 +46,51 @@ RSpec.describe "BibXML parser" do
     expect(cont[3].type).to eq "uri"
   end
 
+  it "parse I-D doctype" do
+    expect(RelatonBib::BibXMLParser.doctype("I-D")).to eq "internet-draft"
+  end
+
+  it "return empty dates array when date parce fails" do
+    doc = Nokogiri::XML <<~END_XML
+      <reference>
+        <front><date year="2001" month="14"/></front>
+      </reference>
+    END_XML
+    ref = doc.at "/reference"
+    expect(RelatonBib::BibXMLParser.dates(ref)).to eq []
+  end
+
+  it "parse I-D format links" do
+    doc = Nokogiri::XML <<~END_XML
+      <reference anchor="I-D-12.3">
+        <format type="DOC" target="https://www.rfc-editor.org/info/I-D-12.3.doc"/>
+      </reference>
+    END_XML
+    ref = doc.at "/reference"
+    link = RelatonBib::BibXMLParser.link ref, nil, "1"
+    expect(link.size).to eq 1
+    expect(link[0][:type]).to eq "DOC"
+  end
+
+  it "parse RFC seriesinfo" do
+    bibxml = <<~END_XML
+      <reference anchor="RFC0001" target="https://www.rfc-editor.org/info/rfc1">
+        <front>
+          <title>Host Software</title>
+          <author initials="S." surname="Crocker" fullname="S. Crocker">
+          <organization/>
+          </author>
+          <date year="1969" month="April"/>
+        </front>
+        <seriesInfo name="RFC" value="1"/>
+        <seriesInfo name="DOI" value="10.17487/RFC0001"/>
+      </reference>
+    END_XML
+    rfc = RelatonBib::BibXMLParser.parse bibxml
+    expect(rfc.docidentifier[2].type).to eq "DOI"
+    expect(rfc.docidentifier[2].id).to eq "10.17487/RFC0001"
+  end
+
   # it "returns default affiliation" do
   #   doc = Nokogiri::XML <<~END_XML
   #     <reference>

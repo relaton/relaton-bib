@@ -312,7 +312,7 @@ module RelatonBib
     # @return [Array<RelatonBib::BibliographicDate>] published data.
     #
     def dates(reference)
-      return unless (date = reference.at "./front/date")
+      return [] unless (date = reference.at "./front/date")
 
       d = [date[:year], month(date[:month]), (date[:day] || 1)].compact.join "-"
       date = Time.parse(d).strftime "%Y-%m-%d"

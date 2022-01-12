@@ -766,8 +766,8 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder
     #
     def render_bibxml(builder)
-      target = link.detect { |l| l.type == "src" } ||
-        link.detect { |l| l.type == "doi" }
+      target = link.detect { |l| l.type.casecmp("src").zero? } ||
+        link.detect { |l| l.type.casecmp("doi").zero? }
       bxml = if docnumber&.match(/^BCP/) || docidentifier[0].id.include?("BCP")
                render_bibxml_refgroup(builder)
              else
@@ -920,13 +920,22 @@ module RelatonBib
     def render_person(builder, person)
       render_organization builder, person.affiliation.first&.organization
       if person.name.completename
-        builder.parent[:fullname] = person.name.completename
+        builder.parent[:fullname] = person.name.completename.content
+      elsif person.name.forename.any?
+        builder.parent[:fullname] = person.name.forename.map(&:content).join
       end
       if person.name.initial.any?
         builder.parent[:initials] = person.name.initial.map(&:content).join
+      elsif person.name.forename.any?
+        builder.parent[:initials] = person.name.forename.map do |f|
+          "#{f.content[0]}."
+        end.join
       end
       if person.name.surname
-        builder.parent[:surname] = person.name.surname
+        if person.name.forename.any?
+          builder.parent[:fullname] += " #{person.name.surname}"
+        end
+        builder.parent[:surname] = person.name.surname.content
       end
     end
 
