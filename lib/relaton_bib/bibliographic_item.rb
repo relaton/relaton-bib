@@ -165,8 +165,8 @@ module RelatonBib
     # @option date [String, nil] :to
     # @option date [String, nil] :on required if :from is nil
     #
-    # @param contributor [Array<Hash>]
-    # @option contributor [RealtonBib::Organization, RelatonBib::Person]
+    # @param contributor [Array<Hash, RelatonBib::ContributionInfo>]
+    # @option contributor [RealtonBib::Organization, RelatonBib::Person] :entity
     # @option contributor [String] :type
     # @option contributor [String] :from
     # @option contributor [String] :to
@@ -860,9 +860,9 @@ module RelatonBib
           builder.seriesInfo(name: di.type, value: di.id)
         end
       end
-      di_types = docidentifier.map(&:type)
+      # di_types = docidentifier.map(&:type)
       series.select do |s|
-        s.title && !di_types.include?(s.title.title.to_s) &&
+        s.title && # !di_types.include?(s.title.title.to_s) &&
           !BibXMLParser::SERIESINFONAMES.include?(s.title.title.to_s)
       end.uniq { |s| s.title.title.to_s }.each do |s|
         si = builder.seriesInfo(name: s.title.title.to_s)

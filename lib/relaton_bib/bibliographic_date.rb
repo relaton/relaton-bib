@@ -29,14 +29,22 @@ module RelatonBib
 
     # @param part [Symbol] :year, :month, :day, :date
     # @return [String, Date, nil]
-    def from(part = nil)
+    def from(part = nil) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       d = instance_variable_get "@#{__callee__}".to_sym
       return d unless part && d
 
-      date = parse_date(d)
-      return date if part == :date
+      # date = parse_date(d)
+      # return date if part == :date
 
-      date.is_a?(Date) ? date.send(part) : date
+      parts = d.split "-"
+      case part
+      when :year then parts[0]&.to_i
+      when :month then parts[1]&.to_i
+      when :day then parts[2]&.to_i
+      else parse_date(d)
+      end
+
+      # date.is_a?(Date) ? date.send(part) : date
     end
 
     alias_method :to, :from
@@ -71,7 +79,7 @@ module RelatonBib
     # @param count [Integer] number of dates
     # @return [String]
     def to_asciibib(prefix = "", count = 1)
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       out = count > 1 ? "#{pref}date::\n" : ""
       out += "#{pref}date.type:: #{type}\n"
       out += "#{pref}date.on:: #{on}\n" if on

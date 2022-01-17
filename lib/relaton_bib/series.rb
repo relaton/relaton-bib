@@ -13,7 +13,7 @@ module RelatonBib
     # @return [RelatonBib::FormattedRef, NilClass]
     attr_reader :formattedref
 
-    # @return [RelatonBib::FormattedString, NilClass] title
+    # @return [RelatonBib::TypedTitleString, NilClass] title
     attr_reader :title
 
     # @return [String, NilClass]
@@ -39,10 +39,10 @@ module RelatonBib
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 
-    # @param type [String, NilClass] title or formattedref argument should be
-    #   passed
+    # @param type [String, NilClass]
     # @param formattedref [RelatonBib::FormattedRef, NilClass]
-    # @param title [RelatonBib::TypedTitleString, NilClass]
+    # @param title [RelatonBib::TypedTitleString, NilClass] title or
+    #   formattedref argument should be passed
     # @param place [String, NilClass]
     # @param orgaization [String, NilClass]
     # @param abbreviation [RelatonBib::LocalizedString, NilClass]

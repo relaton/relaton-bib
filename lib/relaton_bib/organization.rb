@@ -39,7 +39,7 @@ module RelatonBib
     # @param count [Integer]
     # @return [String]
     def to_asciibib(prefix = "", count = 1)
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       out = count > 1 ? "#{pref}identifier::\n" : ""
       out += "#{pref}identifier.type:: #{type}\n"
       out += "#{pref}identifier.value:: #{value}\n"
@@ -118,7 +118,7 @@ module RelatonBib
     # @param count [Integer]
     # @return [String]
     def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
-      pref = prefix.sub /\*$/, "organization"
+      pref = prefix.sub(/\*$/, "organization")
       out = count > 1 ? "#{pref}::\n" : ""
       name.each { |n| out += n.to_asciibib "#{pref}.name", name.size }
       out += abbreviation.to_asciibib "#{pref}.abbreviation" if abbreviation
@@ -136,10 +136,11 @@ module RelatonBib
     # @param arg [String, Hash, RelatoBib::LocalizedString]
     # @return [RelatoBib::LocalizedString]
     def localized_string(arg)
-      if arg.is_a?(String) then LocalizedString.new(arg)
-      elsif arg.is_a?(Hash)
+      case arg
+      when String then LocalizedString.new(arg)
+      when Hash
         LocalizedString.new(arg[:content], arg[:language], arg[:script])
-      elsif arg.is_a? LocalizedString then arg
+      when LocalizedString then arg
       end
     end
   end

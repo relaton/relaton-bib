@@ -50,15 +50,15 @@ RSpec.describe "BibXML parser" do
     expect(RelatonBib::BibXMLParser.doctype("I-D")).to eq "internet-draft"
   end
 
-  it "return empty dates array when date parce fails" do
-    doc = Nokogiri::XML <<~END_XML
-      <reference>
-        <front><date year="2001" month="14"/></front>
-      </reference>
-    END_XML
-    ref = doc.at "/reference"
-    expect(RelatonBib::BibXMLParser.dates(ref)).to eq []
-  end
+  # it "return empty dates array when date parce fails" do
+  #   doc = Nokogiri::XML <<~END_XML
+  #     <reference>
+  #       <front><date year="2001" month="14"/></front>
+  #     </reference>
+  #   END_XML
+  #   ref = doc.at "/reference"
+  #   expect(RelatonBib::BibXMLParser.dates(ref)).to eq []
+  # end
 
   it "parse I-D format links" do
     doc = Nokogiri::XML <<~END_XML

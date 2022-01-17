@@ -6,7 +6,7 @@
       <author fullname="A. Bierman">
         <organization abbrev="IETF">IETF</organization>
       </author>
-      <date year="2014" month="April" day="1"/>
+      <date year="2014" month="April"/>
       <abstract>
         <t>Abstract RFC 0001</t>
       </abstract>
@@ -16,7 +16,7 @@
     <front>
       <title>Included RFC0002</title>
       <seriesInfo name="BCP" value="1"/>
-      <date year="1999" month="December" day="1"/>
+      <date year="1999" month="December"/>
     </front>
   </reference>
 </referencegroup>

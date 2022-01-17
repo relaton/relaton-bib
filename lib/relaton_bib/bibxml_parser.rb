@@ -1,7 +1,10 @@
 module RelatonBib
   module BibXMLParser
+    # SeriesInfo what should be saved as docidentifiers in the Relaton model.
     SERIESINFONAMES = ["DOI", "Internet-Draft"].freeze
+
     FLAVOR = nil
+
     ORGNAMES = {
       "IEEE" => "Istitute of Electrical and Electronics Engineers",
       "W3C" => "World Wide Web Consortium",
@@ -314,11 +317,13 @@ module RelatonBib
     def dates(reference)
       return [] unless (date = reference.at "./front/date")
 
-      d = [date[:year], month(date[:month]), (date[:day] || 1)].compact.join "-"
-      date = Time.parse(d).strftime "%Y-%m-%d"
-      [BibliographicDate.new(type: "published", on: date)]
-    rescue ArgumentError
-      []
+      d = date[:year]
+      d += "-#{month(date[:month])}" if date[:month] && !date[:month].empty?
+      d += "-#{date[:day]}" if date[:day]
+      # date = Time.parse(d).strftime "%Y-%m-%d"
+      [BibliographicDate.new(type: "published", on: d)]
+    # rescue ArgumentError
+    #   []
     end
 
     # @param reference [Nokogiri::XML::Element]
@@ -338,10 +343,10 @@ module RelatonBib
     end
 
     def month(mon)
-      return 1 if !mon || mon.empty?
+      # return 1 if !mon || mon.empty?
       return mon if /^\d+$/.match? mon
 
-      Date::MONTHNAMES.index(mon)
+      Date::MONTHNAMES.index(mon).to_s.rjust 2, "0"
     end
 
     #
@@ -352,7 +357,7 @@ module RelatonBib
     #
     def series(reference)
       reference.xpath("./seriesInfo", "./front/seriesInfo").map do |si|
-        next if si[:name] == "DOI" || si[:stream] || si[:status]
+        next if SERIESINFONAMES.include?(si[:name]) || si[:stream] || si[:status]
 
         t = TypedTitleString.new(
           content: si[:name], language: language(reference), script: "Latn",
