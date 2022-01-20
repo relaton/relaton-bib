@@ -238,11 +238,12 @@ module RelatonBib
           OrgIdentifier.new(i[:type], i.text)
         end
         subdiv = org.xpath("subdivision").map &:text
-        Organization.new(name: names,
-                         abbreviation: org.at("abbreviation")&.text,
-                         subdivision: subdiv,
-                         url: org.at("uri")&.text,
-                         identifier: identifier)
+        contact = parse_contact org
+        Organization.new(
+          name: names, abbreviation: org.at("abbreviation")&.text,
+          subdivision: subdiv, # url: org.at("uri")&.text,
+          identifier: identifier, contact: contact
+        )
       end
 
       def get_person(person) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
@@ -255,21 +256,7 @@ module RelatonBib
           Affiliation.new organization: get_org(org), description: desc
         end
 
-        contact = person.xpath("./address|./phone|./email|./uri").map do |c|
-          if c.name == "address"
-            streets = c.xpath("./street").map(&:text)
-            Address.new(
-              street: streets,
-              city: c.at("./city")&.text,
-              state: c.at("./state")&.text,
-              country: c.at("./country")&.text,
-              postcode: c.at("./postcode")&.text,
-            )
-          else
-            Contact.new(type: c.name, value: c.text)
-          end
-        end
-
+        contact = parse_contact person
         identifier = person.xpath("./identifier").map do |pi|
           PersonIdentifier.new pi[:type], pi.text
         end
@@ -293,6 +280,23 @@ module RelatonBib
           contact: contact,
           identifier: identifier,
         )
+      end
+
+      def parse_contact(contrib) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength,Metrics/AbcSize
+        contrib.xpath("./address|./phone|./email|./uri").map do |c|
+          if c.name == "address"
+            streets = c.xpath("./street").map(&:text)
+            Address.new(
+              street: streets,
+              city: c.at("./city")&.text,
+              state: c.at("./state")&.text,
+              country: c.at("./country")&.text,
+              postcode: c.at("./postcode")&.text,
+            )
+          else
+            Contact.new(type: c.name, value: c.text)
+          end
+        end
       end
 
       def name_part(person, part)
