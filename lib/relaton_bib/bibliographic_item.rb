@@ -330,15 +330,16 @@ module RelatonBib
     # Render BibXML (RFC)
     #
     # @param [Nokogiri::XML::Builder, nil] builder
+    # @param [Boolean] include_keywords (false)
     #
     # @return [String, Nokogiri::XML::Builder::NodeBuilder] XML
     #
-    def to_bibxml(builder = nil)
+    def to_bibxml(builder = nil, include_keywords: false)
       if builder
-        render_bibxml builder
+        render_bibxml builder, include_keywords
       else
         Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
-          render_bibxml xml
+          render_bibxml xml, include_keywords
         end.doc.root.to_xml
       end
     end
@@ -764,14 +765,15 @@ module RelatonBib
     # Render BibXML (RFC, BCP)
     #
     # @param [Nokogiri::XML::Builder] builder
+    # @param [Boolean] include_bibdata
     #
-    def render_bibxml(builder)
+    def render_bibxml(builder, include_keywords)
       target = link.detect { |l| l.type.casecmp("src").zero? } ||
         link.detect { |l| l.type.casecmp("doi").zero? }
       bxml = if docnumber&.match(/^BCP/) || docidentifier[0].id.include?("BCP")
-               render_bibxml_refgroup(builder)
+               render_bibxml_refgroup(builder, include_keywords)
              else
-               render_bibxml_ref(builder)
+               render_bibxml_ref(builder, include_keywords)
              end
       bxml[:target] = target.content.to_s if target
     end
@@ -780,11 +782,12 @@ module RelatonBib
     # Render BibXML (BCP)
     #
     # @param [Nokogiri::XML::Builder] builder
+    # @param [Boolean] include_keywords
     #
-    def render_bibxml_refgroup(builder)
+    def render_bibxml_refgroup(builder, include_keywords)
       builder.referencegroup(**ref_attrs) do |b|
         relation.each do |r|
-          r.bibitem.to_bibxml(b) if r.type == "includes"
+          r.bibitem.to_bibxml(b, include_keywords: include_keywords) if r.type == "includes"
         end
       end
     end
@@ -793,8 +796,9 @@ module RelatonBib
     # Render BibXML (RFC)
     #
     # @param [Nokogiri::XML::Builder] builder
+    # @param [Boolean] include_keywords
     #
-    def render_bibxml_ref(builder)
+    def render_bibxml_ref(builder, include_keywords)
       builder.reference(**ref_attrs) do |xml|
         xml.front do
           xml.title title[0].title.content if title.any?
@@ -802,7 +806,7 @@ module RelatonBib
           render_authors xml
           render_date xml
           render_workgroup xml
-          render_keyword xml
+          render_keyword xml if include_keywords
           render_abstract xml
         end
       end
@@ -942,10 +946,10 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder
     # @param [RelatonBib::Organization] org
     def render_organization(builder, org)
-      return unless org
+      # return unless org
 
-      ab = org.abbreviation&.content
-      on = org.name.first&.content
+      ab = org&.abbreviation&.content
+      on = org&.name&.first&.content
       orgname = if BibXMLParser::ORGNAMES.key?(ab) then ab
                 else BibXMLParser::ORGNAMES.key(on) || on || ab
                 end
