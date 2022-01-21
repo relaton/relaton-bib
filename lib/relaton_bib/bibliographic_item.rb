@@ -853,8 +853,11 @@ module RelatonBib
       elm[:year] = y if y
       m = dt.on(:month) || dt.from(:month) || dt.to(:month)
       elm[:month] = Date::MONTHNAMES[m] if m
+      # rfcs = %w[RFC BCP FYI STD]
+      # unless rfcs.include?(doctype) && docidentifier.detect { |di| rfcs.include? di.type }
       d = dt.on(:day) || dt.from(:day) || dt.to(:day)
       elm[:day] = d if d
+      # end
     end
 
     # @param [Nokogiri::XML::Builder] builder
