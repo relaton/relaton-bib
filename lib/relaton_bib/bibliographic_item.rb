@@ -802,13 +802,13 @@ module RelatonBib
       builder.reference(**ref_attrs) do |xml|
         xml.front do
           xml.title title[0].title.content if title.any?
-          render_seriesinfo xml
           render_authors xml
           render_date xml
           render_workgroup xml
           render_keyword xml if include_keywords
           render_abstract xml
         end
+        render_seriesinfo xml
       end
     end
 

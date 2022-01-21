@@ -2,7 +2,6 @@
   <reference anchor="RFC0001" target="https://www.rfc-editor.org/info/rfc1">
     <front>
       <title>Included RFC0001</title>
-      <seriesInfo name="BCP" value="1"/>
       <author fullname="A. Bierman">
         <organization abbrev="IETF">IETF</organization>
       </author>
@@ -11,12 +10,13 @@
         <t>Abstract RFC 0001</t>
       </abstract>
     </front>
+    <seriesInfo name="BCP" value="1"/>
   </reference>
   <reference anchor="RFC0002" target="https://www.rfc-editor.org/info/rfc2">
     <front>
       <title>Included RFC0002</title>
-      <seriesInfo name="BCP" value="1"/>
       <date year="1999" month="December"/>
     </front>
+    <seriesInfo name="BCP" value="1"/>
   </reference>
 </referencegroup>
