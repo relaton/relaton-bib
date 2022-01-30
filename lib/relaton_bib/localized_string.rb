@@ -73,7 +73,7 @@ module RelatonBib
         hash["language"] = single_element_array(language) if language&.any?
         hash["script"] = single_element_array(script) if script&.any?
         hash
-      else content.map &:to_hash
+      else content&.map &:to_hash
       end
     end
 

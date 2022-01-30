@@ -8,6 +8,7 @@ module RelatonBib
     ORGNAMES = {
       "IEEE" => "Istitute of Electrical and Electronics Engineers",
       "W3C" => "World Wide Web Consortium",
+      "3GPP" => "3rd Generation Partnership Project",
     }.freeze
 
     def parse(bibxml, url: nil, is_relation: false, ver: nil)
@@ -74,39 +75,18 @@ module RelatonBib
     #
     def docids(reference, ver) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/AbcSize
       ret = []
-      # sfid = reference.at("./seriesInfo[@name='#{self::FLAVOR}']",
-      #                     "./front/seriesInfo[@name='#{self::FLAVOR}']")
-      # if sfid
-      #   type = sfid[:name]
-      #   id = sfid[:value]
-      #   # scope = "series"
-      # else # if self::FLAVOR
-        # id, scope = if reference[:anchor] then [reference[:anchor], "anchor"]
-        #             elsif reference[:docName] then [reference[:docName], "docName"]
-        #             elsif reference[:number] then [reference[:number], "number"]
-        #             end
       id = reference["anchor"] || reference["docName"] || reference["number"]
-      type_match = id&.match(/^(3GPP|W3C|[A-Z]{2,})(?:\.(?=[A-Z])|(?=\d))/)
-      type = self::FLAVOR || (type_match && type_match[1])
       if id
         /^(?<pref>I-D|3GPP|W3C|[A-Z]{2,})[._]?(?<num>.+)/ =~ id
         num.sub!(/^-?0+/, "") if %w[RFC BCP FYI STD].include?(pref)
         pid = pref ? "#{pref} #{num}" : id
-        ret << DocumentIdentifier.new(type: type, id: pid)
+        ret << DocumentIdentifier.new(type: pubid_type(id), id: pid)
       end
       %w[anchor docName number].each do |atr|
         if reference[atr]
-          ret << DocumentIdentifier.new(id: reference[atr], type: type, scope: atr)
+          ret << DocumentIdentifier.new(id: reference[atr], type: pubid_type(id), scope: atr)
         end
       end
-      # end
-      # if id
-      #   ret << DocumentIdentifier.new(type: type, id: id)
-      #   ret << DocumentIdentifier.new(type: type, id: id, scope: scope) if scope
-      # end
-      # if (id = reference[:anchor])
-      #   ret << DocumentIdentifier.new(type: "rfc-anchor", id: id)
-      # end
       ret + reference.xpath("./seriesInfo", "./front/seriesInfo").map do |si|
         next unless SERIESINFONAMES.include? si[:name]
 
@@ -114,6 +94,18 @@ module RelatonBib
         id.sub!(/(?<=-)\d{2}$/, ver) if ver && si[:name] == "Internet-Draft"
         DocumentIdentifier.new(id: id, type: si[:name])
       end.compact
+    end
+
+    #
+    # Extract document identifier type from identifier
+    #
+    # @param [String] id identifier
+    #
+    # @return [String]
+    #
+    def pubid_type(id)
+      type_match = id&.match(/^(3GPP|W3C|[A-Z]{2,})(?:\.(?=[A-Z])|(?=\d))/)
+      type_match && type_match[1]
     end
 
     #

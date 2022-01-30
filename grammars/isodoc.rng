@@ -17,7 +17,7 @@
   these elements; we just want one namespace for any child grammars
   of this.
 -->
-<grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <include href="reqt.rng"/>
   <!-- include "biblio.rnc" { } -->
   <include href="basicdoc.rng">
@@ -31,6 +31,68 @@
         </optional>
         <ref name="DocumentType"/>
       </element>
+    </define>
+    <define name="index">
+      <element name="index">
+        <optional>
+          <attribute name="to">
+            <data type="IDREF"/>
+          </attribute>
+        </optional>
+        <element name="primary">
+          <oneOrMore>
+            <choice>
+              <ref name="PureTextElement"/>
+              <ref name="stem"/>
+            </choice>
+          </oneOrMore>
+        </element>
+        <optional>
+          <element name="secondary">
+            <oneOrMore>
+              <choice>
+                <ref name="PureTextElement"/>
+                <ref name="stem"/>
+              </choice>
+            </oneOrMore>
+          </element>
+        </optional>
+        <optional>
+          <element name="tertiary">
+            <oneOrMore>
+              <choice>
+                <ref name="PureTextElement"/>
+                <ref name="stem"/>
+              </choice>
+            </oneOrMore>
+          </element>
+        </optional>
+      </element>
+    </define>
+    <define name="bibitem">
+      <element name="bibitem">
+        <attribute name="id">
+          <data type="ID"/>
+        </attribute>
+        <optional>
+          <attribute name="hidden">
+            <data type="boolean"/>
+          </attribute>
+        </optional>
+        <ref name="BibliographicItem"/>
+      </element>
+    </define>
+    <define name="section-title">
+      <element name="title">
+        <zeroOrMore>
+          <ref name="TextElement"/>
+        </zeroOrMore>
+      </element>
+      <zeroOrMore>
+        <element name="variant-title">
+          <ref name="TypedTitleString"/>
+        </element>
+      </zeroOrMore>
     </define>
     <define name="hyperlink">
       <element name="link">
@@ -46,11 +108,13 @@
           <attribute name="alt"/>
         </optional>
         <optional>
-          <attribute name="updatetype">
+          <attribute name="update-type">
             <data type="boolean"/>
           </attribute>
         </optional>
-        <text/>
+        <oneOrMore>
+          <ref name="PureTextElement"/>
+        </oneOrMore>
       </element>
     </define>
     <define name="xref">
@@ -88,7 +152,9 @@
             <data type="boolean"/>
           </attribute>
         </optional>
-        <text/>
+        <oneOrMore>
+          <ref name="PureTextElement"/>
+        </oneOrMore>
       </element>
     </define>
     <define name="erefType">
@@ -118,7 +184,9 @@
         </attribute>
       </optional>
       <ref name="CitationType"/>
-      <text/>
+      <oneOrMore>
+        <ref name="PureTextElement"/>
+      </oneOrMore>
     </define>
     <define name="ul">
       <element name="ul">
@@ -133,6 +201,14 @@
         <optional>
           <attribute name="keep-lines-together">
             <data type="boolean"/>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="tag"/>
+        </optional>
+        <optional>
+          <attribute name="multilingual-rendering">
+            <ref name="MultilingualRenderingType"/>
           </attribute>
         </optional>
         <oneOrMore>
@@ -158,15 +234,25 @@
             <data type="boolean"/>
           </attribute>
         </optional>
-        <attribute name="type">
-          <choice>
-            <value>roman</value>
-            <value>alphabet</value>
-            <value>arabic</value>
-            <value>roman_upper</value>
-            <value>alphabet_upper</value>
-          </choice>
-        </attribute>
+        <optional>
+          <attribute name="tag"/>
+        </optional>
+        <optional>
+          <attribute name="multilingual-rendering">
+            <ref name="MultilingualRenderingType"/>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="type">
+            <choice>
+              <value>roman</value>
+              <value>alphabet</value>
+              <value>arabic</value>
+              <value>roman_upper</value>
+              <value>alphabet_upper</value>
+            </choice>
+          </attribute>
+        </optional>
         <oneOrMore>
           <ref name="li"/>
         </oneOrMore>
@@ -193,6 +279,14 @@
         <optional>
           <attribute name="key">
             <data type="boolean"/>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="tag"/>
+        </optional>
+        <optional>
+          <attribute name="multilingual-rendering">
+            <ref name="MultilingualRenderingType"/>
           </attribute>
         </optional>
         <oneOrMore>
@@ -240,6 +334,14 @@
         <optional>
           <attribute name="keep-lines-together">
             <data type="boolean"/>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="tag"/>
+        </optional>
+        <optional>
+          <attribute name="multilingual-rendering">
+            <ref name="MultilingualRenderingType"/>
           </attribute>
         </optional>
         <optional>
@@ -303,6 +405,14 @@
           <attribute name="width"/>
         </optional>
         <optional>
+          <attribute name="tag"/>
+        </optional>
+        <optional>
+          <attribute name="multilingual-rendering">
+            <ref name="MultilingualRenderingType"/>
+          </attribute>
+        </optional>
+        <optional>
           <ref name="colgroup"/>
         </optional>
         <optional>
@@ -351,6 +461,14 @@
         </optional>
         <optional>
           <attribute name="class"/>
+        </optional>
+        <optional>
+          <attribute name="tag"/>
+        </optional>
+        <optional>
+          <attribute name="multilingual-rendering">
+            <ref name="MultilingualRenderingType"/>
+          </attribute>
         </optional>
         <optional>
           <ref name="source"/>
@@ -411,6 +529,14 @@
           <attribute name="lang"/>
         </optional>
         <optional>
+          <attribute name="tag"/>
+        </optional>
+        <optional>
+          <attribute name="multilingual-rendering">
+            <ref name="MultilingualRenderingType"/>
+          </attribute>
+        </optional>
+        <optional>
           <ref name="tname"/>
         </optional>
         <oneOrMore>
@@ -458,6 +584,14 @@
             <data type="boolean"/>
           </attribute>
         </optional>
+        <optional>
+          <attribute name="tag"/>
+        </optional>
+        <optional>
+          <attribute name="multilingual-rendering">
+            <ref name="MultilingualRenderingType"/>
+          </attribute>
+        </optional>
         <ref name="stem"/>
         <optional>
           <ref name="dl"/>
@@ -486,6 +620,14 @@
           <data type="boolean"/>
         </attribute>
       </optional>
+      <optional>
+        <attribute name="tag"/>
+      </optional>
+      <optional>
+        <attribute name="multilingual-rendering">
+          <ref name="MultilingualRenderingType"/>
+        </attribute>
+      </optional>
       <zeroOrMore>
         <ref name="TextElement"/>
       </zeroOrMore>
@@ -511,6 +653,14 @@
         <optional>
           <attribute name="keep-lines-together">
             <data type="boolean"/>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="tag"/>
+        </optional>
+        <optional>
+          <attribute name="multilingual-rendering">
+            <ref name="MultilingualRenderingType"/>
           </attribute>
         </optional>
         <zeroOrMore>
@@ -542,6 +692,14 @@
         <optional>
           <attribute name="keep-lines-together">
             <data type="boolean"/>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="tag"/>
+        </optional>
+        <optional>
+          <attribute name="multilingual-rendering">
+            <ref name="MultilingualRenderingType"/>
           </attribute>
         </optional>
         <optional>
@@ -582,6 +740,7 @@
             <ref name="terms"/>
             <ref name="term-clause"/>
             <ref name="definitions"/>
+            <ref name="floating-title"/>
           </choice>
         </oneOrMore>
       </element>
@@ -609,9 +768,6 @@
         </optional>
         <zeroOrMore>
           <ref name="BasicBlock"/>
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="note"/>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="bibitem"/>
@@ -653,6 +809,14 @@
         <optional>
           <attribute name="type"/>
         </optional>
+        <optional>
+          <attribute name="tag"/>
+        </optional>
+        <optional>
+          <attribute name="multilingual-rendering">
+            <ref name="MultilingualRenderingType"/>
+          </attribute>
+        </optional>
         <oneOrMore>
           <choice>
             <ref name="paragraph"/>
@@ -689,14 +853,9 @@
       <optional>
         <ref name="section-title"/>
       </optional>
-      <group>
-        <oneOrMore>
-          <ref name="BasicBlock"/>
-        </oneOrMore>
-        <zeroOrMore>
-          <ref name="note"/>
-        </zeroOrMore>
-      </group>
+      <oneOrMore>
+        <ref name="BasicBlock"/>
+      </oneOrMore>
     </define>
     <define name="li">
       <element name="li">
@@ -831,6 +990,9 @@
             <ref name="PureTextElement"/>
             <ref name="stem"/>
             <ref name="index"/>
+            <ref name="eref"/>
+            <ref name="xref"/>
+            <ref name="hyperlink"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -842,6 +1004,9 @@
             <ref name="PureTextElement"/>
             <ref name="stem"/>
             <ref name="index"/>
+            <ref name="eref"/>
+            <ref name="xref"/>
+            <ref name="hyperlink"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -852,6 +1017,9 @@
           <choice>
             <ref name="PureTextElement"/>
             <ref name="index"/>
+            <ref name="eref"/>
+            <ref name="xref"/>
+            <ref name="hyperlink"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -896,6 +1064,26 @@
         </zeroOrMore>
       </element>
     </define>
+    <define name="sub">
+      <element name="sub">
+        <zeroOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="stem"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="sup">
+      <element name="sup">
+        <zeroOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="stem"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
     <define name="pagebreak">
       <element name="pagebreak">
         <optional>
@@ -910,6 +1098,14 @@
     </define>
   </include>
   <!-- end overrides -->
+  <define name="MultilingualRenderingType">
+    <choice>
+      <value>common</value>
+      <value>all-columns</value>
+      <value>parallel</value>
+      <value>tag</value>
+    </choice>
+  </define>
   <define name="docsubtype">
     <element name="subdoctype">
       <ref name="DocumentSubtype"/>
@@ -977,6 +1173,16 @@
         </attribute>
       </optional>
       <optional>
+        <attribute name="linkmention">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="linkref">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
         <element name="refterm">
           <zeroOrMore>
             <choice>
@@ -1011,7 +1217,22 @@
       <ref name="imagemap"/>
       <ref name="svgmap"/>
       <ref name="inputform"/>
+      <ref name="toc"/>
+      <ref name="passthrough"/>
     </choice>
+  </define>
+  <define name="toc">
+    <element name="toc">
+      <ref name="ul"/>
+    </element>
+  </define>
+  <define name="passthrough">
+    <element name="passthrough">
+      <optional>
+        <attribute name="formats"/>
+      </optional>
+      <text/>
+    </element>
   </define>
   <define name="inputform">
     <element name="form">
@@ -1022,6 +1243,14 @@
       <attribute name="action"/>
       <optional>
         <attribute name="class"/>
+      </optional>
+      <optional>
+        <attribute name="tag"/>
+      </optional>
+      <optional>
+        <attribute name="multilingual-rendering">
+          <ref name="MultilingualRenderingType"/>
+        </attribute>
       </optional>
       <zeroOrMore>
         <choice>
@@ -1222,9 +1451,6 @@
       <zeroOrMore>
         <ref name="BasicBlock"/>
       </zeroOrMore>
-      <zeroOrMore>
-        <ref name="note"/>
-      </zeroOrMore>
       <choice>
         <oneOrMore>
           <ref name="reference-clause"/>
@@ -1407,9 +1633,6 @@
         <zeroOrMore>
           <ref name="BasicBlock"/>
         </zeroOrMore>
-        <zeroOrMore>
-          <ref name="note"/>
-        </zeroOrMore>
         <ref name="dl"/>
       </oneOrMore>
     </element>
@@ -1469,14 +1692,9 @@
       <ref name="section-title"/>
     </optional>
     <group>
-      <group>
-        <zeroOrMore>
-          <ref name="BasicBlock"/>
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="note"/>
-        </zeroOrMore>
-      </group>
+      <zeroOrMore>
+        <ref name="BasicBlock"/>
+      </zeroOrMore>
       <zeroOrMore>
         <ref name="content-subsection"/>
       </zeroOrMore>
@@ -1523,14 +1741,9 @@
     </optional>
     <choice>
       <choice>
-        <group>
-          <oneOrMore>
-            <ref name="BasicBlock"/>
-          </oneOrMore>
-          <zeroOrMore>
-            <ref name="note"/>
-          </zeroOrMore>
-        </group>
+        <oneOrMore>
+          <ref name="BasicBlock"/>
+        </oneOrMore>
         <ref name="amend"/>
       </choice>
       <oneOrMore>
@@ -1538,6 +1751,7 @@
           <ref name="clause-subsection"/>
           <ref name="terms"/>
           <ref name="definitions"/>
+          <ref name="floating-title"/>
         </choice>
       </oneOrMore>
     </choice>
@@ -1571,20 +1785,16 @@
       <ref name="section-title"/>
     </optional>
     <group>
-      <group>
-        <zeroOrMore>
-          <ref name="BasicBlock"/>
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="note"/>
-        </zeroOrMore>
-      </group>
+      <zeroOrMore>
+        <ref name="BasicBlock"/>
+      </zeroOrMore>
       <zeroOrMore>
         <choice>
           <ref name="annex-subsection"/>
           <ref name="terms"/>
           <ref name="definitions"/>
           <ref name="references"/>
+          <ref name="floating-title"/>
         </choice>
       </zeroOrMore>
     </group>
@@ -1637,9 +1847,6 @@
       <zeroOrMore>
         <ref name="BasicBlock"/>
       </zeroOrMore>
-      <zeroOrMore>
-        <ref name="note"/>
-      </zeroOrMore>
       <choice>
         <oneOrMore>
           <ref name="term"/>
@@ -1662,6 +1869,20 @@
           <data type="ID"/>
         </attribute>
       </optional>
+      <optional>
+        <attribute name="language"/>
+      </optional>
+      <optional>
+        <attribute name="script"/>
+      </optional>
+      <optional>
+        <attribute name="tag"/>
+      </optional>
+      <optional>
+        <attribute name="multilingual-rendering">
+          <ref name="MultilingualRenderingType"/>
+        </attribute>
+      </optional>
       <oneOrMore>
         <ref name="preferred"/>
       </oneOrMore>
@@ -1669,18 +1890,20 @@
         <ref name="admitted"/>
       </zeroOrMore>
       <zeroOrMore>
-        <ref name="related"/>
+        <ref name="deprecates"/>
       </zeroOrMore>
       <zeroOrMore>
-        <ref name="deprecates"/>
+        <ref name="related"/>
       </zeroOrMore>
       <optional>
         <ref name="termdomain"/>
       </optional>
-      <zeroOrMore>
-        <ref name="termgrammar"/>
-      </zeroOrMore>
-      <ref name="definition"/>
+      <optional>
+        <ref name="termsubject"/>
+      </optional>
+      <oneOrMore>
+        <ref name="termdefinition"/>
+      </oneOrMore>
       <zeroOrMore>
         <ref name="termnote"/>
       </zeroOrMore>
@@ -1694,40 +1917,235 @@
   </define>
   <define name="preferred">
     <element name="preferred">
-      <oneOrMore>
-        <ref name="TextElement"/>
-      </oneOrMore>
+      <ref name="Designation"/>
     </element>
   </define>
   <define name="admitted">
     <element name="admitted">
-      <oneOrMore>
-        <ref name="TextElement"/>
-      </oneOrMore>
+      <ref name="Designation"/>
     </element>
   </define>
   <define name="related">
     <element name="related">
-      <optional>
-        <attribute name="type">
-          <choice>
-            <value>compare</value>
-            <value>contrast</value>
-            <value>see</value>
-          </choice>
-        </attribute>
-      </optional>
-      <oneOrMore>
-        <ref name="TextElement"/>
-      </oneOrMore>
+      <attribute name="type">
+        <ref name="RelatedTermType"/>
+      </attribute>
+      <element name="preferred">
+        <ref name="Designation"/>
+      </element>
+      <choice>
+        <ref name="eref"/>
+        <ref name="xref"/>
+        <ref name="termref"/>
+      </choice>
     </element>
+  </define>
+  <define name="RelatedTermType">
+    <choice>
+      <value>deprecates</value>
+      <value>supersedes</value>
+      <value>narrower</value>
+      <value>broader</value>
+      <value>equivalent</value>
+      <value>compare</value>
+      <value>contrast</value>
+      <value>see</value>
+    </choice>
   </define>
   <define name="deprecates">
     <element name="deprecates">
+      <ref name="Designation"/>
+    </element>
+  </define>
+  <define name="Designation">
+    <optional>
+      <attribute name="absent">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="geographic-area"/>
+    </optional>
+    <choice>
+      <ref name="expression_designation"/>
+      <ref name="letter_symbol_designation"/>
+      <ref name="graphical_symbol_designation"/>
+    </choice>
+    <optional>
+      <ref name="fieldofapplication"/>
+    </optional>
+    <optional>
+      <ref name="usageinfo"/>
+    </optional>
+    <zeroOrMore>
+      <ref name="termsource"/>
+    </zeroOrMore>
+  </define>
+  <define name="fieldofapplication">
+    <element name="field-of-application">
       <oneOrMore>
-        <ref name="TextElement"/>
+        <ref name="PureTextElement"/>
       </oneOrMore>
     </element>
+  </define>
+  <define name="usageinfo">
+    <element name="usage-info">
+      <oneOrMore>
+        <ref name="PureTextElement"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="letter_symbol_designation">
+    <element name="letter-symbol">
+      <optional>
+        <attribute name="isInternational">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <element name="name">
+        <oneOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="stem"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </element>
+  </define>
+  <define name="graphical_symbol_designation">
+    <element name="graphical-symbol">
+      <optional>
+        <attribute name="isInternational">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <ref name="figure"/>
+    </element>
+  </define>
+  <define name="expression_designation">
+    <element name="expression">
+      <optional>
+        <attribute name="language">
+          <a:documentation>ISO-639</a:documentation>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="script">
+          <a:documentation>ISO-15924</a:documentation>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="type">
+          <ref name="ExpressionDesignationType"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="isInternational">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <element name="name">
+        <zeroOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="stem"/>
+            <ref name="index"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+      <optional>
+        <element name="abbreviation-type">
+          <ref name="AbbreviationType"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="pronunciation">
+          <ref name="LocalizedString"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="grammar">
+          <ref name="Grammar"/>
+        </element>
+      </optional>
+    </element>
+  </define>
+  <define name="ExpressionDesignationType">
+    <choice>
+      <value>prefix</value>
+      <value>suffix</value>
+      <value>abbreviation</value>
+      <value>full</value>
+    </choice>
+  </define>
+  <define name="AbbreviationType">
+    <choice>
+      <value>truncation</value>
+      <value>acronym</value>
+      <value>initialism</value>
+    </choice>
+  </define>
+  <define name="Grammar">
+    <zeroOrMore>
+      <element name="gender">
+        <ref name="GrammarGender"/>
+      </element>
+    </zeroOrMore>
+    <zeroOrMore>
+      <element name="number">
+        <ref name="GrammarNumber"/>
+      </element>
+    </zeroOrMore>
+    <optional>
+      <element name="isPreposition">
+        <data type="boolean"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="isParticiple">
+        <data type="boolean"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="isAdjective">
+        <data type="boolean"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="isVerb">
+        <data type="boolean"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="isAdverb">
+        <data type="boolean"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="isNoun">
+        <data type="boolean"/>
+      </element>
+    </optional>
+    <zeroOrMore>
+      <element name="grammar-value">
+        <text/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="GrammarGender">
+    <choice>
+      <value>masculine</value>
+      <value>feminine</value>
+      <value>neuter</value>
+      <value>common</value>
+    </choice>
+  </define>
+  <define name="GrammarNumber">
+    <choice>
+      <value>singular</value>
+      <value>dual</value>
+      <value>plural</value>
+    </choice>
   </define>
   <define name="termdomain">
     <element name="domain">
@@ -1736,22 +2154,55 @@
       </oneOrMore>
     </element>
   </define>
-  <define name="termgrammar">
-    <element name="grammar">
+  <define name="termsubject">
+    <element name="subject">
       <oneOrMore>
         <ref name="TextElement"/>
       </oneOrMore>
     </element>
   </define>
-  <define name="definition">
+  <define name="termdefinition">
     <element name="definition">
+      <choice>
+        <ref name="verbaldefinition"/>
+        <ref name="nonverbalrep"/>
+        <group>
+          <ref name="verbaldefinition"/>
+          <ref name="nonverbalrep"/>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="verbaldefinition">
+    <element name="verbal-definition">
       <oneOrMore>
         <choice>
           <ref name="paragraph"/>
+          <ref name="dl"/>
+          <ref name="ol"/>
+          <ref name="ul"/>
+          <ref name="table"/>
           <ref name="figure"/>
           <ref name="formula"/>
         </choice>
       </oneOrMore>
+      <zeroOrMore>
+        <ref name="termsource"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="nonverbalrep">
+    <element name="non-verbal-representation">
+      <oneOrMore>
+        <choice>
+          <ref name="table"/>
+          <ref name="figure"/>
+          <ref name="formula"/>
+        </choice>
+      </oneOrMore>
+      <zeroOrMore>
+        <ref name="termsource"/>
+      </zeroOrMore>
     </element>
   </define>
   <define name="termnote">
@@ -1780,6 +2231,14 @@
           <data type="boolean"/>
         </attribute>
       </optional>
+      <optional>
+        <attribute name="tag"/>
+      </optional>
+      <optional>
+        <attribute name="multilingual-rendering">
+          <ref name="MultilingualRenderingType"/>
+        </attribute>
+      </optional>
       <oneOrMore>
         <choice>
           <ref name="paragraph"/>
@@ -1796,7 +2255,36 @@
       <attribute name="id">
         <data type="ID"/>
       </attribute>
-      <ref name="paragraph"/>
+      <optional>
+        <attribute name="keep-with-next">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="keep-lines-together">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="tag"/>
+      </optional>
+      <optional>
+        <attribute name="multilingual-rendering">
+          <ref name="MultilingualRenderingType"/>
+        </attribute>
+      </optional>
+      <oneOrMore>
+        <choice>
+          <ref name="formula"/>
+          <ref name="ul"/>
+          <ref name="ol"/>
+          <ref name="dl"/>
+          <ref name="quote"/>
+          <ref name="sourcecode"/>
+          <ref name="paragraph"/>
+          <ref name="figure"/>
+        </choice>
+      </oneOrMore>
     </element>
   </define>
   <define name="termsource">
@@ -1805,6 +2293,12 @@
         <choice>
           <value>identical</value>
           <value>modified</value>
+        </choice>
+      </attribute>
+      <attribute name="type">
+        <choice>
+          <value>authoritative</value>
+          <value>lineage</value>
         </choice>
       </attribute>
       <ref name="origin"/>
@@ -1923,9 +2417,6 @@
         <ref name="BasicBlock"/>
       </zeroOrMore>
       <zeroOrMore>
-        <ref name="note"/>
-      </zeroOrMore>
-      <zeroOrMore>
         <choice>
           <ref name="term-clause"/>
           <ref name="terms"/>
@@ -1962,6 +2453,14 @@
       </optional>
       <optional>
         <attribute name="title"/>
+      </optional>
+      <optional>
+        <attribute name="tag"/>
+      </optional>
+      <optional>
+        <attribute name="multilingual-rendering">
+          <ref name="MultilingualRenderingType"/>
+        </attribute>
       </optional>
       <optional>
         <element name="location">
@@ -2022,6 +2521,14 @@
   </define>
   <define name="imagemap">
     <element name="imagemap">
+      <optional>
+        <attribute name="tag"/>
+      </optional>
+      <optional>
+        <attribute name="multilingual-rendering">
+          <ref name="MultilingualRenderingType"/>
+        </attribute>
+      </optional>
       <ref name="figure"/>
       <zeroOrMore>
         <element name="area">
@@ -2066,6 +2573,14 @@
   </define>
   <define name="svgmap">
     <element name="svgmap">
+      <optional>
+        <attribute name="tag"/>
+      </optional>
+      <optional>
+        <attribute name="multilingual-rendering">
+          <ref name="MultilingualRenderingType"/>
+        </attribute>
+      </optional>
       <ref name="figure"/>
       <zeroOrMore>
         <element name="target">
@@ -2101,6 +2616,19 @@
       <oneOrMore>
         <ref name="BasicBlock"/>
       </oneOrMore>
+    </element>
+  </define>
+  <define name="floating-title">
+    <element name="floating-title">
+      <attribute name="id">
+        <data type="ID"/>
+      </attribute>
+      <attribute name="depth">
+        <data type="int"/>
+      </attribute>
+      <zeroOrMore>
+        <ref name="TextElement"/>
+      </zeroOrMore>
     </element>
   </define>
 </grammar>

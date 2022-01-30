@@ -59,14 +59,22 @@
       <attribute name="type"/>
     </optional>
     <optional>
+      <attribute name="tag"/>
+    </optional>
+    <optional>
+      <attribute name="multilingual-rendering">
+        <ref name="MultilingualRenderingType"/>
+      </attribute>
+    </optional>
+    <optional>
       <ref name="reqtitle"/>
     </optional>
     <optional>
       <ref name="label"/>
     </optional>
-    <optional>
+    <zeroOrMore>
       <ref name="subject"/>
-    </optional>
+    </zeroOrMore>
     <zeroOrMore>
       <ref name="reqinherit"/>
     </zeroOrMore>
@@ -80,6 +88,7 @@
         <ref name="verification"/>
         <ref name="import"/>
         <ref name="description"/>
+        <ref name="component"/>
       </choice>
     </zeroOrMore>
     <optional>
@@ -100,17 +109,23 @@
   </define>
   <define name="label">
     <element name="label">
-      <text/>
+      <oneOrMore>
+        <ref name="TextElement"/>
+      </oneOrMore>
     </element>
   </define>
   <define name="subject">
     <element name="subject">
-      <text/>
+      <oneOrMore>
+        <ref name="TextElement"/>
+      </oneOrMore>
     </element>
   </define>
   <define name="reqinherit">
     <element name="inherit">
-      <text/>
+      <oneOrMore>
+        <ref name="TextElement"/>
+      </oneOrMore>
     </element>
   </define>
   <define name="measurementtarget">
@@ -138,6 +153,12 @@
       <ref name="RequirementSubpart"/>
     </element>
   </define>
+  <define name="component">
+    <element name="component">
+      <attribute name="class"/>
+      <ref name="RequirementSubpart"/>
+    </element>
+  </define>
   <define name="reqt_references">
     <element name="references">
       <oneOrMore>
@@ -162,6 +183,14 @@
     <optional>
       <attribute name="keep-lines-together">
         <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="tag"/>
+    </optional>
+    <optional>
+      <attribute name="multilingual-rendering">
+        <ref name="MultilingualRenderingType"/>
       </attribute>
     </optional>
     <oneOrMore>
