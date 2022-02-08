@@ -33,7 +33,7 @@ module RelatonBib
         o.is_a?(Hash) ? ContributionInfo.new(entity: Organization.new(**o)) : o
       end
 
-      @from  = Date.strptime(from.to_s, "%Y") if from.to_s.match? /\d{4}/
+      @from  = Date.strptime(from.to_s, "%Y") if from.to_s.match?(/\d{4}/)
       @to    = Date.strptime(to.to_s, "%Y") unless to.to_s.empty?
       @scope = scope
     end
@@ -45,7 +45,7 @@ module RelatonBib
       opts[:builder].copyright do |builder|
         builder.from from ? from.year : "unknown"
         builder.to to.year if to
-        owner.each { |o| builder.owner { o.to_xml **opts } }
+        owner.each { |o| builder.owner { o.to_xml(**opts) } }
         builder.scope scope if scope
       end
     end

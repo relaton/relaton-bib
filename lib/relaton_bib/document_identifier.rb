@@ -7,13 +7,18 @@ module RelatonBib
     # @return [String, NilClass]
     attr_reader :type, :scope
 
+    # @param type [Boolean, nil]
+    attr_reader :primary
+
     # @param id [String]
     # @param type [String, NilClass]
     # @param scope [String, NilClass]
-    def initialize(id:, type: nil, scope: nil)
+    # @param priority [Bolean]
+    def initialize(id:, type: nil, scope: nil, primary: false)
       @id    = id
       @type  = type
       @scope = scope
+      @primary = primary
     end
 
     # in docid manipulations, assume ISO as the default: id-part:year
@@ -56,6 +61,7 @@ module RelatonBib
       element = opts[:builder].docidentifier lid
       element[:type] = type if type
       element[:scope] = scope if scope
+      element[:primary] = primary if primary
     end
 
     # @return [Hash]
@@ -63,19 +69,21 @@ module RelatonBib
       hash = { "id" => id }
       hash["type"] = type if type
       hash["scope"] = scope if scope
+      hash["primary"] = primary if primary
       hash
     end
 
     # @param prefix [String]
     # @param count [Integer] number of docids
     # @return [String]
-    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/CyclomaticComplexity
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
       pref = prefix.empty? ? prefix : "#{prefix}."
       return "#{pref}docid:: #{id}\n" unless type || scope
 
       out = count > 1 ? "#{pref}docid::\n" : ""
       out += "#{pref}docid.type:: #{type}\n" if type
       out += "#{pref}docid.scope:: #{scope}\n" if scope
+      out += "#{pref}docid.primary:: #{primary}\n" if primary
       out + "#{pref}docid.id:: #{id}\n"
     end
 

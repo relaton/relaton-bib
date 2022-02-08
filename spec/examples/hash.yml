@@ -28,6 +28,7 @@ type: standard
 docid:
 - id: ISO TC 211
   type: ISO
+  primary: true
 - id: ISBN
   type: isbn
 - id: LCCN
@@ -332,7 +333,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2022-01-07'
+fetched: '2022-02-01'
 keyword:
 - Keyword
 - Key Word

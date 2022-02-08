@@ -80,7 +80,7 @@ module RelatonBib
         /^(?<pref>I-D|3GPP|W3C|[A-Z]{2,})[._]?(?<num>.+)/ =~ id
         num.sub!(/^-?0+/, "") if %w[RFC BCP FYI STD].include?(pref)
         pid = pref ? "#{pref} #{num}" : id
-        ret << DocumentIdentifier.new(type: pubid_type(id), id: pid)
+        ret << DocumentIdentifier.new(type: pubid_type(id), id: pid, primary: true)
       end
       %w[anchor docName number].each do |atr|
         if reference[atr]

@@ -161,8 +161,9 @@ module RelatonBib
       # @return [Array<RelatonBib::DocumentIdentifier>]
       def fetch_docid(item)
         item.xpath("./docidentifier").map do |did|
+          primary = true if did[:primary] == "true"
           DocumentIdentifier.new(id: did.text, type: did[:type],
-                                 scope: did[:scope])
+                                 scope: did[:scope], primary: primary)
         end
       end
 

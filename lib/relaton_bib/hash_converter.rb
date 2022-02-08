@@ -126,8 +126,9 @@ module RelatonBib
         ret[:docid] = array(ret[:docid])
         ret[:docid]&.each_with_index do |id, i|
           type = id[:type] || id[:id].match(/^\w+(?=\s)/)&.to_s
-          ret[:docid][i] = DocumentIdentifier.new(id: id[:id], type: type,
-                                                  scope: id[:scope])
+          ret[:docid][i] = DocumentIdentifier.new(
+            id: id[:id], type: type, scope: id[:scope], primary: id[:primary],
+          )
         end
       end
 

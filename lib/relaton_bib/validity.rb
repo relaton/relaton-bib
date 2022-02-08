@@ -1,6 +1,6 @@
 module RelatonBib
   class Validity
-    FORMAT = "%Y-%m-%d %H:%M"
+    FORMAT = "%Y-%m-%d %H:%M".freeze
 
     # @return [Time, NilClass]
     attr_reader :begins
@@ -41,7 +41,7 @@ module RelatonBib
     # @param prefix [String]
     # @return [String]
     def to_asciibib(prefix = "")
-      pref = prefix.empty? ? "validity." : prefix + ".validity."
+      pref = prefix.empty? ? "validity." : "#{prefix}.validity."
       out = ""
       out += "#{pref}begins:: #{begins.strftime(FORMAT)}\n" if begins
       out += "#{pref}ends:: #{ends.strftime(FORMAT)}\n" if ends

@@ -13,6 +13,7 @@ subdoctype: subdocument
 docid:
   - id: ISO TC 211
     type: ISO
+    primary: true
   - id: ISBN
     type: isbn
   - id: LCCN
