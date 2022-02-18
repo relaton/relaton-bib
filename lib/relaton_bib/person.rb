@@ -13,8 +13,8 @@ module RelatonBib
     # @return [Array<RelatonBib::LocalizedString>]
     attr_accessor :initial
 
-    # @return [RelatonBib::LocalizedString]
-    attr_accessor :surname
+    # @return [RelatonBib::LocalizedString, nil]
+    attr_accessor :surname, :completename
 
     # @return [Array<RelatonBib::LocalizedString>]
     attr_accessor :addition
@@ -22,15 +22,14 @@ module RelatonBib
     # @return [Array<RelatonBib::LocalizedString>]
     attr_accessor :prefix
 
-    # @return [RelatonBib::LocalizedString]
-    attr_reader :completename
-
-    # @param surname [RelatonBib::LocalizedString]
+    # @param surname [RelatonBib::LocalizedString, nil] surname or completename
+    #   should be present
     # @param forename [Array<RelatonBib::LocalizedString>]
     # @param initial [Array<RelatonBib::LocalizedString>]
     # @param addition [Array<RelatonBib::LocalizedString>]
     # @param prefix [Array<RelatonBib::LocalizedString>]
-    # @param completename [RelatonBib::LocalizedString]
+    # @param completename [RelatonBib::LocalizedString, nil] completename or
+    #   surname should be present
     def initialize(**args)
       unless args[:surname] || args[:completename]
         raise ArgumentError, "Should be given :surname or :completename"

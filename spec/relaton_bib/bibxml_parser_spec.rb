@@ -91,6 +91,10 @@ RSpec.describe "BibXML parser" do
     expect(rfc.docidentifier[2].id).to eq "10.17487/RFC0001"
   end
 
+  it "parse incomplete month name" do
+    expect(RelatonBib::BibXMLParser.month("Sept")).to eq "09"
+  end
+
   # it "returns default affiliation" do
   #   doc = Nokogiri::XML <<~END_XML
   #     <reference>

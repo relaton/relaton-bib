@@ -338,7 +338,7 @@ module RelatonBib
       # return 1 if !mon || mon.empty?
       return mon if /^\d+$/.match? mon
 
-      Date::MONTHNAMES.index(mon).to_s.rjust 2, "0"
+      Date::MONTHNAMES.index { |m| m&.include? mon }.to_s.rjust 2, "0"
     end
 
     #
