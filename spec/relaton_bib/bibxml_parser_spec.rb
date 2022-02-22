@@ -95,6 +95,19 @@ RSpec.describe "BibXML parser" do
     expect(RelatonBib::BibXMLParser.month("Sept")).to eq "09"
   end
 
+  it "parse I-D format" do
+    bibxml = <<~END_XML
+      <reference anchor="I-D-12.3">
+        <format type="TXT" target="https://www.rfc-editor.org/info/rfc1.txt"/>
+      </reference>
+    END_XML
+    id = RelatonBib::BibXMLParser.parse bibxml
+    expect(id.link).to be_instance_of Array
+    expect(id.link[0]).to be_instance_of RelatonBib::TypedUri
+    expect(id.link[0].type).to eq "TXT"
+    expect(id.link[0].content.to_s).to eq "https://www.rfc-editor.org/info/rfc1.txt"
+  end
+
   # it "returns default affiliation" do
   #   doc = Nokogiri::XML <<~END_XML
   #     <reference>

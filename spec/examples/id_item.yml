@@ -1,0 +1,24 @@
+id: I-D-pale-email
+
+title:
+  - ID title
+
+type: standard
+
+docid:
+  - id: I-D -pale-email
+    type: IETF
+    primary: true
+  - id: draft--pale-email-00
+    type: Internet-Draft
+
+docnumber: I-D-pale-email
+
+language:
+  - en
+
+script: Latn
+
+link:
+  - type: TXT
+    content: https://www.ietf.org/archive/id/draft--pale-email-00.txt

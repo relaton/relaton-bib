@@ -197,6 +197,15 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       File.write file, bcpxml, encoding: "UTF-8" unless File.exist? file
       expect(bcpxml).to be_equivalent_to File.read file, encoding: "UTF-8"
     end
+
+    it "convert item to BibXML (ID)" do
+      hash = YAML.load_file "spec/examples/id_item.yml"
+      id = RelatonBib::BibliographicItem.from_hash hash
+      file = "spec/examples/id_item.xml"
+      idxml = id.to_bibxml
+      File.write file, idxml, encoding: "UTF-8" unless File.exist? file
+      expect(idxml).to be_equivalent_to File.read file, encoding: "UTF-8"
+    end
   end
 
   it "initialize with copyright object" do

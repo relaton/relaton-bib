@@ -809,9 +809,21 @@ module RelatonBib
           render_abstract xml
         end
         render_seriesinfo xml
+        render_format xml
       end
     end
 
+    def render_format(builder)
+      link.select { |l| l.type == "TXT" }.each do |l|
+        builder.format type: l.type, target: l.content
+      end
+    end
+
+    #
+    # Create reference attributes
+    #
+    # @return [Hash<Symbol=>String>] attributes
+    #
     def ref_attrs
       discopes = %w[anchor docName number]
       attrs = docidentifier.each_with_object({}) do |di, h|
@@ -826,24 +838,42 @@ module RelatonBib
       end
     end
 
+    #
+    # Render keyword
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    #
     def render_keyword(builder)
       keyword.each { |kw| builder.keyword kw.content }
     end
 
+    #
+    # Render workgroup
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    #
     def render_workgroup(builder)
       editorialgroup&.technical_committee&.each do |tc|
         builder.workgroup tc.workgroup.name
       end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
+    #
+    # Render abstract
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    #
     def render_abstract(builder)
       return unless abstract.any?
 
       builder.abstract { |xml| xml << abstract[0].content.gsub(/(<\/?)p(>)/, '\1t\2') }
     end
 
-    # @param [Nokogiri::XML::Builder] builder
+    #
+    # Render date
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    #
     def render_date(builder)
       dt = date.detect { |d| d.type == "published" }
       return unless dt
@@ -860,7 +890,11 @@ module RelatonBib
       # end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
+    #
+    # Render seriesinfo
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    #
     def render_seriesinfo(builder)
       docidentifier.each do |di|
         if BibXMLParser::SERIESINFONAMES.include? di.type
@@ -877,7 +911,11 @@ module RelatonBib
       end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
+    #
+    # Render authors
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    #
     def render_authors(builder)
       contributor.each do |c|
         builder.author do |xml|
@@ -890,8 +928,12 @@ module RelatonBib
       end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
-    # @param [RelatonBib::ContributionInfo] contrib
+    #
+    # Render address
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    # @param [RelatonBib::ContributionInfo] contrib contributor
+    #
     def render_address(builder, contrib)
       # addr = contrib.entity.contact.reject do |cn|
       #   cn.is_a?(Address) && cn.postcode.nil?
@@ -913,8 +955,12 @@ module RelatonBib
       end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
-    # @param [Array<RelatonBib::Address, RelatonBib::Contact>] addr
+    #
+    # Render contact
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    # @param [Array<RelatonBib::Address, RelatonBib::Contact>] addr contact
+    #
     def render_contact(builder, addr)
       %w[phone email uri].each do |type|
         cont = addr.detect { |cn| cn.is_a?(Contact) && cn.type == type }
@@ -922,8 +968,12 @@ module RelatonBib
       end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
-    # @param [RelatonBib::Person] person
+    #
+    # Render person
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    # @param [RelatonBib::Person] person person
+    #
     def render_person(builder, person)
       render_organization builder, person.affiliation.first&.organization
       if person.name.completename
@@ -946,8 +996,12 @@ module RelatonBib
       end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
-    # @param [RelatonBib::Organization] org
+    #
+    # Render organization
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    # @param [RelatonBib::Organization] org organization
+    #
     def render_organization(builder, org)
       # return unless org
 
