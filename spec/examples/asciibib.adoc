@@ -1,7 +1,7 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2022-02-01
+fetched:: 2022-02-26
 title::
 title.type:: title-main
 title.content:: Geographic information
@@ -223,6 +223,11 @@ relation.type:: partOf
 relation.bibitem.title.type:: main
 relation.bibitem.title.content:: Book title
 relation.bibitem.title.format:: text/plain
+series::
+series.type:: Internet-Draft
+series.title.content:: Internet-Draft
+series.title.format:: text/plain
+series.number:: draft-ietf-somewg-someprotocol-07
 series::
 series.type:: main
 series.title.type:: original

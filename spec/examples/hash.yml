@@ -253,6 +253,11 @@ relation:
       content: Book title
       format: text/plain
 series:
+- type: Internet-Draft
+  title:
+    content: Internet-Draft
+    format: text/plain
+  number: draft-ietf-somewg-someprotocol-07
 - type: main
   title:
     type: original
@@ -333,7 +338,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2022-02-01'
+fetched: '2022-02-26'
 keyword:
 - Keyword
 - Key Word

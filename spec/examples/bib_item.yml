@@ -214,6 +214,9 @@ relation:
         content: Book title
 
 series:
+  - type: Internet-Draft
+    title: Internet-Draft
+    number: draft-ietf-somewg-someprotocol-07
   - type: main
     title:
       type: original

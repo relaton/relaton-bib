@@ -1,7 +1,7 @@
 module RelatonBib
   module BibXMLParser
     # SeriesInfo what should be saved as docidentifiers in the Relaton model.
-    SERIESINFONAMES = ["DOI", "Internet-Draft"].freeze
+    SERIESINFONAMES = ["DOI"].freeze
 
     FLAVOR = nil
 
@@ -75,25 +75,53 @@ module RelatonBib
     #
     def docids(reference, ver) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/AbcSize
       ret = []
-      id = reference["anchor"] || reference["docName"] || reference["number"]
-      if id
-        /^(?<pref>I-D|3GPP|W3C|[A-Z]{2,})[._]?(?<num>.+)/ =~ id
-        num.sub!(/^-?0+/, "") if %w[RFC BCP FYI STD].include?(pref)
-        pid = pref ? "#{pref} #{num}" : id
-        ret << DocumentIdentifier.new(type: pubid_type(id), id: pid, primary: true)
+      si = reference.at("./seriesInfo[@name='Internet-Draft']",
+                        "./front/seriesInfo[@name='Internet-Draft']")
+      if si
+        id = si[:value]
+        id.sub!(/(?<=-)\d{2}$/, ver) if ver
+        ret << DocumentIdentifier.new(type: "Internet-Draft", id: id, primary: true)
+      else
+        id = reference["anchor"] || reference["docName"] || reference["number"]
+        ret << create_docid(id, ver) if id
       end
+
       %w[anchor docName number].each do |atr|
         if reference[atr]
-          ret << DocumentIdentifier.new(id: reference[atr], type: pubid_type(id), scope: atr)
+          type = pubid_type id
+          ret << DocumentIdentifier.new(id: reference[atr], type: type, scope: atr)
         end
       end
+
       ret + reference.xpath("./seriesInfo", "./front/seriesInfo").map do |si|
         next unless SERIESINFONAMES.include? si[:name]
 
         id = si[:value]
-        id.sub!(/(?<=-)\d{2}$/, ver) if ver && si[:name] == "Internet-Draft"
+        # id.sub!(/(?<=-)\d{2}$/, ver) if ver && si[:name] == "Internet-Draft"
         DocumentIdentifier.new(id: id, type: si[:name])
       end.compact
+    end
+
+    def create_docid(id, ver) # rubocop:disable Metrics/MethodLength
+      pref, num = id_to_pref_num(id)
+      if %w[RFC BCP FYI STD].include?(pref)
+        num.sub!(/^-?0+/, "")
+        pid = "#{pref} #{num}"
+        type = pubid_type id
+      elsif %w[I-D draft].include?(pref)
+        pid = "draft-#{num}"
+        pid.sub!(/(?<=-)\d{2}$/, ver) if ver
+        type = "Internet-Draft"
+      else
+        pid = pref ? "#{pref} #{num}" : num
+        type = pubid_type id
+      end
+      DocumentIdentifier.new(type: type, id: pid, primary: true)
+    end
+
+    def id_to_pref_num(id)
+      tn = /^(?<pref>I-D|draft|3GPP|W3C|[A-Z]{2,})[._-]?(?<num>.+)/.match id
+      tn && tn.to_a[1..2]
     end
 
     #
@@ -104,8 +132,7 @@ module RelatonBib
     # @return [String]
     #
     def pubid_type(id)
-      type_match = id&.match(/^(3GPP|W3C|[A-Z]{2,})(?:\.(?=[A-Z])|(?=\d))/)
-      type_match && type_match[1]
+      id_to_pref_num(id)&.first
     end
 
     #
