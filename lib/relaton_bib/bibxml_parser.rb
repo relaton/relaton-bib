@@ -113,7 +113,7 @@ module RelatonBib
         pid.sub!(/(?<=-)\d{2}$/, ver) if ver
         type = "Internet-Draft"
       else
-        pid = pref ? "#{pref} #{num}" : num
+        pid = pref ? "#{pref} #{num}" : id
         type = pubid_type id
       end
       DocumentIdentifier.new(type: type, id: pid, primary: true)
