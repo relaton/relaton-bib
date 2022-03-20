@@ -2,6 +2,7 @@ module RelatonBib
   module BibXMLParser
     # SeriesInfo what should be saved as docidentifiers in the Relaton model.
     SERIESINFONAMES = ["DOI"].freeze
+    RFCPREFIXES = %w[RFC BCP FYI STD].freeze
 
     FLAVOR = nil
 
@@ -88,8 +89,14 @@ module RelatonBib
 
       %w[anchor docName number].each do |atr|
         if reference[atr]
+          pref, num = id_to_pref_num reference[atr]
+          atrid = if atr == "anchor" && RFCPREFIXES.include?(pref)
+                    "#{pref}#{num.sub(/^-?0+/, '')}"
+                  else
+                    reference[atr]
+                  end
           type = pubid_type id
-          ret << DocumentIdentifier.new(id: reference[atr], type: type, scope: atr)
+          ret << DocumentIdentifier.new(id: atrid, type: type, scope: atr)
         end
       end
 
@@ -104,9 +111,8 @@ module RelatonBib
 
     def create_docid(id, ver) # rubocop:disable Metrics/MethodLength
       pref, num = id_to_pref_num(id)
-      if %w[RFC BCP FYI STD].include?(pref)
-        num.sub!(/^-?0+/, "")
-        pid = "#{pref} #{num}"
+      if RFCPREFIXES.include?(pref)
+        pid = "#{pref} #{num.sub(/^-?0+/, '')}"
         type = pubid_type id
       elsif %w[I-D draft].include?(pref)
         pid = "draft-#{num}"

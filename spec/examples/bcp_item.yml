@@ -1,4 +1,4 @@
-id: BCP0001
+id: BCP1
 
 title:
   - BCP title
@@ -6,10 +6,10 @@ title:
 type: standard
 
 docid:
-  - id: BCP001
+  - id: BCP1
     type: IETF
 
-docnumber: BCP001
+docnumber: BCP1
 
 language:
   - en
@@ -25,9 +25,9 @@ relation:
     bibitem:
       title:
         type: maind
-        content: Included RFC0001
+        content: Included RFC1
       docid:
-        - id: RFC0001
+        - id: RFC1
           type: IETF
       link:
         - type: src
@@ -63,7 +63,7 @@ relation:
         type: main
         content: Included RFC0002
       docid:
-        - id: RFC0002
+        - id: RFC2
           type: IETF
       link:
         - type: src
