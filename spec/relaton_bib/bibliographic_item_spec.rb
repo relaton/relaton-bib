@@ -182,29 +182,38 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       )
     end
 
-    it "convert item to BibXML (RFC)" do
-      file = "spec/examples/rfc.xml"
-      rfc = subject.to_bibxml
-      File.write file, rfc, encoding: "UTF-8" unless File.exist? file
-      expect(rfc).to be_equivalent_to File.read file, encoding: "UTF-8"
-    end
+    context "convert item to BibXML" do
+      it "RFC" do
+        file = "spec/examples/rfc.xml"
+        rfc = subject.to_bibxml
+        File.write file, rfc, encoding: "UTF-8" unless File.exist? file
+        expect(rfc).to be_equivalent_to File.read file, encoding: "UTF-8"
+      end
 
-    it "convert item to BibXML (BCP)" do
-      hash = YAML.load_file "spec/examples/bcp_item.yml"
-      bcpbib = RelatonBib::BibliographicItem.from_hash(hash)
-      file = "spec/examples/bcp_item.xml"
-      bcpxml = bcpbib.to_bibxml
-      File.write file, bcpxml, encoding: "UTF-8" unless File.exist? file
-      expect(bcpxml).to be_equivalent_to File.read file, encoding: "UTF-8"
-    end
+      it "BCP" do
+        hash = YAML.load_file "spec/examples/bcp_item.yml"
+        bcpbib = RelatonBib::BibliographicItem.from_hash(hash)
+        file = "spec/examples/bcp_item.xml"
+        bcpxml = bcpbib.to_bibxml
+        File.write file, bcpxml, encoding: "UTF-8" unless File.exist? file
+        expect(bcpxml).to be_equivalent_to File.read file, encoding: "UTF-8"
+      end
 
-    it "convert item to BibXML (ID)" do
-      hash = YAML.load_file "spec/examples/id_item.yml"
-      id = RelatonBib::BibliographicItem.from_hash hash
-      file = "spec/examples/id_item.xml"
-      idxml = id.to_bibxml
-      File.write file, idxml, encoding: "UTF-8" unless File.exist? file
-      expect(idxml).to be_equivalent_to File.read file, encoding: "UTF-8"
+      it "ID" do
+        hash = YAML.load_file "spec/examples/id_item.yml"
+        id = RelatonBib::BibliographicItem.from_hash hash
+        file = "spec/examples/id_item.xml"
+        idxml = id.to_bibxml
+        File.write file, idxml, encoding: "UTF-8" unless File.exist? file
+        expect(idxml).to be_equivalent_to File.read file, encoding: "UTF-8"
+      end
+
+      it "upcase anchor for IANA" do
+        docid = RelatonBib::DocumentIdentifier.new id: "IANA dns-parameters", type: "IANA"
+        ref_attrs = RelatonBib::BibliographicItem.new(docid: [docid]).send :ref_attrs
+        expect(ref_attrs).to be_instance_of Hash
+        expect(ref_attrs[:anchor]).to eq "DNS-PARAMETERS"
+      end
     end
   end
 

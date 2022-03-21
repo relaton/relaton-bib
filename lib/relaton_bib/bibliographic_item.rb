@@ -834,7 +834,8 @@ module RelatonBib
       return attrs if attrs.any?
 
       docidentifier.first&.tap do |di|
-        return { anchor: di.id.gsub(" ", ".") }
+        anchor = di.type == "IANA" ? di.id.split[1..-1].join(" ").upcase : di.id
+        return { anchor: anchor.gsub(" ", ".") }
       end
     end
 
