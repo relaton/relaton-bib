@@ -83,7 +83,7 @@ module RelatonBib
         id.sub!(/(?<=-)\d{2}$/, ver) if ver
         ret << DocumentIdentifier.new(type: "Internet-Draft", id: id, primary: true)
       else
-        id = reference["anchor"] || reference["docName"] || reference["number"]
+        id = reference[:anchor] || reference[:docName] || reference[:number]
         ret << create_docid(id, ver) if id
       end
 
@@ -339,16 +339,15 @@ module RelatonBib
     # @param reference [Nokogiri::XML::Element]
     # @return [Array<RelatonBib::BibliographicDate>] published data.
     #
-    def dates(reference)
-      return [] unless (date = reference.at "./front/date")
+    def dates(reference) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize
+      date = reference.at "./front/date"
+      return [] if date.nil? || date[:year].nil? || date[:year].empty?
 
       d = date[:year]
       d += "-#{month(date[:month])}" if date[:month] && !date[:month].empty?
       d += "-#{date[:day]}" if date[:day]
       # date = Time.parse(d).strftime "%Y-%m-%d"
       [BibliographicDate.new(type: "published", on: d)]
-    # rescue ArgumentError
-    #   []
     end
 
     # @param reference [Nokogiri::XML::Element]
