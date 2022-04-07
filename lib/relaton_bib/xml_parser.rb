@@ -121,13 +121,14 @@ module RelatonBib
         end
       end
 
-      def fetch_medium(item)
+      def fetch_medium(item) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/PerceivedComplexity
         medium = item.at("./medium")
         return unless medium
 
         Medium.new(
-          form: medium.at("form")&.text, size: medium.at("size")&.text,
-          scale: medium.at("scale")&.text
+          content: medium.at("content")&.text, genre: medium.at("genre")&.text,
+          form: medium.at("form")&.text, carrier: medium.at("carrier")&.text,
+          size: medium.at("size")&.text, scale: medium.at("scale")&.text
         )
       end
 

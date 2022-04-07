@@ -210,7 +210,10 @@
     <number>4</number>
   </series>
   <medium>
+    <content>medium content</content>
+    <genre>medium genre</genre>
     <form>medium form</form>
+    <carrier>medium carrier</carrier>
     <size>medium size</size>
     <scale>medium scale</scale>
   </medium>
