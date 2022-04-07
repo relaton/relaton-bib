@@ -275,6 +275,12 @@ extent:
   - type: volume
     reference_from: "1"
 
+size:
+  - type: page
+    value: "490"
+  - type: plate
+    value: "3"
+
 accesslocation:
   - accesslocation1
   - accesslocation2

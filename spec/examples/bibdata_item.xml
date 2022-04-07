@@ -1,5 +1,5 @@
 <bibdata type="standard">
-  <fetched>2022-02-26</fetched>
+  <fetched>2022-04-07</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -230,6 +230,10 @@
   <extent type="volume">
     <referenceFrom>1</referenceFrom>
   </extent>
+  <size>
+    <value type="page">490</value>
+    <value type="plate">3</value>
+  </size>
   <accesslocation>accesslocation1</accesslocation>
   <accesslocation>accesslocation2</accesslocation>
   <license>License</license>

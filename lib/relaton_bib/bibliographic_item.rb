@@ -27,6 +27,7 @@ require "relaton_bib/place"
 require "relaton_bib/structured_identifier"
 require "relaton_bib/editorial_group"
 require "relaton_bib/ics"
+require "relaton_bib/bibliographic_size"
 
 module RelatonBib
   # Bibliographic item
@@ -122,6 +123,9 @@ module RelatonBib
     # @return [RelatonBib::StructuredIdentifierCollection]
     attr_reader :structuredidentifier
 
+    # @return [RelatonBib::BibliographicSize, nil]
+    attr_reader :size
+
     # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
@@ -152,6 +156,7 @@ module RelatonBib
     # @param editorialgroup [RelatonBib::EditorialGroup, nil]
     # @param ics [Array<RelatonBib::ICS>]
     # @param structuredidentifier [RelatonBib::StructuredIdentifierCollection]
+    # @param size [RelatonBib::BibliographicSize, nil]
     #
     # @param copyright [Array<Hash, RelatonBib::CopyrightAssociation>]
     # @option copyright [Array<Hash, RelatonBib::ContributionInfo>] :owner
@@ -243,6 +248,7 @@ module RelatonBib
         pl.is_a?(String) ? Place.new(name: pl) : pl
       end
       @extent         = args[:extent] || []
+      @size           = args[:size]
       @accesslocation = args.fetch :accesslocation, []
       @classification = args.fetch :classification, []
       @validity       = args[:validity]
@@ -372,6 +378,7 @@ module RelatonBib
       hash["medium"] = medium.to_hash if medium
       hash["place"] = single_element_array(place) if place&.any?
       hash["extent"] = single_element_array(extent) if extent&.any?
+      hash["size"] = size.to_hash if size&.any?
       if accesslocation&.any?
         hash["accesslocation"] = single_element_array(accesslocation)
       end
@@ -525,6 +532,7 @@ module RelatonBib
       out += medium.to_asciibib prefix if medium
       place.each { |pl| out += pl.to_asciibib prefix, place.size }
       extent.each { |ex| out += ex.to_asciibib "#{pref}extent", extent.size }
+      out += size.to_asciibib pref if size
       accesslocation.each { |al| out += "#{pref}accesslocation:: #{al}\n" }
       classification.each do |cl|
         out += cl.to_asciibib prefix, classification.size
@@ -736,6 +744,7 @@ module RelatonBib
         medium&.to_xml builder
         place.each { |pl| pl.to_xml builder }
         extent.each { |e| builder.extent { e.to_xml builder } }
+        size&.to_xml builder
         accesslocation.each { |al| builder.accesslocation al }
         license.each { |l| builder.license l }
         classification.each { |cls| cls.to_xml builder }

@@ -46,6 +46,7 @@ module RelatonBib
           medium: fetch_medium(bibitem),
           place: fetch_place(bibitem),
           extent: fetch_extent(bibitem),
+          size: fetch_size(bibitem),
           accesslocation: bibitem.xpath("./accesslocation").map(&:text),
           classification: fetch_classification(bibitem),
           keyword: bibitem.xpath("keyword").map(&:text),
@@ -136,6 +137,13 @@ module RelatonBib
             ex[:type], ex.at("referenceFrom")&.text, ex.at("referenceTo")&.text
           )
         end
+      end
+
+      def fetch_size(item)
+        size = item.xpath("./size/value").map do |sz|
+          BibliographicSize::Value.new type: sz[:type], value: sz.text
+        end
+        BibliographicSize.new size if size.any?
       end
 
       def fetch_classification(item)

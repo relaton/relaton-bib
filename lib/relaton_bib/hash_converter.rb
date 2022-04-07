@@ -29,6 +29,7 @@ module RelatonBib
         medium_hash_to_bib(ret)
         place_hash_to_bib(ret)
         extent_hash_to_bib(ret)
+        size_hash_to_bib(ret)
         accesslocation_hash_to_bib(ret)
         classification_hash_to_bib(ret)
         validity_hash_to_bib(ret)
@@ -53,6 +54,16 @@ module RelatonBib
           ret[:extent][i] = BibItemLocality.new(e[:type], e[:reference_from],
                                                 e[:reference_to])
         end
+      end
+
+      def size_hash_to_bib(ret)
+        return unless ret[:size]
+
+        ret[:size] = array(ret[:size])
+        size = ret[:size]&.map do |val|
+          BibliographicSize::Value.new(**val)
+        end
+        ret[:size] = BibliographicSize.new(size)
       end
 
       def title_hash_to_bib(ret)

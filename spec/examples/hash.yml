@@ -324,6 +324,11 @@ extent:
   reference_to: '20'
 - type: volume
   reference_from: '1'
+size:
+- :type: page
+  :value: '490'
+- :type: plate
+  :value: '3'
 accesslocation:
 - accesslocation1
 - accesslocation2
@@ -338,7 +343,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2022-02-26'
+fetched: '2022-04-07'
 keyword:
 - Keyword
 - Key Word

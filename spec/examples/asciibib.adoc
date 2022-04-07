@@ -1,7 +1,7 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2022-02-26
+fetched:: 2022-04-07
 title::
 title.type:: title-main
 title.content:: Geographic information
@@ -127,6 +127,12 @@ extent.reference_to:: 20
 extent::
 extent.type:: volume
 extent.reference_from:: 1
+size::
+size.type:: page
+size.value:: 490
+size::
+size.type:: plate
+size.value:: 3
 accesslocation:: accesslocation1
 accesslocation:: accesslocation2
 classification::
