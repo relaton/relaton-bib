@@ -264,16 +264,21 @@ place:
     region: Switzelznd
 
 extent:
-  - type: section
-    reference_from: Reference from
-    reference_to: Reference to
-  - type: chapter
-    reference_from: "4"
-  - type: page
-    reference_from: "10"
-    reference_to: "20"
-  - type: volume
-    reference_from: "1"
+  - locality:
+      type: section
+      reference_from: Reference from
+      reference_to: Reference to
+  - locality:
+      type: chapter
+      reference_from: "4"
+  - locality_stack:
+    - locality:
+        type: page
+        reference_from: "10"
+        reference_to: "20"
+    - locality:
+        type: volume
+        reference_from: "1"
 
 size:
   - type: page

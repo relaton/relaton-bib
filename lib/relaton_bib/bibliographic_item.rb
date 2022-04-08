@@ -96,7 +96,7 @@ module RelatonBib
     # @return [Array<RelatonBib::Place>]
     attr_reader :place
 
-    # @return [Array<RelatonBib::BibItemLocality>]
+    # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
     attr_reader :extent
 
     # @return [Array<Strig>]
@@ -145,7 +145,7 @@ module RelatonBib
     # @param series [Array<RelatonBib::Series>]
     # @param medium [RelatonBib::Medium, NilClas]
     # @param place [Array<String, RelatonBib::Place>]
-    # @param extent [Array<Relaton::BibItemLocality>]
+    # @param extent [Array<Relaton::Locality, RelatonBib::LocalityStack>]
     # @param accesslocation [Array<String>]
     # @param classification [Array<RelatonBib::Classification>]
     # @param validity [RelatonBib:Validity, NilClass]
@@ -632,16 +632,7 @@ module RelatonBib
 
     # @param [BibTeX::Entry]
     def bibtex_extent(item)
-      extent.each do |e|
-        case e.type
-        when "chapter" then item.chapter = e.reference_from
-        when "page"
-          value = e.reference_from
-          value += "-#{e.reference_to}" if e.reference_to
-          item.pages = value
-        when "volume" then item.volume = e.reference_from
-        end
-      end
+      extent.each { |e| e.to_bibtex(item) }
     end
 
     # @param [BibTeX::Entry]

@@ -51,12 +51,50 @@ module RelatonBib
       out += "#{pref}reference_to:: #{reference_to}\n" if reference_to
       out
     end
+
+    #
+    # Render locality as BibTeX.
+    #
+    # @param [BibTeX::Entry] item BibTeX entry.
+    #
+    def to_bibtex(item)
+      case type
+      when "chapter" then item.chapter = reference_from
+      when "page"
+        value = reference_from
+        value += "-#{reference_to}" if reference_to
+        item.pages = value
+      when "volume" then item.volume = reference_from
+      end
+    end
   end
 
   class Locality < BibItemLocality
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       builder.locality { |b| super(b) }
+    end
+
+    #
+    # Render locality as hash.
+    #
+    # @return [Hash] locality as hash.
+    #
+    def to_hash
+      { "locality" => super }
+    end
+
+    #
+    # Render locality as AsciiBib.
+    #
+    # @param [String] prefix prefix of locality
+    # @param [Integer] count number of localities
+    #
+    # @return [String] AsciiBib.
+    #
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? "locality" : "#{prefix}.locality"
+      super(pref, count)
     end
   end
 
@@ -81,6 +119,30 @@ module RelatonBib
     # @returnt [Hash]
     def to_hash
       { "locality_stack" => single_element_array(locality) }
+    end
+
+    #
+    # Render locality stack as AsciiBib.
+    #
+    # @param [String] prefix <description>
+    # @param [Integer] size size of locality stack
+    #
+    # @return [String] AsciiBib.
+    #
+    def to_asciibib(prefix = "", size = 1)
+      pref = prefix.empty? ? "locality_stack" : "#{prefix}.locality_stack"
+      out = ""
+      out << "#{pref}::\n" if size > 1
+      out << locality.map { |l| l.to_asciibib(pref, locality.size) }.join
+    end
+
+    #
+    # Render locality stack as BibTeX.
+    #
+    # @param [BibTeX::Entry] item BibTeX entry.
+    #
+    def to_bibtex(item)
+      locality.each { |l| l.to_bibtex(item) }
     end
   end
 

@@ -133,10 +133,11 @@ module RelatonBib
       end
 
       def fetch_extent(item)
-        item.xpath("./extent").map do |ex|
-          BibItemLocality.new(
-            ex[:type], ex.at("referenceFrom")&.text, ex.at("referenceTo")&.text
-          )
+        item.xpath("./extent").reduce([]) do |a, ex|
+          a + localities(ex)
+          # Locality.new(
+          #   ex[:type], ex.at("referenceFrom")&.text, ex.at("referenceTo")&.text
+          # )
         end
       end
 
@@ -399,8 +400,8 @@ module RelatonBib
       # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
       def localities(rel)
         rel.xpath("./locality|./localityStack").map do |lc|
-          if lc[:type]
-            LocalityStack.new [locality(lc)]
+          if lc.name == "locality"
+            Locality.new lc[:type], lc.at("referenceFrom").text, lc.at("referenceTo")&.text
           else
             LocalityStack.new(lc.xpath("./locality").map { |l| locality l })
           end

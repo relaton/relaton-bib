@@ -224,13 +224,16 @@ relation:
       format: text/plain
   locality:
   - locality_stack:
-    - type: section
-      reference_from: Reference from
+    - locality:
+        type: section
+        reference_from: Reference from
   - locality_stack:
-    - type: chapter
-      reference_from: '1'
-    - type: page
-      reference_from: '2'
+    - locality:
+        type: chapter
+        reference_from: '1'
+    - locality:
+        type: page
+        reference_from: '2'
   source_locality:
   - source_locality_stack:
     - type: volume
@@ -314,16 +317,21 @@ place:
   uri: geneva.place
   region: Switzelznd
 extent:
-- type: section
-  reference_from: Reference from
-  reference_to: Reference to
-- type: chapter
-  reference_from: '4'
-- type: page
-  reference_from: '10'
-  reference_to: '20'
-- type: volume
-  reference_from: '1'
+- locality:
+    type: section
+    reference_from: Reference from
+    reference_to: Reference to
+- locality:
+    type: chapter
+    reference_from: '4'
+- locality_stack:
+  - locality:
+      type: page
+      reference_from: '10'
+      reference_to: '20'
+  - locality:
+      type: volume
+      reference_from: '1'
 size:
 - :type: page
   :value: '490'
@@ -343,7 +351,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2022-04-07'
+fetched: '2022-04-08'
 keyword:
 - Keyword
 - Key Word

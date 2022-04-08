@@ -213,19 +213,27 @@
   </medium>
   <place>bib place</place>
   <place uri="geneva.place" region="Switzelznd">Geneva</place>
-  <extent type="section">
-    <referenceFrom>Reference from</referenceFrom>
-    <referenceTo>Reference to</referenceTo>
+  <extent>
+    <locality type="section">
+      <referenceFrom>Reference from</referenceFrom>
+      <referenceTo>Reference to</referenceTo>
+    </locality>
   </extent>
-  <extent type="chapter">
-    <referenceFrom>4</referenceFrom>
+  <extent>
+    <locality type="chapter">
+      <referenceFrom>4</referenceFrom>
+    </locality>
   </extent>
-  <extent type="page">
-    <referenceFrom>10</referenceFrom>
-    <referenceTo>20</referenceTo>
-  </extent>
-  <extent type="volume">
-    <referenceFrom>1</referenceFrom>
+  <extent>
+    <localityStack>
+      <locality type="page">
+        <referenceFrom>10</referenceFrom>
+        <referenceTo>20</referenceTo>
+      </locality>
+      <locality type="volume">
+        <referenceFrom>1</referenceFrom>
+      </locality>
+    </localityStack>
   </extent>
   <size>
     <value type="page">490</value>
