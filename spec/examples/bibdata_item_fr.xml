@@ -1,5 +1,5 @@
 <bibdata type="standard">
-  <fetched>2022-04-07</fetched>
+  <fetched>2022-04-08</fetched>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
   <uri type="src">https://www.iso.org/standard/53798.html</uri>
   <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
@@ -178,6 +178,7 @@
   <series type="Internet-Draft">
     <title format="text/plain">Internet-Draft</title>
     <number>draft-ietf-somewg-someprotocol-07</number>
+    <run>seriesrun</run>
   </series>
   <series type="main">
     <title type="original" format="text/plain" language="en" script="Latn">ISO/IEC FDIS 10118-3</title>

@@ -116,7 +116,7 @@ module RelatonBib
             organization: sr.at("organization")&.text,
             abbreviation: abbreviation, from: sr.at("from")&.text,
             to: sr.at("to")&.text, number: sr.at("number")&.text,
-            partnumber: sr.at("partnumber")&.text
+            partnumber: sr.at("partnumber")&.text, run: sr.at("run")&.text,
           )
         end
       end

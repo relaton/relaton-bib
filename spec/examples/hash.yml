@@ -261,6 +261,7 @@ series:
     content: Internet-Draft
     format: text/plain
   number: draft-ietf-somewg-someprotocol-07
+  run: seriesrun
 - type: main
   title:
     type: original

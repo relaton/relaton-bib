@@ -1,5 +1,5 @@
 <bibitem id="ISOTC211" type="standard">
-  <fetched>2022-04-07</fetched>
+  <fetched>2022-04-08</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -181,6 +181,7 @@
   <series type="Internet-Draft">
     <title format="text/plain">Internet-Draft</title>
     <number>draft-ietf-somewg-someprotocol-07</number>
+    <run>seriesrun</run>
   </series>
   <series type="main">
     <title type="original" format="text/plain" language="en" script="Latn">ISO/IEC FDIS 10118-3</title>
