@@ -401,21 +401,25 @@ module RelatonBib
       def localities(rel)
         rel.xpath("./locality|./localityStack").map do |lc|
           if lc.name == "locality"
-            Locality.new lc[:type], lc.at("referenceFrom").text, lc.at("referenceTo")&.text
+            locality lc
           else
             LocalityStack.new(lc.xpath("./locality").map { |l| locality l })
           end
         end
       end
 
+      #
+      # Create Locality object from Nokogiri::XML::Element
+      #
       # @param loc [Nokogiri::XML::Element]
+      # @param klass [RelatonBib::Locality.class, RelatonBib::LocalityStack.class]
+      #
       # @return [RelatonBib::Locality]
       def locality(loc, klass = Locality)
-        ref_to = (rt = loc.at("./referenceTo")) && LocalizedString.new(rt.text)
         klass.new(
           loc[:type],
-          LocalizedString.new(loc.at("./referenceFrom").text),
-          ref_to,
+          loc.at("./referenceFrom")&.text,
+          loc.at("./referenceTo")&.text,
         )
       end
 
