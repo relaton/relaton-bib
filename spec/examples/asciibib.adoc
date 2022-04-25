@@ -1,7 +1,7 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2022-04-08
+fetched:: 2022-04-25
 title::
 title.type:: title-main
 title.content:: Geographic information
@@ -110,9 +110,11 @@ medium.scale:: medium scale
 place::
 place.name:: bib place
 place::
-place.name:: Geneva
-place.uri:: geneva.place
-place.region:: Switzelznd
+place.city:: Geneva
+place.region.name:: Region
+place.country.name:: Switzelznd
+place.country.iso:: CH
+place.country.recommended:: true
 extent.locality::
 extent.locality.type:: section
 extent.locality.reference_from:: Reference from

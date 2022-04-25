@@ -314,9 +314,13 @@ medium:
   scale: medium scale
 place:
 - bib place
-- name: Geneva
-  uri: geneva.place
-  region: Switzelznd
+- city: Geneva
+  region:
+  - name: Region
+  country:
+  - name: Switzelznd
+    iso: CH
+    recommended: true
 extent:
 - locality:
     type: section
@@ -352,7 +356,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2022-04-08'
+fetched: '2022-04-25'
 keyword:
 - Keyword
 - Key Word

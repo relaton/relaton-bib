@@ -527,7 +527,7 @@
   </define>
   <define name="LocalityType">
     <data type="string">
-      <param name="pattern">section|clause|part|paragraph|chapter|page|whole|table|annex|figure|note|list|example|volume|issue|time|anchor|locality:[a-zA-Z0-9_]+</param>
+      <param name="pattern">section|clause|part|paragraph|chapter|page|title|line|whole|table|annex|figure|note|list|example|volume|issue|time|anchor|locality:[a-zA-Z0-9_]+</param>
     </data>
   </define>
   <define name="referenceFrom">
@@ -851,16 +851,45 @@
   </define>
   <define name="bplace">
     <element name="place">
-      <optional>
-        <attribute name="uri">
-          <data type="anyURI"/>
-        </attribute>
-      </optional>
-      <optional>
-        <attribute name="region"/>
-      </optional>
+      <choice>
+        <text/>
+        <group>
+          <ref name="bibliocity"/>
+          <zeroOrMore>
+            <ref name="biblioregion"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="bibliocountry"/>
+          </zeroOrMore>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="bibliocity">
+    <element name="city">
       <text/>
     </element>
+  </define>
+  <define name="biblioregion">
+    <element name="region">
+      <ref name="RegionType"/>
+    </element>
+  </define>
+  <define name="bibliocountry">
+    <element name="country">
+      <ref name="RegionType"/>
+    </element>
+  </define>
+  <define name="RegionType">
+    <optional>
+      <attribute name="iso"/>
+    </optional>
+    <optional>
+      <attribute name="recommended">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <text/>
   </define>
   <define name="bprice">
     <element name="price">

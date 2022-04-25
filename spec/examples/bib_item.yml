@@ -260,9 +260,13 @@ medium:
 
 place:
   - bib place
-  - name: Geneva
-    uri: geneva.place
-    region: Switzelznd
+  - city: Geneva
+    region:
+      - name: Region
+    country:
+      - iso: CH
+        name: Switzelznd
+        recommended: true
 
 extent:
   - locality:

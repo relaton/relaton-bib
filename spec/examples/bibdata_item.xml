@@ -1,5 +1,5 @@
 <bibdata type="standard">
-  <fetched>2022-04-08</fetched>
+  <fetched>2022-04-25</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -216,7 +216,11 @@
     <scale>medium scale</scale>
   </medium>
   <place>bib place</place>
-  <place uri="geneva.place" region="Switzelznd">Geneva</place>
+  <place>
+    <city>Geneva</city>
+    <region>Region</region>
+    <country iso="CH" recommended="true">Switzelznd</country>
+  </place>
   <extent>
     <locality type="section">
       <referenceFrom>Reference from</referenceFrom>

@@ -72,7 +72,26 @@ module RelatonBib
 
       def fetch_place(item)
         item.xpath("./place").map do |pl|
-          Place.new(name: pl.text, uri: pl[:uri], region: pl[:region])
+          if (city = pl.at("./city"))
+            Place.new(city: city.text, region: create_region_country(pl),
+                      country: create_region_country(pl, "country"))
+          else
+            Place.new(name: pl.text)
+          end
+        end
+      end
+
+      #
+      # Create region or country from place element
+      #
+      # @param [Nokogiri::XML::Element] place place element
+      # @param [String] node name of the node to parse
+      #
+      # @return [Array<RelatonBib::Place::RegionType>] <description>
+      #
+      def create_region_country(place, node = "region")
+        place.xpath("./#{node}").map do |r|
+          Place::RegionType.new(name: r.text, iso: r[:iso], recommended: r[:recommended])
         end
       end
 

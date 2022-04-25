@@ -213,7 +213,11 @@ item = RelatonBib::BibliographicItem.new(
   ),
   place: [
     "bib place",
-    RelatonBib::Place.new(name: "Geneva", uri: "geneva.place", region: "Switzelznd")
+    RelatonBib::Place.new(
+      city: "Geneva",
+      region: [RelatonBib::Place::RegionType.new(name: "Region")],
+      country: [RelatonBib::Place::RegionType.new(name: "Switzeland", iso: "SH", recommended: true)],
+    )
   ],
   extent: [
     RelatonBib::BibItemLocality.new("section", "Reference from", "Reference to"),
