@@ -1,0 +1,60 @@
+[
+  {
+    "title": "Geographic information",
+    "edition": "1",
+    "author": [
+      {
+        "family": "Bierman",
+        "given": "A."
+      },
+      {
+        "family": "Bierman",
+        "given": "Forename"
+      }
+    ],
+    "publisher": "Institute of Electrical and Electronics Engineers",
+    "publisher-place": "bib place",
+    "note": "note",
+    "annote": "An note",
+    "howpublished": "How published",
+    "comment": "Comment",
+    "content": "Table Of Contents",
+    "container-title": "Book title",
+    "chapter": "4",
+    "page": "10-20",
+    "volume": "1",
+    "accessed": {
+      "date-parts": [
+        [
+          2015,
+          5,
+          20
+        ]
+      ]
+    },
+    "journal": "Journal",
+    "issue": "7",
+    "collection-title": "RFC",
+    "genre": "value",
+    "mendeley-tags": "Mendeley Tags",
+    "keywords": "Keyword, Key Word",
+    "ISBN": "ISBN",
+    "lccn": "LCCN",
+    "issn": "ISSN",
+    "timestamp": "2022-05-02",
+    "URL": "https://www.iso.org/standard/53798.html",
+    "DOI": "http://standrd.org/doi-123",
+    "file2": "file://path/file",
+    "month_numeric": "4",
+    "id": "ISOTC211",
+    "issued": {
+      "date-parts": [
+        [
+          2014,
+          4
+        ]
+      ]
+    },
+    "type": "misc"
+  }
+]

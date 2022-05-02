@@ -215,6 +215,13 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         expect(ref_attrs[:anchor]).to eq "DNS-PARAMETERS"
       end
     end
+
+    it "convert item to citeproc" do
+      file = "spec/examples/citeproc.json"
+      cp = subject.to_citeproc
+      File.write file, cp.to_json, encoding: "UTF-8" unless File.exist? file
+      expect(cp).to eq JSON.parse(File.read(file, encoding: "UTF-8"))
+    end
   end
 
   it "initialize with copyright object" do
@@ -247,13 +254,5 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       copy = RelatonBib::CopyrightAssociation.new owner: owner, from: "2019"
       expect(copy.owner).to eq owner
     end
-  end
-
-  private
-
-  # @param content [String]
-  # @return [IsoBibItem::LocalizedString]
-  def localized_string(content, lang = "en")
-    RelatonBib::LocalizedString.new(content, lang)
   end
 end

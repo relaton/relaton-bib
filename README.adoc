@@ -416,6 +416,19 @@ item.to_bibtex
   ...
 ----
 
+=== Export bibliographic item to Citeproc
+
+[source,ruby]
+----
+item.to_citeproc
+=> [{"title"=>"Geographic information",
+  "edition"=>"1",
+  "author"=>[{"family"=>"Bierman", "given"=>"A."}, {"family"=>"Bierman", "given"=>"Forename"}],
+  "publisher"=>"Institute of Electrical and Electronics Engineers",
+  "publisher-place"=>"bib place",
+  ...
+----
+
 === Exporting bibliographic item to AsciiBib
 
 [source,ruby]

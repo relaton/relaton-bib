@@ -401,30 +401,26 @@ module RelatonBib
       hash
     end
 
-    # @param bibtex [BibTeX::Bibliography, NilClass]
+    #
+    # Reander BibTeX
+    #
+    # @param bibtex [BibTeX::Bibliography, nil]
+    #
     # @return [String]
-    def to_bibtex(bibtex = nil) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
-      item = BibTeX::Entry.new
-      item.type = bibtex_type
-      item.key = id
-      bibtex_title item
-      item.edition = edition if edition
-      bibtex_author item
-      bibtex_contributor item
-      item.address = place.first.name if place.any?
-      bibtex_note item
-      bibtex_relation item
-      bibtex_extent item
-      bibtex_date item
-      bibtex_series item
-      bibtex_classification item
-      item.keywords = keyword.map(&:content).join(", ") if keyword.any?
-      bibtex_docidentifier item
-      item.timestamp = fetched.to_s if fetched
-      bibtex_link item
-      bibtex ||= BibTeX::Bibliography.new
-      bibtex << item
-      bibtex.to_s
+    #
+    def to_bibtex(bibtex = nil)
+      bibtext_item(bibtex).to_s
+    end
+
+    #
+    # Render citeproc
+    #
+    # @param bibtex [BibTeX::Bibliography, nil]
+    #
+    # @return [Hash] citeproc
+    #
+    def to_citeproc(bibtex = nil)
+      bibtext_item(bibtex).to_citeproc.map { |cp| cp.transform_keys(&:to_s) }
     end
 
     # @param lang [String, nil] language code Iso639
@@ -555,13 +551,35 @@ module RelatonBib
 
     private
 
-    # @return [String]
-    def bibtex_title(item)
-      title.each do |t|
-        case t.type
-        when "main" then item.tile = t.title.content
-        end
-      end
+    #
+    # Create BibTeX item for this document
+    #
+    # @param [BibTeX::Bibliography, nil] bibtex <description>
+    #
+    # @return [BibTeX::Bibliography] BibTeX bibliography
+    #
+    def bibtext_item(bibtex) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+      item = BibTeX::Entry.new
+      item.type = bibtex_type
+      item.key = id
+      title.to_bibtex item
+      item.edition = edition if edition
+      bibtex_author item
+      bibtex_contributor item
+      item.address = place.first.name if place.any?
+      bibtex_note item
+      bibtex_relation item
+      bibtex_extent item
+      bibtex_date item
+      bibtex_series item
+      bibtex_classification item
+      item.keywords = keyword.map(&:content).join(", ") if keyword.any?
+      bibtex_docidentifier item
+      item.timestamp = fetched.to_s if fetched
+      bibtex_link item
+      bibtex ||= BibTeX::Bibliography.new
+      bibtex << item
+      bibtex
     end
 
     # @return [String]
