@@ -36,5 +36,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "addressable"
   spec.add_dependency "bibtex-ruby"
   spec.add_dependency "iso639"
-  spec.add_dependency "nokogiri", "~> 1.12.5"
+  spec.add_dependency "nokogiri", "~> 1.13.0"
 end

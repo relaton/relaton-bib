@@ -220,7 +220,9 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       file = "spec/examples/citeproc.json"
       cp = subject.to_citeproc
       File.write file, cp.to_json, encoding: "UTF-8" unless File.exist? file
-      expect(cp).to eq JSON.parse(File.read(file, encoding: "UTF-8"))
+      json = JSON.parse(File.read(file, encoding: "UTF-8"))
+      json[0]["timestamp"] = Date.today.to_s
+      expect(cp).to eq json
     end
   end
 
