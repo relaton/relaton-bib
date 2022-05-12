@@ -56,12 +56,8 @@ module RelatonBib
       else
         builder.parent["language"] = language.join(",") if language&.any?
         builder.parent["script"]   = script.join(",") if script&.any?
-        builder.parent << escaped_content # .encode(xml: :text)
+        builder.text content
       end
-    end
-
-    def escaped_content
-      content.encode("UTF-8") # .gsub(/&/, "&amp;").gsub(/"/, "&quot;").gsub(/'/, "&apos;")
     end
 
     # @return [Hash]

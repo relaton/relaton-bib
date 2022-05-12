@@ -38,7 +38,7 @@
     </author>
     <date year="2014" month="April"/>
     <workgroup>Editorial group</workgroup>
-    <abstract>ISO 19115-1:2014 defines the schema required for ...</abstract>
+    <abstract><t>ISO 19115-1:2014 defines the schema required for ...</t></abstract>
   </front>
   <seriesInfo name="DOI" value="10.17487/rfc1149"/>
   <seriesInfo name="Internet-Draft" value="draft-ietf-somewg-someprotocol-07"/>

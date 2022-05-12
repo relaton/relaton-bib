@@ -8,7 +8,7 @@ RSpec.describe RelatonBib::LocalizedString do
   context "instance" do
     subject do
       RelatonBib::LocalizedString.new(
-        "content & character to escape", "en", "Latn"
+        "<p>content & character to escape</p>", "en", "Latn"
       )
     end
 
@@ -16,15 +16,15 @@ RSpec.describe RelatonBib::LocalizedString do
       expect(subject.empty?).to be false
     end
 
-    # it "escape &" do
-    #   xml = Nokogiri::XML::Builder.new do |b|
-    #     b.localized_string { subject.to_xml(b) }
-    #   end
-    #   expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
-    #     <localized_string language="en" script="Latn">
-    #       content &amp; character to escape
-    #     </localized_string>
-    #   XML
-    # end
+    it "escape &" do
+      xml = Nokogiri::XML::Builder.new do |b|
+        b.localized_string { subject.to_xml(b) }
+      end
+      expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
+        <localized_string language="en" script="Latn">
+          &lt;p&gt;content &amp; character to escape&lt;/p&gt;
+        </localized_string>
+      XML
+    end
   end
 end

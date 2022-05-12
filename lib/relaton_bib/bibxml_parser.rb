@@ -194,7 +194,7 @@ module RelatonBib
     # @return [Array<RelatonBib::FormattedString>]
     def abstracts(ref)
       ref.xpath("./front/abstract").map do |a|
-        c = a.children.to_s.gsub(/\s*(<\/?)t(>)\s*/, '\1p\2')
+        c = a.inner_html.gsub(/\s*(<\/?)t(>)\s*/, '\1p\2')
           .gsub(/[\t\n]/, " ").squeeze " "
         FormattedString.new(content: c, language: language(ref), script: "Latn",
                             format: "text/html")

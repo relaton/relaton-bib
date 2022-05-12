@@ -354,7 +354,7 @@ module RelatonBib
       # @return [Array<RelatonBib::FormattedString>]
       def fetch_abstract(item)
         item.xpath("./abstract").map do |a|
-          c = a.children.to_s
+          c = a.text.strip # children.to_s
           FormattedString.new(content: c, language: a[:language],
                               script: a[:script], format: a[:format])
         end
