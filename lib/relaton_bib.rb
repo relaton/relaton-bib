@@ -1,5 +1,6 @@
 require "forwardable"
 require "yaml"
+require "htmlentities"
 require "relaton_bib/version"
 require "relaton_bib/deep_dup"
 require "relaton_bib/localized_string"
