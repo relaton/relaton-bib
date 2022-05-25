@@ -10,23 +10,4 @@ on:
 
 jobs:
   rake:
-    name: Test on Ruby ${{ matrix.ruby }} ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.experimental }}
-    strategy:
-      fail-fast: false
-      matrix:
-        ruby: [ '3.0', '2.7', '2.6' ]
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-        experimental: [ false ]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
-
-      - run: bundle exec rake
+    uses: relaton/support/.github/workflows/rake.yml@master
