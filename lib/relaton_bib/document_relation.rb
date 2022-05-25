@@ -36,13 +36,13 @@ module RelatonBib
     attr_reader :source_locality
 
     # @param type [String]
-    # @parma description [RelatonBib::FormattedString, NilClass]
+    # @param description [RelatonBib::FormattedString, NilClass]
     # @param bibitem [RelatonBib::BibliographicItem,
     #   RelatonIso::IsoBibliographicItem]
     # @param locality [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
     # @param source_locality [Array<RelatonBib::SourceLocality,
     #   RelatonBib::SourceLocalityStack>]
-    def initialize(type:, description: nil, bibitem:, locality: [],
+    def initialize(type:, bibitem:, description: nil, locality: [],
                    source_locality: [])
       type = "obsoletes" if type == "Now withdrawn"
       unless self.class::TYPES.include? type

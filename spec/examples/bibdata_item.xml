@@ -1,5 +1,5 @@
 <bibdata type="standard">
-  <fetched>2021-10-08</fetched>
+  <fetched>2022-05-12</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -8,7 +8,7 @@
   <uri type="rss">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
   <uri type="doi">http://standrd.org/doi-123</uri>
   <uri type="file">file://path/file</uri>
-  <docidentifier type="ISO">TC211</docidentifier>
+  <docidentifier type="ISO" primary="true">ISO TC 211</docidentifier>
   <docidentifier type="isbn">ISBN</docidentifier>
   <docidentifier type="lccn">LCCN</docidentifier>
   <docidentifier type="issn" scope="series">ISSN</docidentifier>
@@ -16,7 +16,7 @@
   <docidentifier>XYZ</docidentifier>
   <docidentifier type="DOI">10.17487/rfc1149</docidentifier>
   <docidentifier type="Internet-Draft">draft-ietf-somewg-someprotocol-07</docidentifier>
-  <docnumber>123456</docnumber>
+  <docnumber>TC211</docnumber>
   <date type="issued">
     <on>2014</on>
   </date>
@@ -68,9 +68,9 @@
       <description>Editor description</description>
     </role>
     <organization>
-      <name>IETF</name>
-      <abbreviation>IETF</abbreviation>
-      <identifier type="uri">www.ietf.org</identifier>
+      <name>Institute of Electrical and Electronics Engineers</name>
+      <abbreviation>IEEE</abbreviation>
+      <identifier type="uri">www.ieee.org</identifier>
     </organization>
   </contributor>
   <contributor>
@@ -106,7 +106,7 @@
       <description>sponsor</description>
     </role>
     <organization>
-      <name>Institution</name>
+      <name>World Wide Web Consortium</name>
     </organization>
   </contributor>
   <edition>1</edition>
@@ -122,7 +122,9 @@
   <language>en</language>
   <language>fr</language>
   <script>Latn</script>
-  <abstract format="text/plain" language="en" script="Latn">ISO 19115-1:2014 defines the schema required for ...</abstract>
+  <abstract format="text/html" language="en" script="Latn">
+    <p>ISO 19115-1:2014 defines the schema required for ...</p>
+  </abstract>
   <abstract format="text/plain" language="fr" script="Latn">L'ISO 19115-1:2014 définit le schéma requis pour ...</abstract>
   <status>
     <stage abbreviation="CD">30</stage>
@@ -178,6 +180,11 @@
       <title type="main" format="text/plain">Book title</title>
     </bibitem>
   </relation>
+  <series type="Internet-Draft">
+    <title format="text/plain">Internet-Draft</title>
+    <number>draft-ietf-somewg-someprotocol-07</number>
+    <run>seriesrun</run>
+  </series>
   <series type="main">
     <title type="original" format="text/plain" language="en" script="Latn">ISO/IEC FDIS 10118-3</title>
     <place>Serie's place</place>
@@ -211,21 +218,37 @@
     <scale>medium scale</scale>
   </medium>
   <place>bib place</place>
-  <place uri="geneva.place" region="Switzelznd">Geneva</place>
-  <extent type="section">
-    <referenceFrom>Reference from</referenceFrom>
-    <referenceTo>Reference to</referenceTo>
+  <place>
+    <city>Geneva</city>
+    <region>Region</region>
+    <country iso="CH" recommended="true">Switzelznd</country>
+  </place>
+  <extent>
+    <locality type="section">
+      <referenceFrom>Reference from</referenceFrom>
+      <referenceTo>Reference to</referenceTo>
+    </locality>
   </extent>
-  <extent type="chapter">
-    <referenceFrom>4</referenceFrom>
+  <extent>
+    <locality type="chapter">
+      <referenceFrom>4</referenceFrom>
+    </locality>
   </extent>
-  <extent type="page">
-    <referenceFrom>10</referenceFrom>
-    <referenceTo>20</referenceTo>
+  <extent>
+    <localityStack>
+      <locality type="page">
+        <referenceFrom>10</referenceFrom>
+        <referenceTo>20</referenceTo>
+      </locality>
+      <locality type="volume">
+        <referenceFrom>1</referenceFrom>
+      </locality>
+    </localityStack>
   </extent>
-  <extent type="volume">
-    <referenceFrom>1</referenceFrom>
-  </extent>
+  <size>
+    <value type="page">490</value>
+    <value type="plate">3</value>
+  </size>
   <accesslocation>accesslocation1</accesslocation>
   <accesslocation>accesslocation2</accesslocation>
   <license>License</license>

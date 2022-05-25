@@ -1,5 +1,6 @@
 require "forwardable"
 require "yaml"
+require "htmlentities"
 require "relaton_bib/version"
 require "relaton_bib/deep_dup"
 require "relaton_bib/localized_string"
@@ -14,9 +15,9 @@ module RelatonBib
   class RequestError < StandardError; end
 
   class << self
-    # @param date [String, Integer, Date]
-    # @param str [Boolean]
-    # @return [Date, nil]
+    # @param date [String, Integer, Date] date
+    # @param str [Boolean] return string or Date
+    # @return [Date, String, nil] date
     def parse_date(date, str = true) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity,Metrics/AbcSize
       return date if date.is_a?(Date)
 
@@ -42,10 +43,10 @@ module RelatonBib
   # @param array [Array]
   # @return [Array<String>, String]
   def single_element_array(array)
-    if array.size > 1
-      array.map { |e| e.is_a?(String) ? e : e.to_hash }
-    else
-      array.first.is_a?(String) ? array[0] : array.first&.to_hash
-    end
+    # if array.size > 1
+    array.map { |e| e.is_a?(String) ? e : e.to_hash }
+    # else
+    #   array.first.is_a?(String) ? array[0] : array.first&.to_hash
+    # end
   end
 end

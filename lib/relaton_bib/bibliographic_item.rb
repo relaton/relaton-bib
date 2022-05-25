@@ -27,6 +27,7 @@ require "relaton_bib/place"
 require "relaton_bib/structured_identifier"
 require "relaton_bib/editorial_group"
 require "relaton_bib/ics"
+require "relaton_bib/bibliographic_size"
 
 module RelatonBib
   # Bibliographic item
@@ -95,7 +96,7 @@ module RelatonBib
     # @return [Array<RelatonBib::Place>]
     attr_reader :place
 
-    # @return [Array<RelatonBib::BibItemLocality>]
+    # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
     attr_reader :extent
 
     # @return [Array<Strig>]
@@ -122,6 +123,9 @@ module RelatonBib
     # @return [RelatonBib::StructuredIdentifierCollection]
     attr_reader :structuredidentifier
 
+    # @return [RelatonBib::BibliographicSize, nil]
+    attr_reader :size
+
     # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
@@ -141,7 +145,7 @@ module RelatonBib
     # @param series [Array<RelatonBib::Series>]
     # @param medium [RelatonBib::Medium, NilClas]
     # @param place [Array<String, RelatonBib::Place>]
-    # @param extent [Array<Relaton::BibItemLocality>]
+    # @param extent [Array<Relaton::Locality, RelatonBib::LocalityStack>]
     # @param accesslocation [Array<String>]
     # @param classification [Array<RelatonBib::Classification>]
     # @param validity [RelatonBib:Validity, NilClass]
@@ -152,6 +156,7 @@ module RelatonBib
     # @param editorialgroup [RelatonBib::EditorialGroup, nil]
     # @param ics [Array<RelatonBib::ICS>]
     # @param structuredidentifier [RelatonBib::StructuredIdentifierCollection]
+    # @param size [RelatonBib::BibliographicSize, nil]
     #
     # @param copyright [Array<Hash, RelatonBib::CopyrightAssociation>]
     # @option copyright [Array<Hash, RelatonBib::ContributionInfo>] :owner
@@ -159,13 +164,14 @@ module RelatonBib
     # @option copyright [String, NilClass] :to
     # @option copyright [String, NilClass] :scope
     #
-    # @param date [Array<Hash>]
+    # @param date [Array<Hash, RelatonBib::BibliographicDate>]
     # @option date [String] :type
-    # @option date [String] :from
-    # @option date [String] :to
+    # @option date [String, nil] :from required if :on is nil
+    # @option date [String, nil] :to
+    # @option date [String, nil] :on required if :from is nil
     #
-    # @param contributor [Array<Hash>]
-    # @option contributor [RealtonBib::Organization, RelatonBib::Person]
+    # @param contributor [Array<Hash, RelatonBib::ContributionInfo>]
+    # @option contributor [RealtonBib::Organization, RelatonBib::Person] :entity
     # @option contributor [String] :type
     # @option contributor [String] :from
     # @option contributor [String] :to
@@ -176,7 +182,7 @@ module RelatonBib
     # @option abstract [String] :content
     # @option abstract [String] :language
     # @option abstract [String] :script
-    # @option abstract [String] :type
+    # @option abstract [String] :format
     #
     # @param relation [Array<Hash>]
     # @option relation [String] :type
@@ -242,6 +248,7 @@ module RelatonBib
         pl.is_a?(String) ? Place.new(name: pl) : pl
       end
       @extent         = args[:extent] || []
+      @size           = args[:size]
       @accesslocation = args.fetch :accesslocation, []
       @classification = args.fetch :classification, []
       @validity       = args[:validity]
@@ -329,17 +336,18 @@ module RelatonBib
     # Render BibXML (RFC)
     #
     # @param [Nokogiri::XML::Builder, nil] builder
+    # @param [Boolean] include_keywords (false)
     #
-    # @return [String] <description>
+    # @return [String, Nokogiri::XML::Builder::NodeBuilder] XML
     #
-    def to_bibxml(builder = nil)
+    def to_bibxml(builder = nil, include_keywords: false)
       if builder
-        render_bibxml builder
+        render_bibxml builder, include_keywords
       else
         Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
-          render_bibxml xml
-        end
-      end.doc.root.to_xml
+          render_bibxml xml, include_keywords
+        end.doc.root.to_xml
+      end
     end
 
     # @return [Hash]
@@ -370,6 +378,7 @@ module RelatonBib
       hash["medium"] = medium.to_hash if medium
       hash["place"] = single_element_array(place) if place&.any?
       hash["extent"] = single_element_array(extent) if extent&.any?
+      hash["size"] = size.to_hash if size&.any?
       if accesslocation&.any?
         hash["accesslocation"] = single_element_array(accesslocation)
       end
@@ -392,30 +401,26 @@ module RelatonBib
       hash
     end
 
-    # @param bibtex [BibTeX::Bibliography, NilClass]
+    #
+    # Reander BibTeX
+    #
+    # @param bibtex [BibTeX::Bibliography, nil]
+    #
     # @return [String]
-    def to_bibtex(bibtex = nil) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
-      item = BibTeX::Entry.new
-      item.type = bibtex_type
-      item.key = id
-      bibtex_title item
-      item.edition = edition if edition
-      bibtex_author item
-      bibtex_contributor item
-      item.address = place.first.name if place.any?
-      bibtex_note item
-      bibtex_relation item
-      bibtex_extent item
-      bibtex_date item
-      bibtex_series item
-      bibtex_classification item
-      item.keywords = keyword.map(&:content).join(", ") if keyword.any?
-      bibtex_docidentifier item
-      item.timestamp = fetched.to_s if fetched
-      bibtex_link item
-      bibtex ||= BibTeX::Bibliography.new
-      bibtex << item
-      bibtex.to_s
+    #
+    def to_bibtex(bibtex = nil)
+      bibtext_item(bibtex).to_s
+    end
+
+    #
+    # Render citeproc
+    #
+    # @param bibtex [BibTeX::Bibliography, nil]
+    #
+    # @return [Hash] citeproc
+    #
+    def to_citeproc(bibtex = nil)
+      bibtext_item(bibtex).to_citeproc.map { |cp| cp.transform_keys(&:to_s) }
     end
 
     # @param lang [String, nil] language code Iso639
@@ -523,6 +528,7 @@ module RelatonBib
       out += medium.to_asciibib prefix if medium
       place.each { |pl| out += pl.to_asciibib prefix, place.size }
       extent.each { |ex| out += ex.to_asciibib "#{pref}extent", extent.size }
+      out += size.to_asciibib pref if size
       accesslocation.each { |al| out += "#{pref}accesslocation:: #{al}\n" }
       classification.each do |cl|
         out += cl.to_asciibib prefix, classification.size
@@ -545,13 +551,35 @@ module RelatonBib
 
     private
 
-    # @return [String]
-    def bibtex_title(item)
-      title.each do |t|
-        case t.type
-        when "main" then item.tile = t.title.content
-        end
-      end
+    #
+    # Create BibTeX item for this document
+    #
+    # @param [BibTeX::Bibliography, nil] bibtex <description>
+    #
+    # @return [BibTeX::Bibliography] BibTeX bibliography
+    #
+    def bibtext_item(bibtex) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+      item = BibTeX::Entry.new
+      item.type = bibtex_type
+      item.key = id
+      title.to_bibtex item
+      item.edition = edition if edition
+      bibtex_author item
+      bibtex_contributor item
+      item.address = place.first.name if place.any?
+      bibtex_note item
+      bibtex_relation item
+      bibtex_extent item
+      bibtex_date item
+      bibtex_series item
+      bibtex_classification item
+      item.keywords = keyword.map(&:content).join(", ") if keyword.any?
+      bibtex_docidentifier item
+      item.timestamp = fetched.to_s if fetched
+      bibtex_link item
+      bibtex ||= BibTeX::Bibliography.new
+      bibtex << item
+      bibtex
     end
 
     # @return [String]
@@ -622,16 +650,7 @@ module RelatonBib
 
     # @param [BibTeX::Entry]
     def bibtex_extent(item)
-      extent.each do |e|
-        case e.type
-        when "chapter" then item.chapter = e.reference_from
-        when "page"
-          value = e.reference_from
-          value += "-#{e.reference_to}" if e.reference_to
-          item.pages = value
-        when "volume" then item.volume = e.reference_from
-        end
-      end
+      extent.each { |e| e.to_bibtex(item) }
     end
 
     # @param [BibTeX::Entry]
@@ -734,6 +753,7 @@ module RelatonBib
         medium&.to_xml builder
         place.each { |pl| pl.to_xml builder }
         extent.each { |e| builder.extent { e.to_xml builder } }
+        size&.to_xml builder
         accesslocation.each { |al| builder.accesslocation al }
         license.each { |l| builder.license l }
         classification.each { |cls| cls.to_xml builder }
@@ -760,54 +780,119 @@ module RelatonBib
     # rubocop:enable Style/NestedParenthesizedCalls, Metrics/BlockLength
 
     #
-    # Render BibXML (RFC)
+    # Render BibXML (RFC, BCP)
     #
     # @param [Nokogiri::XML::Builder] builder
+    # @param [Boolean] include_bibdata
     #
-    def render_bibxml(builder)
-      target = link.detect { |l| l.type == "src" } || link.detect { |l| l.type == "doi" }
-      bxml = builder.reference(anchor: anchor) do |xml|
-        xml.front do
-          xml.title title[0].title.content if title.any?
-          render_seriesinfo xml
-          render_authors xml
-          render_date xml
-          render_workgroup xml
-          render_keyword xml
-          render_abstract xml
-        end
-      end
+    def render_bibxml(builder, include_keywords)
+      target = link.detect { |l| l.type.casecmp("src").zero? } ||
+        link.detect { |l| l.type.casecmp("doi").zero? }
+      bxml = if docnumber&.match(/^BCP/) || docidentifier[0].id.include?("BCP")
+               render_bibxml_refgroup(builder, include_keywords)
+             else
+               render_bibxml_ref(builder, include_keywords)
+             end
       bxml[:target] = target.content.to_s if target
     end
 
-    def anchor
-      did = docidentifier.detect { |di| di.type == "rfc-anchor" }
-      return did.id if did
-
-      type = docidentifier[0].type
-      "#{type}.#{docnumber}"
-    end
-
-    def render_keyword(builder)
-      keyword.each do |kw|
-        builder.keyword kw.content
+    #
+    # Render BibXML (BCP)
+    #
+    # @param [Nokogiri::XML::Builder] builder
+    # @param [Boolean] include_keywords
+    #
+    def render_bibxml_refgroup(builder, include_keywords)
+      builder.referencegroup(**ref_attrs) do |b|
+        relation.each do |r|
+          r.bibitem.to_bibxml(b, include_keywords: include_keywords) if r.type == "includes"
+        end
       end
     end
 
+    #
+    # Render BibXML (RFC)
+    #
+    # @param [Nokogiri::XML::Builder] builder
+    # @param [Boolean] include_keywords
+    #
+    def render_bibxml_ref(builder, include_keywords)
+      builder.reference(**ref_attrs) do |xml|
+        xml.front do
+          xml.title title[0].title.content if title.any?
+          render_authors xml
+          render_date xml
+          render_workgroup xml
+          render_keyword xml if include_keywords
+          render_abstract xml
+        end
+        render_seriesinfo xml
+        render_format xml
+      end
+    end
+
+    def render_format(builder)
+      link.select { |l| l.type == "TXT" }.each do |l|
+        builder.format type: l.type, target: l.content
+      end
+    end
+
+    #
+    # Create reference attributes
+    #
+    # @return [Hash<Symbol=>String>] attributes
+    #
+    def ref_attrs
+      discopes = %w[anchor docName number]
+      attrs = docidentifier.each_with_object({}) do |di, h|
+        next unless discopes.include?(di.scope)
+
+        h[di.scope.to_sym] = di.id
+      end
+      return attrs if attrs.any?
+
+      docidentifier.first&.tap do |di|
+        anchor = di.type == "IANA" ? di.id.split[1..-1].join(" ").upcase : di.id
+        return { anchor: anchor.gsub(" ", ".") }
+      end
+    end
+
+    #
+    # Render keyword
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    #
+    def render_keyword(builder)
+      keyword.each { |kw| builder.keyword kw.content }
+    end
+
+    #
+    # Render workgroup
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    #
     def render_workgroup(builder)
       editorialgroup&.technical_committee&.each do |tc|
         builder.workgroup tc.workgroup.name
       end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
+    #
+    # Render abstract
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    #
     def render_abstract(builder)
       return unless abstract.any?
 
       builder.abstract { |xml| xml << abstract[0].content.gsub(/(<\/?)p(>)/, '\1t\2') }
     end
 
-    # @param [Nokogiri::XML::Builder] builder
+    #
+    # Render date
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    #
     def render_date(builder)
       dt = date.detect { |d| d.type == "published" }
       return unless dt
@@ -817,20 +902,27 @@ module RelatonBib
       elm[:year] = y if y
       m = dt.on(:month) || dt.from(:month) || dt.to(:month)
       elm[:month] = Date::MONTHNAMES[m] if m
+      # rfcs = %w[RFC BCP FYI STD]
+      # unless rfcs.include?(doctype) && docidentifier.detect { |di| rfcs.include? di.type }
       d = dt.on(:day) || dt.from(:day) || dt.to(:day)
       elm[:day] = d if d
+      # end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
+    #
+    # Render seriesinfo
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    #
     def render_seriesinfo(builder)
       docidentifier.each do |di|
         if BibXMLParser::SERIESINFONAMES.include? di.type
           builder.seriesInfo(name: di.type, value: di.id)
         end
       end
-      di_types = docidentifier.map(&:type)
+      # di_types = docidentifier.map(&:type)
       series.select do |s|
-        s.title && !di_types.include?(s.title.title.to_s) &&
+        s.title && # !di_types.include?(s.title.title.to_s) &&
           !BibXMLParser::SERIESINFONAMES.include?(s.title.title.to_s)
       end.uniq { |s| s.title.title.to_s }.each do |s|
         si = builder.seriesInfo(name: s.title.title.to_s)
@@ -838,7 +930,11 @@ module RelatonBib
       end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
+    #
+    # Render authors
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    #
     def render_authors(builder)
       contributor.each do |c|
         builder.author do |xml|
@@ -851,8 +947,12 @@ module RelatonBib
       end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
-    # @param [RelatonBib::ContributionInfo] contrib
+    #
+    # Render address
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    # @param [RelatonBib::ContributionInfo] contrib contributor
+    #
     def render_address(builder, contrib)
       # addr = contrib.entity.contact.reject do |cn|
       #   cn.is_a?(Address) && cn.postcode.nil?
@@ -874,8 +974,12 @@ module RelatonBib
       end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
-    # @param [Array<RelatonBib::Address, RelatonBib::Contact>] addr
+    #
+    # Render contact
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    # @param [Array<RelatonBib::Address, RelatonBib::Contact>] addr contact
+    #
     def render_contact(builder, addr)
       %w[phone email uri].each do |type|
         cont = addr.detect { |cn| cn.is_a?(Contact) && cn.type == type }
@@ -883,28 +987,50 @@ module RelatonBib
       end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
-    # @param [RelatonBib::Person] person
+    #
+    # Render person
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    # @param [RelatonBib::Person] person person
+    #
     def render_person(builder, person)
       render_organization builder, person.affiliation.first&.organization
       if person.name.completename
-        builder.parent[:fullname] = person.name.completename
+        builder.parent[:fullname] = person.name.completename.content
+      elsif person.name.forename.any?
+        builder.parent[:fullname] = person.name.forename.map(&:content).join
       end
       if person.name.initial.any?
         builder.parent[:initials] = person.name.initial.map(&:content).join
+      elsif person.name.forename.any?
+        builder.parent[:initials] = person.name.forename.map do |f|
+          "#{f.content[0]}."
+        end.join
       end
       if person.name.surname
-        builder.parent[:surname] = person.name.surname
+        if person.name.forename.any?
+          builder.parent[:fullname] += " #{person.name.surname}"
+        end
+        builder.parent[:surname] = person.name.surname.content
       end
     end
 
-    # @param [Nokogiri::XML::Builder] builder
-    # @param [RelatonBib::Organization] org
+    #
+    # Render organization
+    #
+    # @param [Nokogiri::XML::Builder] builder xml builder
+    # @param [RelatonBib::Organization] org organization
+    #
     def render_organization(builder, org)
-      return unless org
+      # return unless org
 
-      o = builder.organization org.name.first&.content
-      o[:abbrev] = org.abbreviation.content if org.abbreviation
+      ab = org&.abbreviation&.content
+      on = org&.name&.first&.content
+      orgname = if BibXMLParser::ORGNAMES.key?(ab) then ab
+                else BibXMLParser::ORGNAMES.key(on) || on || ab
+                end
+      o = builder.organization orgname
+      o[:abbrev] = ab if ab
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

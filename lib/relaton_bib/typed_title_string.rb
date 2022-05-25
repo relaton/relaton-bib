@@ -62,6 +62,18 @@ module RelatonBib
       tl.each { |t| opts[:builder].title { t.to_xml opts[:builder] } }
     end
 
+    #
+    # Add main title ot bibtex entry
+    #
+    # @param [BibTeX::Entry] item bibtex entry
+    #
+    def to_bibtex(item)
+      tl = titles.detect { |t| t.type == "main" }
+      return unless tl
+
+      item.title = tl.title.content
+    end
+
     private
 
     # @param lang [String]

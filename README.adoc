@@ -213,7 +213,11 @@ item = RelatonBib::BibliographicItem.new(
   ),
   place: [
     "bib place",
-    RelatonBib::Place.new(name: "Geneva", uri: "geneva.place", region: "Switzelznd")
+    RelatonBib::Place.new(
+      city: "Geneva",
+      region: [RelatonBib::Place::RegionType.new(name: "Region")],
+      country: [RelatonBib::Place::RegionType.new(name: "Switzeland", iso: "SH", recommended: true)],
+    )
   ],
   extent: [
     RelatonBib::BibItemLocality.new("section", "Reference from", "Reference to"),
@@ -409,6 +413,19 @@ item.to_bibtex
   tile = {Geographic information},
   edition = {1},
   author = {Bierman, A. and Bierman, Forename},
+  ...
+----
+
+=== Export bibliographic item to Citeproc
+
+[source,ruby]
+----
+item.to_citeproc
+=> [{"title"=>"Geographic information",
+  "edition"=>"1",
+  "author"=>[{"family"=>"Bierman", "given"=>"A."}, {"family"=>"Bierman", "given"=>"Forename"}],
+  "publisher"=>"Institute of Electrical and Electronics Engineers",
+  "publisher-place"=>"bib place",
   ...
 ----
 

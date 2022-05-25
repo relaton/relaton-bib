@@ -26,10 +26,10 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     it "has urls" do
       expect(subject.url).to eq "https://www.iso.org/standard/53798.html"
       expect(subject.url(:rss)).to eq "https://www.iso.org/contents/data/"\
-                                          "standard/05/37/53798.detail.rss"
+                                      "standard/05/37/53798.detail.rss"
     end
     it "returns shortref" do
-      expect(subject.shortref(subject.docidentifier.first)).to eq "TC211:2014"
+      expect(subject.shortref(subject.docidentifier.first)).to eq "ISOTC211:2014"
     end
 
     it "returns abstract with en language" do
@@ -182,11 +182,47 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       )
     end
 
-    it "convert item to BibXML (RFC)" do
-      file = "spec/examples/rfc.xml"
-      rfc = subject.to_bibxml
-      File.write file, rfc, encoding: "UTF-8" unless File.exist? file
-      expect(rfc).to be_equivalent_to File.read file, encoding: "UTF-8"
+    context "convert item to BibXML" do
+      it "RFC" do
+        file = "spec/examples/rfc.xml"
+        rfc = subject.to_bibxml
+        File.write file, rfc, encoding: "UTF-8" unless File.exist? file
+        expect(rfc).to be_equivalent_to File.read file, encoding: "UTF-8"
+      end
+
+      it "BCP" do
+        hash = YAML.load_file "spec/examples/bcp_item.yml"
+        bcpbib = RelatonBib::BibliographicItem.from_hash(hash)
+        file = "spec/examples/bcp_item.xml"
+        bcpxml = bcpbib.to_bibxml
+        File.write file, bcpxml, encoding: "UTF-8" unless File.exist? file
+        expect(bcpxml).to be_equivalent_to File.read file, encoding: "UTF-8"
+      end
+
+      it "ID" do
+        hash = YAML.load_file "spec/examples/id_item.yml"
+        id = RelatonBib::BibliographicItem.from_hash hash
+        file = "spec/examples/id_item.xml"
+        idxml = id.to_bibxml
+        File.write file, idxml, encoding: "UTF-8" unless File.exist? file
+        expect(idxml).to be_equivalent_to File.read file, encoding: "UTF-8"
+      end
+
+      it "upcase anchor for IANA" do
+        docid = RelatonBib::DocumentIdentifier.new id: "IANA dns-parameters", type: "IANA"
+        ref_attrs = RelatonBib::BibliographicItem.new(docid: [docid]).send :ref_attrs
+        expect(ref_attrs).to be_instance_of Hash
+        expect(ref_attrs[:anchor]).to eq "DNS-PARAMETERS"
+      end
+    end
+
+    it "convert item to citeproc" do
+      file = "spec/examples/citeproc.json"
+      cp = subject.to_citeproc
+      File.write file, cp.to_json, encoding: "UTF-8" unless File.exist? file
+      json = JSON.parse(File.read(file, encoding: "UTF-8"))
+      json[0]["timestamp"] = Date.today.to_s
+      expect(cp).to eq json
     end
   end
 
@@ -220,13 +256,5 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       copy = RelatonBib::CopyrightAssociation.new owner: owner, from: "2019"
       expect(copy.owner).to eq owner
     end
-  end
-
-  private
-
-  # @param content [String]
-  # @return [IsoBibItem::LocalizedString]
-  def localized_string(content, lang = "en")
-    RelatonBib::LocalizedString.new(content, lang)
   end
 end

@@ -1,7 +1,16 @@
 module RelatonBib
   module BibXMLParser
-    SERIESINFONAMES = ["DOI", "Internet-Draft"].freeze
+    # SeriesInfo what should be saved as docidentifiers in the Relaton model.
+    SERIESINFONAMES = ["DOI"].freeze
+    RFCPREFIXES = %w[RFC BCP FYI STD].freeze
+
     FLAVOR = nil
+
+    ORGNAMES = {
+      "IEEE" => "Istitute of Electrical and Electronics Engineers",
+      "W3C" => "World Wide Web Consortium",
+      "3GPP" => "3rd Generation Partnership Project",
+    }.freeze
 
     def parse(bibxml, url: nil, is_relation: false, ver: nil)
       doc = Nokogiri::XML bibxml
@@ -45,7 +54,7 @@ module RelatonBib
     end
 
     # @param attrs [Hash]
-    # @return [RelatonBib::IetfBibliographicItem]
+    # @return [RelatonBib::BibliographicItem]
     def bib_item(**attrs)
       # attrs[:place] = ["Fremont, CA"]
       BibliographicItem.new(**attrs)
@@ -67,22 +76,69 @@ module RelatonBib
     #
     def docids(reference, ver) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/AbcSize
       ret = []
-      sfid = reference.at("./seriesInfo[@name='#{self::FLAVOR}']", "./front/seriesInfo[@name='#{self::FLAVOR}']")
-      if sfid
-        ret << DocumentIdentifier.new(type: sfid[:name], id: sfid[:value])
-      elsif self::FLAVOR && (id = (reference[:anchor] || reference[:docName] || reference[:number]))
-        ret << DocumentIdentifier.new( type: self::FLAVOR, id: id.sub(/^(RFC)/, "\\1 "))
+      si = reference.at("./seriesInfo[@name='Internet-Draft']",
+                        "./front/seriesInfo[@name='Internet-Draft']")
+      if si
+        id = si[:value]
+        id.sub!(/(?<=-)\d{2}$/, ver) if ver
+        ret << DocumentIdentifier.new(type: "Internet-Draft", id: id, primary: true)
+      else
+        id = reference[:anchor] || reference[:docName] || reference[:number]
+        ret << create_docid(id, ver) if id
       end
-      if (id = reference[:anchor])
-        ret << DocumentIdentifier.new(type: "rfc-anchor", id: id)
+
+      %w[anchor docName number].each do |atr|
+        if reference[atr]
+          pref, num = id_to_pref_num reference[atr]
+          atrid = if atr == "anchor" && RFCPREFIXES.include?(pref)
+                    "#{pref}#{num.sub(/^-?0+/, '')}"
+                  else
+                    reference[atr]
+                  end
+          type = pubid_type id
+          ret << DocumentIdentifier.new(id: atrid, type: type, scope: atr)
+        end
       end
+
       ret + reference.xpath("./seriesInfo", "./front/seriesInfo").map do |si|
         next unless SERIESINFONAMES.include? si[:name]
 
         id = si[:value]
-        id.sub!(/(?<=-)\d{2}$/, ver) if ver && si[:name] == "Internet-Draft"
+        # id.sub!(/(?<=-)\d{2}$/, ver) if ver && si[:name] == "Internet-Draft"
         DocumentIdentifier.new(id: id, type: si[:name])
       end.compact
+    end
+
+    def create_docid(id, ver) # rubocop:disable Metrics/MethodLength
+      pref, num = id_to_pref_num(id)
+      if RFCPREFIXES.include?(pref)
+        pid = "#{pref} #{num.sub(/^-?0+/, '')}"
+        type = pubid_type id
+      elsif %w[I-D draft].include?(pref)
+        pid = "draft-#{num}"
+        pid.sub!(/(?<=-)\d{2}$/, ver) if ver
+        type = "Internet-Draft"
+      else
+        pid = pref ? "#{pref} #{num}" : id
+        type = pubid_type id
+      end
+      DocumentIdentifier.new(type: type, id: pid, primary: true)
+    end
+
+    def id_to_pref_num(id)
+      tn = /^(?<pref>I-D|draft|3GPP|W3C|[A-Z]{2,})[._-]?(?<num>.+)/.match id
+      tn && tn.to_a[1..2]
+    end
+
+    #
+    # Extract document identifier type from identifier
+    #
+    # @param [String] id identifier
+    #
+    # @return [String]
+    #
+    def pubid_type(id)
+      id_to_pref_num(id)&.first
     end
 
     #
@@ -138,10 +194,10 @@ module RelatonBib
     # @return [Array<RelatonBib::FormattedString>]
     def abstracts(ref)
       ref.xpath("./front/abstract").map do |a|
-        FormattedString.new(
-          content: a.children.to_s.gsub(/(<\/?)t(>)/, '\1p\2'),
-          language: language(ref), script: "Latn", format: "text/html"
-        )
+        c = a.inner_html.gsub(/\s*(<\/?)t(>)\s*/, '\1p\2')
+          .gsub(/[\t\n]/, " ").squeeze " "
+        FormattedString.new(content: c, language: language(ref), script: "Latn",
+                            format: "text/html")
       end
     end
 
@@ -185,7 +241,8 @@ module RelatonBib
       #   "front/author[not(@surname)][not(@fullname)]/organization",
       # ).map do |org|
       org = contrib.at("./organization")
-      { entity: new_org(org.text, org[:abbrev]), role: [contributor_role(contrib)] }
+      name = ORGNAMES[org.text] || org.text
+      { entity: new_org(name, org[:abbrev]), role: [contributor_role(contrib)] }
       # end
     end
 
@@ -244,7 +301,7 @@ module RelatonBib
     # @rerurn [RelatonBib::Address]
     def address(postal) # rubocop:disable Metrics/CyclomaticComplexity
       street = [
-        (postal.at("./postalLine") || postal.at("./street"))&.text
+        (postal.at("./postalLine") || postal.at("./street"))&.text,
       ].compact
       Address.new(
         street: street,
@@ -282,12 +339,15 @@ module RelatonBib
     # @param reference [Nokogiri::XML::Element]
     # @return [Array<RelatonBib::BibliographicDate>] published data.
     #
-    def dates(reference)
-      return unless (date = reference.at "./front/date")
+    def dates(reference) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize
+      date = reference.at "./front/date"
+      return [] if date.nil? || date[:year].nil? || date[:year].empty?
 
-      d = [date[:year], month(date[:month]), (date[:day] || 1)].compact.join "-"
-      date = Time.parse(d).strftime "%Y-%m-%d"
-      [BibliographicDate.new(type: "published", on: date)]
+      d = date[:year]
+      d += "-#{month(date[:month])}" if date[:month] && !date[:month].empty?
+      d += "-#{date[:day]}" if date[:day]
+      # date = Time.parse(d).strftime "%Y-%m-%d"
+      [BibliographicDate.new(type: "published", on: d)]
     end
 
     # @param reference [Nokogiri::XML::Element]
@@ -307,10 +367,10 @@ module RelatonBib
     end
 
     def month(mon)
-      return 1 if !mon || mon.empty?
+      # return 1 if !mon || mon.empty?
       return mon if /^\d+$/.match? mon
 
-      Date::MONTHNAMES.index(mon)
+      Date::MONTHNAMES.index { |m| m&.include? mon }.to_s.rjust 2, "0"
     end
 
     #
@@ -321,7 +381,7 @@ module RelatonBib
     #
     def series(reference)
       reference.xpath("./seriesInfo", "./front/seriesInfo").map do |si|
-        next if si[:name] == "DOI" || si[:stream] || si[:status]
+        next if SERIESINFONAMES.include?(si[:name]) || si[:stream] || si[:status]
 
         t = TypedTitleString.new(
           content: si[:name], language: language(reference), script: "Latn",

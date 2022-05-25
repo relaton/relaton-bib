@@ -25,7 +25,7 @@ module RelatonBib
     # @param state [String]
     # @param country [String]
     # @param postcode [String]
-    def initialize(street:, city:, state: nil, country:, postcode: nil)
+    def initialize(street:, city:, country:, state: nil, postcode: nil)
       @street   = street
       @city     = city
       @state    = state
@@ -45,7 +45,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_hash # rubocop:disable Metrics/AbcSize
       hash = {}
       hash["street"] = street if street&.any?
       hash["city"] = city
@@ -59,7 +59,7 @@ module RelatonBib
     # @param count [Integer] number of addresses
     # @return [String]
     def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize
-      pref = prefix.empty? ? "address" : prefix + ".address"
+      pref = prefix.empty? ? "address" : "#{prefix}.address"
       out = count > 1 ? "#{pref}::\n" : ""
       street.each { |st| out += "#{pref}.street:: #{st}\n" }
       out += "#{pref}.city:: #{city}\n"
@@ -99,7 +99,7 @@ module RelatonBib
     # @param count [Integer] number of contacts
     # @return [string]
     def to_asciibib(prefix = "", count = 1)
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       out = count > 1 ? "#{pref}contact::\n" : ""
       out += "#{pref}contact.type:: #{type}\n"
       out += "#{pref}contact.value:: #{value}\n"
@@ -156,7 +156,7 @@ module RelatonBib
     # @param count [Integer]
     # @return [String]
     def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       out = count > 1 ? "#{pref}affiliation::\n" : ""
       out += name.to_asciibib "#{pref}affiliation.name" if name
       description.each do |d|
@@ -206,7 +206,7 @@ module RelatonBib
     # @param prefix [String]
     # @return [String]
     def to_asciibib(prefix = "") # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       out = ""
       out += "#{pref}url:: #{uri}\n" if uri
       addr = contact.select { |c| c.is_a? RelatonBib::Address }

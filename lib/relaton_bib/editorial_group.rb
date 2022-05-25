@@ -35,7 +35,7 @@ module RelatonBib
 
     # @return [true]
     def presence?
-      true
+      technical_committee.any?
     end
   end
 end

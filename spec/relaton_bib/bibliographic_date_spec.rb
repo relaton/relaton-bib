@@ -80,8 +80,8 @@ RSpec.describe RelatonBib::BibliographicDate do
   end
 
   it "handle date not matched any patterns" do
-    item = RelatonBib::BibliographicDate.new type: "published", on: ""
-    item.instance_variable_set :@on, "Nov 2020"
-    expect(item.on(:month)).to eq "Nov 2020"
+    item = RelatonBib::BibliographicDate.new type: "published", on: "Nov 2020"
+    expect(item.on(:year)).to eq 2020
+    expect(item.on(:month)).to eq 11
   end
 end

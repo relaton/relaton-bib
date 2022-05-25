@@ -29,6 +29,7 @@ module RelatonBib
         medium_hash_to_bib(ret)
         place_hash_to_bib(ret)
         extent_hash_to_bib(ret)
+        size_hash_to_bib(ret)
         accesslocation_hash_to_bib(ret)
         classification_hash_to_bib(ret)
         validity_hash_to_bib(ret)
@@ -48,11 +49,30 @@ module RelatonBib
       def extent_hash_to_bib(ret)
         return unless ret[:extent]
 
-        ret[:extent] = array(ret[:extent])
-        ret[:extent]&.each_with_index do |e, i|
-          ret[:extent][i] = BibItemLocality.new(e[:type], e[:reference_from],
-                                                e[:reference_to])
+        ret[:extent] = array(ret[:extent]).map do |e|
+          locality e
+          # ret[:extent][i] = Locality.new(e[:type], e[:reference_from],
+          #                                       e[:reference_to])
         end
+      end
+
+      def locality(loc)
+        if loc[:locality_stack]
+          LocalityStack.new(loc[:locality_stack].map { |l| locality(l) })
+        else
+          l = loc[:locality]
+          Locality.new(l[:type], l[:reference_from], l[:reference_to])
+        end
+      end
+
+      def size_hash_to_bib(ret)
+        return unless ret[:size]
+
+        ret[:size] = array(ret[:size])
+        size = ret[:size]&.map do |val|
+          BibliographicSize::Value.new(**val)
+        end
+        ret[:size] = BibliographicSize.new(size)
       end
 
       def title_hash_to_bib(ret)
@@ -126,8 +146,9 @@ module RelatonBib
         ret[:docid] = array(ret[:docid])
         ret[:docid]&.each_with_index do |id, i|
           type = id[:type] || id[:id].match(/^\w+(?=\s)/)&.to_s
-          ret[:docid][i] = DocumentIdentifier.new(id: id[:id], type: type,
-                                                  scope: id[:scope])
+          ret[:docid][i] = DocumentIdentifier.new(
+            id: id[:id], type: type, scope: id[:scope], primary: id[:primary],
+          )
         end
       end
 
@@ -315,18 +336,19 @@ module RelatonBib
 
       # @param rel [Hash] relation
       # @return [RelatonBib::LocalityStack]
-      def relation_locality_hash_to_bib(rel) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      def relation_locality_hash_to_bib(rel)
         rel[:locality] = array(rel[:locality])&.map do |bl|
-          ls = if bl[:locality_stack]
-                 array(bl[:locality_stack]).map do |l|
-                   Locality.new(l[:type], l[:reference_from], l[:reference_to])
-                 end
-               else
-                 l = Locality.new(bl[:type], bl[:reference_from],
-                                  bl[:reference_to])
-                 [l]
-               end
-          LocalityStack.new ls
+          LocalityStack.new locality_locality_stack(bl)
+        end
+      end
+
+      def locality_locality_stack(lls)
+        if lls[:locality_stack]
+          array(lls[:locality_stack]).map do |l|
+            Locality.new(l[:type], l[:reference_from], l[:reference_to])
+          end
+        else
+          [Locality.new(lls[:type], lls[:reference_from], lls[:reference_to])]
         end
       end
 

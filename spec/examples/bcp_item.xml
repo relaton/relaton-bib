@@ -1,0 +1,22 @@
+<referencegroup anchor="BCP1" target="https://www.rfc-editor.org/info/bcp1">
+  <reference anchor="RFC1" target="https://www.rfc-editor.org/info/rfc1">
+    <front>
+      <title>Included RFC1</title>
+      <author fullname="A. Bierman">
+        <organization abbrev="IETF">IETF</organization>
+      </author>
+      <date year="2014" month="April"/>
+      <abstract>
+        <t>Abstract RFC 0001</t>
+      </abstract>
+    </front>
+    <seriesInfo name="BCP" value="1"/>
+  </reference>
+  <reference anchor="RFC2" target="https://www.rfc-editor.org/info/rfc2">
+    <front>
+      <title>Included RFC0002</title>
+      <date year="1999" month="December"/>
+    </front>
+    <seriesInfo name="BCP" value="1"/>
+  </reference>
+</referencegroup>

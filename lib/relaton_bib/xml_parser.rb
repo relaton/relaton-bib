@@ -11,7 +11,7 @@ module RelatonBib
           bib_item item_data(bibitem)
         else
           warn "[relaton-bib] WARNING: can't find bibitem or bibdata element "\
-          "in the XML"
+               "in the XML"
         end
       end
 
@@ -46,6 +46,7 @@ module RelatonBib
           medium: fetch_medium(bibitem),
           place: fetch_place(bibitem),
           extent: fetch_extent(bibitem),
+          size: fetch_size(bibitem),
           accesslocation: bibitem.xpath("./accesslocation").map(&:text),
           classification: fetch_classification(bibitem),
           keyword: bibitem.xpath("keyword").map(&:text),
@@ -71,7 +72,26 @@ module RelatonBib
 
       def fetch_place(item)
         item.xpath("./place").map do |pl|
-          Place.new(name: pl.text, uri: pl[:uri], region: pl[:region])
+          if (city = pl.at("./city"))
+            Place.new(city: city.text, region: create_region_country(pl),
+                      country: create_region_country(pl, "country"))
+          else
+            Place.new(name: pl.text)
+          end
+        end
+      end
+
+      #
+      # Create region or country from place element
+      #
+      # @param [Nokogiri::XML::Element] place place element
+      # @param [String] node name of the node to parse
+      #
+      # @return [Array<RelatonBib::Place::RegionType>] <description>
+      #
+      def create_region_country(place, node = "region")
+        place.xpath("./#{node}").map do |r|
+          Place::RegionType.new(name: r.text, iso: r[:iso], recommended: r[:recommended])
         end
       end
 
@@ -115,27 +135,36 @@ module RelatonBib
             organization: sr.at("organization")&.text,
             abbreviation: abbreviation, from: sr.at("from")&.text,
             to: sr.at("to")&.text, number: sr.at("number")&.text,
-            partnumber: sr.at("partnumber")&.text
+            partnumber: sr.at("partnumber")&.text, run: sr.at("run")&.text,
           )
         end
       end
 
-      def fetch_medium(item)
+      def fetch_medium(item) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/PerceivedComplexity
         medium = item.at("./medium")
         return unless medium
 
         Medium.new(
-          form: medium.at("form")&.text, size: medium.at("size")&.text,
-          scale: medium.at("scale")&.text
+          content: medium.at("content")&.text, genre: medium.at("genre")&.text,
+          form: medium.at("form")&.text, carrier: medium.at("carrier")&.text,
+          size: medium.at("size")&.text, scale: medium.at("scale")&.text
         )
       end
 
       def fetch_extent(item)
-        item.xpath("./extent").map do |ex|
-          BibItemLocality.new(
-            ex[:type], ex.at("referenceFrom")&.text, ex.at("referenceTo")&.text
-          )
+        item.xpath("./extent").reduce([]) do |a, ex|
+          a + localities(ex)
+          # Locality.new(
+          #   ex[:type], ex.at("referenceFrom")&.text, ex.at("referenceTo")&.text
+          # )
         end
+      end
+
+      def fetch_size(item)
+        size = item.xpath("./size/value").map do |sz|
+          BibliographicSize::Value.new type: sz[:type], value: sz.text
+        end
+        BibliographicSize.new size if size.any?
       end
 
       def fetch_classification(item)
@@ -161,8 +190,9 @@ module RelatonBib
       # @return [Array<RelatonBib::DocumentIdentifier>]
       def fetch_docid(item)
         item.xpath("./docidentifier").map do |did|
+          primary = true if did[:primary] == "true"
           DocumentIdentifier.new(id: did.text, type: did[:type],
-                                 scope: did[:scope])
+                                 scope: did[:scope], primary: primary)
         end
       end
 
@@ -238,11 +268,12 @@ module RelatonBib
           OrgIdentifier.new(i[:type], i.text)
         end
         subdiv = org.xpath("subdivision").map &:text
-        Organization.new(name: names,
-                         abbreviation: org.at("abbreviation")&.text,
-                         subdivision: subdiv,
-                         url: org.at("uri")&.text,
-                         identifier: identifier)
+        contact = parse_contact org
+        Organization.new(
+          name: names, abbreviation: org.at("abbreviation")&.text,
+          subdivision: subdiv, # url: org.at("uri")&.text,
+          identifier: identifier, contact: contact
+        )
       end
 
       def get_person(person) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
@@ -255,21 +286,7 @@ module RelatonBib
           Affiliation.new organization: get_org(org), description: desc
         end
 
-        contact = person.xpath("./address|./phone|./email|./uri").map do |c|
-          if c.name == "address"
-            streets = c.xpath("./street").map(&:text)
-            Address.new(
-              street: streets,
-              city: c.at("./city")&.text,
-              state: c.at("./state")&.text,
-              country: c.at("./country")&.text,
-              postcode: c.at("./postcode")&.text,
-            )
-          else
-            Contact.new(type: c.name, value: c.text)
-          end
-        end
-
+        contact = parse_contact person
         identifier = person.xpath("./identifier").map do |pi|
           PersonIdentifier.new pi[:type], pi.text
         end
@@ -293,6 +310,23 @@ module RelatonBib
           contact: contact,
           identifier: identifier,
         )
+      end
+
+      def parse_contact(contrib) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength,Metrics/AbcSize
+        contrib.xpath("./address|./phone|./email|./uri").map do |c|
+          if c.name == "address"
+            streets = c.xpath("./street").map(&:text)
+            Address.new(
+              street: streets,
+              city: c.at("./city")&.text,
+              state: c.at("./state")&.text,
+              country: c.at("./country")&.text,
+              postcode: c.at("./postcode")&.text,
+            )
+          else
+            Contact.new(type: c.name, value: c.text)
+          end
+        end
       end
 
       def name_part(person, part)
@@ -320,7 +354,8 @@ module RelatonBib
       # @return [Array<RelatonBib::FormattedString>]
       def fetch_abstract(item)
         item.xpath("./abstract").map do |a|
-          FormattedString.new(content: a.children.to_s, language: a[:language],
+          c = a.inner_html(encoding: "utf-8").strip
+          FormattedString.new(content: c, language: a[:language],
                               script: a[:script], format: a[:format])
         end
       end
@@ -384,22 +419,26 @@ module RelatonBib
       # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
       def localities(rel)
         rel.xpath("./locality|./localityStack").map do |lc|
-          if lc[:type]
-            LocalityStack.new [locality(lc)]
+          if lc.name == "locality"
+            locality lc
           else
             LocalityStack.new(lc.xpath("./locality").map { |l| locality l })
           end
         end
       end
 
+      #
+      # Create Locality object from Nokogiri::XML::Element
+      #
       # @param loc [Nokogiri::XML::Element]
+      # @param klass [RelatonBib::Locality.class, RelatonBib::LocalityStack.class]
+      #
       # @return [RelatonBib::Locality]
       def locality(loc, klass = Locality)
-        ref_to = (rt = loc.at("./referenceTo")) && LocalizedString.new(rt.text)
         klass.new(
           loc[:type],
-          LocalizedString.new(loc.at("./referenceFrom").text),
-          ref_to,
+          loc.at("./referenceFrom")&.text,
+          loc.at("./referenceTo")&.text,
         )
       end
 

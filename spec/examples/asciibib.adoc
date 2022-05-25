@@ -1,7 +1,7 @@
 [%bibitem]
 == {blank}
 id:: ISOTC211
-fetched:: 2021-10-08
+fetched:: 2022-05-12
 title::
 title.type:: title-main
 title.content:: Geographic information
@@ -18,7 +18,8 @@ title.format:: text/plain
 type:: standard
 docid::
 docid.type:: ISO
-docid.id:: TC211
+docid.primary:: true
+docid.id:: ISO TC 211
 docid::
 docid.type:: isbn
 docid.id:: ISBN
@@ -39,7 +40,7 @@ docid.id:: 10.17487/rfc1149
 docid::
 docid.type:: Internet-Draft
 docid.id:: draft-ietf-somewg-someprotocol-07
-docnumber:: 123456
+docnumber:: TC211
 edition:: 1
 language:: en
 language:: fr
@@ -72,10 +73,10 @@ date::
 date.type:: accessed
 date.on:: 2015-05-20
 abstract::
-abstract.content:: ISO 19115-1:2014 defines the schema required for ...
+abstract.content:: <p>ISO 19115-1:2014 defines the schema required for ...</p>
 abstract.language:: en
 abstract.script:: Latn
-abstract.format:: text/plain
+abstract.format:: text/html
 abstract::
 abstract.content:: L'ISO 19115-1:2014 définit le schéma requis pour ...
 abstract.language:: fr
@@ -109,23 +110,32 @@ medium.scale:: medium scale
 place::
 place.name:: bib place
 place::
-place.name:: Geneva
-place.uri:: geneva.place
-place.region:: Switzelznd
-extent::
-extent.type:: section
-extent.reference_from:: Reference from
-extent.reference_to:: Reference to
-extent::
-extent.type:: chapter
-extent.reference_from:: 4
-extent::
-extent.type:: page
-extent.reference_from:: 10
-extent.reference_to:: 20
-extent::
-extent.type:: volume
-extent.reference_from:: 1
+place.city:: Geneva
+place.region.name:: Region
+place.country.name:: Switzelznd
+place.country.iso:: CH
+place.country.recommended:: true
+extent.locality::
+extent.locality.type:: section
+extent.locality.reference_from:: Reference from
+extent.locality.reference_to:: Reference to
+extent.locality::
+extent.locality.type:: chapter
+extent.locality.reference_from:: 4
+extent.locality_stack::
+extent.locality_stack.locality::
+extent.locality_stack.locality.type:: page
+extent.locality_stack.locality.reference_from:: 10
+extent.locality_stack.locality.reference_to:: 20
+extent.locality_stack.locality::
+extent.locality_stack.locality.type:: volume
+extent.locality_stack.locality.reference_from:: 1
+size::
+size.type:: page
+size.value:: 490
+size::
+size.type:: plate
+size.value:: 3
 accesslocation:: accesslocation1
 accesslocation:: accesslocation2
 classification::
@@ -164,10 +174,10 @@ contributor.person.contact.type:: phone
 contributor.person.contact.value:: 223322
 contributor.role.type:: author
 contributor::
-contributor.organization.name:: IETF
-contributor.organization.abbreviation:: IETF
+contributor.organization.name:: Institute of Electrical and Electronics Engineers
+contributor.organization.abbreviation:: IEEE
 contributor.organization.identifier.type:: uri
-contributor.organization.identifier.value:: www.ietf.org
+contributor.organization.identifier.value:: www.ieee.org
 contributor::
 contributor.role.description:: Publisher description
 contributor.role.type:: publisher
@@ -205,7 +215,7 @@ contributor.person.contact.type:: phone
 contributor.person.contact.value:: 223322
 contributor.role.type:: author
 contributor::
-contributor.organization.name:: Institution
+contributor.organization.name:: World Wide Web Consortium
 contributor.role.description:: sponsor
 contributor.role.type:: distributor
 relation::
@@ -222,6 +232,12 @@ relation.type:: partOf
 relation.bibitem.title.type:: main
 relation.bibitem.title.content:: Book title
 relation.bibitem.title.format:: text/plain
+series::
+series.type:: Internet-Draft
+series.title.content:: Internet-Draft
+series.title.format:: text/plain
+series.number:: draft-ietf-somewg-someprotocol-07
+series.run:: seriesrun
 series::
 series.type:: main
 series.title.type:: original

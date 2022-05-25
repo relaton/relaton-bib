@@ -1,0 +1,76 @@
+id: BCP1
+
+title:
+  - BCP title
+
+type: standard
+
+docid:
+  - id: BCP1
+    type: IETF
+
+docnumber: BCP1
+
+language:
+  - en
+
+script: Latn
+
+link:
+  - type: src
+    content: https://www.rfc-editor.org/info/bcp1
+
+relation:
+  - type: includes
+    bibitem:
+      title:
+        type: maind
+        content: Included RFC1
+      docid:
+        - id: RFC1
+          type: IETF
+      link:
+        - type: src
+          content: https://www.rfc-editor.org/info/rfc1
+      contributor:
+        - person:
+            name: 
+              completename: 
+                content: A. Bierman
+                language: en
+                script: Latn
+            affiliation:
+              - organization:
+                  name: IETF
+                  abbreviation: IETF
+                  identifier:
+                    type: uri
+                    id: www.ietf.org
+      date:
+        - type: published
+          value: "2014-04"
+      abstract:
+        - content: <p>Abstract RFC 0001</p>
+          language: en
+          script: Latn
+          format: text/html
+      series:
+        - number: "1"
+          title: BCP
+  - type: includes
+    bibitem:
+      title:
+        type: main
+        content: Included RFC0002
+      docid:
+        - id: RFC2
+          type: IETF
+      link:
+        - type: src
+          content: https://www.rfc-editor.org/info/rfc2
+      date:
+        - type: published
+          value: "1999-12"
+      series:
+        - number: "1"
+          title: BCP

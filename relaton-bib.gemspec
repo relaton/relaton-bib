@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.5.0")
+  spec.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
 
   spec.add_development_dependency "byebug"
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "addressable"
   spec.add_dependency "bibtex-ruby"
+  spec.add_dependency "htmlentities"
   spec.add_dependency "iso639"
-  spec.add_dependency "nokogiri"
+  spec.add_dependency "nokogiri", "~> 1.13.0"
 end

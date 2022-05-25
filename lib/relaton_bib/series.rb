@@ -7,49 +7,35 @@ module RelatonBib
   class Series
     # TYPES = %w[main alt].freeze
 
-    # @return [String, NilClass] allowed values: "main" or "alt"
+    # @return [String, nil] allowed values: "main" or "alt"
     attr_reader :type
 
-    # @return [RelatonBib::FormattedRef, NilClass]
+    # @return [RelatonBib::FormattedRef, nil]
     attr_reader :formattedref
 
-    # @return [RelatonBib::FormattedString, NilClass] title
+    # @return [RelatonBib::TypedTitleString, nil] title
     attr_reader :title
 
-    # @return [String, NilClass]
-    attr_reader :place
+    # @return [String, nil]
+    attr_reader :place, :organization, :from, :to, :number, :partnumber, :run
 
-    # @return [String, NilClass]
-    attr_reader :organization
-
-    # @return [RelatonBib::LocalizedString, NilClass]
+    # @return [RelatonBib::LocalizedString, nil]
     attr_reader :abbreviation
-
-    # @return [String, NilClass] date or year
-    attr_reader :from
-
-    # @return [String, NilClass] date or year
-    attr_reader :to
-
-    # @return [String, NilClass]
-    attr_reader :number
-
-    # @return [String, NilClass]
-    attr_reader :partnumber
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 
-    # @param type [String, NilClass] title or formattedref argument should be
-    #   passed
-    # @param formattedref [RelatonBib::FormattedRef, NilClass]
-    # @param title [RelatonBib::TypedTitleString, NilClass]
-    # @param place [String, NilClass]
-    # @param orgaization [String, NilClass]
-    # @param abbreviation [RelatonBib::LocalizedString, NilClass]
-    # @param from [String, NilClass]
-    # @param to [String, NilClass]
-    # @param number [String, NilClass]
-    # @param partnumber [String, NilClass]
+    # @param type [String, nil]
+    # @param formattedref [RelatonBib::FormattedRef, nil]
+    # @param title [RelatonBib::TypedTitleString, nil] title or
+    #   formattedref argument should be passed
+    # @param place [String, nil]
+    # @param orgaization [String, nil]
+    # @param abbreviation [RelatonBib::LocalizedString, nil]
+    # @param from [String, nil]
+    # @param to [String, nil]
+    # @param number [String, nil]
+    # @param partnumber [String, nil]
+    # @param run [String, nil]
     def initialize(**args)
       unless args[:title].is_a?(RelatonBib::TypedTitleString) ||
           args[:formattedref]
@@ -70,6 +56,7 @@ module RelatonBib
       @to           = args[:to]
       @number       = args[:number]
       @partnumber   = args[:partnumber]
+      @run          = args[:run]
     end
     # rubocop:enable Metrics/MethodLength
 
@@ -89,6 +76,7 @@ module RelatonBib
           builder.to to if to
           builder.number number if number
           builder.partnumber partnumber if partnumber
+          builder.run run if run
         end
       end
       xml[:type] = type if type
@@ -109,6 +97,7 @@ module RelatonBib
       hash["to"] = to if to
       hash["number"] = number if number
       hash["partnumber"] = partnumber if partnumber
+      hash["run"] = run if run
       hash
     end
 
@@ -128,6 +117,7 @@ module RelatonBib
       out += "#{pref}.to:: #{to}\n" if to
       out += "#{pref}.number:: #{number}\n" if number
       out += "#{pref}.partnumber:: #{partnumber}\n" if partnumber
+      out += "#{pref}.run:: #{run}\n" if run
       out
     end
   end

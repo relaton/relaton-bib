@@ -7,9 +7,10 @@ RSpec.describe RelatonBib::LocalizedString do
 
   context "instance" do
     subject do
-      RelatonBib::LocalizedString.new(
-        "content & character to escape", "en", "Latn"
-      )
+      RelatonBib::LocalizedString.new(<<-XML, "en", "Latn")
+        prefix <p>content <p>< & > characters</p> to escape</p>
+        <p>Text</p> suffix
+      XML
     end
 
     it "returns false" do
@@ -22,7 +23,7 @@ RSpec.describe RelatonBib::LocalizedString do
       end
       expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
         <localized_string language="en" script="Latn">
-          content &amp; character to escape
+          prefix <p>content <p>&lt; &amp; &gt; characters</p> to escape</p><p>Text</p> suffix
         </localized_string>
       XML
     end

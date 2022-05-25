@@ -82,6 +82,8 @@ module RelatonBib
 
     # @param entity [RelatonBib::Person, RelatonBib::Organization]
     # @param role [Array<Hash>]
+    # @option role [String] :type
+    # @option role [Array<String>] :description
     def initialize(entity:, role: [])
       if role.empty?
         role << { type: entity.is_a?(Person) ? "author" : "publisher" }
@@ -94,7 +96,7 @@ module RelatonBib
     # @option opts [Nokogiri::XML::Builder] :builder XML builder
     # @option opts [String, Symbol] :lang language
     def to_xml(**opts)
-      entity.to_xml **opts
+      entity.to_xml(**opts)
     end
 
     # @return [Hash]

@@ -209,9 +209,6 @@
       <zeroOrMore>
         <ref name="contact"/>
       </zeroOrMore>
-      <zeroOrMore>
-        <ref name="uri"/>
-      </zeroOrMore>
     </element>
   </define>
   <define name="fullname">
@@ -401,9 +398,9 @@
       <choice>
         <!-- iso191606 TODO -->
         <group>
-          <oneOrMore>
+          <zeroOrMore>
             <ref name="street"/>
-          </oneOrMore>
+          </zeroOrMore>
           <ref name="city"/>
           <optional>
             <ref name="state"/>
@@ -530,7 +527,7 @@
   </define>
   <define name="LocalityType">
     <data type="string">
-      <param name="pattern">section|clause|part|paragraph|chapter|page|whole|table|annex|figure|note|list|example|volume|issue|time|anchor|locality:[a-zA-Z0-9_]+</param>
+      <param name="pattern">section|clause|part|paragraph|chapter|page|title|line|whole|table|annex|figure|note|list|example|volume|issue|time|anchor|locality:[a-zA-Z0-9_]+</param>
     </data>
   </define>
   <define name="referenceFrom">
@@ -680,6 +677,9 @@
     <zeroOrMore>
       <ref name="extent"/>
     </zeroOrMore>
+    <optional>
+      <ref name="bibliographic_size"/>
+    </optional>
     <zeroOrMore>
       <ref name="accesslocation"/>
     </zeroOrMore>
@@ -828,6 +828,11 @@
       <optional>
         <attribute name="scope"/>
       </optional>
+      <optional>
+        <attribute name="primary">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
       <text/>
     </element>
   </define>
@@ -846,16 +851,45 @@
   </define>
   <define name="bplace">
     <element name="place">
-      <optional>
-        <attribute name="uri">
-          <data type="anyURI"/>
-        </attribute>
-      </optional>
-      <optional>
-        <attribute name="region"/>
-      </optional>
+      <choice>
+        <text/>
+        <group>
+          <ref name="bibliocity"/>
+          <zeroOrMore>
+            <ref name="biblioregion"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="bibliocountry"/>
+          </zeroOrMore>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="bibliocity">
+    <element name="city">
       <text/>
     </element>
+  </define>
+  <define name="biblioregion">
+    <element name="region">
+      <ref name="RegionType"/>
+    </element>
+  </define>
+  <define name="bibliocountry">
+    <element name="country">
+      <ref name="RegionType"/>
+    </element>
+  </define>
+  <define name="RegionType">
+    <optional>
+      <attribute name="iso"/>
+    </optional>
+    <optional>
+      <attribute name="recommended">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <text/>
   </define>
   <define name="bprice">
     <element name="price">
@@ -920,9 +954,29 @@
       <text/>
     </element>
   </define>
+  <define name="sizevalue">
+    <element name="value">
+      <attribute name="type"/>
+      <text/>
+    </element>
+  </define>
+  <define name="bibliographic_size">
+    <element name="size">
+      <oneOrMore>
+        <ref name="sizevalue"/>
+      </oneOrMore>
+    </element>
+  </define>
   <define name="extent">
     <element name="extent">
-      <ref name="BibItemLocality"/>
+      <choice>
+        <zeroOrMore>
+          <ref name="locality"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="localityStack"/>
+        </zeroOrMore>
+      </choice>
     </element>
   </define>
   <define name="series">
