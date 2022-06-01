@@ -7,7 +7,7 @@ module RelatonBib
     FLAVOR = nil
 
     ORGNAMES = {
-      "IEEE" => "Istitute of Electrical and Electronics Engineers",
+      "IEEE" => "Institute of Electrical and Electronics Engineers",
       "W3C" => "World Wide Web Consortium",
       "3GPP" => "3rd Generation Partnership Project",
     }.freeze
