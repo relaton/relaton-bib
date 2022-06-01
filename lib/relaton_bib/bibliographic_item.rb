@@ -37,7 +37,9 @@ module RelatonBib
     TYPES = %W[article book booklet conference manual proceedings presentation
                thesis techreport standard unpublished map electronic\sresource
                audiovisual film video broadcast graphic_work music patent
-               inbook incollection inproceedings journal].freeze
+               inbook incollection inproceedings journal software website
+               webresource dataset archival social_media alert message
+               conversation misc].freeze
 
     # @return [TrueClass, FalseClass, NilClass]
     attr_accessor :all_parts
