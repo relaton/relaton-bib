@@ -33,7 +33,7 @@ module RelatonBib
           docnumber: bibitem.at("./docnumber")&.text,
           date: fetch_dates(bibitem),
           contributor: fetch_contributors(bibitem),
-          edition: bibitem.at("./edition")&.text,
+          edition: fetch_edition(bibitem),
           version: fetch_version(bibitem),
           biblionote: fetch_note(bibitem),
           language: fetch_language(bibitem),
@@ -62,12 +62,18 @@ module RelatonBib
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
       def fetch_version(item)
-        version = item.at "./version"
-        return unless version
+        item.xpath("./version").map do |v|
+          revision_date = v.at("revision-date")&.text
+          draft = v.at("draft")&.text
+          RelatonBib::BibliographicItem::Version.new revision_date, draft
+        end
+      end
 
-        revision_date = version.at("revision-date")&.text
-        draft = version.xpath("draft").map &:text
-        RelatonBib::BibliographicItem::Version.new revision_date, draft
+      def fetch_edition(item)
+        edt = item.at("./edition")
+        return unless edt
+
+        Edition.new content: edt.text, number: edt[:number]
       end
 
       def fetch_place(item)
@@ -189,10 +195,11 @@ module RelatonBib
       # @param item [Nokogiri::XML::Element]
       # @return [Array<RelatonBib::DocumentIdentifier>]
       def fetch_docid(item)
-        item.xpath("./docidentifier").map do |did|
-          primary = true if did[:primary] == "true"
-          DocumentIdentifier.new(id: did.text, type: did[:type],
-                                 scope: did[:scope], primary: primary)
+        item.xpath("./docidentifier").map do |id|
+          did = id.to_h.transform_keys(&:to_sym)
+          did[:id] = id.text
+          did[:primary] = id[:primary] == "true" ? true : nil
+          DocumentIdentifier.new(**did)
         end
       end
 

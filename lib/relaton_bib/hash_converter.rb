@@ -6,11 +6,11 @@ module RelatonBib
       # @param args [Hash]
       # @param neated [TrueClas, FalseClass] default false
       # @return [Hash]
-      def hash_to_bib(args, nested = false)
+      def hash_to_bib(args)
         return nil unless args.is_a?(Hash)
 
         ret = Marshal.load(Marshal.dump(symbolize(args))) # deep copy
-        timestamp_hash(ret) unless nested
+        # timestamp_hash(ret) unless nested
         title_hash_to_bib(ret)
         link_hash_to_bib(ret)
         language_hash_to_bib(ret)
@@ -42,9 +42,9 @@ module RelatonBib
       end
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
-      def timestamp_hash(ret)
-        ret[:fetched] ||= Date.today.to_s
-      end
+      # def timestamp_hash(ret)
+      #   ret[:fetched] ||= Date.today.to_s
+      # end
 
       def extent_hash_to_bib(ret)
         return unless ret[:extent]
@@ -145,20 +145,17 @@ module RelatonBib
 
         ret[:docid] = array(ret[:docid])
         ret[:docid]&.each_with_index do |id, i|
-          type = id[:type] || id[:id].match(/^\w+(?=\s)/)&.to_s
-          ret[:docid][i] = DocumentIdentifier.new(
-            id: id[:id], type: type, scope: id[:scope], primary: id[:primary],
-          )
+          id[:type] ||= id[:id].match(/^\w+(?=\s)/)&.to_s
+          ret[:docid][i] = DocumentIdentifier.new(**id)
         end
       end
 
       def version_hash_to_bib(ret)
         return unless ret[:version]
 
-        ret[:version][:draft] = array(ret[:version][:draft])
-        ret[:version] && ret[:version] = BibliographicItem::Version.new(
-          ret[:version][:revision_date], ret[:version][:draft]
-        )
+        ret[:version] = array(ret[:version]).map do |v|
+          BibliographicItem::Version.new(v[:revision_date], v[:draft])
+        end
       end
 
       def biblionote_hash_to_bib(ret) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
@@ -219,7 +216,7 @@ module RelatonBib
         end
       end
 
-      def org_hash_to_bib(org)
+      def org_hash_to_bib(org) # rubocop:disable Metrics/AbcSize
         return nil if org.nil?
 
         org[:identifier] = array(org[:identifier])&.map do |a|
@@ -321,7 +318,7 @@ module RelatonBib
       # @param rel [Hash] relation
       def relation_bibitem_hash_to_bib(rel)
         if rel[:bibitem]
-          rel[:bibitem] = bib_item hash_to_bib(rel[:bibitem], true)
+          rel[:bibitem] = bib_item hash_to_bib(rel[:bibitem])
         else
           warn "[relaton-bib] bibitem missing: #{rel}"
           rel[:bibitem] = nil
@@ -344,7 +341,8 @@ module RelatonBib
 
       def locality_locality_stack(lls)
         if lls[:locality_stack]
-          array(lls[:locality_stack]).map do |l|
+          array(lls[:locality_stack]).map do |lc|
+            l = lc[:locality] || lc
             Locality.new(l[:type], l[:reference_from], l[:reference_to])
           end
         else

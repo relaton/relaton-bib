@@ -13,7 +13,7 @@ module RelatonBib
     # @return [RelatonBib::FormattedRef, nil]
     attr_reader :formattedref
 
-    # @return [RelatonBib::TypedTitleString, nil] title
+    # @return [RelatonBib::TypedTitleString] title
     attr_reader :title
 
     # @return [String, nil]
@@ -26,8 +26,7 @@ module RelatonBib
 
     # @param type [String, nil]
     # @param formattedref [RelatonBib::FormattedRef, nil]
-    # @param title [RelatonBib::TypedTitleString, nil] title or
-    #   formattedref argument should be passed
+    # @param title [RelatonBib::TypedTitleString] title
     # @param place [String, nil]
     # @param orgaization [String, nil]
     # @param abbreviation [RelatonBib::LocalizedString, nil]
@@ -37,9 +36,8 @@ module RelatonBib
     # @param partnumber [String, nil]
     # @param run [String, nil]
     def initialize(**args)
-      unless args[:title].is_a?(RelatonBib::TypedTitleString) ||
-          args[:formattedref]
-        raise ArgumentError, "argument `title` or `formattedref` should present"
+      unless args[:title].is_a?(RelatonBib::TypedTitleString)
+        raise ArgumentError, "argument `title` should present"
       end
 
       # if args[:type] && !TYPES.include?(args[:type])
@@ -65,19 +63,16 @@ module RelatonBib
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder) # rubocop:disable Metrics/MethodLength
       xml = builder.series do
-        if formattedref
-          formattedref.to_xml builder
-        else
-          builder.title { title.to_xml builder }
-          builder.place place if place
-          builder.organization organization if organization
-          builder.abbreviation { abbreviation.to_xml builder } if abbreviation
-          builder.from from if from
-          builder.to to if to
-          builder.number number if number
-          builder.partnumber partnumber if partnumber
-          builder.run run if run
-        end
+        formattedref&.to_xml builder
+        builder.title { title.to_xml builder }
+        builder.place place if place
+        builder.organization organization if organization
+        builder.abbreviation { abbreviation.to_xml builder } if abbreviation
+        builder.from from if from
+        builder.to to if to
+        builder.number number if number
+        builder.partnumber partnumber if partnumber
+        builder.run run if run
       end
       xml[:type] = type if type
     end
@@ -89,7 +84,7 @@ module RelatonBib
       hash = {}
       hash["type"] = type if type
       hash["formattedref"] = formattedref.to_hash if formattedref
-      hash["title"] = title.to_hash if title
+      hash["title"] = title.to_hash
       hash["place"] = place if place
       hash["organization"] = organization if organization
       hash["abbreviation"] = abbreviation.to_hash if abbreviation
@@ -109,7 +104,7 @@ module RelatonBib
       out = count > 1 ? "#{pref}::\n" : ""
       out += "#{pref}.type:: #{type}\n" if type
       out += formattedref.to_asciibib pref if formattedref
-      out += title.to_asciibib pref if title
+      out += title.to_asciibib pref
       out += "#{pref}.place:: #{place}\n" if place
       out += "#{pref}.organization:: #{organization}\n" if organization
       out += abbreviation.to_asciibib "#{pref}.abbreviation" if abbreviation

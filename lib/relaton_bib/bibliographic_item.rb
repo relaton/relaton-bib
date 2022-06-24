@@ -28,6 +28,7 @@ require "relaton_bib/structured_identifier"
 require "relaton_bib/editorial_group"
 require "relaton_bib/ics"
 require "relaton_bib/bibliographic_size"
+require "relaton_bib/edition"
 
 module RelatonBib
   # Bibliographic item
@@ -41,11 +42,14 @@ module RelatonBib
                webresource dataset archival social_media alert message
                conversation misc].freeze
 
-    # @return [TrueClass, FalseClass, NilClass]
+    # @return [Boolean, nil]
     attr_accessor :all_parts
 
-    # @return [String, NilClass]
-    attr_reader :id, :type, :docnumber, :edition, :doctype, :subdoctype
+    # @return [String, nil]
+    attr_reader :id, :type, :docnumber, :doctype, :subdoctype
+
+    # @return [RelatonBib::Edition, nil] <description>
+    attr_reader :edition
 
     # @!attribute [r] title
     # @return [RelatonBib::TypedTitleStringCollection]
@@ -62,7 +66,7 @@ module RelatonBib
     # @return [Array<RelatonBib::ContributionInfo>]
     attr_reader :contributor
 
-    # @return [RelatonBib::BibliographicItem::Version, NilClass]
+    # @return [Array<RelatonBib::BibliographicItem::Version>]
     attr_reader :version
 
     # @return [RelatonBib::BiblioNoteCollection]
@@ -74,13 +78,13 @@ module RelatonBib
     # @return [Array<String>] script Iso15924 code
     attr_reader :script
 
-    # @return [RelatonBib::FormattedRef, NilClass]
+    # @return [RelatonBib::FormattedRef, nil]
     attr_reader :formattedref
 
     # @!attribute [r] abstract
     #   @return [Array<RelatonBib::FormattedString>]
 
-    # @return [RelatonBib::DocumentStatus, NilClass]
+    # @return [RelatonBib::DocumentStatus, nil]
     attr_reader :status
 
     # @return [Array<RelatonBib::CopyrightAssociation>]
@@ -92,7 +96,7 @@ module RelatonBib
     # @return [Array<RelatonBib::Series>]
     attr_reader :series
 
-    # @return [RelatonBib::Medium, NilClass]
+    # @return [RelatonBib::Medium, nil]
     attr_reader :medium
 
     # @return [Array<RelatonBib::Place>]
@@ -107,7 +111,7 @@ module RelatonBib
     # @return [Array<Relaton::Classification>]
     attr_reader :classification
 
-    # @return [RelatonBib:Validity, NilClass]
+    # @return [RelatonBib:Validity, nil]
     attr_reader :validity
 
     # @return [Date]
@@ -131,18 +135,18 @@ module RelatonBib
     # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
-    # @param id [String, NilClass]
+    # @param id [String, nil]
     # @param title [RelatonBib::TypedTitleStringCollection,
     #   Array<Hash, RelatonBib::TypedTitleString>]
-    # @param formattedref [RelatonBib::FormattedRef, NilClass]
-    # @param type [String, NilClass]
+    # @param formattedref [RelatonBib::FormattedRef, nil]
+    # @param type [String, nil]
     # @param docid [Array<RelatonBib::DocumentIdentifier>]
-    # @param docnumber [String, NilClass]
+    # @param docnumber [String, nil]
     # @param language [Arra<String>]
     # @param script [Array<String>]
-    # @param docstatus [RelatonBib::DocumentStatus, NilClass]
-    # @param edition [String, NilClass]
-    # @param version [RelatonBib::BibliographicItem::Version, NilClass]
+    # @param docstatus [RelatonBib::DocumentStatus, nil]
+    # @param edition [RelatonBib::Edition, nil]
+    # @param version [Array<RelatonBib::BibliographicItem::Version>]
     # @param biblionote [RelatonBib::BiblioNoteCollection]
     # @param series [Array<RelatonBib::Series>]
     # @param medium [RelatonBib::Medium, NilClas]
@@ -150,8 +154,8 @@ module RelatonBib
     # @param extent [Array<Relaton::Locality, RelatonBib::LocalityStack>]
     # @param accesslocation [Array<String>]
     # @param classification [Array<RelatonBib::Classification>]
-    # @param validity [RelatonBib:Validity, NilClass]
-    # @param fetched [Date, NilClass] default nil
+    # @param validity [RelatonBib:Validity, nil]
+    # @param fetched [Date, nil] default nil
     # @param keyword [Array<String>]
     # @param doctype [String]
     # @param subdoctype [String]
@@ -163,8 +167,8 @@ module RelatonBib
     # @param copyright [Array<Hash, RelatonBib::CopyrightAssociation>]
     # @option copyright [Array<Hash, RelatonBib::ContributionInfo>] :owner
     # @option copyright [String] :from
-    # @option copyright [String, NilClass] :to
-    # @option copyright [String, NilClass] :scope
+    # @option copyright [String, nil] :to
+    # @option copyright [String, nil] :scope
     #
     # @param date [Array<Hash, RelatonBib::BibliographicDate>]
     # @option date [String] :type
@@ -230,8 +234,12 @@ module RelatonBib
       @id             = args[:id] || makeid(nil, false)
       @type           = args[:type]
       @docnumber      = args[:docnumber]
-      @edition        = args[:edition]
-      @version        = args[:version]
+      @edition        = case args[:edition]
+                        when Hash then Edition.new(**args[:edition])
+                        when String then Edition.new(content: args[:edition])
+                        else args[:edition]
+                        end
+      @version        = args.fetch :version, []
       @biblionote     = args.fetch :biblionote, BiblioNoteCollection.new([])
       @language       = args.fetch :language, []
       @script         = args.fetch :script, []
@@ -321,7 +329,7 @@ module RelatonBib
     # @param opts [Hash]
     # @option opts [Nokogiri::XML::Builder] :builder XML builder
     # @option opts [Boolean] :bibdata
-    # @option opts [Symbol, NilClass] :date_format (:short), :full
+    # @option opts [Symbol, nil] :date_format (:short), :full
     # @option opts [String, Symbol] :lang language
     # @return [String] XML
     def to_xml(**opts, &block)
@@ -365,8 +373,8 @@ module RelatonBib
       if contributor&.any?
         hash["contributor"] = single_element_array(contributor)
       end
-      hash["edition"] = edition if edition
-      hash["version"] = version.to_hash if version
+      hash["edition"] = edition.to_hash if edition
+      hash["version"] = version.map &:to_hash if version.any?
       hash["revdate"] = revdate if revdate
       hash["biblionote"] = single_element_array(biblionote) if biblionote&.any?
       hash["language"] = single_element_array(language) if language&.any?
@@ -493,10 +501,10 @@ module RelatonBib
     end
 
     # If revision_date exists then returns it else returns published date or nil
-    # @return [String, NilClass]
+    # @return [String, nil]
     def revdate # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-      @revdate ||= if version&.revision_date
-                     version.revision_date
+      @revdate ||= if (v = version.detect &:revision_date)
+                     v.revision_date
                    else
                      date.detect { |d| d.type == "published" }&.on&.to_s
                    end
@@ -515,10 +523,10 @@ module RelatonBib
         out += di.to_asciibib prefix, docidentifier.size
       end
       out += "#{pref}docnumber:: #{docnumber}\n" if docnumber
-      out += "#{pref}edition:: #{edition}\n" if edition
+      out += edition.to_asciibib(prefix) if edition
       language.each { |l| out += "#{pref}language:: #{l}\n" }
       script.each { |s| out += "#{pref}script:: #{s}\n" }
-      out += version.to_asciibib prefix if version
+      version.each { |v| out += v.to_asciibib prefix, version.size }
       biblionote&.each { |b| out += b.to_asciibib prefix, biblionote.size }
       out += status.to_asciibib prefix if status
       date.each { |d| out += d.to_asciibib prefix, date.size }
@@ -565,7 +573,7 @@ module RelatonBib
       item.type = bibtex_type
       item.key = id
       title.to_bibtex item
-      item.edition = edition if edition
+      item.edition = edition.content if edition
       bibtex_author item
       bibtex_contributor item
       item.address = place.first.name if place.any?
@@ -719,7 +727,7 @@ module RelatonBib
     # @param opts [Hash]
     # @option opts [Nokogiri::XML::Builder] :builder XML builder
     # @option opts [Boolean] bibdata
-    # @option opts [Symbol, NilClass] :date_format (:short), :full
+    # @option opts [Symbol, nil] :date_format (:short), :full
     # @option opts [String] :lang language
     def render_xml(**opts)
       root = opts[:bibdata] ? :bibdata : :bibitem
@@ -737,8 +745,8 @@ module RelatonBib
             c.to_xml(**opts)
           end
         end
-        builder.edition edition if edition
-        version&.to_xml builder
+        edition&.to_xml builder
+        version.each { |v| v.to_xml builder }
         biblionote.to_xml(**opts)
         opts[:note]&.each do |n|
           builder.note(n[:text], format: "text/plain", type: n[:type])
@@ -790,7 +798,8 @@ module RelatonBib
     def render_bibxml(builder, include_keywords)
       target = link.detect { |l| l.type.casecmp("src").zero? } ||
         link.detect { |l| l.type.casecmp("doi").zero? }
-      bxml = if docnumber&.match(/^BCP/) || docidentifier[0].id.include?("BCP")
+      bxml = if docnumber&.match(/^BCP/) || (docidentifier.detect(&:primary)&.id ||
+                  docidentifier[0].id).include?("BCP")
                render_bibxml_refgroup(builder, include_keywords)
              else
                render_bibxml_ref(builder, include_keywords)
@@ -820,13 +829,17 @@ module RelatonBib
     #
     def render_bibxml_ref(builder, include_keywords)
       builder.reference(**ref_attrs) do |xml|
-        xml.front do
-          xml.title title[0].title.content if title.any?
-          render_authors xml
-          render_date xml
-          render_workgroup xml
-          render_keyword xml if include_keywords
-          render_abstract xml
+        if title.any? || contributor.any? || date.any? || abstract.any? ||
+            editorialgroup&.technical_committee&.any? ||
+            (include_keywords && keyword.any?)
+          xml.front do
+            xml.title title[0].title.content if title.any?
+            render_authors xml
+            render_date xml
+            render_workgroup xml
+            render_keyword xml if include_keywords
+            render_abstract xml
+          end
         end
         render_seriesinfo xml
         render_format xml

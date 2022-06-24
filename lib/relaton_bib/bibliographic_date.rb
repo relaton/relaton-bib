@@ -41,7 +41,8 @@ module RelatonBib
       when :year then parts[0]&.to_i
       when :month then parts[1]&.to_i
       when :day then parts[2]&.to_i
-      else parse_date(d)
+      when :date then parse_date(d)
+      else d
       end
 
       # date.is_a?(Date) ? date.send(part) : date

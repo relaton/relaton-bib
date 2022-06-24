@@ -12,6 +12,16 @@ module RelatonBib
       "3GPP" => "3rd Generation Partnership Project",
     }.freeze
 
+    #
+    # Parse BibXML content
+    #
+    # @param [String] bibxml content
+    # @param [String, nil] url source URL
+    # @param [Boolean] is_relation true if the content is relation item
+    # @param [String, nil] ver version
+    #
+    # @return [<Type>] <description>
+    #
     def parse(bibxml, url: nil, is_relation: false, ver: nil)
       doc = Nokogiri::XML bibxml
       fetch_rfc doc.at("/referencegroup", "/reference"), url: url, is_relation: is_relation, ver: ver

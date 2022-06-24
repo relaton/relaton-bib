@@ -12,6 +12,14 @@ RSpec.describe RelatonBib::BibliographicDate do
       expect(subject.on).to eq "2014-11"
     end
 
+    it "return full date if part isn't :year, :month, or :day" do
+      expect(subject.on(:hour)).to eq "2014-11"
+    end
+
+    it "return Date" do
+      expect(subject.on(:date)).to be_instance_of Date
+    end
+
     it "returns xml string" do
       xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
         subject.to_xml builder
@@ -29,12 +37,17 @@ RSpec.describe RelatonBib::BibliographicDate do
         <date type="published"><on>2014-11-01</on></date>
       XML
     end
+
+    it "parse date" do
+      date = subject.send :parse_date, "November 2014"
+      expect(date).to eq "November 2014"
+    end
   end
 
   context "dates from and to given" do
     subject do
       RelatonBib::BibliographicDate.new(
-        type: "published", from: "2014-11", to: "2015-12"
+        type: "published", from: "2014-11", to: "2015-12",
       )
     end
 

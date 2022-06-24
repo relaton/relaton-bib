@@ -4,15 +4,12 @@ module RelatonBib
     class Version
       include RelatonBib
 
-      # @return [String, NilClass]
-      attr_reader :revision_date
+      # @return [String, nil]
+      attr_reader :revision_date, :draft
 
-      # @return [Array<String>]
-      attr_reader :draft
-
-      # @param revision_date [String, NilClass]
-      # @param draft [Array<String>]
-      def initialize(revision_date = nil, draft = [])
+      # @param revision_date [String, nil]
+      # @param draft [String, nil]
+      def initialize(revision_date = nil, draft = nil)
         @revision_date = revision_date
         @draft         = draft
       end
@@ -20,8 +17,8 @@ module RelatonBib
       # @param builder [Nokogiri::XML::Builder]
       def to_xml(builder)
         builder.version do
-          builder.send("revision-date", revision_date) if revision_date
-          draft.each { |d| builder.draft d }
+          builder.send(:"revision-date", revision_date) if revision_date
+          builder.draft draft if draft
         end
       end
 
@@ -29,19 +26,19 @@ module RelatonBib
       def to_hash
         hash = {}
         hash["revision_date"] = revision_date if revision_date
-        hash["draft"] = single_element_array(draft) if draft&.any?
+        hash["draft"] = draft if draft
         hash
       end
 
       # @param prefix [String]
       # @return [String]
-      def to_asciibib(prefix = "")
-        pref = prefix.empty? ? prefix : prefix + "."
-        out = ""
+      def to_asciibib(prefix = "", count = 1)
+        pref = prefix.empty? ? prefix : "#{prefix}."
+        out = count > 1 ? "#{prefix}version::\n" : ""
         if revision_date
           out += "#{pref}version.revision_date:: #{revision_date}\n"
         end
-        draft&.each { |d| out += "#{pref}version.draft:: #{d}\n" }
+        out += "#{pref}version.draft:: #{draft}\n" if draft
         out
       end
     end

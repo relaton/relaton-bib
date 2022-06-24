@@ -36,6 +36,22 @@ module RelatonBib
         str ? $~[:date] : Date.strptime($~[:date], "%Y")
       end
     end
+
+    #
+    # Parse yaml content
+    #
+    # @param [String] yaml content
+    #
+    # @return [Hash] data
+    #
+    def parse_yaml(yaml, classes = [])
+      # Newer versions of Psych uses the `permitted_classes:` parameter
+      if YAML.method(:safe_load).parameters.map(&:last).include? :permitted_classes
+        YAML.safe_load(yaml, permitted_classes: classes)
+      else
+        YAML.safe_load(yaml, classes)
+      end
+    end
   end
 
   private

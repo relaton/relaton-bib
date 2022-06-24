@@ -29,6 +29,8 @@ docid:
 - id: ISO TC 211
   type: ISO
   primary: true
+  language: en
+  script: Latn
 - id: ISBN
   type: isbn
 - id: LCCN
@@ -166,11 +168,12 @@ contributor:
   - description:
     - sponsor
     type: distributor
-edition: '1'
+edition:
+  content: Edition 1
+  number: '1.2'
 version:
-  revision_date: '2019-04-01'
-  draft:
-  - draft
+- revision_date: '2019-04-01'
+  draft: draft
 revdate: '2019-04-01'
 biblionote:
 - note
@@ -286,6 +289,9 @@ series:
     script:
     - Latn
     format: text/plain
+  title:
+    content: Formattedref
+    format: text/plain
 - type: journal
   title:
     content: Journal
@@ -356,7 +362,7 @@ validity:
   begins: 2010-10-10 12:21
   ends: 2011-02-03 18:30
   revision: 2011-03-04 09:00
-fetched: '2022-05-12'
+fetched: '2022-05-02'
 keyword:
 - Keyword
 - Key Word

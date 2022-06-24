@@ -17,7 +17,7 @@ module RelatonBib
       type_ptrn = %r{section|clause|part|paragraph|chapter|page|whole|table|
         annex|figure|note|list|example|volume|issue|time|
         locality:[a-zA-Z0-9_]+}x
-      unless type.match? type_ptrn
+      unless type&.match? type_ptrn
         warn "[relaton-bib] WARNING: invalid locality type: #{type}"
       end
 

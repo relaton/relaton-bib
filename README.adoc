@@ -31,216 +31,16 @@ Or install it yourself as:
 
 [source,ruby]
 ----
-item = RelatonBib::BibliographicItem.new(
-  id: "ISOTC211", fetched: Date.today.to_s,
-  title: [
-    { type: "main", content: "Geographic information", language: "en", script: "Latn" },
-    {
-      content: "Information géographique", language: "fr", script: "Latn"
-    },
-  ],
-  type: "standard",
-  docid: [
-    RelatonBib::DocumentIdentifier.new(id: "TC211", type: "ISO"),
-    RelatonBib::DocumentIdentifier.new(id: "ISBN", type: "isbn"),
-    RelatonBib::DocumentIdentifier.new(id: "LCCN", type: "lccn"),
-    RelatonBib::DocumentIdentifier.new(id: "ISSN", type: "issn"),
-  ],
-  docnumber: "123456",
-  edition: "1", language: %w[en fr], script: ["Latn"],
-  version: RelatonBib::BibliographicItem::Version.new("2019-04-01", ["draft"]),
-  biblionote: [
-    RelatonBib::BiblioNote.new(content: "note"),
-    RelatonBib::BiblioNote.new(content: "An note", type: "annote"),
-    RelatonBib::BiblioNote.new(content: "How published", type: "howpublished"),
-    RelatonBib::BiblioNote.new(content: "Comment", type: "comment"),
-    RelatonBib::BiblioNote.new(content: "Table Of Contents", type: "tableOfContents"),
-  ],
-  docstatus: RelatonBib::DocumentStatus.new(
-    stage: "stage", substage: "substage", iteration: "final",
-  ),
-  date: [
-    { type: "issued", on: "2014" },
-    { type: "published", on: "2014-04" },
-    { type: "accessed", on: "2015-05-20" },
-  ],
-  abstract: [
-    { content: "ISO 19115-1:2014 defines the schema required for ...",
-      language: "en", script: "Latn", format: "text/plain" },
-    { content: "L'ISO 19115-1:2014 définit le schéma requis pour ...",
-      language: "fr", script: "Latn", format: "text/plain" },
-  ],
-  contributor: [
-    {
-      entity: {
-        name: "International Organization for Standardization",
-        url: "www.iso.org", abbreviation: "ISO", subdivision: "division",
-      },
-      role: [{ type: "publisher", description: ["Publisher role"] }],
-    },
-    {
-      entity: RelatonBib::Person.new(
-        name: RelatonBib::FullName.new(
-          completename: RelatonBib::LocalizedString.new("A. Bierman", "en"),
-        ),
-        affiliation: [RelatonBib::Affiliation.new(
-          organization: RelatonBib::Organization.new(
-            name: "IETF",
-            abbreviation: RelatonBib::LocalizedString.new("IETF"),
-            identifier: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
-          )
-        )],
-        contact: [
-          RelatonBib::Address.new(
-            street: ["Street"], city: "City", postcode: "123456",
-            country: "Country", state: "State"
-          ),
-          RelatonBib::Contact.new(type: "phone", value: "223322"),
-        ]
-      ),
-      role: [type: "author"],
-    },
-    RelatonBib::ContributionInfo.new(
-      entity: RelatonBib::Organization.new(
-        name: "IETF",
-        abbreviation: "IETF",
-        identifier: [RelatonBib::OrgIdentifier.new("uri", "www.ietf.org")],
-      ),
-      role: [type: "publisher"],
-    ),
-    {
-      entity: RelatonBib::Person.new(
-        name: RelatonBib::FullName.new(
-          initial: [RelatonBib::LocalizedString.new("A.", "en")],
-          surname: RelatonBib::LocalizedString.new("Bierman", "en"),
-          forename: [RelatonBib::LocalizedString.new("Forename", "en")],
-          addition: [RelatonBib::LocalizedString.new("Addition", "en")],
-          prefix: [RelatonBib::LocalizedString.new("Prefix", "en")],
-        ),
-        affiliation: [RelatonBib::Affiliation.new(
-          organization: RelatonBib::Organization.new(name: "IETF", abbreviation: "IETF"),
-          description: [RelatonBib::LocalizedString.new("Description", "en")]
-        )],
-        contact: [
-          RelatonBib::Address.new(
-            street: ["Street"], city: "City", postcode: "123456",
-            country: "Country", state: "State"
-          ),
-          RelatonBib::Contact.new(type: "phone", value: "223322"),
-        ],
-        identifier: [RelatonBib::PersonIdentifier.new("uri", "www.person.com")],
-      ),
-      role: [type: "author"],
-    },
-    { entity: { name: "Institution" }, role: [type: "sponsor"] }
-  ],
-  copyright: [{
-      owner: [{
-          name: "International Organization for Standardization",
-          abbreviation: "ISO", url: "www.iso.org"
-        }],
-      from: "2014", to: "2020" 
-  }],
-  link: [
-    { type: "src", content: "https://www.iso.org/standard/53798.html" },
-    { type: "obp",
-      content: "https://www.iso.org/obp/ui/#!iso:std:53798:en" },
-    { type: "rss", content: "https://www.iso.org/contents/data/standard"\
-      "/05/37/53798.detail.rss" },
-    { type: "doi", content: "http://standrd.org/doi-123" },
-    { type: "file", content: "file://path/file" },
-  ],
-  relation: [
-    {
-      type: "updates",
-      bibitem: RelatonBib::BibliographicItem.new(
-        formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003"),
-      ),
-      locality: [
-        RelatonBib::LocalityStack.new([
-          RelatonBib::Locality.new("volume", "1"),
-          RelatonBib::Locality.new("section", "2"),
-        ]),
-      ],
-      source_locality: [
-        RelatonBib::SourceLocalityStack.new([
-          RelatonBib::SourceLocality.new("chapter", "4"),
-        ]),
-      ],
-    },
-    {
-      type: "updates",
-      bibitem: RelatonBib::BibliographicItem.new(
-        type: "standard",
-        formattedref: RelatonBib::FormattedRef.new(content: "ISO 19115:2003/Cor 1:2006"),
-      ),
-    },
-    {
-      type: "partOf",
-      bibitem: RelatonBib::BibliographicItem.new(
-        title: [RelatonBib::TypedTitleString.new(type: "main", content: "Book title")],
-      ),
-    },
-  ],
-  series: [
-    RelatonBib::Series.new(
-      type: "main",
-      title: RelatonBib::TypedTitleString.new(
-        type: "original", content: "ISO/IEC FDIS 10118-3", language: "en",
-        script: "Latn", format: "text/plain",
-      ),
-      place: "Serie's place",
-      organization: "Serie's organization",
-      abbreviation: RelatonBib::LocalizedString.new("ABVR"),
-      from: "2009-02-01",
-      to: "2010-12-20",
-      number: "serie1234",
-      partnumber: "part5678",
-    ),
-    RelatonBib::Series.new(
-      type: "alt",
-      formattedref: RelatonBib::FormattedRef.new(
-        content: "serieref", language: "en", script: "Latn",
-      ),
-    ),
-    RelatonBib::Series.new(
-      type: "journal", title: RelatonBib::TypedTitleString.new(content: "Journal"), number: "7"
-    ),
-    RelatonBib::Series.new(title: RelatonBib::TypedTitleString.new(content: "Series")),
-  ],
-  medium: RelatonBib::Medium.new(
-    form: "medium form", size: "medium size", scale: "medium scale",
-  ),
-  place: [
-    "bib place",
-    RelatonBib::Place.new(
-      city: "Geneva",
-      region: [RelatonBib::Place::RegionType.new(name: "Region")],
-      country: [RelatonBib::Place::RegionType.new(name: "Switzeland", iso: "SH", recommended: true)],
-    )
-  ],
-  extent: [
-    RelatonBib::BibItemLocality.new("section", "Reference from", "Reference to"),
-    RelatonBib::BibItemLocality.new("chapter", "4"),
-    RelatonBib::BibItemLocality.new("page", "10", "20"),
-    RelatonBib::BibItemLocality.new("volume", "1"),
-  ],
-  accesslocation: ["accesslocation1", "accesslocation2"],
-  classification: [
-    RelatonBib::Classification.new(type: "type", value: "value"),
-    RelatonBib::Classification.new(type: "keyword", value: "Keywords"),
-    RelatonBib::Classification.new(type: "mendeley", value: "Mendeley Tags"),
-  ],
-  validity: RelatonBib::Validity.new(
-    begins: Time.new(2010, 10, 10, 12, 21),
-    ends: Time.new(2011, 2, 3, 18,30),
-    revision: Time.new(2011, 3, 4, 9, 0),
-  )
-)
+hash = YAML.load_file "spec/examples/bib_item.yml"
+=> {"id"=>"ISOTC211",
+ "title"=>["Geographic information", {"content"=>"Information géographique", "language"=>"fr", "script"=>"Latn"}],
+ ...
 
-=> #<RelatonBib::BibliographicItem:0x007fc8b6c796c0
+item = RelatonBib::BibliographicItem.from_hash(hash)
+=> #<RelatonBib::BibliographicItem:0x00007f962f030710
  @abstract=
-  [#<RelatonBib::FormattedString:0x007fc8b6c726b8 @content="ISO 19115-1:2014 defines the schema required for ...", @format="text/plain", @language=["en"], @script=["Latn"]>,
+  [#<RelatonBib::FormattedString:0x00007f962f02acc0
+...
 ----
 
 === BibliographicItem Typed Title Strings
@@ -266,8 +66,17 @@ item.title lang: "fr"
 [source,ruby]
 ----
 item.abstract
-=> [#<RelatonBib::FormattedString:0x007fc8b6c726b8 @content="ISO 19115-1:2014 defines the schema required for ...", @format="text/plain", @language=["en"], @script=["Latn"]>,
- #<RelatonBib::FormattedString:0x007fc8b6c725f0 @content="L'ISO 19115-1:2014 définit le schéma requis pour ...", @format="text/plain", @language=["fr"], @script=["Latn"]>]
+=> #<RelatonBib::TypedTitleStringCollection:0x00007f962f0306c0
+ @array=
+  [#<RelatonBib::TypedTitleString:0x00007f95ee8a4298
+    @title=#<RelatonBib::FormattedString:0x00007f95ee8a41a8 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
+    @type="title-main">,
+   #<RelatonBib::TypedTitleString:0x00007f95ee8a4040
+    @title=#<RelatonBib::FormattedString:0x00007f962f03bf70 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
+    @type="main">,
+   #<RelatonBib::TypedTitleString:0x00007f962f030620
+    @title=#<RelatonBib::FormattedString:0x00007f962f030580 @content="Information géographique", @format="text/plain", @language=["fr"], @script=["Latn"]>,
+    @type=nil>]>
 
 item.abstract(lang: "en").to_s
 => "ISO 19115-1:2014 defines the schema required for ..."
@@ -450,37 +259,57 @@ title.format:: text/plain
 [source,ruby]
 ----
 item.to_bibxml
-<reference anchor="ISOTC211" target="https://www.iso.org/standard/53798.html">
+<reference anchor="ISO.TC.211" target="https://www.iso.org/standard/53798.html">
   <front>
     <title>Geographic information</title>
-    <seriesInfo name="DOI" value="10.17487/rfc1149"/>
-    <seriesInfo name="Internet-Draft" value="draft-ietf-somewg-someprotocol-07"/>
-    <seriesInfo name="RFC" value="4"/>
     <author>
       <organization abbrev="ISO">International Organization for Standardization</organization>
     </author>
     <author fullname="A. Bierman">
       <organization abbrev="IETF">IETF</organization>
       <address>
-        <postal>123456</postal>
+        <postal>
+          <city>City</city>
+          <code>123456</code>
+          <country>Country</country>
+          <region>State</region>
+          <street>Street</street>
+        </postal>
         <phone>223322</phone>
       </address>
     </author>
     <author role="editor">
-      <organization abbrev="IETF">IETF</organization>
+      <organization abbrev="IEEE">IEEE</organization>
     </author>
-    <author initials="A." surname="Bierman">
+    <author fullname="Forename Bierman" initials="A." surname="Bierman">
       <organization abbrev="IETF">IETF</organization>
       <address>
-        <postal>123456</postal>
+        <postal>
+          <city>City</city>
+          <code>123456</code>
+          <country>Country</country>
+          <region>State</region>
+          <street>Street</street>
+        </postal>
         <phone>223322</phone>
       </address>
     </author>
     <author>
-      <organization>Institution</organization>
+      <organization>W3C</organization>
     </author>
-    <date year="2014" month="April" day="1"/>
+    <date year="2014" month="April"/>
+    <workgroup>Editorial group</workgroup>
+    <abstract>
+      <t>ISO 19115-1:2014 defines the schema required for ...</t>
+    </abstract>
   </front>
+  <seriesInfo name="DOI" value="10.17487/rfc1149"/>
+  <seriesInfo name="Internet-Draft" value="draft-ietf-somewg-someprotocol-07"/>
+  <seriesInfo name="ISO/IEC FDIS 10118-3" value="serie1234"/>
+  <seriesInfo name="Formattedref"/>
+  <seriesInfo name="Journal" value="7"/>
+  <seriesInfo name="Series"/>
+  <seriesInfo name="RFC" value="4"/>
 </reference>
 ----
 

@@ -1,5 +1,6 @@
 id: ISOTC211
 
+fetched: "2022-05-02"
 title:
   - Geographic information
   - content: Information géographique
@@ -14,6 +15,8 @@ docid:
   - id: ISO TC 211
     type: ISO
     primary: true
+    language: en
+    script: Latn
   - id: ISBN
     type: isbn
   - id: LCCN
@@ -30,7 +33,9 @@ docid:
     type: Internet-Draft
 
 docnumber: "TC211"
-edition: "1"
+edition:
+  content: "Edition 1"
+  number: "1.2"
 
 language:
   - en
@@ -233,6 +238,7 @@ series:
     number: serie1234
     partnumber: part5678
   - type: alt
+    title: Formattedref
     formattedref:
       content: serieref
       language: en

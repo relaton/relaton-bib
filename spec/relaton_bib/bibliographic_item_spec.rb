@@ -76,10 +76,10 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     it "returns bibitem xml string" do
       file = "spec/examples/bib_item.xml"
       subject_xml = subject.to_xml
+        .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
-      xml = File.read(file, encoding: "utf-8").gsub(
-        /<fetched>\d{4}-\d{2}-\d{2}/, "<fetched>#{Date.today}"
-      )
+      xml = File.read(file, encoding: "utf-8")
+        .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       expect(subject_xml).to be_equivalent_to xml
       schema = Jing.new "grammars/biblio.rng"
       errors = schema.validate file
@@ -88,11 +88,11 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
     it "returns bibdata xml string" do
       file = "spec/examples/bibdata_item.xml"
-      subject_xml = subject.to_xml bibdata: true
+      subject_xml = subject.to_xml(bibdata: true)
+        .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
-      xml = File.read(file, encoding: "utf-8").gsub(
-        /<fetched>\d{4}-\d{2}-\d{2}/, "<fetched>#{Date.today}"
-      )
+      xml = File.read(file, encoding: "utf-8")
+        .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       expect(subject_xml).to be_equivalent_to xml
       schema = Jing.new "spec/examples/isobib.rng"
       errors = schema.validate file
@@ -101,7 +101,8 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
     it "render only French laguage tagged string" do
       file = "spec/examples/bibdata_item_fr.xml"
-      xml = subject.to_xml bibdata: true, lang: "fr"
+      xml = subject.to_xml(bibdata: true, lang: "fr")
+        .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       File.write file, xml, encoding: "UTF-8" unless File.exist? file
       expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
         .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
@@ -131,6 +132,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       File.write file, hash.to_yaml unless File.exist? file
       h = YAML.load_file(file)
       h["fetched"] = Date.today.to_s
+      hash["fetched"] = Date.today.to_s
       expect(hash).to eq h
       expect(hash["revdate"]).to eq "2019-04-01"
     end
@@ -138,6 +140,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     context "converts to BibTex" do
       it "standard" do
         bibtex = subject.to_bibtex
+          .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
         file = "spec/examples/misc.bib"
         File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
         expect(bibtex).to eq File.read(file, encoding: "utf-8")
@@ -148,6 +151,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         expect(subject).to receive(:type).and_return("techreport")
           .at_least :once
         bibtex = subject.to_bibtex
+          .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
         file = "spec/examples/techreport.bib"
         File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
         expect(bibtex).to eq File.read(file, encoding: "utf-8")
@@ -157,6 +161,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       it "manual" do
         expect(subject).to receive(:type).and_return("manual").at_least :once
         bibtex = subject.to_bibtex
+          .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
         file = "spec/examples/manual.bib"
         File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
         expect(bibtex).to eq File.read(file, encoding: "utf-8")
@@ -169,7 +174,6 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         file = "spec/examples/phdthesis.bib"
         File.write(file, bibtex, encoding: "utf-8") unless File.exist? file
         expect(bibtex).to eq File.read(file, encoding: "utf-8")
-          .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       end
     end
 
@@ -177,9 +181,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       file = "spec/examples/asciibib.adoc"
       bib = subject.to_asciibib
       File.write file, bib, encoding: "UTF-8" unless File.exist? file
-      expect(bib).to eq File.read(file, encoding: "UTF-8").gsub(
-        /(?<=fetched::\s)\d{4}-\d{2}-\d{2}/, Date.today.to_s
-      )
+      expect(bib).to eq File.read(file, encoding: "UTF-8")
     end
 
     context "convert item to BibXML" do
@@ -214,6 +216,37 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         expect(ref_attrs).to be_instance_of Hash
         expect(ref_attrs[:anchor]).to eq "DNS-PARAMETERS"
       end
+
+      it "render keywords" do
+        docid = RelatonBib::DocumentIdentifier.new type: "IETF", id: "ID"
+        bibitem = RelatonBib::BibliographicItem.new keyword: ["kw"], docid: [docid]
+        expect(bibitem.to_bibxml(include_keywords: true)).to be_equivalent_to <<~XML
+          <reference anchor="ID">
+            <front>
+              <keyword>kw</keyword>
+            </front>
+          </reference>
+        XML
+      end
+
+      it "render person's forename" do
+        docid = RelatonBib::DocumentIdentifier.new type: "IETF", id: "ID"
+        sname = RelatonBib::LocalizedString.new "Cook"
+        fname = RelatonBib::LocalizedString.new "James"
+        name = RelatonBib::FullName.new surname: sname, forename: [fname]
+        entity = RelatonBib::Person.new name: name
+        contrib = RelatonBib::ContributionInfo.new entity: entity
+        bibitem = RelatonBib::BibliographicItem.new docid: [docid], contributor: [contrib]
+        expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
+          <reference anchor="ID">
+            <front>
+              <author fullname="James Cook" initials="J." surname="Cook">
+                <organization/>
+              </author>
+            </front>
+          </reference>
+        XML
+      end
     end
 
     it "convert item to citeproc" do
@@ -222,6 +255,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       File.write file, cp.to_json, encoding: "UTF-8" unless File.exist? file
       json = JSON.parse(File.read(file, encoding: "UTF-8"))
       json[0]["timestamp"] = Date.today.to_s
+      cp[0]["timestamp"] = Date.today.to_s
       expect(cp).to eq json
     end
   end
@@ -256,5 +290,12 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       copy = RelatonBib::CopyrightAssociation.new owner: owner, from: "2019"
       expect(copy.owner).to eq owner
     end
+  end
+
+  it "initialize with string link" do
+    bibitem = RelatonBib::BibliographicItem.new link: ["http://example.com"]
+    expect(bibitem.link[0]).to be_instance_of RelatonBib::TypedUri
+    expect(bibitem.link[0].content).to be_instance_of Addressable::URI
+    expect(bibitem.link[0].content.to_s).to eq "http://example.com"
   end
 end

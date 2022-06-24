@@ -1,5 +1,5 @@
 <bibdata type="standard">
-  <fetched>2022-05-12</fetched>
+  <fetched>2022-06-24</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -8,7 +8,7 @@
   <uri type="rss">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
   <uri type="doi">http://standrd.org/doi-123</uri>
   <uri type="file">file://path/file</uri>
-  <docidentifier type="ISO" primary="true">ISO TC 211</docidentifier>
+  <docidentifier type="ISO" primary="true" language="en" script="Latn">ISO TC 211</docidentifier>
   <docidentifier type="isbn">ISBN</docidentifier>
   <docidentifier type="lccn">LCCN</docidentifier>
   <docidentifier type="issn" scope="series">ISSN</docidentifier>
@@ -109,7 +109,7 @@
       <name>World Wide Web Consortium</name>
     </organization>
   </contributor>
-  <edition>1</edition>
+  <edition number="1.2">Edition 1</edition>
   <version>
     <revision-date>2019-04-01</revision-date>
     <draft>draft</draft>
@@ -197,6 +197,7 @@
   </series>
   <series type="alt">
     <formattedref format="text/plain" language="en" script="Latn">serieref</formattedref>
+    <title format="text/plain">Formattedref</title>
   </series>
   <series type="journal">
     <title format="text/plain">Journal</title>
