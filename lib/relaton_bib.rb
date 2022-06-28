@@ -37,6 +37,15 @@ module RelatonBib
       end
     end
 
+    # @param arr [NilClass, Array, #is_a?]
+    # @return [Array]
+    def array(arr)
+      return [] unless arr
+      return [arr] unless arr.is_a?(Array)
+
+      arr
+    end
+
     #
     # Parse yaml content
     #
