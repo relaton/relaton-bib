@@ -37,7 +37,7 @@ module RelatonBib
     # @param run [String, nil]
     def initialize(**args)
       unless args[:title].is_a?(RelatonBib::TypedTitleString)
-        raise ArgumentError, "argument `title` should present"
+        raise ArgumentError, "argument `title` should present in series"
       end
 
       # if args[:type] && !TYPES.include?(args[:type])
