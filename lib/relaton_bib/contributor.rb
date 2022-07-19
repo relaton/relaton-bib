@@ -46,12 +46,12 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash # rubocop:disable Metrics/AbcSize
-      hash = {}
-      hash["street"] = street if street&.any?
-      hash["city"] = city
-      hash["state"] = state if state
-      hash["country"] = country
-      hash["postcode"] = postcode if postcode
+      hash = { "address" => {} }
+      hash["address"]["street"] = street if street&.any?
+      hash["address"]["city"] = city
+      hash["address"]["state"] = state if state
+      hash["address"]["country"] = country
+      hash["address"]["postcode"] = postcode if postcode
       hash
     end
 
@@ -92,7 +92,7 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      { "type" => type, "value" => value }
+      { type => value }
     end
 
     # @param prefix [String]
@@ -101,8 +101,8 @@ module RelatonBib
     def to_asciibib(prefix = "", count = 1)
       pref = prefix.empty? ? prefix : "#{prefix}."
       out = count > 1 ? "#{pref}contact::\n" : ""
-      out += "#{pref}contact.type:: #{type}\n"
-      out += "#{pref}contact.value:: #{value}\n"
+      # out += "#{pref}contact.type:: #{type}\n"
+      out += "#{pref}contact.#{type}:: #{value}\n"
       out
     end
   end

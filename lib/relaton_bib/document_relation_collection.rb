@@ -6,7 +6,7 @@ module RelatonBib
     extend Forwardable
 
     def_delegators :@array, :<<, :[], :first, :last, :empty?, :any?, :size,
-                   :each, :detect, :map, :reduce, :length
+                   :each, :detect, :map, :reduce, :length, :unshift
 
     # @param relation [Array<RelatonBib::DocumentRelation, Hash>]
     # @option relation [String] :type
@@ -32,7 +32,7 @@ module RelatonBib
     # @param prefix [String]
     # @return [String]
     def to_asciibib(prefix = "")
-      pref = prefix.empty? ? "relation" : prefix + ".relation"
+      pref = prefix.empty? ? "relation" : "#{prefix}.relation"
       out = ""
       @array.each do |r|
         out += size > 1 ? "#{pref}::\n" : ""

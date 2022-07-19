@@ -82,14 +82,14 @@ contributor:
         - type: uri
           id: www.ietf.org
     contact:
-    - street:
-      - Street
-      city: City
-      state: State
-      country: Country
-      postcode: '123456'
-    - type: phone
-      value: '223322'
+    - address:
+        street:
+        - Street
+        city: City
+        state: State
+        country: Country
+        postcode: '123456'
+    - phone: '223322'
   role:
   - author
 - organization:
@@ -151,14 +151,14 @@ contributor:
     - type: uri
       id: www.person.com
     contact:
-    - street:
-      - Street
-      city: City
-      state: State
-      country: Country
-      postcode: '123456'
-    - type: phone
-      value: '223322'
+    - address:
+        street:
+        - Street
+        city: City
+        state: State
+        country: Country
+        postcode: '123456'
+    - phone: '223322'
   role:
   - author
 - organization:

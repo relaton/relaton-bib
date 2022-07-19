@@ -59,8 +59,8 @@ module RelatonBib
     # @param count [Integer] number of contributors
     # 2return [String]
     def to_asciibib(prefix = "", count = 1)
-      pref = prefix.empty? ? prefix : prefix + "."
-      out = count > 1 ? "#{prefix}::\n" : ""
+      pref = prefix.empty? ? prefix : "#{prefix}."
+      out = count > 1 ? "#{prefix}.role::\n" : ""
       description.each do |d|
         out += d.to_asciibib "#{pref}role.description", description.size
       end

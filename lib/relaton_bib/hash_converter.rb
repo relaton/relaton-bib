@@ -279,13 +279,19 @@ module RelatonBib
         return [] unless entity[:contact]
 
         RelatonBib.array(entity[:contact]).map do |a|
-          if a[:city] || a[:country]
+          if a[:city] || a[:country] # it's for old version compatibility, should be removed in the future
             RelatonBib::Address.new(
               street: Array(a[:street]), city: a[:city], postcode: a[:postcode],
               country: a[:country], state: a[:state]
             )
-          else
+          elsif a[:address]
+            a[:address][:street] = RelatonBib.array(a[:address][:street])
+            RelatonBib::Address.new(**a[:address])
+          elsif a[:type] # it's for old version compatibility, should be removed in the future
             RelatonBib::Contact.new(type: a[:type], value: a[:value])
+          else
+            type, value = a.flatten
+            RelatonBib::Contact.new(type: type.to_s, value: value)
           end
         end
       end
