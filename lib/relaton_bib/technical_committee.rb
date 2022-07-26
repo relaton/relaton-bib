@@ -12,9 +12,7 @@ module RelatonBib
 
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
-      builder.send "technical-committee" do |b|
-        workgroup.to_xml b
-      end
+      builder.send(:"technical-committee") { |b| workgroup.to_xml b }
     end
 
     # @return [Hash]
@@ -26,7 +24,7 @@ module RelatonBib
     # @param count [Integer] number of technical committees
     # @return [String]
     def to_asciibib(prefix = "", count = 1)
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       pref += "technical_committee"
       out = count > 1 ? "#{pref}::\n" : ""
       out += workgroup.to_asciibib pref

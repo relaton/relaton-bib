@@ -56,8 +56,8 @@ module RelatonBib
     def stage_new(stg)
       case stg
       when Stage then stg
-      when Hash then Stage.new(**stg)
-      when String then Stage.new(value: stg)
+      when Hash then self.class::Stage.new(**stg)
+      when String then self.class::Stage.new(value: stg)
       end
     end
 
