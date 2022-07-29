@@ -169,6 +169,23 @@ RSpec.describe "BibXML parser" do
     expect(RelatonBib::BibXMLParser.month("Sept")).to eq "09"
   end
 
+  it "skip empty organization" do
+    bibxml = <<~END_XML
+      <reference anchor="RFC0001" target="https://www.rfc-editor.org/info/rfc1">
+        <front>
+          <title>Host Software</title>
+          <author>
+            <organization>
+            </organization>
+          </author>
+          <seriesInfo name="RFC" value="1"/>
+        </front>
+      </reference>
+    END_XML
+    rfc = RelatonBib::BibXMLParser.parse bibxml
+    expect(rfc.contributor).to be_empty
+  end
+
   # it "returns default affiliation" do
   #   doc = Nokogiri::XML <<~END_XML
   #     <reference>

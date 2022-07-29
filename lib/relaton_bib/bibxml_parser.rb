@@ -251,7 +251,10 @@ module RelatonBib
       #   "front/author[not(@surname)][not(@fullname)]/organization",
       # ).map do |org|
       org = contrib.at("./organization")
-      name = ORGNAMES[org.text] || org.text
+      orgname = org.text.strip
+      return if orgname.empty?
+
+      name = ORGNAMES[orgname] || orgname
       { entity: new_org(name, org[:abbrev]), role: [contributor_role(contrib)] }
       # end
     end
