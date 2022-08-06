@@ -19,5 +19,9 @@ RSpec.describe RelatonBib::DocRelationCollection do
     it "returns one replace" do
       expect(subject.replaces.size).to eq 1
     end
+
+    it "#select" do
+      expect(subject.select { |r| r.type == "replace" }.size).to eq 1
+    end
   end
 end

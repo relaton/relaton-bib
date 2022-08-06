@@ -6,7 +6,7 @@ module RelatonBib
     extend Forwardable
 
     def_delegators :@array, :<<, :[], :first, :last, :empty?, :any?, :size,
-                   :each, :detect, :map, :reduce, :length, :unshift
+                   :each, :detect, :map, :reduce, :length, :unshift, :max_by
 
     # @param relation [Array<RelatonBib::DocumentRelation, Hash>]
     # @option relation [String] :type
@@ -19,6 +19,21 @@ module RelatonBib
     # @option relation [RelatonBib::BibliographicItem, NillClass] :bibitem (nil)
     def initialize(relation)
       @array = relation.map { |r| r.is_a?(Hash) ? DocumentRelation.new(**r) : r }
+    end
+
+    #
+    # Returns new DocumentRelationCollection with selected relations.
+    #
+    # @example Select relations with type "obsoletes"
+    #   relations.select { |r| r.type == "obsoletes" }
+    #   #=> <RelatonBib::DocRelationCollection:0x00007f9a0191d5f0 @array=[...]>
+    #
+    # @return [RelatonBib::DocRelationCollection] new DocumentRelationCollection
+    #   with selected relations
+    #
+    def select(&block)
+      arr = @array.select(&block)
+      self.class.new arr
     end
 
     # @todo We don't have replace type anymore. Suppose we should update this

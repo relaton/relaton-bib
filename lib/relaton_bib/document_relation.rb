@@ -17,7 +17,7 @@ module RelatonBib
     ].freeze
 
     # @return [String]
-    attr_reader :type
+    attr_accessor :type
 
     # @return [RelatonBib::FormattedString, NilClass]
     attr_reader :description
