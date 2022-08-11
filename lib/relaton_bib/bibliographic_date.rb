@@ -109,8 +109,8 @@ module RelatonBib
     # @return [Date]
     def parse_date(date)
       case date
-      when /^\d{4}-\d{2}-\d{2}/ then Date.parse(date) # 2012-02-11
-      when /^\d{4}-\d{2}/ then Date.strptime(date, "%Y-%m") # 2012-02
+      when /^\d{4}-\d{1,2}-\d{1,2}/ then Date.parse(date) # 2012-02-11
+      when /^\d{4}-\d{1,2}/ then Date.strptime(date, "%Y-%m") # 2012-02
       when /^\d{4}/ then Date.strptime(date, "%Y") # 2012
       else date
       end

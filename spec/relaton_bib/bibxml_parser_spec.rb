@@ -169,6 +169,23 @@ RSpec.describe "BibXML parser" do
     expect(RelatonBib::BibXMLParser.month("Sept")).to eq "09"
   end
 
+  # context "parse dates" do
+  #   it "parse full date" do
+  #     bibxml = Nokogiri::XML <<~END_XML
+  #       <reference>
+  #         <front>
+  #           <date year="2001" month="1" day="1"/>
+  #         </front>
+  #       </reference>
+  #     END_XML
+  #     dates = RelatonBib::BibXMLParser.dates bibxml.at("/reference")
+  #     expect(dates).to be_instance_of Array
+  #     expect(dates[0]).to be_instance_of RelatonBib::BibliographicDate
+  #     expect(dates[0].type).to eq "published"
+  #     expect(dates[0].on.to_s).to eq "2001-12-31"
+  #   end
+  # end
+
   it "skip empty organization" do
     bibxml = <<~END_XML
       <reference anchor="RFC0001" target="https://www.rfc-editor.org/info/rfc1">

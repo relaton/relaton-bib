@@ -37,10 +37,35 @@ RSpec.describe RelatonBib::BibliographicDate do
         <date type="published"><on>2014-11-01</on></date>
       XML
     end
+  end
 
-    it "parse date" do
-      date = subject.send :parse_date, "November 2014"
-      expect(date).to eq "November 2014"
+  context "parse date" do
+    subject { RelatonBib::BibliographicDate.new(type: "published", on: "2014") }
+
+    it "yyyy-mm-dd" do
+      date = subject.send :parse_date, "2014-11-02"
+      expect(date).to be_instance_of Date
+      expect(date).to eq Date.new(2014, 11, 2)
+    end
+
+    it "yyyy-m-d" do
+      expect(subject.send(:parse_date, "2014-2-3")).to eq Date.new(2014, 2, 3)
+    end
+
+    it "yyyy-mm" do
+      expect(subject.send(:parse_date, "2014-11")).to eq Date.new(2014, 11, 1)
+    end
+
+    it "yyyy-m" do
+      expect(subject.send(:parse_date, "2014-2")).to eq Date.new(2014, 2, 1)
+    end
+
+    it "yyyy" do
+      expect(subject.send(:parse_date, "2014")).to eq Date.new(2014, 1, 1)
+    end
+
+    it "not match any pattern" do
+      expect(subject.send(:parse_date, "November 2014")).to eq "November 2014"
     end
   end
 

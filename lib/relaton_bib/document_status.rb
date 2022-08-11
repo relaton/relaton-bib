@@ -6,15 +6,15 @@ module RelatonBib
     # @return [RelatonBib::DocumentStatus::Stage]
     attr_reader :stage
 
-    # @return [RelatonBib::DocumentStatus::Stage, NilClass]
+    # @return [RelatonBib::DocumentStatus::Stage, nil]
     attr_reader :substage
 
-    # @return [String, NilClass]
+    # @return [String, nil]
     attr_reader :iteration
 
     # @param stage [String, Hash, RelatonBib::DocumentStatus::Stage]
-    # @param substage [String, Hash, NilClass, RelatonBib::DocumentStatus::Stage]
-    # @param iteration [String, NilClass]
+    # @param substage [String, Hash, nil, RelatonBib::DocumentStatus::Stage]
+    # @param iteration [String, nil]
     def initialize(stage:, substage: nil, iteration: nil)
       @stage = stage_new stage
       @substage = stage_new substage
@@ -51,7 +51,7 @@ module RelatonBib
 
     private
 
-    # @param stg [RelatonBib::DocumentStatus::Stage, Hash, String, NilClass]
+    # @param stg [RelatonBib::DocumentStatus::Stage, Hash, String, nil]
     # @return [RelatonBib::DocumentStatus::Stage]
     def stage_new(stg)
       case stg
@@ -65,11 +65,11 @@ module RelatonBib
       # @return [String]
       attr_reader :value
 
-      # @return [String, NilClass]
+      # @return [String, nil]
       attr_reader :abbreviation
 
       # @param value [String]
-      # @param abbreviation [String, NilClass]
+      # @param abbreviation [String, nil]
       def initialize(value:, abbreviation: nil)
         @value = value
         @abbreviation = abbreviation
