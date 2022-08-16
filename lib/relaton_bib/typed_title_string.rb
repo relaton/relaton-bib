@@ -68,7 +68,7 @@ module RelatonBib
     # @param [BibTeX::Entry] item bibtex entry
     #
     def to_bibtex(item)
-      tl = titles.detect { |t| t.type == "main" }
+      tl = titles.detect { |t| t.type == "main" } || titles.first
       return unless tl
 
       item.title = tl.title.content

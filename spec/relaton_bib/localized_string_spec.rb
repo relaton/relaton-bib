@@ -22,29 +22,59 @@ RSpec.describe RelatonBib::LocalizedString do
       expect(subject.empty?).to be false
     end
 
-    it "escape &" do
-      xml = Nokogiri::XML::Builder.new do |b|
-        b.localized_string { subject.to_xml(b) }
+    context "escape" do
+      it "&" do
+        xml = Nokogiri::XML::Builder.new do |b|
+          b.localized_string { subject.to_xml(b) }
+        end
+        expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
+          <localized_string language="en" script="Latn">
+            prefix <p>content <p>&lt; &amp; &gt; characters</p> to escape</p><p>Text</p> suffix
+          </localized_string>
+        XML
       end
-      expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
-        <localized_string language="en" script="Latn">
-          prefix <p>content <p>&lt; &amp; &gt; characters</p> to escape</p><p>Text</p> suffix
-        </localized_string>
-      XML
-    end
 
-    it "escape incorrect XML" do
-      ls = RelatonBib::LocalizedString.new <<~XML, "en", "Latn"
-        <p><p>Content</t></p>
-      XML
-      xml = Nokogiri::XML::Builder.new do |b|
-        b.localized_string { ls.to_xml(b) }
+      it "incorrect XML" do
+        ls = RelatonBib::LocalizedString.new <<~XML, "en", "Latn"
+          <p><p>Content</t></p>
+        XML
+        xml = Nokogiri::XML::Builder.new do |b|
+          b.localized_string { ls.to_xml(b) }
+        end
+        expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
+          <localized_string language="en" script="Latn">
+            <p>&lt;p&gt;Content&lt;/t&gt;</p>
+          </localized_string>
+        XML
       end
-      expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
-        <localized_string language="en" script="Latn">
-          <p>&lt;p&gt;Content&lt;/t&gt;</p>
-        </localized_string>
-      XML
+
+      it "content with 2 root elements" do
+        ls = RelatonBib::LocalizedString.new <<~XML, "en", "Latn"
+          <p>Content &</p><p>Content</p>
+        XML
+        xml = Nokogiri::XML::Builder.new do |b|
+          b.localized_string { ls.to_xml(b) }
+        end
+        expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
+          <localized_string language="en" script="Latn">
+            <p>Content &amp;</p><p>Content</p>
+          </localized_string>
+        XML
+      end
+
+      it "tag with attributes" do
+        ls = RelatonBib::LocalizedString.new <<~XML, "en", "Latn"
+          <p>Content <p id="1">Content</p></p>
+        XML
+        xml = Nokogiri::XML::Builder.new do |b|
+          b.localized_string { ls.to_xml(b) }
+        end
+        expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
+          <localized_string language="en" script="Latn">
+            <p>Content <p id="1">Content</p></p>
+          </localized_string>
+        XML
+      end
     end
   end
 end

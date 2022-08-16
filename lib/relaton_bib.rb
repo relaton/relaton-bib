@@ -40,7 +40,8 @@ module RelatonBib
     #
     # @param [String] date date string
     # @param [String] format format string
-    # @param [Boolean] str return string or Date if true
+    # @param [Boolean] str return string if true in other case return Date
+    # @param [String, nil] outformat output format
     #
     # @return [Date, String] date object or formatted date string
     #

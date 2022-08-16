@@ -472,7 +472,7 @@ module RelatonBib
         return unless ident
 
         FormattedRef.new(
-          content: ident&.text, format: ident[:format],
+          content: ident.children.to_s, format: ident[:format],
           language: ident[:language], script: ident[:script]
         )
       end
