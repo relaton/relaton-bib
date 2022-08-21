@@ -1,5 +1,5 @@
 <bibdata type="standard">
-  <fetched>2022-06-24</fetched>
+  <fetched>2022-08-17</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -77,11 +77,11 @@
     <role type="author"/>
     <person>
       <name>
-        <prefix language="en" script="Latn">Prefix</prefix>
-        <forename language="en" script="Latn">Forename</forename>
-        <initial language="en" script="Latn">A.</initial>
-        <surname language="en" script="Latn">Bierman</surname>
-        <addition language="en" script="Latn">Addition</addition>
+        <prefix>Prefix</prefix>
+        <forename>Arnold</forename>
+        <formatted-initials>A.</formatted-initials>
+        <surname>Bierman</surname>
+        <addition>Addition</addition>
       </name>
       <affiliation>
         <description language="en">Description</description>
@@ -99,6 +99,17 @@
         <postcode>123456</postcode>
       </address>
       <phone>223322</phone>
+    </person>
+  </contributor>
+  <contributor>
+    <role type="author"/>
+    <person>
+      <name>
+        <forename language="en" script="Latn" initial="A">Arnold</forename>
+        <forename initial="B"/>
+        <formatted-initials language="en" script="Latn">A. B.</formatted-initials>
+        <surname language="en" script="Latn">Bierman</surname>
+      </name>
     </person>
   </contributor>
   <contributor>

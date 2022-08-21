@@ -187,21 +187,11 @@ contributor.role::
 contributor.role.description:: Editor description
 contributor.role.type:: editor
 contributor::
-contributor.person.name.forename.content:: Forename
-contributor.person.name.forename.language:: en
-contributor.person.name.forename.script:: Latn
-contributor.person.name.initial.content:: A.
-contributor.person.name.initial.language:: en
-contributor.person.name.initial.script:: Latn
-contributor.person.name.surname.content:: Bierman
-contributor.person.name.surname.language:: en
-contributor.person.name.surname.script:: Latn
-contributor.person.name.addition.content:: Addition
-contributor.person.name.addition.language:: en
-contributor.person.name.addition.script:: Latn
-contributor.person.name.prefix.content:: Prefix
-contributor.person.name.prefix.language:: en
-contributor.person.name.prefix.script:: Latn
+contributor.person.given.forename:: Arnold
+contributor.person.given.formatted-initials:: A.
+contributor.person.name.surname:: Bierman
+contributor.person.name.addition:: Addition
+contributor.person.name.prefix:: Prefix
 contributor.person.affiliation.description.content:: Description
 contributor.person.affiliation.description.language:: en
 contributor.person.affiliation.organization.name:: IETF
@@ -214,6 +204,21 @@ contributor.person.address.state:: State
 contributor.person.address.country:: Country
 contributor.person.address.postcode:: 123456
 contributor.person.contact.phone:: 223322
+contributor.role.type:: author
+contributor::
+contributor.person.given.forename::
+contributor.person.given.forename.content:: Arnold
+contributor.person.given.forename.language:: en
+contributor.person.given.forename.script:: Latn
+contributor.person.given.forename.initial:: A
+contributor.person.given.forename::
+contributor.person.given.forename.initial:: B
+contributor.person.given.formatted-initials.content:: A. B.
+contributor.person.given.formatted-initials.language:: en
+contributor.person.given.formatted-initials.script:: Latn
+contributor.person.name.surname.content:: Bierman
+contributor.person.name.surname.language:: en
+contributor.person.name.surname.script:: Latn
 contributor.role.type:: author
 contributor::
 contributor.organization.name:: World Wide Web Consortium

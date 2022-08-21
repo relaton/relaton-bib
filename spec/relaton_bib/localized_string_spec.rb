@@ -75,6 +75,20 @@ RSpec.describe RelatonBib::LocalizedString do
           </localized_string>
         XML
       end
+
+      it "tag without content" do
+        ls = RelatonBib::LocalizedString.new <<~XML, "en", "Latn"
+          <link href="http://example.com"/>
+        XML
+        xml = Nokogiri::XML::Builder.new do |b|
+          b.localized_string { ls.to_xml(b) }
+        end
+        expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
+          <localized_string language="en" script="Latn">
+            <link href="http://example.com"/>
+          </localized_string>
+        XML
+      end
     end
   end
 end

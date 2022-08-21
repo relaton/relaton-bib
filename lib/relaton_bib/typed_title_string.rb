@@ -158,13 +158,14 @@ module RelatonBib
       th = title.to_hash
       return th unless type
 
-      hash = { "type" => type }
-      if th.is_a? String
-        hash["content"] = th
-      else
-        hash.merge! th
-      end
-      hash
+      # hash = { "type" => type }
+      # if th.is_a? String
+      #   hash["content"] = th
+      # else
+      #   hash.merge! th
+      # end
+      # hash
+      th.merge "type" => type
     end
 
     # @param prefix [String]

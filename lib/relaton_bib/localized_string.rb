@@ -37,12 +37,20 @@ module RelatonBib
                  end
     end
 
+    #
+    # String representation.
+    #
     # @return [String]
+    #
     def to_s
       content.is_a?(Array) ? content.first.to_s : content.to_s
     end
 
-    # @return [TrueClass, FalseClass]
+    #
+    # Returns true if content is empty.
+    #
+    # @return [Boolean]
+    #
     def empty?
       content.empty?
     end
@@ -125,9 +133,10 @@ module RelatonBib
     # @return [Hash]
     def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       if content.is_a? String
-        return content unless language || script
+        # return content unless language || script
 
-        hash = { "content" => content }
+        hash = {}
+        hash["content"] = content unless empty?
         hash["language"] = single_element_array(language) if language&.any?
         hash["script"] = single_element_array(script) if script&.any?
         hash
@@ -140,7 +149,8 @@ module RelatonBib
     # @return [String]
     def to_asciibib(prefix = "", count = 1, has_attrs = false) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength
       pref = prefix.empty? ? prefix : "#{prefix}."
-      if content.is_a? String
+      case content
+      when String
         unless language&.any? || script&.any? || has_attrs
           return "#{prefix}:: #{content}\n"
         end
@@ -150,8 +160,9 @@ module RelatonBib
         language&.each { |l| out += "#{pref}language:: #{l}\n" }
         script&.each { |s| out += "#{pref}script:: #{s}\n" }
         out
-      else
+      when Array
         content.map { |c| c.to_asciibib "#{pref}variant", content.size }.join
+      else count > 1 ? "#{prefix}::\n" : ""
       end
     end
   end

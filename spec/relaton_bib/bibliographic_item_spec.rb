@@ -4,6 +4,18 @@ require "yaml"
 require "jing"
 
 RSpec.describe "RelatonBib" => :BibliographicItem do
+  context "initialize" do
+    it "with keyword Hash" do
+      keyword = [{ content: "keyword", language: "en", script: "Latn" }]
+      bib = RelatonBib::BibliographicItem.new(formattedref: "ref", keyword: keyword)
+      expect(bib.keyword).to be_instance_of Array
+      expect(bib.keyword.first).to be_instance_of RelatonBib::LocalizedString
+      expect(bib.keyword.first.content).to eq "keyword"
+      expect(bib.keyword.first.language).to eq ["en"]
+      expect(bib.keyword.first.script).to eq ["Latn"]
+    end
+  end
+
   context "instance" do
     subject do
       hash = YAML.load_file "spec/examples/bib_item.yml"
@@ -232,7 +244,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       it "render person's forename" do
         docid = RelatonBib::DocumentIdentifier.new type: "IETF", id: "ID"
         sname = RelatonBib::LocalizedString.new "Cook"
-        fname = RelatonBib::LocalizedString.new "James"
+        fname = RelatonBib::Forename.new content: "James", initial: "J"
         name = RelatonBib::FullName.new surname: sname, forename: [fname]
         entity = RelatonBib::Person.new name: name
         contrib = RelatonBib::ContributionInfo.new entity: entity

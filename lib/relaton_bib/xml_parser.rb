@@ -305,8 +305,8 @@ module RelatonBib
 
         name = FullName.new(
           completename: cname, surname: sname,
-          initial: name_part(person, "initial"),
-          forename: name_part(person, "forename"),
+          initials: parse_initials(person),
+          forename: parse_forename(person),
           addition: name_part(person, "addition"),
           prefix: name_part(person, "prefix")
         )
@@ -333,6 +333,21 @@ module RelatonBib
           else
             Contact.new(type: c.name, value: c.text)
           end
+        end
+      end
+
+      def parse_initials(person)
+        inits = person.at "./name/formatted-initials"
+        return unless inits
+
+        LocalizedString.new(inits.text, inits[:language], inits[:script])
+      end
+
+      def parse_forename(person)
+        person.xpath("./name/forename").map do |np|
+          args = np.attributes.each_with_object({}) { |(k, v), h| h[k.to_sym] = v.to_s }
+          args[:content] = np.text
+          Forename.new(**args)
         end
       end
 

@@ -33,7 +33,8 @@ module RelatonBib
         accesslocation_hash_to_bib(ret)
         classification_hash_to_bib(ret)
         validity_hash_to_bib(ret)
-        ret[:keyword] = RelatonBib.array(ret[:keyword])
+        keyword_hash_to_bib(ret)
+        # ret[:keyword] = RelatonBib.array(ret[:keyword])
         ret[:license] = RelatonBib.array(ret[:license])
         editorialgroup_hash_to_bib ret
         ics_hash_to_bib ret
@@ -42,9 +43,11 @@ module RelatonBib
       end
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
-      # def timestamp_hash(ret)
-      #   ret[:fetched] ||= Date.today.to_s
-      # end
+      def keyword_hash_to_bib(ret)
+        ret[:keyword] = RelatonBib.array(ret[:keyword]).map do |keyword|
+          localizedstring keyword
+        end
+      end
 
       def extent_hash_to_bib(ret)
         return unless ret[:extent]
@@ -198,7 +201,8 @@ module RelatonBib
         ret[:contributor]&.each_with_index do |c, i|
           roles = RelatonBib.array(ret[:contributor][i][:role]).map do |r|
             if r.is_a? Hash
-              { type: r[:type], description: RelatonBib.array(r[:description]) }
+              desc = RelatonBib.array(r[:description]).map { |d| d.is_a?(String) ? d : d[:content] }
+              { type: r[:type], description: desc }
             # elsif r.is_a? Array
             #   { type: r[0], description: r.fetch(1) }
             else
@@ -238,16 +242,31 @@ module RelatonBib
         )
       end
 
-      def fullname_hash_to_bib(person) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+      def fullname_hash_to_bib(person) # rubocop:disable Metrics/AbcSize
         n = person[:name]
+        fname, inits = given_hash_to_bib n[:given] || n # `n` is for backward compatibility
         FullName.new(
-          forename: RelatonBib.array(n[:forename])&.map { |f| localname(f, person) },
-          initial: RelatonBib.array(n[:initial])&.map { |f| localname(f, person) },
-          addition: RelatonBib.array(n[:addition])&.map { |f| localname(f, person) },
-          prefix: RelatonBib.array(n[:prefix])&.map { |f| localname(f, person) },
-          surname: localname(n[:surname], person),
-          completename: localname(n[:completename], person),
+          forename: fname, initials: inits,
+          addition: RelatonBib.array(n[:addition])&.map { |f| localizedstring(f) },
+          prefix: RelatonBib.array(n[:prefix])&.map { |f| localizedstring(f) },
+          surname: localizedstring(n[:surname]),
+          completename: localizedstring(n[:completename])
         )
+      end
+
+      def given_hash_to_bib(given)
+        return [[], nil] unless given
+
+        fname = RelatonBib.array(given[:forename])&.map { |f| forename_hash_to_bib(f) }
+        inits = localizedstring(given[:formatted_initials])
+        [fname, inits]
+      end
+
+      def forename_hash_to_bib(fname)
+        case fname
+        when Hash then Forename.new(**fname)
+        when String then Forename.new(content: fname)
+        end
       end
 
       def person_identifiers_hash_to_bib(person)
@@ -275,7 +294,7 @@ module RelatonBib
         end
       end
 
-      def contacts_hash_to_bib(entity) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      def contacts_hash_to_bib(entity) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength,Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
         return [] unless entity[:contact]
 
         RelatonBib.array(entity[:contact]).map do |a|
@@ -473,28 +492,14 @@ module RelatonBib
         end
       end
 
-      # @param name [Hash, String, NilClass]
-      # @param person [Hash]
-      # @return [RelatonBib::LocalizedString]
-      def localname(name, person) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize
-        return nil if name.nil?
-
-        lang = name[:language] if name.is_a?(Hash)
-        lang ||= person[:name][:language]
-        script = name[:script] if name.is_a?(Hash)
-        script ||= person[:name][:script]
-        n = name.is_a?(Hash) ? name[:content] : name
-        RelatonBib::LocalizedString.new(n, lang, script)
-      end
-
-      # @param lst [Hash, Array<RelatonBib::LocalizedString>]
+      # @param lst [Hash, Array<RelatonBib::LocalizedString>, String]
       # @return [RelatonBib::LocalizedString]
       def localizedstring(lst)
+        return unless lst
+
         if lst.is_a?(Hash)
-          RelatonBib::LocalizedString.new(lst[:content], lst[:language],
-                                          lst[:script])
-        else
-          RelatonBib::LocalizedString.new(lst)
+          LocalizedString.new(lst[:content], lst[:language], lst[:script])
+        else LocalizedString.new(lst)
         end
       end
 

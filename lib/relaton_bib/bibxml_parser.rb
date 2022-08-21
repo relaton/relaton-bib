@@ -264,9 +264,10 @@ module RelatonBib
     # @return [RelatonBib::FullName]
     def full_name(author, reference)
       lang = language reference
+      initials = localized_string(author[:initials], lang) if author[:initials]
       FullName.new(
         completename: localized_string(author[:fullname], lang),
-        initial: [localized_string(author[:initials], lang)].compact,
+        initials: initials,
         surname: localized_string(author[:surname], lang),
       )
     end

@@ -56,14 +56,15 @@ date:
 contributor:
 - organization:
     name:
-    - International Organization for Standardization
-    abbreviation: ISO
+    - content: International Organization for Standardization
+    abbreviation:
+      content: ISO
     subdivision:
-    - division
+    - content: division
     url: www.iso.org
   role:
   - description:
-    - Publisher role
+    - content: Publisher role
     type: publisher
 - person:
     name:
@@ -76,8 +77,9 @@ contributor:
     affiliation:
     - organization:
         name:
-        - IETF
-        abbreviation: IETF
+        - content: IETF
+        abbreviation:
+          content: IETF
         identifier:
         - type: uri
           id: www.ietf.org
@@ -94,55 +96,38 @@ contributor:
   - author
 - organization:
     name:
-    - Institute of Electrical and Electronics Engineers
-    abbreviation: IEEE
+    - content: Institute of Electrical and Electronics Engineers
+    abbreviation:
+      content: IEEE
     identifier:
     - type: uri
       id: www.ieee.org
   role:
   - description:
-    - Publisher description
+    - content: Publisher description
     type: publisher
   - description:
-    - Editor description
+    - content: Editor description
     type: editor
 - person:
     name:
-      forename:
-      - content: Forename
-        language:
-        - en
-        script:
-        - Latn
-      initial:
-      - content: A.
-        language:
-        - en
-        script:
-        - Latn
+      given:
+        forename:
+        - content: Arnold
+        formatted_initials:
+          content: A.
       surname:
         content: Bierman
-        language:
-        - en
-        script:
-        - Latn
       addition:
       - content: Addition
-        language:
-        - en
-        script:
-        - Latn
       prefix:
       - content: Prefix
-        language:
-        - en
-        script:
-        - Latn
     affiliation:
     - organization:
         name:
-        - IETF
-        abbreviation: IETF
+        - content: IETF
+        abbreviation:
+          content: IETF
       description:
       - content: Description
         language:
@@ -161,12 +146,38 @@ contributor:
     - phone: '223322'
   role:
   - author
+- person:
+    name:
+      given:
+        forename:
+        - content: Arnold
+          language:
+          - en
+          script:
+          - Latn
+          initial: A
+        - content:
+          initial: B
+        formatted_initials:
+          content: A. B.
+          language:
+          - en
+          script:
+          - Latn
+      surname:
+        content: Bierman
+        language:
+        - en
+        script:
+        - Latn
+  role:
+  - author
 - organization:
     name:
-    - World Wide Web Consortium
+    - content: World Wide Web Consortium
   role:
   - description:
-    - sponsor
+    - content: sponsor
     type: distributor
 edition:
   content: Edition 1
@@ -176,7 +187,7 @@ version:
   draft: draft
 revdate: '2019-04-01'
 biblionote:
-- note
+- content: note
 - content: An note
   type: annote
 - content: How published
@@ -213,8 +224,9 @@ docstatus:
 copyright:
 - owner:
   - name:
-    - International Organization for Standardization
-    abbreviation: ISO
+    - content: International Organization for Standardization
+    abbreviation:
+      content: ISO
     url: www.iso.org
   from: '2014'
   to: '2020'
@@ -276,7 +288,8 @@ series:
     format: text/plain
   place: Serie's place
   organization: Serie's organization
-  abbreviation: ABVR
+  abbreviation:
+    content: ABVR
   from: '2009-02-01'
   to: '2010-12-20'
   number: serie1234
@@ -364,8 +377,8 @@ validity:
   revision: 2011-03-04 09:00
 fetched: '2022-05-02'
 keyword:
-- Keyword
-- Key Word
+- content: Keyword
+- content: Key Word
 license:
 - License
 doctype: document

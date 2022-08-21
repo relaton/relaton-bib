@@ -25,7 +25,7 @@ module RelatonBib
             link: fetch_link(bt),
             language: fetch_language(bt),
             classification: fetch_classification(bt),
-            keyword: fetch_keyword(bt)
+            keyword: fetch_keyword(bt),
           )
           h
         end
@@ -123,7 +123,7 @@ module RelatonBib
           parts = name.split ", "
           surname = LocalizedString.new parts.first
           fname = parts.size > 1 ? parts[1].split : []
-          forename = fname.map { |fn| LocalizedString.new fn }
+          forename = fname.map { |fn| Forename.new content: fn }
           Person.new name: FullName.new(surname: surname, forename: forename)
         end
       end

@@ -20,7 +20,7 @@
     <author role="editor">
       <organization abbrev="IEEE">IEEE</organization>
     </author>
-    <author fullname="Forename Bierman" initials="A." surname="Bierman">
+    <author fullname="Arnold Bierman" initials="A." surname="Bierman">
       <organization abbrev="IETF">IETF</organization>
       <address>
         <postal>
@@ -32,6 +32,9 @@
         </postal>
         <phone>223322</phone>
       </address>
+    </author>
+    <author fullname="Arnold Bierman" initials="A. B." surname="Bierman">
+      <organization/>
     </author>
     <author>
       <organization>W3C</organization>

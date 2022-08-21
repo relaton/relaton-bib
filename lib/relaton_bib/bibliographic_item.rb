@@ -265,7 +265,11 @@ module RelatonBib
       # we should pass the fetched arg from scrappers
       @fetched        = args.fetch :fetched, nil
       @keyword        = (args[:keyword] || []).map do |kw|
-        LocalizedString.new(kw)
+        case kw
+        when Hash then LocalizedString.new(kw[:content], kw[:language], kw[:script])
+        when String then LocalizedString.new(kw)
+        else kw
+        end
       end
       @license        = args.fetch :license, []
       @doctype        = args[:doctype]
@@ -1015,11 +1019,11 @@ module RelatonBib
       elsif person.name.forename.any?
         builder.parent[:fullname] = person.name.forename.map(&:content).join
       end
-      if person.name.initial.any?
-        builder.parent[:initials] = person.name.initial.map(&:content).join
+      if person.name.initials
+        builder.parent[:initials] = person.name.initials.content
       elsif person.name.forename.any?
         builder.parent[:initials] = person.name.forename.map do |f|
-          "#{f.content[0]}."
+          "#{f.initial || f.content[0]}."
         end.join
       end
       if person.name.surname

@@ -132,11 +132,11 @@ contributor:
  
   - person:
       name:
-        language: en
-        script: Latn
-        initial: A.
+        given:
+          formatted_initials: A.
+          forename:
+            - Arnold
         surname: Bierman
-        forename: Forename
         addition: Addition
         prefix: Prefix
       affiliation:
@@ -158,6 +158,24 @@ contributor:
       identifier:
         type: uri
         id: www.person.com
+    
+  - person:
+      name:
+        given:
+          formatted_initials:
+            content: A. B.
+            language: en
+            script: Latn
+          forename:
+            - initial: A
+              content: Arnold
+              language: en
+              script: Latn
+            - initial: B
+        surname:
+          content: Bierman
+          language: en
+          script: Latn
 
   - organization:
       name: World Wide Web Consortium
@@ -311,7 +329,7 @@ classification:
 
 keyword:
   - Keyword
-  - Key Word
+  - content: Key Word
 
 license: License
 
