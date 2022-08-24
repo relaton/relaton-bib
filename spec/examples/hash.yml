@@ -1,12 +1,12 @@
 ---
 id: ISOTC211
 title:
-- type: title-main
-  content: Geographic information
+- content: Geographic information
   format: text/plain
-- type: main
-  content: Geographic information
+  type: title-main
+- content: Geographic information
   format: text/plain
+  type: main
 - content: Information géographique
   language:
   - fr
@@ -156,8 +156,7 @@ contributor:
           script:
           - Latn
           initial: A
-        - content:
-          initial: B
+        - initial: B
         formatted_initials:
           content: A. B.
           language:
@@ -267,9 +266,9 @@ relation:
 - type: partOf
   bibitem:
     title:
-    - type: main
-      content: Book title
+    - content: Book title
       format: text/plain
+      type: main
 series:
 - type: Internet-Draft
   title:
@@ -279,13 +278,13 @@ series:
   run: seriesrun
 - type: main
   title:
-    type: original
     content: ISO/IEC FDIS 10118-3
     language:
     - en
     script:
     - Latn
     format: text/plain
+    type: original
   place: Serie's place
   organization: Serie's organization
   abbreviation:

@@ -1017,7 +1017,9 @@ module RelatonBib
       if person.name.completename
         builder.parent[:fullname] = person.name.completename.content
       elsif person.name.forename.any?
-        builder.parent[:fullname] = person.name.forename.map(&:content).join
+        builder.parent[:fullname] = person.name.forename.map do |n|
+          n.content || n.initial
+        end.join " "
       end
       if person.name.initials
         builder.parent[:initials] = person.name.initials.content
@@ -1027,7 +1029,7 @@ module RelatonBib
         end.join
       end
       if person.name.surname
-        if person.name.forename.any?
+        if !person.name.completename && person.name.forename.any? && person.name.surname
           builder.parent[:fullname] += " #{person.name.surname}"
         end
         builder.parent[:surname] = person.name.surname.content

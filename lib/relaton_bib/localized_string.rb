@@ -132,11 +132,11 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-      if content.is_a? String
+      if content.nil? || content.is_a?(String)
         # return content unless language || script
 
         hash = {}
-        hash["content"] = content unless empty?
+        hash["content"] = content unless content.nil? || content.empty?
         hash["language"] = single_element_array(language) if language&.any?
         hash["script"] = single_element_array(script) if script&.any?
         hash

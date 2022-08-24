@@ -267,9 +267,25 @@ module RelatonBib
       initials = localized_string(author[:initials], lang) if author[:initials]
       FullName.new(
         completename: localized_string(author[:fullname], lang),
-        initials: initials,
-        surname: localized_string(author[:surname], lang),
+        initials: initials, forename: forename(author[:initials], lang),
+        surname: localized_string(author[:surname], lang)
       )
+    end
+
+    #
+    # Create forenames with initials
+    #
+    # @param [String] initials initials
+    # @param [String] lang language
+    #
+    # @return [Array<RelatonBib::Forename>] forenames
+    #
+    def forename(initials, lang)
+      return [] unless initials
+
+      initials.split(/\.-?\s?|\s/).map do |i|
+        Forename.new(initial: i, language: lang)
+      end
     end
 
     # @param author [Nokogiri::XML::Element]
