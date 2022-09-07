@@ -49,7 +49,7 @@ The structure below is given in YAML format:
 # bibliographic item anchor, used to crossreference within document
 id: ISO/TC211
 # date record was created
-fetched: 2019-06-30
+fetched: '2019-06-30'
 # titles are an array, with a mandatory type and content, and optional format, language and script
 title:
   - type: main
@@ -66,9 +66,9 @@ docid:
   type: ISO
   id: TC211
 # document number
-docnumber: 211
+docnumber: '211'
 # edition
-edition: 1
+edition: '1'
 # language is an array
 language:
   - en
@@ -78,7 +78,7 @@ script:
   Latn
 # version contains revision date and draft (as array)
 version:
-  revision_date: 2019-04-01
+  revision_date: '2019-04-01'
   draft: draft
 # note is an array of type and content
 biblionote:
@@ -94,12 +94,12 @@ docstatus:
 # date is an array, with mandatory type, and either an "on" value or a "from" and optional "to" value
 date:
   - type: issued
-    value: 2014
+    value: '2014'
   - type: published
-    from: 2014-04
-    to: 2014-05
+    from: '2014-04'
+    to: '2014-05'
   - type: accessed
-    value: 2015-05-20
+    value: '2015-05-20'
 # abstract is an array, with content, and optional language, script, format
 abstract:
   - content: >
@@ -114,7 +114,8 @@ abstract:
 # as the type.
 # Organisations have attributes name, url, abbreviation, subdivision, contacts, identifiers
 # Persons have attributes name, affiliation, contacts
-# Person names have attributes surname, completename, initials, forename, additions, prefixes.
+# Person names have attributes, given, surname, additions, prefixes or completename.
+# Given has formatted_initials or forename.
 # Initials, forename, additions, prefixes are arrays.
 # Name field values are either strings, or hashes, with content and language and script attributes.
 # The language and script attribute can also be given on the name.
@@ -126,9 +127,11 @@ abstract:
 # The affiliation description can be a single string, or a hash of content, language, script, and format.
 contributor:
   - organization:
-      name: International Organization for Standardization
+      name:
+        content: International Organization for Standardization
       url: www.iso.org
-      abbreviation: ISO
+      abbreviation:
+        content: ISO
       subdivision: division
     role:
       type: publisher
@@ -140,25 +143,29 @@ contributor:
           language: en
       affiliation:
         - organization:
-            name: IETF
-            abbreviation: IETF
-             identifier:
-               - type: uri
-                 id: www.ietf.org
+            name:
+              content: IETF
+            abbreviation:
+              content: IETF
+            identifier:
+              - type: uri
+                id: www.ietf.org
           description: Affiliation description
       contact:
-        - street:
-          - 8 Street St
-          city: City
-          postcode: 123456
-          country: Country
-          state: State
-        - type: phone
-          value: 223322
+        - address:
+            street:
+              - 8 Street St
+            city: City
+            postcode: '123456'
+            country: Country
+            state: State
+        - phone: '223322'
     role: author
-  - person:
-      name: IETF
-      abbreviation: IETF
+  - organization:
+      name:
+        content: Internet Engineering Task Force
+      abbreviation:
+        content: IETF
       identifier:
         - type: uri
           id: www.ietf.org
@@ -166,18 +173,24 @@ contributor:
       publisher
   - person:
       name:
-        language: en
-        initial:
-          - A.
-        surname: Bierman
+        given:
+          forename:
+            initial: A
+            language: en
+          formatted_initials:
+            content: A.
+        surname:
+          content: Bierman
       affiliation:
-        -  organization:
-             name: IETF
-             abbreviation: IETF
-           description:
-             content: Affiliation description
-             language: en
-             script: Latn
+        - organization:
+            name:
+              content: IETF
+            abbreviation:
+              content: IETF
+        description:
+          content: Affiliation description
+          language: en
+          script: Latn
       identifier:
         - type: uri
           id: www.person.com
@@ -187,11 +200,13 @@ contributor:
 # a "from" date, and an optional "to" date
 copyright:
    owner:
-     name: International Organization for Standardization
-     abbreviation: ISO
+     name:
+      content: International Organization for Standardization
+     abbreviation:
+      content: ISO
      url: www.iso.org
-   from: 2014
-   to: 2020
+   from: '2014'
+   to: '2020'
 # link is an array of URIs, with a type and content
 link:
   - type: src
@@ -206,15 +221,17 @@ link:
 relation:
   - type: updates
     bibitem:
-      formattedref: ISO 19115:2003
+      formattedref:
+        content: ISO 19115:2003
     bib_locality:
       type: page
-      reference_from: 7
-      reference_to: 10
+      reference_from: '7'
+      reference_to: '10'
   - type: updates
     bibitem:
       type: standard
-      formattedref: ISO 19115:2003/Cor 1:2006
+      formattedref:
+        content: ISO 19115:2003/Cor 1:2006
 # series are an array, containing a type, and either a formattedref, or:
 # a title, a place, an organization (string),
 # an abbreviation, a from, a to, a number, and a partnumber.
@@ -236,8 +253,8 @@ series:
       content: ABVR
       language: en
       script: Latn
-    from: 2009-02-01
-    to: 2010-12-20
+    from: '2009-02-01'
+    to: '2010-12-20'
     number: serie1234
     partnumber: part5678
   - type: alt
@@ -255,7 +272,7 @@ place: bib place
 # extent is an array, containing type, a reference_from, and an optional reference_to
 extent:
   type: section
-  reference_from: 7
+  reference_from: '7'
 # accesslocation is an array of strings
 accesslocation:
   - accesslocation1
@@ -266,9 +283,9 @@ classification:
   value: value
 # validity contains a begins date, an ends date, and a revision date
 validity:
-  begins: 2010-10-10 12:21
-  ends: 2011-02-03 18:30
-  revision: 2011-03-04 09:00
+  begins: '2010-10-10 12:21'
+  ends: '2011-02-03 18:30'
+  revision: '2011-03-04 09:00'
 ----
 
 == Metanorma structure (AsciiBib): nested definition list
