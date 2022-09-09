@@ -26,6 +26,12 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(subject).to be_instance_of RelatonBib::BibliographicItem
     end
 
+    it "get set fetched" do
+      expect(subject.fetched).to eq "2022-05-02"
+      subject.fetched = "2022-05-03"
+      expect(subject.fetched).to eq "2022-05-03"
+    end
+
     it "has array of titiles" do
       expect(subject.title).to be_instance_of(
         RelatonBib::TypedTitleStringCollection,

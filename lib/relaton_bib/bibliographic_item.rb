@@ -115,7 +115,7 @@ module RelatonBib
     attr_reader :validity
 
     # @return [Date]
-    attr_reader :fetched
+    attr_accessor :fetched
 
     # @return [Array<RelatonBib::LocalizedString>]
     attr_reader :keyword
