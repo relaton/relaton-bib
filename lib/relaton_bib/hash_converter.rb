@@ -83,7 +83,7 @@ module RelatonBib
 
         ret[:title] = RelatonBib.array(ret[:title])
           .reduce(TypedTitleStringCollection.new) do |m, t|
-          if t.is_a?(Hash) then m << t
+          if t.is_a?(Hash) then m << TypedTitleString.new(**t)
           else
             m + TypedTitleString.from_string(t)
           end
@@ -146,11 +146,14 @@ module RelatonBib
       def docid_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize
         return unless ret[:docid]
 
-        ret[:docid] = RelatonBib.array(ret[:docid])
-        ret[:docid]&.each_with_index do |id, i|
+        ret[:docid] = RelatonBib.array(ret[:docid]).map do |id|
           id[:type] ||= id[:id].match(/^\w+(?=\s)/)&.to_s
-          ret[:docid][i] = DocumentIdentifier.new(**id)
+          create_docid(**id)
         end
+      end
+
+      def create_docid(**args)
+        DocumentIdentifier.new(**args)
       end
 
       def version_hash_to_bib(ret)

@@ -26,8 +26,8 @@ module RelatonBib
     end
 
     # @return [RelatonBib::TypedTitleStringCollection]
-    def select
-      TypedTitleStringCollection.new(titles.select { |t| yield t })
+    def select(&block)
+      TypedTitleStringCollection.new titles.select(&block)
     end
 
     # @param init [Array, Hash]
@@ -60,6 +60,10 @@ module RelatonBib
       tl = select_lang(opts[:lang])
       tl = titles unless tl.any?
       tl.each { |t| opts[:builder].title { t.to_xml opts[:builder] } }
+    end
+
+    def to_hash
+      @array.map(&:to_hash)
     end
 
     #

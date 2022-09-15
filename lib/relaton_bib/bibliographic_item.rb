@@ -207,7 +207,11 @@ module RelatonBib
         warn %{[relaton-bib] document type "#{args[:type]}" is invalid.}
       end
 
-      @title = TypedTitleStringCollection.new(args[:title])
+      @title = if args[:title].is_a?(TypedTitleStringCollection)
+                 args[:title]
+               else
+                 TypedTitleStringCollection.new(args[:title])
+               end
 
       @date = (args[:date] || []).map do |d|
         d.is_a?(Hash) ? BibliographicDate.new(**d) : d
@@ -368,7 +372,7 @@ module RelatonBib
     def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       hash = {}
       hash["id"] = id if id
-      hash["title"] = single_element_array(title) if title&.any?
+      hash["title"] = title.to_hash if title&.any?
       hash["link"] = single_element_array(link) if link&.any?
       hash["type"] = type if type
       hash["docid"] = single_element_array(docidentifier) if docidentifier&.any?
@@ -604,10 +608,8 @@ module RelatonBib
       end
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-
     # @param [BibTeX::Entry]
-    def bibtex_author(item) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    def bibtex_author(item) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
       authors = contributor.select do |c|
         c.entity.is_a?(Person) && c.role.map(&:type).include?("author")
       end.map &:entity
@@ -624,7 +626,7 @@ module RelatonBib
     end
 
     # @param [BibTeX::Entry]
-    def bibtex_contributor(item) # rubocop:disable Metrics/CyclomaticComplexity
+    def bibtex_contributor(item) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
       contributor.each do |c|
         rls = c.role.map(&:type)
         if rls.include?("publisher") then item.publisher = c.entity.name
@@ -638,7 +640,6 @@ module RelatonBib
         end
       end
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     # @param [BibTeX::Entry]
     def bibtex_note(item) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize
@@ -724,16 +725,12 @@ module RelatonBib
       end
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-    # rubocop:disable Style/NestedParenthesizedCalls, Metrics/BlockLength
-
     # @param opts [Hash]
     # @option opts [Nokogiri::XML::Builder] :builder XML builder
     # @option opts [Boolean] bibdata
     # @option opts [Symbol, nil] :date_format (:short), :full
     # @option opts [String] :lang language
-    def render_xml(**opts)
+    def render_xml(**opts) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       root = opts[:bibdata] ? :bibdata : :bibitem
       xml = opts[:builder].send(root) do |builder|
         builder.fetched fetched if fetched
@@ -791,7 +788,6 @@ module RelatonBib
       xml[:type] = type if type
       xml
     end
-    # rubocop:enable Style/NestedParenthesizedCalls, Metrics/BlockLength
 
     #
     # Render BibXML (RFC, BCP)
@@ -799,7 +795,7 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder
     # @param [Boolean] include_bibdata
     #
-    def render_bibxml(builder, include_keywords)
+    def render_bibxml(builder, include_keywords) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       target = link.detect { |l| l.type.casecmp("src").zero? } ||
         link.detect { |l| l.type.casecmp("doi").zero? }
       bxml = if docnumber&.match(/^BCP/) || (docidentifier.detect(&:primary)&.id ||
@@ -831,7 +827,7 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder
     # @param [Boolean] include_keywords
     #
-    def render_bibxml_ref(builder, include_keywords)
+    def render_bibxml_ref(builder, include_keywords) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       builder.reference(**ref_attrs) do |xml|
         if title.any? || contributor.any? || date.any? || abstract.any? ||
             editorialgroup&.technical_committee&.any? ||
@@ -861,7 +857,7 @@ module RelatonBib
     #
     # @return [Hash<Symbol=>String>] attributes
     #
-    def ref_attrs
+    def ref_attrs # rubocop:disable Metrics/AbcSize
       discopes = %w[anchor docName number]
       attrs = docidentifier.each_with_object({}) do |di, h|
         next unless discopes.include?(di.scope)
@@ -912,7 +908,7 @@ module RelatonBib
     #
     # @param [Nokogiri::XML::Builder] builder xml builder
     #
-    def render_date(builder)
+    def render_date(builder) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
       dt = date.detect { |d| d.type == "published" }
       return unless dt
 
@@ -933,7 +929,7 @@ module RelatonBib
     #
     # @param [Nokogiri::XML::Builder] builder xml builder
     #
-    def render_seriesinfo(builder)
+    def render_seriesinfo(builder) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       docidentifier.each do |di|
         if BibXMLParser::SERIESINFONAMES.include? di.type
           builder.seriesInfo(name: di.type, value: di.id)
@@ -954,7 +950,7 @@ module RelatonBib
     #
     # @param [Nokogiri::XML::Builder] builder xml builder
     #
-    def render_authors(builder)
+    def render_authors(builder) # rubocop:disable Metrics/AbcSize
       contributor.each do |c|
         builder.author do |xml|
           xml.parent[:role] = "editor" if c.role.detect { |r| r.type == "editor" }
@@ -972,7 +968,7 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder xml builder
     # @param [RelatonBib::ContributionInfo] contrib contributor
     #
-    def render_address(builder, contrib)
+    def render_address(builder, contrib) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       # addr = contrib.entity.contact.reject do |cn|
       #   cn.is_a?(Address) && cn.postcode.nil?
       # end
@@ -1012,7 +1008,7 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder xml builder
     # @param [RelatonBib::Person] person person
     #
-    def render_person(builder, person)
+    def render_person(builder, person) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       render_organization builder, person.affiliation.first&.organization
       if person.name.completename
         builder.parent[:fullname] = person.name.completename.content
@@ -1042,9 +1038,7 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder xml builder
     # @param [RelatonBib::Organization] org organization
     #
-    def render_organization(builder, org)
-      # return unless org
-
+    def render_organization(builder, org) # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
       ab = org&.abbreviation&.content
       on = org&.name&.first&.content
       orgname = if BibXMLParser::ORGNAMES.key?(ab) then ab
@@ -1053,7 +1047,5 @@ module RelatonBib
       o = builder.organization orgname
       o[:abbrev] = ab if ab
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   end
 end

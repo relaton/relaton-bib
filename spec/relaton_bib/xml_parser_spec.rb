@@ -58,8 +58,22 @@ RSpec.describe RelatonBib::XMLParser do
     XML
     item = RelatonBib::XMLParser.from_xml xml
     expect(item.relation.first.source_locality.first).to be_instance_of(
-      RelatonBib::SourceLocalityStack
+      RelatonBib::SourceLocalityStack,
     )
+  end
+
+  context "parse abstract" do
+    it "with <br/> tag" do
+      xml = <<~XML
+        <bibitem id="id">
+          <title type="main">Title</title>
+          <abstract>Content<br/>Content</abstract>
+        </bibitem>
+      XML
+      doc = Nokogiri::XML(xml).at "/bibitem"
+      abstract = RelatonBib::XMLParser.send :fetch_abstract, doc
+      expect(abstract[0].content).to eq "Content<br/>Content"
+    end
   end
 
   it "ignore empty dates" do
@@ -76,7 +90,7 @@ RSpec.describe RelatonBib::XMLParser do
   it "warn if XML doesn't have bibitem or bibdata element" do
     item = ""
     expect { item = RelatonBib::XMLParser.from_xml "" }.to output(
-      /can't find bibitem/
+      /can't find bibitem/,
     ).to_stderr
     expect(item).to be_nil
   end

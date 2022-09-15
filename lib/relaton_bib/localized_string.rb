@@ -78,18 +78,13 @@ module RelatonBib
     def encode(cnt) # rubocop:disable Metrics/MethodLength
       return unless cnt
 
-      # regex = /(?<prf>.*?)(?<xml><(?<tag>\w+)>.*<\/\k<tag>>)(?<sfx>.*)/m
-      regex = /(?<prf>.*?)(?<xml><(?<tag>\w+)[^>]*(?:>.*<\/\k<tag>)?>)(?<rest>.*)/m
-      if cnt.match(regex)
-        prf = Regexp.last_match(:prf).lstrip
-        xml = Regexp.last_match[:xml]
-        rest = Regexp.last_match(:rest).rstrip
-        parts = xml.scan(/\s*<(?<tago>\w+)(?<attrs>[^>]*)>(?:(?<cnt1>.*?)(?=<\/\w+>|<\w+[^>]*>))?|(?<cnt2>.*?)<\/(?<tagc>\w+)>/)
-        out = scan_xml parts
-        "#{escp(prf)}#{out}#{encode(rest)}"
-      else
-        escp cnt
-      end
+      parts = cnt.scan(%r{
+        <(?<tago>\w+)(?<attrs>[^>]*)> | # tag open
+        </(?<tagc>\w+)> | # tag close
+        (?<cmt><!--.*?-->) | # comment
+        (?<cnt>.+?)(?=<|$) # content
+        }x)
+      scan_xml parts
     end
 
     #
@@ -100,23 +95,32 @@ module RelatonBib
     # @return [String] output string
     #
     def scan_xml(parts) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength
-      return "" unless parts.any? && parts.first[0]
+      return "" unless parts.any?
 
-      tago, attrs, cnt1, = parts.shift
-      if tago && tago == parts.first&.last
-        _, _, _, cnt2, tagc = parts.shift
-        "<#{tago}#{attrs}>#{escp(cnt1)}#{escp(cnt2)}</#{tagc}>"
-      elsif tago && attrs && attrs[-1] == "/"
-        "<#{tago}#{attrs}>"
-      elsif tago
-        inr = scan_xml parts
-        _, _, _, cnt2, tagc = parts.shift
-        if tago == tagc
-          "<#{tago}#{attrs}>#{escp(cnt1)}#{inr}#{escp(cnt2)}</#{tagc}>"
-        else
-          "#{escp("<#{tago}>#{cnt1}")}#{inr}#{escp("#{cnt2}</#{tagc}>")}"
-        end
-      end + scan_xml(parts)
+      out = ""
+      while parts.any? && (parts.first[3] || parts.first[4])
+        _, _, _, cmt, cnt = parts.shift
+        out += "#{cmt}#{escp(cnt)}"
+      end
+      unless out.empty?
+        out += scan_xml(parts) if parts.any? && parts.first[0]
+        return out
+      end
+
+      tago, attrs, tagc, = parts.shift
+      out = if tago && attrs && attrs[-1] == "/"
+              "<#{tago}#{attrs}>"
+            elsif tago
+              inr = scan_xml parts
+              _, _, tagc, = parts.shift
+              if tago == tagc
+                "<#{tago}#{attrs}>#{inr}</#{tagc}>"
+              else
+                "#{escp("<#{tago}#{attrs}>")}#{inr}#{escp("</#{tagc}>")}"
+              end
+            end
+      out += scan_xml(parts) if parts.any? && (parts.first[0] || parts.first[3] || parts.first[4])
+      out
     end
 
     #

@@ -89,6 +89,20 @@ RSpec.describe RelatonBib::LocalizedString do
           </localized_string>
         XML
       end
+
+      it "HTML comment" do
+        ls = RelatonBib::LocalizedString.new <<~XML, "en", "Latn"
+          <p>Content <!-- comment --> Content</p>
+        XML
+        xml = Nokogiri::XML::Builder.new do |b|
+          b.localized_string { ls.to_xml(b) }
+        end
+        expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
+          <localized_string language="en" script="Latn">
+            <p>Content <!-- comment --> Content</p>
+          </localized_string>
+        XML
+      end
     end
   end
 end

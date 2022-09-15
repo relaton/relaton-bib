@@ -7,7 +7,7 @@ module RelatonBib
     attr_reader :hit
 
     # @param hit [Hash]
-    # @param hit_collection [RelatonIso::HitCollection, RelatonNist:HitCollection]
+    # @param hit_collection [RelatonBib::HitCollection]
     def initialize(hit, hit_collection = nil)
       @hit            = hit
       @hit_collection = hit_collection
@@ -20,11 +20,11 @@ module RelatonBib
 
     # @return [String]
     def inspect
-      "<#{self.class}:#{format('%<id>#.14x', id: object_id << 1)} "\
-                              "@text=\"#{@hit_collection&.text}\" "\
-                                    "@fetched=\"#{!@fetch.nil?}\" "\
-                    "@fullIdentifier=\"#{@fetch&.shortref(nil)}\" "\
-                    "@title=\"#{@hit[:code]}\">"
+      "<#{self.class}:#{format('%<id>#.14x', id: object_id << 1)} " \
+        "@text=\"#{@hit_collection&.text}\" " \
+        "@fetched=\"#{!@fetch.nil?}\" " \
+        "@fullIdentifier=\"#{@fetch&.shortref(nil)}\" " \
+        "@title=\"#{@hit[:code]}\">"
     end
 
     def fetch

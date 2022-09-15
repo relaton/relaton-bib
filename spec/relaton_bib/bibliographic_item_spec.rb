@@ -149,8 +149,6 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       file = "spec/examples/hash.yml"
       File.write file, hash.to_yaml unless File.exist? file
       h = YAML.load_file(file)
-      h["fetched"] = Date.today.to_s
-      hash["fetched"] = Date.today.to_s
       expect(hash).to eq h
       expect(hash["revdate"]).to eq "2019-04-01"
     end
