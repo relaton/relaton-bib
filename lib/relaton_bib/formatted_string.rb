@@ -31,6 +31,62 @@ module RelatonBib
       super
     end
 
+    #
+    # Encode content.
+    #
+    # @param [String] cnt content
+    #
+    # @return [String] encoded content
+    #
+    def encode(cnt) # rubocop:disable Metrics/MethodLength
+      return unless cnt
+      return escp(cnt) unless format == "text/html"
+
+      parts = cnt.scan(%r{
+        <(?<tago>\w+)(?<attrs>[^>]*)> | # tag open
+        </(?<tagc>\w+)> | # tag close
+        (?<cmt><!--.*?-->) | # comment
+        (?<cnt>.+?)(?=<|$) # content
+        }x)
+      scan_xml parts
+    end
+
+    #
+    # Scan XML and escape HTML entities.
+    #
+    # @param [Array<Array<String,nil>>] parts XML parts
+    #
+    # @return [String] output string
+    #
+    def scan_xml(parts) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength
+      return "" unless parts.any?
+
+      out = ""
+      while parts.any? && (parts.first[3] || parts.first[4])
+        _, _, _, cmt, cnt = parts.shift
+        out += "#{cmt}#{escp(cnt)}"
+      end
+      unless out.empty?
+        out += scan_xml(parts) if parts.any? && parts.first[0]
+        return out
+      end
+
+      tago, attrs, tagc, = parts.shift
+      out = if tago && attrs && attrs[-1] == "/"
+              "<#{tago}#{attrs}>"
+            elsif tago
+              inr = scan_xml parts
+              _, _, tagc, = parts.shift
+              if tago == tagc
+                "<#{tago}#{attrs}>#{inr}</#{tagc}>"
+              else
+                "#{escp("<#{tago}#{attrs}>")}#{inr}#{escp("</#{tagc}>")}"
+              end
+            end
+      out += scan_xml(parts) if parts.any? && (parts.first[0] || parts.first[3] || parts.first[4])
+      out
+    end
+
     # @return [Hash]
     def to_hash
       hash = super
@@ -46,7 +102,7 @@ module RelatonBib
     # @return [String]
     def to_asciibib(prefix = "", count = 1, has_attrs = false)
       has_attrs ||= !(format.nil? || format.empty?)
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       # out = count > 1 ? "#{prefix}::\n" : ""
       out = super
       out += "#{pref}format:: #{format}\n" if format
