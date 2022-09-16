@@ -9,12 +9,12 @@ module RelatonBib
     #
     # Initialize edition.
     #
-    # @param [String] content edition
-    # @param [String, nil] number number
+    # @param [String, Integer, Float] content edition
+    # @param [String, Integer, Float, nil] number number
     #
     def initialize(content:, number: nil)
-      @content = content
-      @number = number
+      @content = content.to_s
+      @number = number&.to_s
     end
 
     #

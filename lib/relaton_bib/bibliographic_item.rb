@@ -145,7 +145,7 @@ module RelatonBib
     # @param language [Arra<String>]
     # @param script [Array<String>]
     # @param docstatus [RelatonBib::DocumentStatus, nil]
-    # @param edition [RelatonBib::Edition, nil]
+    # @param edition [RelatonBib::Edition, String, Integer, Float, nil]
     # @param version [Array<RelatonBib::BibliographicItem::Version>]
     # @param biblionote [RelatonBib::BiblioNoteCollection]
     # @param series [Array<RelatonBib::Series>]
@@ -240,8 +240,9 @@ module RelatonBib
       @docnumber      = args[:docnumber]
       @edition        = case args[:edition]
                         when Hash then Edition.new(**args[:edition])
-                        when String then Edition.new(content: args[:edition])
-                        else args[:edition]
+                        when String, Integer, Float
+                          Edition.new(content: args[:edition].to_s)
+                        when Edition then args[:edition]
                         end
       @version        = args.fetch :version, []
       @biblionote     = args.fetch :biblionote, BiblioNoteCollection.new([])
