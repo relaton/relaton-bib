@@ -3,7 +3,7 @@ describe RelatonBib::FormattedString do
     subject do
       RelatonBib::FormattedString.new(content: <<-XML, language: "en", script: "Latn", format: "text/html")
         prefix <p>content <p>< & > characters</p> to escape</p>
-        <p>Text</p> suffix
+        <p>Text \xC2\xB1 10-4 K</p> suffix
       XML
     end
 
@@ -14,7 +14,7 @@ describe RelatonBib::FormattedString do
         end
         expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
           <formatted_string format="text/html" language="en" script="Latn">
-            prefix <p>content <p>&lt; &amp; &gt; characters</p> to escape</p><p>Text</p> suffix
+            prefix <p>content <p>&lt; &amp; &gt; characters</p> to escape</p><p>Text &#xB1; 10-4 K</p> suffix
           </formatted_string>
         XML
       end

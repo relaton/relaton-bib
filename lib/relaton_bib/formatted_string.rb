@@ -39,7 +39,6 @@ module RelatonBib
     # @return [String] encoded content
     #
     def encode(cnt) # rubocop:disable Metrics/MethodLength
-      return unless cnt
       return escp(cnt) unless format == "text/html"
 
       parts = cnt.scan(%r{
