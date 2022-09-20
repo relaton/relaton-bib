@@ -263,6 +263,21 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
           </reference>
         XML
       end
+
+      it "render organization as author name" do
+        docid = RelatonBib::DocumentIdentifier.new type: "IETF", id: "ID"
+        entity = RelatonBib::Organization.new name: "org"
+        role = [{ type: "author", description: ["BibXML author"] }]
+        contrib = RelatonBib::ContributionInfo.new entity: entity, role: role
+        bibitem = RelatonBib::BibliographicItem.new docid: [docid], contributor: [contrib]
+        expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
+          <reference anchor="ID">
+            <front>
+              <author fullname="org"/>
+            </front>
+          </reference>
+        XML
+      end
     end
 
     it "convert item to citeproc" do

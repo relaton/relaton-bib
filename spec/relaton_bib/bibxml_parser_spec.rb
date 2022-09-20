@@ -109,16 +109,6 @@ RSpec.describe "BibXML parser" do
     end
   end
 
-  # it "return empty dates array when date parce fails" do
-  #   doc = Nokogiri::XML <<~END_XML
-  #     <reference>
-  #       <front><date year="2001" month="14"/></front>
-  #     </reference>
-  #   END_XML
-  #   ref = doc.at "/reference"
-  #   expect(RelatonBib::BibXMLParser.dates(ref)).to eq []
-  # end
-
   context "parse I-D format links" do
     it "DOI" do
       doc = Nokogiri::XML <<~END_XML
@@ -169,23 +159,6 @@ RSpec.describe "BibXML parser" do
     expect(RelatonBib::BibXMLParser.month("Sept")).to eq "09"
   end
 
-  # context "parse dates" do
-  #   it "parse full date" do
-  #     bibxml = Nokogiri::XML <<~END_XML
-  #       <reference>
-  #         <front>
-  #           <date year="2001" month="1" day="1"/>
-  #         </front>
-  #       </reference>
-  #     END_XML
-  #     dates = RelatonBib::BibXMLParser.dates bibxml.at("/reference")
-  #     expect(dates).to be_instance_of Array
-  #     expect(dates[0]).to be_instance_of RelatonBib::BibliographicDate
-  #     expect(dates[0].type).to eq "published"
-  #     expect(dates[0].on.to_s).to eq "2001-12-31"
-  #   end
-  # end
-
   it "skip empty organization" do
     bibxml = <<~END_XML
       <reference anchor="RFC0001" target="https://www.rfc-editor.org/info/rfc1">
@@ -203,18 +176,18 @@ RSpec.describe "BibXML parser" do
     expect(rfc.contributor).to be_empty
   end
 
-  # it "returns default affiliation" do
-  #   doc = Nokogiri::XML <<~END_XML
-  #     <reference>
-  #       <front>
-  #         <author fullname="Arthur son of Uther Pendragon" asciiFullname="Arthur son of Uther Pendragon">
-  #           <organization abbrev="IETF">IETF</organization>
-  #         </author>
-  #       </front>
-  #     </reference>
-  #   END_XML
-  #   ref = doc.at "/reference"
-  #   contribs = RelatonBib::BibXMLParser.send(:contributors, ref)
-  #   expect(contribs[0][:entity].affiliation[0]).to be_instance_of RelatonBib::Affiliation
-  # end
+  it "parse organization as fullname" do
+    bibxml = <<~END_XML
+      <reference anchor="RFC0001" target="https://www.rfc-editor.org/info/rfc1">
+        <front>
+          <title>Host Software</title>
+          <author fullname="IAB"/>
+        </front>
+      </reference>
+    END_XML
+    rfc = RelatonBib::BibXMLParser.parse bibxml
+    expect(rfc.contributor[0].entity.name[0].content).to eq "IAB"
+    expect(rfc.contributor[0].role[0].type).to eq "author"
+    expect(rfc.contributor[0].role[0].description[0].content).to eq "BibXML author"
+  end
 end

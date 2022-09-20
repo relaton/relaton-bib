@@ -956,7 +956,7 @@ module RelatonBib
         builder.author do |xml|
           xml.parent[:role] = "editor" if c.role.detect { |r| r.type == "editor" }
           if c.entity.is_a?(Person) then render_person xml, c.entity
-          else render_organization xml, c.entity
+          else render_organization xml, c.entity, c.role
           end
           render_address xml, c
         end
@@ -1039,14 +1039,18 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder xml builder
     # @param [RelatonBib::Organization] org organization
     #
-    def render_organization(builder, org) # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+    def render_organization(builder, org, role = []) # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize
       ab = org&.abbreviation&.content
       on = org&.name&.first&.content
       orgname = if BibXMLParser::ORGNAMES.key?(ab) then ab
                 else BibXMLParser::ORGNAMES.key(on) || on || ab
                 end
-      o = builder.organization orgname
-      o[:abbrev] = ab if ab
+      if role.detect { |r| r.description.detect { |d| d.content == "BibXML author" } }
+        builder.parent[:fullname] = orgname
+      else
+        o = builder.organization orgname
+        o[:abbrev] = ab if ab
+      end
     end
   end
 end

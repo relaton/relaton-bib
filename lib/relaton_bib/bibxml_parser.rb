@@ -12,6 +12,11 @@ module RelatonBib
       "3GPP" => "3rd Generation Partnership Project",
     }.freeze
 
+    FULLNAMEORG = [
+      "IAB", "Internet Architecture Board", "IAB and IESG", "IESG",
+      "IAB Advisory Committee", "Internet Engineering Steering Group"
+    ].freeze
+
     #
     # Parse BibXML content
     #
@@ -215,19 +220,24 @@ module RelatonBib
     # @return [Array<Hash>]
     def contributors(reference)
       reference.xpath("./front/author").map do |contrib|
-        if contrib[:fullname] || contrib[:surname] then person(contrib, reference)
-        else organization(contrib)
-        end
+        full_name_org(contrib) || person(contrib, reference) || organization(contrib)
       end.compact
-      # persons(reference) + organizations(reference)
+    end
+
+    def full_name_org(contrib)
+      return unless FULLNAMEORG.include? contrib[:fullname]
+
+      role = contributor_role(contrib)
+      role[:description] = ["BibXML author"]
+      { entity: new_org(contrib[:fullname]), role: [role] }
     end
 
     # @param author [Nokogiri::XML::Element]
     # @param reference [Nokogiri::XML::Element]
     # @return [Array<Hash{Symbol=>RelatonBib::Person,Symbol=>Array<String>}>]
     def person(author, reference)
-      # reference.xpath("./front/author[@surname]|./front/author[@fullname]")
-      #   .map do |author|
+      return unless author[:fullname] || author[:surname]
+
       entity = Person.new(
         name: full_name(author, reference),
         affiliation: affiliation(author),
@@ -241,15 +251,6 @@ module RelatonBib
     # @return [Array<Hash{Symbol=>RelatonBib::Organization,
     #   Symbol=>Array<String>}>]
     def organization(contrib)
-      # publisher = { entity: new_org, role: [type: "publisher"] }
-      # orgs = reference.xpath("./seriesinfo").reduce([]) do |mem, si|
-      #   next mem unless si[:stream]
-
-      #   mem << { entity: new_org(si[:stream], nil), role: [type: "author"] }
-      # end
-      # orgs + reference.xpath(
-      #   "front/author[not(@surname)][not(@fullname)]/organization",
-      # ).map do |org|
       org = contrib.at("./organization")
       orgname = org.text.strip
       return if orgname.empty?
@@ -299,10 +300,9 @@ module RelatonBib
     end
 
     # @param name [String]
-    # @param abbr [String]
+    # @param abbr [String, nil]
     # @return [RelatonBib::Organization]
-    def new_org(name, abbr)
-      # (name = "Internet Engineering Task Force", abbr = "IETF")
+    def new_org(name, abbr = nil)
       Organization.new name: name, abbreviation: abbr
     end
 
