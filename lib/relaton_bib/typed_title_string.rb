@@ -101,6 +101,7 @@ module RelatonBib
     # @param content [String]
     # @param language [String]
     # @param script [String]
+    # @param format [String]
     def initialize(**args) # rubocop:disable Metrics/MethodLength
       unless args[:title] || args[:content]
         raise ArgumentError, %{Keyword "title" or "content" should be passed.}
@@ -108,24 +109,35 @@ module RelatonBib
 
       @type = args[:type]
 
-      if args[:title]
-        @title = args[:title]
+      case args[:title]
+      when FormattedString then @title = args[:title]
+      when Hash then @title = FormattedString.new(**args[:title])
       else
         fsargs = args.select { |k, _v| ARGS.include? k }
         @title = FormattedString.new(**fsargs)
       end
     end
 
-    # @param title [String]
-    # @return [TypedTitleStringCollection]
-    def self.from_string(title, lang = nil, script = nil)
+    #
+    # Create TypedTitleStringCollection from string
+    #
+    # @param title [String] title string
+    # @param lang [String, nil] language code Iso639
+    # @param script [String, nil] script code Iso15924
+    # @param format [String] format text/html, text/plain
+    #
+    # @return [TypedTitleStringCollection] collection of TypedTitleString
+    #
+    def self.from_string(title, lang = nil, script = nil, format = "text/plain")
       types = %w[title-intro title-main title-part]
       ttls = split_title(title)
       tts = ttls.map.with_index do |p, i|
-        new type: types[i], content: p, language: lang, script: script if p
+        next unless p
+
+        new type: types[i], content: p, language: lang, script: script, format: format
       end.compact
       tts << new(type: "main", content: ttls.compact.join(" - "),
-                 language: lang, script: script)
+                 language: lang, script: script, format: format)
       TypedTitleStringCollection.new tts
     end
 
@@ -140,10 +152,10 @@ module RelatonBib
     end
 
     # @param ttls [Array<String>]
-    # @return [Array<Strin, nil>]
+    # @return [Array<String, nil>]
     def self.intro_or_part(ttls)
       if /^(Part|Partie) \d+:/.match? ttls[1]
-        [nil, ttls[0], ttls[1..-1].join(" -- ")]
+        [nil, ttls[0], ttls[1..].join(" -- ")]
       else
         parts = ttls.slice(2..-1)
         part = parts.join " -- " if parts.any?
@@ -162,13 +174,6 @@ module RelatonBib
       th = title.to_hash
       return th unless type
 
-      # hash = { "type" => type }
-      # if th.is_a? String
-      #   hash["content"] = th
-      # else
-      #   hash.merge! th
-      # end
-      # hash
       th.merge "type" => type
     end
 
@@ -176,7 +181,7 @@ module RelatonBib
     # @param count [Integer] number of titles
     # @return [String]
     def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       out = count > 1 ? "#{pref}title::\n" : ""
       out += "#{pref}title.type:: #{type}\n" if type
       out += title.to_asciibib "#{pref}title", 1, !(type.nil? || type.empty?)

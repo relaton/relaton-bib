@@ -13,12 +13,23 @@ RSpec.describe RelatonBib::TypedTitleString do
     subject do
       RelatonBib::TypedTitleString.new(
         type: "main",
-        title: RelatonBib::FormattedString.new(content: "Title", format: nil)
+        title: RelatonBib::FormattedString.new(content: "Title", format: nil),
       )
     end
 
     it "create instance without exeption" do
       expect(subject).to be_instance_of RelatonBib::TypedTitleString
+    end
+
+    it "create instance with title as hash" do
+      subj = RelatonBib::TypedTitleString.new(
+        title: { content: "Title", language: "en", script: "Latn", format: "text/plain" },
+      )
+      expect(subj.title).to be_instance_of RelatonBib::FormattedString
+      expect(subj.title.content).to eq "Title"
+      expect(subj.title.language).to eq ["en"]
+      expect(subj.title.script).to eq ["Latn"]
+      expect(subj.title.format).to eq "text/plain"
     end
 
     it "return hash when title is string" do
