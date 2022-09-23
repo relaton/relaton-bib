@@ -95,6 +95,8 @@ copyright.scope:: Scope
 link::
 link.type:: src
 link.content:: https://www.iso.org/standard/53798.html
+link.language:: en
+link.script:: Latn
 link::
 link.type:: obp
 link.content:: https://www.iso.org/obp/ui/#!iso:std:53798:en

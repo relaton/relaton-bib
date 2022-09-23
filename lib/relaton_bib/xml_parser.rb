@@ -10,7 +10,7 @@ module RelatonBib
         if bibitem
           bib_item item_data(bibitem)
         else
-          warn "[relaton-bib] WARNING: can't find bibitem or bibdata element "\
+          warn "[relaton-bib] WARNING: can't find bibitem or bibdata element " \
                "in the XML"
         end
       end
@@ -23,8 +23,8 @@ module RelatonBib
       def item_data(bibitem) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         ext = bibitem.at "//ext"
         {
-          id: bibitem[:id]&.empty? ? nil : bibitem[:id],
-          type: bibitem[:type]&.empty? ? nil : bibitem[:type],
+          id: bibitem[:id].nil? || bibitem[:id].empty? ? nil : bibitem[:id],
+          type: bibitem[:type].nil? || bibitem[:type].empty? ? nil : bibitem[:type],
           fetched: bibitem.at("./fetched")&.text,
           title: fetch_titles(bibitem),
           formattedref: fref(bibitem),
@@ -141,7 +141,7 @@ module RelatonBib
             organization: sr.at("organization")&.text,
             abbreviation: abbreviation, from: sr.at("from")&.text,
             to: sr.at("to")&.text, number: sr.at("number")&.text,
-            partnumber: sr.at("partnumber")&.text, run: sr.at("run")&.text,
+            partnumber: sr.at("partnumber")&.text, run: sr.at("run")&.text
           )
         end
       end
@@ -160,9 +160,6 @@ module RelatonBib
       def fetch_extent(item)
         item.xpath("./extent").reduce([]) do |a, ex|
           a + localities(ex)
-          # Locality.new(
-          #   ex[:type], ex.at("referenceFrom")&.text, ex.at("referenceTo")&.text
-          # )
         end
       end
 
@@ -401,7 +398,8 @@ module RelatonBib
       # @return [Arra<RelatonBib::TypedUri>]
       def fetch_link(item)
         item.xpath("./uri").map do |l|
-          TypedUri.new type: l[:type], content: l.text
+          TypedUri.new(type: l[:type], content: l.text, language: l[:language],
+                       script: l[:script])
         end
       end
 
@@ -412,7 +410,7 @@ module RelatonBib
       def fetch_relations(item, klass = DocumentRelation)
         item.xpath("./relation").map do |rel|
           klass.new(
-            type: rel[:type]&.empty? ? nil : rel[:type],
+            type: rel[:type].nil? || rel[:type].empty? ? nil : rel[:type],
             description: relation_description(rel),
             bibitem: bib_item(item_data(rel.at("./bibitem"))),
             locality: localities(rel),
@@ -453,7 +451,7 @@ module RelatonBib
       # Create Locality object from Nokogiri::XML::Element
       #
       # @param loc [Nokogiri::XML::Element]
-      # @param klass [RelatonBib::Locality.class, RelatonBib::LocalityStack.class]
+      # @param klass [RelatonBib::Locality, RelatonBib::LocalityStack]
       #
       # @return [RelatonBib::Locality]
       def locality(loc, klass = Locality)

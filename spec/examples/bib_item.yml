@@ -195,6 +195,8 @@ copyright:
 link:
   - type: src
     content: https://www.iso.org/standard/53798.html
+    language: en
+    script: Latn
   - type: obp
     content: https://www.iso.org/obp/ui/#!iso:std:53798:en
   - type: rss

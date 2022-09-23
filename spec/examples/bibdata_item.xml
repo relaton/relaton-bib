@@ -1,9 +1,9 @@
 <bibdata type="standard">
-  <fetched>2022-08-17</fetched>
+  <fetched>2022-09-23</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
-  <uri type="src">https://www.iso.org/standard/53798.html</uri>
+  <uri type="src" language="en" script="Latn">https://www.iso.org/standard/53798.html</uri>
   <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
   <uri type="rss">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
   <uri type="doi">http://standrd.org/doi-123</uri>

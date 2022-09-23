@@ -16,6 +16,8 @@ title:
 link:
 - content: https://www.iso.org/standard/53798.html
   type: src
+  language: en
+  script: Latn
 - content: https://www.iso.org/obp/ui/#!iso:std:53798:en
   type: obp
 - content: https://www.iso.org/contents/data/standard/05/37/53798.detail.rss

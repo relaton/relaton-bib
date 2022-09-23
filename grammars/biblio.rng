@@ -854,6 +854,12 @@
     <optional>
       <attribute name="type"/>
     </optional>
+    <optional>
+      <attribute name="language"/>
+    </optional>
+    <optional>
+      <attribute name="script"/>
+    </optional>
     <data type="anyURI"/>
   </define>
   <define name="DateType">
@@ -882,6 +888,7 @@
       <value>vote-started</value>
       <value>vote-ended</value>
       <value>announced</value>
+      <value>stable-until</value>
     </choice>
   </define>
   <define name="bdate">
