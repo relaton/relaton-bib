@@ -33,7 +33,7 @@ module RelatonBib
                      else c
                      end
                    end
-                 else content
+                 else cleanup content
                  end
     end
 
@@ -126,6 +126,17 @@ module RelatonBib
         content.map { |c| c.to_asciibib "#{pref}variant", content.size }.join
       else count > 1 ? "#{prefix}::\n" : ""
       end
+    end
+
+    #
+    # Should be implemented in subclass.
+    #
+    # @param [String] str content
+    #
+    # @return [String] cleaned content
+    #
+    def cleanup(str)
+      str
     end
   end
 end

@@ -224,6 +224,13 @@ module RelatonBib
       end.compact
     end
 
+    #
+    # Parse organization from author element
+    #
+    # @param [Nokogiri::XML::Element] contrib author element
+    #
+    # @return [Hash] contribution info
+    #
     def full_name_org(contrib)
       return unless FULLNAMEORG.include? contrib[:fullname]
 

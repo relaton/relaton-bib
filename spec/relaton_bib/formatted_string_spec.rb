@@ -21,14 +21,14 @@ describe RelatonBib::FormattedString do
 
       it "incorrect HTML" do
         ls = RelatonBib::FormattedString.new content: <<~XML, language: "en", script: "Latn", format: "text/html"
-          <p><p>Content</t></p>
+          <p><p>Content</tt></p>
         XML
         xml = Nokogiri::XML::Builder.new do |b|
           b.formatted_string { ls.to_xml(b) }
         end
         expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
           <formatted_string format="text/html" language="en" script="Latn">
-            <p>&lt;p&gt;Content&lt;/t&gt;</p>
+            <p>&lt;p&gt;Content&lt;/tt&gt;</p>
           </formatted_string>
         XML
       end
@@ -63,14 +63,14 @@ describe RelatonBib::FormattedString do
 
       it "tag without content" do
         ls = RelatonBib::FormattedString.new content: <<~XML, format: "text/html"
-          <link href="http://example.com"/>
+          <br/><br />
         XML
         xml = Nokogiri::XML::Builder.new do |b|
           b.formatted_string { ls.to_xml(b) }
         end
         expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
           <formatted_string format="text/html">
-            <link href="http://example.com"/>
+            <br/><br/>
           </formatted_string>
         XML
       end
@@ -88,6 +88,17 @@ describe RelatonBib::FormattedString do
           </formatted_string>
         XML
       end
+    end
+
+    it "cleanup" do
+      fs = described_class.new content: <<~XML, format: "text/html"
+        <i>Italic</i> <b>Bold</b> <u>Underline</u> <sup>Superscript</sup> <sub>Subscript</sub><br/>
+        <p>Paragraph</p><tt>Monospace</tt><a href="http://example.com">Link</a>
+      XML
+      expect(fs.content).to be_equivalent_to <<~XML
+        <em>Italic</em> <strong>Bold</strong> Underline <sup>Superscript</sup> <sub>Subscript</sub><br/>
+        <p>Paragraph</p><tt>Monospace</tt>Link
+      XML
     end
   end
 end

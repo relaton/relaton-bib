@@ -21,8 +21,8 @@ module RelatonBib
       #   raise ArgumentError, %{Format "#{format}" is invalid.}
       # end
 
-      super(content, language, script)
       @format = format
+      super(content, language, script)
     end
 
     # @param builder [Nokogiri::XML::Builder]
@@ -106,6 +106,23 @@ module RelatonBib
       out = super
       out += "#{pref}format:: #{format}\n" if format
       out
+    end
+
+    #
+    # Remove HTML tags except <em>, <strong>, <stem>, <sup>, <sub>, <tt>, <br>, <p>.
+    # Replace <i> with <em>, <b> with <strong>.
+    #
+    # @param [String] str content
+    #
+    # @return [String] cleaned content
+    #
+    def cleanup(str)
+      return str unless format == "text/html"
+
+      str.gsub(/<i>/, "<em>").gsub(/<\/i>/, "</em>")
+        .gsub(/<b>/, "<strong>").gsub(/<\/b>/, "</strong>")
+        .gsub(/<(?!\/?(em|strong|stem|sup|sub|tt|br\s?\/|p))[^\s!]\/?.*?>/, "")
+        # .gsub(/<\w+\s.+?>/, "")
     end
   end
 end
