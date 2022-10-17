@@ -232,10 +232,10 @@ module RelatonBib
     # @return [Hash] contribution info
     #
     def full_name_org(contrib)
-      return unless FULLNAMEORG.include? contrib[:fullname]
+      return unless self::FULLNAMEORG.include? contrib[:fullname]
 
       role = contributor_role(contrib)
-      role[:description] = ["BibXML author"]
+      # role[:description] = ["BibXML author"]
       { entity: new_org(contrib[:fullname]), role: [role] }
     end
 
@@ -251,7 +251,6 @@ module RelatonBib
         contact: contacts(author.at("./address")),
       )
       { entity: entity, role: [contributor_role(author)] }
-      # end
     end
 
     # @param contrib [Nokogiri::XML::Element]

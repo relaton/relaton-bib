@@ -1039,18 +1039,18 @@ module RelatonBib
     # @param [Nokogiri::XML::Builder] builder xml builder
     # @param [RelatonBib::Organization] org organization
     #
-    def render_organization(builder, org, role = []) # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize
-      ab = org&.abbreviation&.content
-      on = org&.name&.first&.content
-      orgname = if BibXMLParser::ORGNAMES.key?(ab) then ab
-                else BibXMLParser::ORGNAMES.key(on) || on || ab
+    def render_organization(builder, org, _role = []) # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize
+      abbrev = org&.abbreviation&.content
+      orgname = org&.name&.first&.content
+      orgname = if BibXMLParser::ORGNAMES.key?(abbrev) then abbrev
+                else BibXMLParser::ORGNAMES.key(orgname) || orgname || abbrev
                 end
-      if role.detect { |r| r.description.detect { |d| d.content == "BibXML author" } }
-        builder.parent[:fullname] = orgname
-      else
-        o = builder.organization orgname
-        o[:abbrev] = ab if ab
-      end
+      # if role.detect { |r| r.description.detect { |d| d.content == "BibXML author" } }
+      #   builder.parent[:fullname] = orgname
+      # else
+      org = builder.organization orgname
+      org[:abbrev] = abbrev if abbrev
+      # end
     end
   end
 end

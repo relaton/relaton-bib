@@ -186,8 +186,9 @@ RSpec.describe "BibXML parser" do
       </reference>
     END_XML
     rfc = RelatonBib::BibXMLParser.parse bibxml
+    expect(rfc.contributor[0].entity).to be_instance_of RelatonBib::Organization
     expect(rfc.contributor[0].entity.name[0].content).to eq "IAB"
     expect(rfc.contributor[0].role[0].type).to eq "author"
-    expect(rfc.contributor[0].role[0].description[0].content).to eq "BibXML author"
+    # expect(rfc.contributor[0].role[0].description[0].content).to eq "BibXML author"
   end
 end

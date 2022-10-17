@@ -272,7 +272,9 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
           <reference anchor="ID">
             <front>
-              <author fullname="org"/>
+              <author>
+                <organization>org</organization>
+              </author>
             </front>
           </reference>
         XML
