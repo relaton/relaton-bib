@@ -35,10 +35,10 @@ module RelatonBib
   class BibliographicItem
     include RelatonBib
 
-    TYPES = %W[article book booklet conference manual proceedings presentation
+    TYPES = %W[article book booklet manual proceedings presentation
                thesis techreport standard unpublished map electronic\sresource
-               audiovisual film video broadcast graphic_work music patent
-               inbook incollection inproceedings journal software website
+               audiovisual film video broadcast software graphic_work music
+               patent inbook incollection inproceedings journal website
                webresource dataset archival social_media alert message
                conversation misc].freeze
 

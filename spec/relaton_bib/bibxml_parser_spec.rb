@@ -176,19 +176,19 @@ RSpec.describe "BibXML parser" do
     expect(rfc.contributor).to be_empty
   end
 
-  it "parse organization as fullname" do
-    bibxml = <<~END_XML
-      <reference anchor="RFC0001" target="https://www.rfc-editor.org/info/rfc1">
-        <front>
-          <title>Host Software</title>
-          <author fullname="IAB"/>
-        </front>
-      </reference>
-    END_XML
-    rfc = RelatonBib::BibXMLParser.parse bibxml
-    expect(rfc.contributor[0].entity).to be_instance_of RelatonBib::Organization
-    expect(rfc.contributor[0].entity.name[0].content).to eq "IAB"
-    expect(rfc.contributor[0].role[0].type).to eq "author"
-    # expect(rfc.contributor[0].role[0].description[0].content).to eq "BibXML author"
-  end
+  # it "parse organization as fullname" do
+  #   bibxml = <<~END_XML
+  #     <reference anchor="RFC0001" target="https://www.rfc-editor.org/info/rfc1">
+  #       <front>
+  #         <title>Host Software</title>
+  #         <author fullname="IAB"/>
+  #       </front>
+  #     </reference>
+  #   END_XML
+  #   rfc = RelatonBib::BibXMLParser.parse bibxml
+  #   expect(rfc.contributor[0].entity).to be_instance_of RelatonBib::Organization
+  #   expect(rfc.contributor[0].entity.name[0].content).to eq "IAB"
+  #   expect(rfc.contributor[0].role[0].type).to eq "author"
+  #   # expect(rfc.contributor[0].role[0].description[0].content).to eq "BibXML author"
+  # end
 end

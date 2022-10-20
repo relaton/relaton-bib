@@ -92,7 +92,7 @@ module RelatonBib
       HTMLEntities.new.encode str.dup.force_encoding("UTF-8")
     end
 
-    # @return [Hash]
+    # @return [Hash, Array<Hash>]
     def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       if content.nil? || content.is_a?(String)
         # return content unless language || script

@@ -12,11 +12,6 @@ module RelatonBib
       "3GPP" => "3rd Generation Partnership Project",
     }.freeze
 
-    FULLNAMEORG = [
-      "IAB", "Internet Architecture Board", "IAB and IESG", "IESG",
-      "IAB Advisory Committee", "Internet Engineering Steering Group"
-    ].freeze
-
     #
     # Parse BibXML content
     #
@@ -219,63 +214,47 @@ module RelatonBib
     # @param reference [Nokogiri::XML::Element]
     # @return [Array<Hash>]
     def contributors(reference)
+      lang = language reference
       reference.xpath("./front/author").map do |contrib|
-        full_name_org(contrib) || person(contrib, reference) || organization(contrib)
+        entity = person(contrib, lang) || organization(contrib)
+        next unless entity
+
+        { entity: entity, role: [contributor_role(contrib)] }
       end.compact
     end
 
-    #
-    # Parse organization from author element
-    #
-    # @param [Nokogiri::XML::Element] contrib author element
-    #
-    # @return [Hash] contribution info
-    #
-    def full_name_org(contrib)
-      return unless self::FULLNAMEORG.include? contrib[:fullname]
-
-      role = contributor_role(contrib)
-      # role[:description] = ["BibXML author"]
-      { entity: new_org(contrib[:fullname]), role: [role] }
-    end
-
     # @param author [Nokogiri::XML::Element]
-    # @param reference [Nokogiri::XML::Element]
-    # @return [Array<Hash{Symbol=>RelatonBib::Person,Symbol=>Array<String>}>]
-    def person(author, reference)
+    # @param lang [String]
+    # @return [RelatonBib::Person, nil]
+    def person(author, lang)
       return unless author[:fullname] || author[:surname]
 
-      entity = Person.new(
-        name: full_name(author, reference),
-        affiliation: affiliation(author),
-        contact: contacts(author.at("./address")),
-      )
-      { entity: entity, role: [contributor_role(author)] }
+      name = full_name(author[:fullname], author[:surname], author[:initials], lang)
+      Person.new(name: name, affiliation: affiliation(author),
+                 contact: contacts(author.at("./address")))
     end
 
     # @param contrib [Nokogiri::XML::Element]
-    # @return [Array<Hash{Symbol=>RelatonBib::Organization,
-    #   Symbol=>Array<String>}>]
+    # @return [RelatonBib::Organization, nil]
     def organization(contrib)
       org = contrib.at("./organization")
       orgname = org.text.strip
       return if orgname.empty?
 
       name = ORGNAMES[orgname] || orgname
-      { entity: new_org(name, org[:abbrev]), role: [contributor_role(contrib)] }
-      # end
+      new_org name, org[:abbrev]
     end
 
-    # @param author [Nokogiri::XML::Element]
-    # @param reference [Nokogiri::XML::Element]
+    # @param fname [String] full name
+    # @param sname [String] surname
+    # @param inits [String] initials
+    # @param lang [String] language
     # @return [RelatonBib::FullName]
-    def full_name(author, reference)
-      lang = language reference
-      initials = localized_string(author[:initials], lang) if author[:initials]
+    def full_name(fname, sname, inits, lang)
+      initials = localized_string(inits, lang) if inits
       FullName.new(
-        completename: localized_string(author[:fullname], lang),
-        initials: initials, forename: forename(author[:initials], lang),
-        surname: localized_string(author[:surname], lang)
+        completename: localized_string(fname, lang), initials: initials,
+        forename: forename(inits, lang), surname: localized_string(sname, lang)
       )
     end
 
@@ -287,11 +266,11 @@ module RelatonBib
     #
     # @return [Array<RelatonBib::Forename>] forenames
     #
-    def forename(initials, lang)
+    def forename(initials, lang = nil, script = nil)
       return [] unless initials
 
       initials.split(/\.-?\s?|\s/).map do |i|
-        Forename.new(initial: i, language: lang)
+        Forename.new(initial: i, language: lang, script: script)
       end
     end
 
@@ -314,9 +293,10 @@ module RelatonBib
 
     # @param content [String, nil]
     # @param lang [String, nil]
+    # @param script [String, nil]
     # @return [RelatonBib::LocalizedString, nil]
-    def localized_string(content, lang)
-      LocalizedString.new(content, lang) if content
+    def localized_string(content, lang, script = nil)
+      LocalizedString.new(content, lang, script) if content
     end
 
     # @param postal [Nokogiri::XML::Element]
