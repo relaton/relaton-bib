@@ -40,7 +40,7 @@ module RelatonBib
                audiovisual film video broadcast software graphic_work music
                patent inbook incollection inproceedings journal website
                webresource dataset archival social_media alert message
-               conversation misc].freeze
+               conversation misc internal].freeze
 
     # @return [Boolean, nil]
     attr_accessor :all_parts
@@ -204,7 +204,7 @@ module RelatonBib
     # @option link [String] :content
     def initialize(**args)
       if args[:type] && !TYPES.include?(args[:type])
-        warn %{[relaton-bib] document type "#{args[:type]}" is invalid.}
+        warn %{[relaton-bib] WARNING: type "#{args[:type]}" is invalid.}
       end
 
       @title = if args[:title].is_a?(TypedTitleStringCollection)
