@@ -95,7 +95,7 @@ contributor:
         postcode: '123456'
     - phone: '223322'
   role:
-  - author
+  - type: author
 - organization:
     name:
     - content: Institute of Electrical and Electronics Engineers
@@ -147,7 +147,7 @@ contributor:
         postcode: '123456'
     - phone: '223322'
   role:
-  - author
+  - type: author
 - person:
     name:
       given:
@@ -172,7 +172,7 @@ contributor:
         script:
         - Latn
   role:
-  - author
+  - type: author
 - organization:
     name:
     - content: World Wide Web Consortium

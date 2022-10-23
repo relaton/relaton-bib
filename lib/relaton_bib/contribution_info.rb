@@ -46,13 +46,10 @@ module RelatonBib
 
     # @return [Hash, String]
     def to_hash
-      if description&.any?
-        hash = { "description" => single_element_array(description) }
-        hash["type"] = type if type
-        hash
-      elsif type
-        type
-      end
+      hash = {}
+      hash["description"] = description.map(&:to_hash) if description&.any?
+      hash["type"] = type if type
+      hash
     end
 
     # @param prefix [String]
