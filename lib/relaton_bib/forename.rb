@@ -37,13 +37,9 @@ module RelatonBib
     #
     def to_hash
       ls = super
-      # if initial
       hash = ls.is_a?(Hash) ? ls : { "content" => ls }
       hash["initial"] = initial if initial
       hash
-      # else
-      #   ls
-      # end
     end
 
     #

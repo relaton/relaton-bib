@@ -52,7 +52,7 @@ module RelatonBib
     # @return [Array<RelatonBib::LocalizedString>]
     attr_reader :name
 
-    # @return [RelatonBib::LocalizedString, NilClass]
+    # @return [RelatonBib::LocalizedString, nil]
     attr_reader :abbreviation
 
     # @return [Array<RelatonBib::LocalizedString>]

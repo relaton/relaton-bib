@@ -6,10 +6,10 @@ module RelatonBib
     # @return [Date]
     attr_reader :from
 
-    # @return [Date, NilClass]
+    # @return [Date, nil]
     attr_reader :to
 
-    # @return [String, NilClass]
+    # @return [String, nil]
     attr_reader :scope
 
     # @return [Array<RelatonBib::ContributionInfo>]
@@ -22,8 +22,8 @@ module RelatonBib
     # @option owner [String] :abbreviation
     # @option owner [String] :url
     # @param from [String] date
-    # @param to [String, NilClass] date
-    # @param scope [String, NilClass]
+    # @param to [String, nil] date
+    # @param scope [String, nil]
     def initialize(owner:, from:, to: nil, scope: nil)
       unless owner.any?
         raise ArgumentError, "at least one owner should exist."
@@ -67,7 +67,7 @@ module RelatonBib
     # @param count [Iteger] number of copyright elements
     # @return [String]
     def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
-      pref = prefix.empty? ? "copyright" : prefix + ".copyright"
+      pref = prefix.empty? ? "copyright" : "#{prefix}.copyright"
       out = count > 1 ? "#{pref}::\n" : ""
       owner.each { |ow| out += ow.to_asciibib "#{pref}.owner", owner.size }
       out += "#{pref}.from:: #{from.year}\n" if from
