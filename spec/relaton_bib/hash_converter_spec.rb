@@ -49,4 +49,12 @@ RSpec.describe RelatonBib::HashConverter do
     )
     expect(r.to_s).to match(/^1999-02-28/)
   end
+
+  it "create formatted address" do
+    entity = { contact: [{ address: { formatted_address: "Address" } }] }
+    address = RelatonBib::HashConverter.contacts_hash_to_bib entity
+    expect(address).to be_instance_of Array
+    expect(address.first).to be_instance_of RelatonBib::Address
+    expect(address.first.formatted_address).to eq "Address"
+  end
 end

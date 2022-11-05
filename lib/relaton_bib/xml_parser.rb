@@ -3,6 +3,13 @@ require "nokogiri"
 module RelatonBib
   class XMLParser
     class << self
+      #
+      # Parse XML bibdata
+      #
+      # @param [String] xml XML string
+      #
+      # @return [RelatonBib::BibliographicItem, nil] bibliographic item
+      #
       def from_xml(xml)
         doc = Nokogiri::XML(xml)
         doc.remove_namespaces!
@@ -17,10 +24,14 @@ module RelatonBib
 
       private
 
-      # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-
-      # @return [Hash]
-      def item_data(bibitem) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      #
+      # Parse bibitem data
+      #
+      # @param bibitem [Nokogiri::XML::Element] bibitem element
+      #
+      # @return [Hash] bibitem data
+      #
+      def item_data(bibitem) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize, Metrics/MethodLength
         ext = bibitem.at "//ext"
         {
           id: bibitem[:id].nil? || bibitem[:id].empty? ? nil : bibitem[:id],
@@ -59,8 +70,14 @@ module RelatonBib
           structuredidentifier: fetch_structuredidentifier(ext),
         }
       end
-      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
+      #
+      # Fetch version.
+      #
+      # @param [Nokogiri::XML::Elemetn] item bibitem element
+      #
+      # @return [Array<RelatonBib::BibliographicItem::Version>] versions
+      #
       def fetch_version(item)
         item.xpath("./version").map do |v|
           revision_date = v.at("revision-date")&.text
@@ -69,6 +86,13 @@ module RelatonBib
         end
       end
 
+      #
+      # Fetch edition
+      #
+      # @param [Nokogiri::XML::Elemetn] item bibitem element
+      #
+      # @return [RelatonBib::Edition, nil] edition
+      #
       def fetch_edition(item)
         edt = item.at("./edition")
         return unless edt
@@ -76,6 +100,13 @@ module RelatonBib
         Edition.new content: edt.text, number: edt[:number]
       end
 
+      #
+      # Fetch place.
+      #
+      # @param [Nokogiri::XML::Element] item bibitem element
+      #
+      # @return [Array<RelatonBib::Place>] array of places
+      #
       def fetch_place(item)
         item.xpath("./place").map do |pl|
           if (city = pl.at("./city"))
@@ -114,18 +145,39 @@ module RelatonBib
         BiblioNoteCollection.new bnotes
       end
 
+      #
+      # Fetch language
+      #
+      # @param [Nokogiri::XML::Element] item bibitem element
+      #
+      # @return [Array<String>] language en, fr, etc.
+      #
       def fetch_language(item)
         item.xpath("./language").reduce([]) do |a, l|
           l.text.empty? ? a : a << l.text
         end
       end
 
+      #
+      # Fetch script
+      #
+      # @param [Nokogiri::XML::Element] item XML element
+      #
+      # @return [Array<String>] scripts Latn, Cyr, etc.
+      #
       def fetch_script(item)
         item.xpath("./script").reduce([]) do |a, s|
           s.text.empty? ? a : a << s.text
         end
       end
 
+      #
+      # Fetch series
+      #
+      # @param [Nokogiri::XML::Element] item bibitem element
+      #
+      # @return [Array<RelatonBib::Series>] series
+      #
       def fetch_series(item) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/MethodLength,Metrics/PerceivedComplexity
         item.xpath("./series").reduce([]) do |mem, sr|
           abbr = sr.at "abbreviation"
@@ -146,6 +198,13 @@ module RelatonBib
         end
       end
 
+      #
+      # Fetch medium
+      #
+      # @param [Nokogiri::XML::Element] item item element
+      #
+      # @return [RelatonBib::Medium, nil] medium
+      #
       def fetch_medium(item) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/PerceivedComplexity
         medium = item.at("./medium")
         return unless medium
@@ -157,12 +216,26 @@ module RelatonBib
         )
       end
 
+      #
+      # Fetch extent
+      #
+      # @param [Nokogiri::XML::Element] item item element
+      #
+      # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>] extent
+      #
       def fetch_extent(item)
         item.xpath("./extent").reduce([]) do |a, ex|
           a + localities(ex)
         end
       end
 
+      #
+      # Fetch size
+      #
+      # @param [Nokogiri::XML::Element] item item element
+      #
+      # @return [RelatonBib::BibliographicSize, nil] size
+      #
       def fetch_size(item)
         size = item.xpath("./size/value").map do |sz|
           BibliographicSize::Value.new type: sz[:type], value: sz.text
@@ -170,12 +243,26 @@ module RelatonBib
         BibliographicSize.new size if size.any?
       end
 
+      #
+      # Fetch classification
+      #
+      # @param [Nokogiri::XML::Element] item bibitem element
+      #
+      # @return [Array<RelatonBib::Classification>] classifications
+      #
       def fetch_classification(item)
         item.xpath("classification").map do |cls|
           Classification.new type: cls[:type], value: cls.text
         end
       end
 
+      #
+      # Parse validity
+      #
+      # @param [Nokogiri::XML::Element] item bibitem element
+      #
+      # @return [RelatonBib::Validity, nil] validity
+      #
       def fetch_validity(item)
         vl = item.at("./validity")
         return unless vl
@@ -228,6 +315,13 @@ module RelatonBib
         end
       end
 
+      #
+      # Parse status
+      #
+      # @param [Nokogiri::XML::Element] item XML element
+      #
+      # @return [RelatonBib::DocumentStatus, nil] status
+      #
       def fetch_status(item)
         status = item.at("./status")
         return unless status
@@ -264,6 +358,13 @@ module RelatonBib
         end
       end
 
+      #
+      # Parse organization
+      #
+      # @param [Nokogiri::XML::Element] org XML element
+      #
+      # @return [RelatonBib::Organization] organization
+      #
       def get_org(org) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         names = org.xpath("name").map do |n|
           { content: n.text, language: n[:language], script: n[:script] }
@@ -280,6 +381,13 @@ module RelatonBib
         )
       end
 
+      #
+      # Parse person from XML
+      #
+      # @param [Nokogiri::XML::Element] person XML element
+      #
+      # @return [RelatonBib::Person] person
+      #
       def get_person(person) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
         affiliations = person.xpath("./affiliation").map do |a|
           org = a.at "./organization"
@@ -316,23 +424,46 @@ module RelatonBib
         )
       end
 
-      def parse_contact(contrib) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength,Metrics/AbcSize
+      #
+      # Parse contact information
+      #
+      # @param [Nokogiri::XML::Element] contrib contributor element
+      #
+      # @return [Array<RelatonBib::Address, RelatonBib::Contact>] contacts
+      #
+      def parse_contact(contrib)
         contrib.xpath("./address|./phone|./email|./uri").map do |c|
-          if c.name == "address"
-            streets = c.xpath("./street").map(&:text)
-            Address.new(
-              street: streets,
-              city: c.at("./city")&.text,
-              state: c.at("./state")&.text,
-              country: c.at("./country")&.text,
-              postcode: c.at("./postcode")&.text,
-            )
-          else
-            Contact.new(type: c.name, value: c.text)
-          end
+          parse_address(c) || Contact.new(type: c.name, value: c.text)
         end
       end
 
+      #
+      # Parse address
+      #
+      # @param [Nokogiri::XML::Element] contact contact element
+      #
+      # @return [RelatonBib::Address] address
+      #
+      def parse_address(contact) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+        return unless contact.name == "address"
+
+        Address.new(
+          street: contact.xpath("./street").map(&:text),
+          city: contact.at("./city")&.text,
+          state: contact.at("./state")&.text,
+          country: contact.at("./country")&.text,
+          postcode: contact.at("./postcode")&.text,
+          formatted_address: contact.at("./formattedAddress")&.text,
+        )
+      end
+
+      #
+      # Parse initials
+      #
+      # @param [Nokogiri::XML::Element] person person element
+      #
+      # @return [RelatonBib::LocalizedString, nil] initials
+      #
       def parse_initials(person)
         inits = person.at "./name/formatted-initials"
         return unless inits
@@ -340,6 +471,13 @@ module RelatonBib
         LocalizedString.new(inits.text, inits[:language], inits[:script])
       end
 
+      #
+      # Parse forename
+      #
+      # @param [Nokogiri::XML::Element] person person element
+      #
+      # @return [Array<RelatonBib::Forename>] forenames
+      #
       def parse_forename(person)
         person.xpath("./name/forename").map do |np|
           args = np.attributes.each_with_object({}) { |(k, v), h| h[k.to_sym] = v.to_s }
@@ -348,6 +486,14 @@ module RelatonBib
         end
       end
 
+      #
+      # Parse name part
+      #
+      # @param [Nokogiri::XML::Element] person person element
+      # @param [String] part name part
+      #
+      # @return [Array<RelatonBib::LocalizedString>] name parts
+      #
       def name_part(person, part)
         person.xpath("./name/#{part}").map do |np|
           LocalizedString.new np.text, np[:language], np[:script]
@@ -429,14 +575,24 @@ module RelatonBib
                             script: d[:script], format: d[:format])
       end
 
-      # @param item_hash [Hash]
-      # @return [RelatonBib::BibliographicItem]
+      #
+      # Create bibliographic item
+      #
+      # @param item_hash [Hash] bibliographic item hash
+      #
+      # @return [RelatonBib::BibliographicItem] bibliographic item
+      #
       def bib_item(item_hash)
         BibliographicItem.new(**item_hash)
       end
 
-      # @param rel [Nokogiri::XML::Element]
-      # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
+      #
+      # Parse locality
+      #
+      # @param rel [Nokogiri::XML::Element] relation element
+      #
+      # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>] localities
+      #
       def localities(rel)
         rel.xpath("./locality|./localityStack").map do |lc|
           if lc.name == "locality"

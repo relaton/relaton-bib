@@ -87,6 +87,24 @@ RSpec.describe RelatonBib::XMLParser do
     expect(item.date).to be_empty
   end
 
+  it "parse formatted address" do
+    xml = <<~XML
+      <bibitem id="id">
+        <title type="main">Title</title>
+        <contributor>
+          <organization>
+            <name>Organization</name>
+            <address>
+              <formattedAddress>Address</formattedAddress>
+            </address>
+          </organization>
+        </contributor>
+      </bibitem>
+    XML
+    item = RelatonBib::XMLParser.from_xml xml
+    expect(item.contributor.first.entity.contact.first.formatted_address).to eq "Address"
+  end
+
   it "warn if XML doesn't have bibitem or bibdata element" do
     item = ""
     expect { item = RelatonBib::XMLParser.from_xml "" }.to output(
