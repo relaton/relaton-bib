@@ -306,7 +306,7 @@ module RelatonBib
       return conts unless addr
 
       postal = addr.at("./postal")
-      conts << address(postal) if postal
+      conts << address(postal) if postal&.at("./city") && postal&.at("./country")
       add_contact(conts, "phone", addr.at("./phone"))
       add_contact(conts, "email", addr.at("./email"))
       add_contact(conts, "uri", addr.at("./uri"))
@@ -316,9 +316,7 @@ module RelatonBib
     # @param postal [Nokogiri::XML::Element]
     # @rerurn [RelatonBib::Address]
     def address(postal) # rubocop:disable Metrics/CyclomaticComplexity
-      street = [
-        (postal.at("./postalLine") || postal.at("./street"))&.text,
-      ].compact
+      street = [postal.at("./postalLine | ./street")&.text].compact
       Address.new(
         street: street,
         city: postal.at("./city")&.text,
