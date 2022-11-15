@@ -9,7 +9,7 @@ module RelatonBib
     include RelatonBib
 
     TYPES = %w[author performer publisher editor adapter translator
-               distributor].freeze
+               distributor realizer owner authorizer enabler subject].freeze
 
     # @return [Array<RelatonBib::FormattedString>]
     attr_reader :description

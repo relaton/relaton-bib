@@ -14,8 +14,8 @@ module RelatonBib
     # @param referenceFrom [String]
     # @param referenceTo [String, NilClass]
     def initialize(type, reference_from, reference_to = nil)
-      type_ptrn = %r{section|clause|part|paragraph|chapter|page|whole|table|
-        annex|figure|note|list|example|volume|issue|time|
+      type_ptrn = %r{section|clause|part|paragraph|chapter|page|title|line|
+        whole|table|annex|figure|note|list|example|volume|issue|time|anchor|
         locality:[a-zA-Z0-9_]+}x
       unless type&.match? type_ptrn
         warn "[relaton-bib] WARNING: invalid locality type: #{type}"
