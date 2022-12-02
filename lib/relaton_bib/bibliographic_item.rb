@@ -286,6 +286,24 @@ module RelatonBib
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
+    #
+    # Fetch schema version
+    #
+    # @return [String] schema version
+    #
+    def schema
+      @schema ||= schema_versions["relaton-models"]
+    end
+
+    #
+    # Read schema versions from file
+    #
+    # @return [Hash{String=>String}] schema versions
+    #
+    def schema_versions
+      JSON.parse File.read(File.join(__dir__, "../../grammars/versions.json"))
+    end
+
     # @param hash [Hash]
     # @return [RelatonBipm::BipmBibliographicItem]
     def self.from_hash(hash)
@@ -303,19 +321,19 @@ module RelatonBib
       end
     end
 
-    # @param id [RelatonBib::DocumentIdentifier]
-    # @param attribute [boolean, nil]
+    # @param identifier [RelatonBib::DocumentIdentifier]
+    # @param attribute [Boolean, nil]
     # @return [String]
-    def makeid(id, attribute)
+    def makeid(identifier, attribute)
       return nil if attribute && !@id_attribute
 
-      id ||= @docidentifier.reject { |i| i.type == "DOI" }[0]
-      return unless id
+      identifier ||= @docidentifier.reject { |i| i.type == "DOI" }[0]
+      return unless identifier
 
       # contribs = publishers.map { |p| p&.entity&.abbreviation }.join '/'
       # idstr = "#{contribs}#{delim}#{id.project_number}"
       # idstr = id.project_number.to_s
-      idstr = id.id.gsub(/:/, "-").gsub(/\s/, "")
+      idstr = identifier.id.gsub(/[:\/]/, "-").gsub(/\s/, "")
       # if id.part_number&.size&.positive? then idstr += "-#{id.part_number}"
       idstr.strip
     end
@@ -370,8 +388,9 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    def to_hash(embedded: false) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       hash = {}
+      hash["schema-version"] = schema unless embedded
       hash["id"] = id if id
       hash["title"] = title.to_hash if title&.any?
       hash["link"] = single_element_array(link) if link&.any?
@@ -417,6 +436,7 @@ module RelatonBib
       if structuredidentifier&.presence?
         hash["structuredidentifier"] = structuredidentifier.to_hash
       end
+      hash["ext"] = { "schema-version" => ext_schema } if !embedded && respond_to?(:ext_schema)
       hash
     end
 
@@ -733,7 +753,7 @@ module RelatonBib
     # @option opts [String] :lang language
     def render_xml(**opts) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       root = opts[:bibdata] ? :bibdata : :bibitem
-      xml = opts[:builder].send(root) do |builder|
+      xml = opts[:builder].send(root) do |builder| # rubocop:disable Metrics/BlockLength
         builder.fetched fetched if fetched
         title.to_xml(**opts)
         formattedref&.to_xml builder
@@ -776,17 +796,19 @@ module RelatonBib
         if block_given? then yield builder
         elsif opts[:bibdata] && (doctype || editorialgroup || ics&.any? ||
                                  structuredidentifier&.presence?)
-          builder.ext do |b|
+          ext = builder.ext do |b|
             b.doctype doctype if doctype
             b.subdoctype subdoctype if subdoctype
             editorialgroup&.to_xml b
             ics.each { |i| i.to_xml b }
             structuredidentifier&.to_xml b
           end
+          ext["schema-version"] = ext_schema if !opts[:embedded] && respond_to?(:ext_schema)
         end
       end
       xml[:id] = id if id && !opts[:bibdata] && !opts[:embedded]
       xml[:type] = type if type
+      xml["schema-version"] = schema unless opts[:embedded]
       xml
     end
 

@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
-  <include href="../../grammars/isodoc.rng">
-    <start>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+  <include href="../../grammars/basicdoc.rng"/>
+  <include href="../../grammars/biblio-standoc.rng"/>
+  <start>
+    <choice>
       <ref name="bibdata"/>
-    </start>
-  </include>
+      <ref name="bibitem"/>
+    </choice>
+  </start>
 </grammar>

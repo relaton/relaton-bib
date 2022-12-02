@@ -22,6 +22,10 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       RelatonBib::BibliographicItem.from_hash(hash)
     end
 
+    it "has schema-version" do
+      expect(subject.schema).to match(/^v\d+\.\d+\.\d+$/)
+    end
+
     it "is instance of BibliographicItem" do
       expect(subject).to be_instance_of RelatonBib::BibliographicItem
     end
@@ -91,50 +95,58 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       ).to be_nil
     end
 
-    it "returns bibitem xml string" do
-      file = "spec/examples/bib_item.xml"
-      subject_xml = subject.to_xml
-        .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-      File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
-      xml = File.read(file, encoding: "utf-8")
-        .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-      expect(subject_xml).to be_equivalent_to xml
-      schema = Jing.new "grammars/biblio.rng"
-      errors = schema.validate file
-      expect(errors).to eq []
-    end
+    context "render XML" do
+      it "returns bibitem xml string" do
+        file = "spec/examples/bib_item.xml"
+        subject_xml = subject.to_xml
+          .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
+        xml = File.read(file, encoding: "utf-8")
+          .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        expect(subject_xml).to be_equivalent_to xml
+        schema = Jing.new "grammars/biblio-compile.rng"
+        errors = schema.validate file
+        expect(errors).to eq []
+      end
 
-    it "returns bibdata xml string" do
-      file = "spec/examples/bibdata_item.xml"
-      subject_xml = subject.to_xml(bibdata: true)
-        .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-      File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
-      xml = File.read(file, encoding: "utf-8")
-        .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-      expect(subject_xml).to be_equivalent_to xml
-      schema = Jing.new "spec/examples/isobib.rng"
-      errors = schema.validate file
-      expect(errors).to eq []
-    end
+      it "returns bibdata xml string" do
+        file = "spec/examples/bibdata_item.xml"
+        subject_xml = subject.to_xml(bibdata: true)
+          .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
+        xml = File.read(file, encoding: "utf-8")
+          .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        expect(subject_xml).to be_equivalent_to xml
+        schema = Jing.new "spec/examples/isobib.rng"
+        errors = schema.validate file
+        expect(errors).to eq []
+      end
 
-    it "render only French laguage tagged string" do
-      file = "spec/examples/bibdata_item_fr.xml"
-      xml = subject.to_xml(bibdata: true, lang: "fr")
-        .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-      File.write file, xml, encoding: "UTF-8" unless File.exist? file
-      expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
-        .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-    end
+      it "render only French laguage tagged string" do
+        file = "spec/examples/bibdata_item_fr.xml"
+        xml = subject.to_xml(bibdata: true, lang: "fr")
+          .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        File.write file, xml, encoding: "UTF-8" unless File.exist? file
+        expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
+          .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+      end
 
-    it "render addition elements" do
-      xml = subject.to_xml { |b| b.element "test" }
-      expect(xml).to include "<element>test</element>"
-    end
+      it "render addition elements" do
+        xml = subject.to_xml { |b| b.element "test" }
+        expect(xml).to include "<element>test</element>"
+      end
 
-    it "add note to xml" do
-      xml = subject.to_xml note: [{ text: "Note", type: "note" }]
-      expect(xml).to include "<note format=\"text/plain\" type=\"note\">"\
-                             "Note</note>"
+      it "add note to xml" do
+        xml = subject.to_xml note: [{ text: "Note", type: "note" }]
+        expect(xml).to include "<note format=\"text/plain\" type=\"note\">" \
+                               "Note</note>"
+      end
+
+      it "render ext schema-verson" do
+        expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
+        expect(subject).to receive(:ext_schema).and_return("v1.0.0")
+        expect(subject.to_xml(bibdata: true)).to include "<ext schema-version=\"v1.0.0\">"
+      end
     end
 
     it "deals with hashes" do
@@ -144,12 +156,21 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(b.to_xml).to be_equivalent_to subject.to_xml
     end
 
-    it "converts item to hash" do
-      hash = subject.to_hash
-      file = "spec/examples/hash.yml"
-      File.write file, hash.to_yaml unless File.exist? file
-      expect(hash).to eq YAML.load_file(file)
-      expect(hash["revdate"]).to eq "2019-04-01"
+    context "converts item to hash" do
+      it do
+        hash = subject.to_hash
+        file = "spec/examples/hash.yml"
+        File.write file, hash.to_yaml unless File.exist? file
+        expect(hash).to eq YAML.load_file(file)
+        expect(hash["revdate"]).to eq "2019-04-01"
+      end
+
+      it "with ext schema-version" do
+        expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
+        expect(subject).to receive(:ext_schema).and_return "v1.0.0"
+        hash = subject.to_hash
+        expect(hash["ext"]).to eq "schema-version" => "v1.0.0"
+      end
     end
 
     context "converts to BibTex" do

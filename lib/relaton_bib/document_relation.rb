@@ -72,7 +72,7 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash # rubocop:disable Metrics/AbcSize
-      hash = { "type" => type, "bibitem" => bibitem.to_hash }
+      hash = { "type" => type, "bibitem" => bibitem.to_hash(embedded: true) }
       hash["description"] = description.to_hash if description
       hash["locality"] = single_element_array(locality) if locality&.any?
       if source_locality&.any?

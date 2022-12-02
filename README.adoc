@@ -31,8 +31,12 @@ Or install it yourself as:
 
 [source,ruby]
 ----
+require 'relaton_bib'
+=> true
+
 hash = YAML.load_file "spec/examples/bib_item.yml"
 => {"id"=>"ISOTC211",
+"fetched"=>"2022-05-02",
  "title"=>["Geographic information", {"content"=>"Information géographique", "language"=>"fr", "script"=>"Latn"}],
  ...
 
@@ -48,17 +52,25 @@ item = RelatonBib::BibliographicItem.from_hash(hash)
 [source,ruby]
 ----
 item.title
-=> [#<RelatonBib::TypedTitleString:0x007fa49a360290
-  @title=#<RelatonBib::FormattedString:0x007fa49a360088 @content="Geographic information", @format=nil, @language=["en"], @script=["Latn"]>,
-  @type="main">,
- #<RelatonBib::TypedTitleString:0x007fa49a35bf38
-  @title=#<RelatonBib::FormattedString:0x007fa49a35bdd0 @content="Information géographique", @format=nil, @language=["fr"], @script=["Latn"]>,
-  @type=nil>]
+=> #<RelatonBib::TypedTitleStringCollection:0x00007fea821ec6b0
+ @array=
+  [#<RelatonBib::TypedTitleString:0x00007fea821ecb60
+    @title=#<RelatonBib::FormattedString:0x00007fea821eca70 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
+    @type="title-main">,
+   #<RelatonBib::TypedTitleString:0x00007fea821ec8b8
+    @title=#<RelatonBib::FormattedString:0x00007fea821ec818 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
+    @type="main">,
+   #<RelatonBib::TypedTitleString:0x00007fea821ec610
+    @title=
+     #<RelatonBib::FormattedString:0x00007fea821ec570 @content="Information géographique", @format="text/plain", @language=["fr"], @script=["Latn"]>,
+    @type=nil>]>
 
 item.title lang: "fr"
-=> [#<RelatonBib::TypedTitleString:0x007fa49a35bf38
-  @title=#<RelatonBib::FormattedString:0x007fa49a35bdd0 @content="Information géographique", @format=nil, @language=["fr"], @script=["Latn"]>,
-  @type=nil>]
+=> #<RelatonBib::TypedTitleStringCollection:0x00007fea8222d908
+ @array=
+  [#<RelatonBib::TypedTitleString:0x00007fea821ec610
+    @title=#<RelatonBib::FormattedString:0x00007fea821ec570 @content="Information géographique", @format="text/plain", @language=["fr"], @script=["Latn"]>,
+    @type=nil>]>
 ----
 
 === BibliographicItem Formatted Strings
@@ -66,20 +78,19 @@ item.title lang: "fr"
 [source,ruby]
 ----
 item.abstract
-=> #<RelatonBib::TypedTitleStringCollection:0x00007f962f0306c0
- @array=
-  [#<RelatonBib::TypedTitleString:0x00007f95ee8a4298
-    @title=#<RelatonBib::FormattedString:0x00007f95ee8a41a8 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
-    @type="title-main">,
-   #<RelatonBib::TypedTitleString:0x00007f95ee8a4040
-    @title=#<RelatonBib::FormattedString:0x00007f962f03bf70 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
-    @type="main">,
-   #<RelatonBib::TypedTitleString:0x00007f962f030620
-    @title=#<RelatonBib::FormattedString:0x00007f962f030580 @content="Information géographique", @format="text/plain", @language=["fr"], @script=["Latn"]>,
-    @type=nil>]>
+=> [#<RelatonBib::FormattedString:0x00007fea82236828
+  @content="<p>ISO 19115-1:2014 defines the schema required for ...</p>",
+  @format="text/html",
+  @language=["en"],
+  @script=["Latn"]>,
+ #<RelatonBib::FormattedString:0x00007fea82236670
+  @content="L'ISO 19115-1:2014 définit le schéma requis pour ...",
+  @format="text/plain",
+  @language=["fr"],
+  @script=["Latn"]>]
 
 item.abstract(lang: "en").to_s
-=> "ISO 19115-1:2014 defines the schema required for ..."
+=> "<p>ISO 19115-1:2014 defines the schema required for ...</p>"
 ----
 
 === BibliographicItem references
@@ -87,7 +98,7 @@ item.abstract(lang: "en").to_s
 [source,ruby]
 ----
 item.shortref item.docidentifier.first
-=> "TC211:2014"
+=> "ISOTC211:2014"
 ----
 
 === XML serialization
@@ -95,10 +106,11 @@ item.shortref item.docidentifier.first
 [source,ruby]
 ----
 item.to_xml
-=> "<bibitem id="ISO/TC211" type="standard">
-      <fetched>2019-04-30</fetched>
-      <title type="main" language="en" script="Latn">Geographic information</title>
-      <title language="fr" script="Latn">Information géographique</title>
+=> "<bibitem id="ISOTC211" type="standard" schema-version="v1.2.1">
+      <fetched>2022-05-02</fetched>
+      <title type="title-main" format="text/plain">Geographic information</title>
+      <title type="main" format="text/plain">Geographic information</title>
+      <title format="text/plain" language="fr" script="Latn">Information géographique</title>
       ...
     </bibitem>"
 ----
@@ -108,10 +120,15 @@ The default root element is `bibitem`. With argument `bibdata: true` the XML wra
 [source,ruby]
 ----
 item.to_xml bibdata: true
-=> "<bibdata type="standard">
-      <fetched>2019-04-30</fetched>
-      <title type="main" language="en" script="Latn">Geographic information</title>
+=> "<bibdata type="standard" schema-version="v1.2.1">
+      <fetched>2022-05-02</fetched>
+      <title type="title-main" format="text/plain">Geographic information</title>
       ...
+        <ext>
+          <doctype>document</doctype>
+          <subdoctype>subdocument</subdoctype>
+          ...
+        </ext>
     </bibdata>"
 ----
 
@@ -122,9 +139,9 @@ By default date elements are formatted as a year (yyyy). Option `:date_format` a
 [source,ruby]
 ----
 item.to_xml date_format: :short
-=> "<bibitem id="ISO/TC211" type="standard">
-      <fetched>2019-04-30</fetched>
-      <title type="main" language="en" script="Latn">Geographic information</title>
+=> "<bibitem id="ISOTC211" type="standard" schema-version="v1.2.1">
+      <fetched>2022-05-02</fetched>
+      <title type="title-main" format="text/plain">Geographic information</title>
       ...
       <date type="issued">
         <on>2014-01</on>
@@ -139,7 +156,7 @@ item.to_xml date_format: :short
     </bibitem>"
 
 item.to_xml date_format: :full
-=> "<bibitem id="ISO/TC211" type="standard">
+=> "<bibitem id="ISOTC211" type="standard" schema-version="v1.2.1">
       ...
       <date type="issued">
         <on>2014-01-01</on>
@@ -159,11 +176,11 @@ item.to_xml date_format: :full
 [source,ruby]
 ----
 item.to_xml note: [{ text: "Note", type: "note" }]
-=>"<bibitem id="ISO19115-1-2014">
-  ...
-  <note format="text/plain" type="note">Note</note>
-  ...
-</bibitem>"
+=> "<bibitem id="ISOTC211" type="standard" schema-version="v1.2.1">
+      ...
+      <note format="text/plain" type="note">Note</note>
+      ...
+    </bibitem>"
 ----
 
 === Create bibliographic item form YAML
@@ -171,7 +188,7 @@ item.to_xml note: [{ text: "Note", type: "note" }]
 [source,ruby]
 ----
 hash = YAML.load_file 'spec/examples/bib_item.yml'
-=> {"id"=>"ISO/TC211",
+=> {"id"=>"ISOTC211"
 ...
 
 RelatonBib::BibliographicItem.from_hash hash
@@ -196,11 +213,13 @@ RelatonBib::BibXMLParser.parse bibxml
 [source,ruby]
 ----
 item.to_hash
-=> {"id"=>"ISOTC211",
- "title"=>
-  [{"type"=>"main", "content"=>"Geographic information", "language"=>"en", "script"=>"Latn", "format"=>"text/plain"},
-   {"content"=>"Information géographique", "language"=>"fr", "script"=>"Latn", "format"=>"text/plain"}],
-  ...
+=> {"schema-version"=>"v1.2.1",
+    "id"=>"ISOTC211",
+    "title"=>
+      [{"content"=>"Geographic information", "format"=>"text/plain", "type"=>"title-main"},
+      {"content"=>"Geographic information", "format"=>"text/plain", "type"=>"main"},
+      {"content"=>"Information géographique", "language"=>["fr"], "script"=>["Latn"], "format"=>"text/plain"}],
+      ...
 ----
 
 === Create bibliographic item from BibTeX
@@ -218,11 +237,11 @@ RelatonBib::BibtexParser.from_bibtex File.read('spec/examples/techreport.bib')
 [source,ruby]
 ----
 item.to_bibtex
-@misc{ISOTC211,
-  tile = {Geographic information},
-  edition = {1},
-  author = {Bierman, A. and Bierman, Forename},
-  ...
+=> @misc{ISOTC211,
+    title = {Geographic information},
+    edition = {Edition 1},
+    author = {Bierman, A. and Bierman, Arnold and Bierman, Arnold B},
+    ...
 ----
 
 === Export bibliographic item to Citeproc
@@ -231,11 +250,11 @@ item.to_bibtex
 ----
 item.to_citeproc
 => [{"title"=>"Geographic information",
-  "edition"=>"1",
-  "author"=>[{"family"=>"Bierman", "given"=>"A."}, {"family"=>"Bierman", "given"=>"Forename"}],
-  "publisher"=>"Institute of Electrical and Electronics Engineers",
-  "publisher-place"=>"bib place",
-  ...
+     "edition"=>"Edition 1",
+     "author"=>[{"family"=>"Bierman", "given"=>"A."}, {"family"=>"Bierman", "given"=>"Arnold"}, {"family"=>"Bierman", "given"=>"Arnold B"}],
+     "publisher"=>"Institute of Electrical and Electronics Engineers",
+     "publisher-place"=>"bib place",
+     ...
 ----
 
 === Exporting bibliographic item to AsciiBib
@@ -243,15 +262,15 @@ item.to_citeproc
 [source,ruby]
 ----
 item.to_asciibib
-[%bibitem]
-== {blank}
-id:: ISOTC211
-fetched:: 2020-08-19
-title::
-title.type:: title-main
-title.content:: Geographic information
-title.format:: text/plain
-...
+=> [%bibitem]
+   == {blank}
+   id:: ISOTC211
+   fetched:: 2022-05-02
+   title::
+   title.type:: title-main
+   title.content:: Geographic information
+   title.format:: text/plain
+   ...
 ----
 
 === Export bibliographic item to BibXML (RFC)
@@ -259,58 +278,19 @@ title.format:: text/plain
 [source,ruby]
 ----
 item.to_bibxml
-<reference anchor="ISO.TC.211" target="https://www.iso.org/standard/53798.html">
-  <front>
-    <title>Geographic information</title>
-    <author>
-      <organization abbrev="ISO">International Organization for Standardization</organization>
-    </author>
-    <author fullname="A. Bierman">
-      <organization abbrev="IETF">IETF</organization>
-      <address>
-        <postal>
-          <city>City</city>
-          <code>123456</code>
-          <country>Country</country>
-          <region>State</region>
-          <street>Street</street>
-        </postal>
-        <phone>223322</phone>
-      </address>
-    </author>
-    <author role="editor">
-      <organization abbrev="IEEE">IEEE</organization>
-    </author>
-    <author fullname="Forename Bierman" initials="A." surname="Bierman">
-      <organization abbrev="IETF">IETF</organization>
-      <address>
-        <postal>
-          <city>City</city>
-          <code>123456</code>
-          <country>Country</country>
-          <region>State</region>
-          <street>Street</street>
-        </postal>
-        <phone>223322</phone>
-      </address>
-    </author>
-    <author>
-      <organization>W3C</organization>
-    </author>
-    <date year="2014" month="April"/>
-    <workgroup>Editorial group</workgroup>
-    <abstract>
-      <t>ISO 19115-1:2014 defines the schema required for ...</t>
-    </abstract>
-  </front>
-  <seriesInfo name="DOI" value="10.17487/rfc1149"/>
-  <seriesInfo name="Internet-Draft" value="draft-ietf-somewg-someprotocol-07"/>
-  <seriesInfo name="ISO/IEC FDIS 10118-3" value="serie1234"/>
-  <seriesInfo name="Formattedref"/>
-  <seriesInfo name="Journal" value="7"/>
-  <seriesInfo name="Series"/>
-  <seriesInfo name="RFC" value="4"/>
-</reference>
+=> "<reference anchor="ISO.TC.211" target="https://www.iso.org/standard/53798.html">
+      <front>
+        <title>Geographic information</title>
+        <author>
+          <organization abbrev="ISO">International Organization for Standardization</organization>
+        </author>
+        ..
+      </front>
+      <seriesInfo name="DOI" value="10.17487/rfc1149"/>
+      <seriesInfo name="Internet-Draft" value="draft-ietf-somewg-someprotocol-07"/>
+      <seriesInfo name="ISO/IEC FDIS 10118-3" value="serie1234"/>
+      ...
+    </reference>"
 ----
 
 == Development

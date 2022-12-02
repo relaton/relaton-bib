@@ -24,7 +24,11 @@ module RelatonBib
       @fetched = false
     end
 
-    # @return [RelatonIso::HitCollection]
+    #
+    # Fetches hits from the data source
+    #
+    # @return [self] self object
+    #
     def fetch
       workers = WorkersPool.new 4
       workers.worker(&:fetch)
@@ -37,23 +41,35 @@ module RelatonBib
       self
     end
 
-    # @param opts [Hash]
+    #
+    # Renders the collection as XML
+    #
+    # @param opts [Hash] options
     # @option opts [Nokogiri::XML::Builder] :builder XML builder
-    # @option opts [Boolean] :bibdata
+    # @option opts [Boolean] :bibdata render bibdata if true
     # @option opts [String, Symbol] :lang language
-    # @return [String] XML
+    #
+    # @return [String] XML representation of the collection
+    #
     def to_xml(**opts)
       builder = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
         xml.documents do
           @array.each do |hit|
             hit.fetch
-            hit.to_xml **opts.merge(builder: xml)
+            hit.to_xml(**opts.merge(builder: xml))
           end
         end
       end
       builder.to_xml
     end
 
+    #
+    # Selects matching hits and returns a new collection
+    #
+    # @param [Proc] &block proc to select hits
+    #
+    # @return [RelatonBib::HitCollection] new hit collection
+    #
     def select(&block)
       me = deep_dup
       array_dup = instance_variable_get(:@array).deep_dup
@@ -67,11 +83,20 @@ module RelatonBib
       self
     end
 
+    #
+    # Returns String representation of the collection
+    #
+    # @return [String] String representation of the collection
+    #
     def to_s
       inspect
     end
 
-    # @return [String]
+    #
+    # Returns String representation of the collection
+    #
+    # @return [String] String representation of the collection
+    #
     def inspect
       "<#{self.class}:#{format('%#.14x', object_id << 1)} @ref=#{@text} @fetched=#{@fetched}>"
     end
