@@ -3,6 +3,12 @@ RSpec.describe RelatonBib do
     expect(RelatonBib::VERSION).not_to be nil
   end
 
+  it "returns grammar hash" do
+    hash = RelatonBib.grammar_hash
+    expect(hash).to be_instance_of String
+    expect(hash.size).to eq 32
+  end
+
   context "parse date" do
     it "February 2012" do
       expect(RelatonBib.parse_date("February 2012")).to eq "2012-02"
