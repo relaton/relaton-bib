@@ -7,12 +7,12 @@ module RelatonBib
     # @return [String]
     attr_reader :reference_from
 
-    # @return [String, NilClass]
+    # @return [String, nil]
     attr_reader :reference_to
 
     # @param type [String]
     # @param referenceFrom [String]
-    # @param referenceTo [String, NilClass]
+    # @param referenceTo [String, nil]
     def initialize(type, reference_from, reference_to = nil)
       type_ptrn = %r{section|clause|part|paragraph|chapter|page|title|line|
         whole|table|annex|figure|note|list|example|volume|issue|time|anchor|

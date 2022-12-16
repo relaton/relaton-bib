@@ -238,6 +238,8 @@ module RelatonBib
     # @return [RelatonBib::Organization, nil]
     def organization(contrib)
       org = contrib.at("./organization")
+      return unless org
+
       orgname = org.text.strip
       return if orgname.empty?
 
