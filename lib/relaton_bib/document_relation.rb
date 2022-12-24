@@ -12,7 +12,7 @@ module RelatonBib
       draftOf hasDraft editionOf hasEdition updates updatedBy derivedFrom
       derives describes describedBy catalogues cataloguedBy hasSuccessor
       successorOf adaptedFrom hasAdaptation adoptedFrom adoptedAs reviewOf
-      hasReview commentaryOf hasCommentary related complements complementOf
+      hasReview commentaryOf hasCommentary related hasComplement complementOf
       obsoletes obsoletedBy cites isCitedIn
     ].freeze
 
