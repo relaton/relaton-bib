@@ -53,7 +53,7 @@ module RelatonBib
       str ? date.strftime(outformat || format) : date
     end
 
-    # @param arr [NilClass, Array, #is_a?]
+    # @param arr [nil, Array, #is_a?]
     # @return [Array]
     def array(arr)
       return [] unless arr

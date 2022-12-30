@@ -120,7 +120,7 @@ module RelatonBib
   class Affiliation
     include RelatonBib
 
-    # @return [RelatonBib::LocalizedString, NilClass]
+    # @return [RelatonBib::LocalizedString, nil]
     attr_reader :name
 
     # @return [Array<RelatonBib::FormattedString>]
@@ -130,7 +130,7 @@ module RelatonBib
     attr_reader :organization
 
     # @param organization [RelatonBib::Organization]
-    # @param name [RelatonBib::LocalizedString, NilClass]
+    # @param name [RelatonBib::LocalizedString, nil]
     # @param description [Array<RelatonBib::FormattedString>]
     def initialize(organization:, name: nil, description: [])
       @name = name
@@ -186,7 +186,7 @@ module RelatonBib
     # @return [Array<RelatonBib::Address, RelatonBib::Contact>]
     attr_reader :contact
 
-    # @param url [String, NilClass]
+    # @param url [String, nil]
     # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
     def initialize(url: nil, contact: [])
       @uri = URI url if url

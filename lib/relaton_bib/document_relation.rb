@@ -19,7 +19,7 @@ module RelatonBib
     # @return [String]
     attr_accessor :type
 
-    # @return [RelatonBib::FormattedString, NilClass]
+    # @return [RelatonBib::FormattedString, nil]
     attr_reader :description
 
     # @return [String]
@@ -36,7 +36,7 @@ module RelatonBib
     attr_reader :source_locality
 
     # @param type [String]
-    # @param description [RelatonBib::FormattedString, NilClass]
+    # @param description [RelatonBib::FormattedString, nil]
     # @param bibitem [RelatonBib::BibliographicItem,
     #   RelatonIso::IsoBibliographicItem]
     # @param locality [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]

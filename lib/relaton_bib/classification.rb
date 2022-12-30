@@ -1,12 +1,12 @@
 module RelatonBib
   class Classification
-    # @return [String, NilClass]
+    # @return [String, nil]
     attr_reader :type
 
     # @return [String]
     attr_reader :value
 
-    # @param type [String, NilClass]
+    # @param type [String, nil]
     # @param value [String]
     def initialize(type: nil, value:)
       @type  = type

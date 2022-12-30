@@ -76,7 +76,7 @@ module RelatonBib
     # @param affiliation [Array<RelatonBib::Affiliation>]
     # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
     # @param identifier [Array<RelatonBib::PersonIdentifier>]
-    # @param url [String, NilClass]
+    # @param url [String, nil]
     def initialize(name:, affiliation: [], contact: [], identifier: [],
                    url: nil)
       super(contact: contact, url: url)

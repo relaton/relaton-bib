@@ -149,7 +149,7 @@ module RelatonBib
     # @param version [Array<RelatonBib::BibliographicItem::Version>]
     # @param biblionote [RelatonBib::BiblioNoteCollection]
     # @param series [Array<RelatonBib::Series>]
-    # @param medium [RelatonBib::Medium, NilClas]
+    # @param medium [RelatonBib::Medium, nil]
     # @param place [Array<String, RelatonBib::Place>]
     # @param extent [Array<Relaton::Locality, RelatonBib::LocalityStack>]
     # @param accesslocation [Array<String>]

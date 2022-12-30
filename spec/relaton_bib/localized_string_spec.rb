@@ -33,5 +33,15 @@ RSpec.describe RelatonBib::LocalizedString do
         </localized_string>
       XML
     end
+
+    it "don't escape HTML entities" do
+      ls = described_class.new "Content &amp;", "en", "Latn"
+      xml = Nokogiri::XML::Builder.new do |b|
+        b.localized_string { ls.to_xml(b) }
+      end
+      expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
+        <localized_string language="en" script="Latn">Content &amp;</localized_string>
+      XML
+    end
   end
 end

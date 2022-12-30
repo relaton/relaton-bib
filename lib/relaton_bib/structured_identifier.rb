@@ -64,7 +64,7 @@ module RelatonBib
     # @return [Array<String>]
     attr_reader :agency
 
-    # @return [String, NilClass]
+    # @return [String, nil]
     attr_reader :type, :klass, :partnumber, :edition, :version, :supplementtype,
                 :supplementnumber, :language, :year
 

@@ -13,8 +13,8 @@ module RelatonBib
     attr_reader :format
 
     # @param content [String, Array<RelatonBib::LocalizedString>]
-    # @param language [String, NilClass] language code Iso639
-    # @param script [String, NilClass] script code Iso15924
+    # @param language [String, nil] language code Iso639
+    # @param script [String, nil] script code Iso15924
     # @param format [String] the content type
     def initialize(content:, language: nil, script: nil, format: "text/plain")
       # if format && !FORMATS.include?(format)

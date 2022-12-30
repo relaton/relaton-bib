@@ -27,14 +27,14 @@ module RelatonBib
   end
 
   class BiblioNote < FormattedString
-    # @return [String, NilClass]
+    # @return [String, nil]
     attr_reader :type
 
     # @param content [String]
-    # @param type [String, NilClass]
-    # @param language [String, NilClass] language code Iso639
-    # @param script [String, NilClass] script code Iso15924
-    # @param format [String, NilClass] the content format
+    # @param type [String, nil]
+    # @param language [String, nil] language code Iso639
+    # @param script [String, nil] script code Iso15924
+    # @param format [String, nil] the content format
     def initialize(content:, type: nil, language: nil, script: nil, format: nil)
       @type = type
       super content: content, language: language, script: script, format: format

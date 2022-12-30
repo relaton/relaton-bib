@@ -89,7 +89,8 @@ module RelatonBib
     def escp(str)
       return unless str
 
-      HTMLEntities.new.encode str.dup.force_encoding("UTF-8")
+      coder = HTMLEntities.new
+      coder.encode coder.decode(str.dup.force_encoding("UTF-8"))
     end
 
     # @return [Hash, Array<Hash>]

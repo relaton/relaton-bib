@@ -2,18 +2,18 @@ module RelatonBib
   class Validity
     FORMAT = "%Y-%m-%d %H:%M".freeze
 
-    # @return [Time, NilClass]
+    # @return [Time, nil]
     attr_reader :begins
 
-    # @return [Time, NilClass]
+    # @return [Time, nil]
     attr_reader :ends
 
-    # @return [Time, NilClass]
+    # @return [Time, nil]
     attr_reader :revision
 
-    # @param begins [Time, NilClass]
-    # @param ends [Time, NilClass]
-    # @param revision [Time, NilClass]
+    # @param begins [Time, nil]
+    # @param ends [Time, nil]
+    # @param revision [Time, nil]
     def initialize(begins: nil, ends: nil, revision: nil)
       @begins   = begins
       @ends     = ends

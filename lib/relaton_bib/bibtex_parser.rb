@@ -44,7 +44,7 @@ module RelatonBib
       end
 
       # @param bibtex [BibTeX::Entry]
-      # @return [String, NilClass]
+      # @return [String, nil]
       def fetch_fetched(bibtex)
         Date.parse(bibtex.timestamp.to_s) if bibtex["timestamp"]
       end
@@ -225,7 +225,7 @@ module RelatonBib
       end
 
       # @param bibtex [BibTeX::Entry]
-      # @return [RelatonBib::Classification, NilClass]
+      # @return [RelatonBib::Classification, nil]
       def fetch_classification(bibtex)
         cls = []
         cls << Classification.new(type: "type", value: bibtex["type"].to_s) if bibtex["type"]

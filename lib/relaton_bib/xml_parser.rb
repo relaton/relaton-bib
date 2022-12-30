@@ -566,7 +566,7 @@ module RelatonBib
       end
 
       # @param rel [Nokogiri::XML::Element]
-      # @return [RelatonBib::FormattedString, NilClass]
+      # @return [RelatonBib::FormattedString, nil]
       def relation_description(rel)
         d = rel.at "./description"
         return unless d
@@ -635,7 +635,7 @@ module RelatonBib
       end
 
       # @param item [Nokogiri::XML::Element]
-      # @return [RelatonBib::FormattedRef, NilClass]
+      # @return [RelatonBib::FormattedRef, nil]
       def fref(item)
         ident = item&.at("./formattedref")
         return unless ident
