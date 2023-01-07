@@ -134,9 +134,9 @@
   <language>fr</language>
   <script>Latn</script>
   <abstract format="text/html" language="en" script="Latn">
-    <p>ISO 19115-1:2014 defines the schema required for ...</p>
+    <p>ISO 19115-1:2014 defines the schema required for...</p>
   </abstract>
-  <abstract format="text/plain" language="fr" script="Latn">L'ISO 19115-1:2014 définit le schéma requis pour ...</abstract>
+  <abstract format="text/plain" language="fr" script="Latn">L'ISO 19115-1:2014 définit le schéma requis pour...</abstract>
   <status>
     <stage abbreviation="CD">30</stage>
     <substage>substage</substage>

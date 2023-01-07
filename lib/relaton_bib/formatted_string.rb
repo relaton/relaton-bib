@@ -119,10 +119,11 @@ module RelatonBib
     def cleanup(str)
       return str unless format == "text/html"
 
-      str.gsub(/<i>/, "<em>").gsub(/<\/i>/, "</em>")
+      str.gsub(/(?<=<)\w+:(?=\w+>)/, "").gsub(/(?<=<\/)\w+:(?=\w+>)/, "")
+        .gsub(/<i>/, "<em>").gsub(/<\/i>/, "</em>")
         .gsub(/<b>/, "<strong>").gsub(/<\/b>/, "</strong>")
-        .gsub(/<(?!\/?(em|strong|stem|sup|sub|tt|br\s?\/|p))[^\s!]\/?.*?>/, "")
-        # .gsub(/<\w+\s.+?>/, "")
+        .gsub(/<(?!\/?(em|strong|stem|sup|sub|tt|br\s?\/|p))[^\s!]\/?.*?>/, " ")
+        .gsub(/\s+([.,:;!?<])/, "\\1").strip
     end
   end
 end

@@ -14,7 +14,7 @@ describe RelatonBib::FormattedString do
         end
         expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
           <formatted_string format="text/html" language="en" script="Latn">
-            prefix <p>content <p>&lt; &amp; &gt; characters</p> to escape</p><p>Text &#xB1; 10-4 K</p> suffix
+            prefix<p>content<p>&lt; &amp; &gt; characters</p>to escape</p><p>Text &#xB1; 10-4 K</p> suffix
           </formatted_string>
         XML
       end
@@ -93,11 +93,13 @@ describe RelatonBib::FormattedString do
     it "cleanup" do
       fs = described_class.new content: <<~XML, format: "text/html"
         <i>Italic</i> <b>Bold</b> <u>Underline</u> <sup>Superscript</sup> <sub>Subscript</sub><br/>
-        <p>Paragraph</p><tt>Monospace</tt><a href="http://example.com">Link</a>
+        <jats:p>Paragraph</jats:p><tt>Monospace</tt><a href="http://example.com">Link</a>
+        <italic>Italic</italic>.
       XML
       expect(fs.content).to be_equivalent_to <<~XML
         <em>Italic</em> <strong>Bold</strong> Underline <sup>Superscript</sup> <sub>Subscript</sub><br/>
         <p>Paragraph</p><tt>Monospace</tt>Link
+        Italic.
       XML
     end
   end
