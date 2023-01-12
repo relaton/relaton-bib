@@ -173,7 +173,7 @@ contributor:
         script:
         - Latn
   role:
-  - type: author
+  - type: editor
 - organization:
     name:
     - content: World Wide Web Consortium

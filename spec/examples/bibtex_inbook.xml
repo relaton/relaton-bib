@@ -1,0 +1,72 @@
+<bibitem id="DOC123" type="inbook">
+  <title format="text/plain">Title</title>
+  <date type="published">
+    <on>2019</on>
+  </date>
+  <contributor>
+    <person>
+      <name>
+        <completename>John Doe</completename>
+      </name>
+    </person>
+    <role type="author"/>
+  </contributor>
+  <contributor>
+    <person>
+      <name>
+        <forename>Mike</forename>
+        <surname>Brown</surname>
+      </name>
+    </person>
+    <role type="author"/>
+  </contributor>
+  <contributor>
+    <person>
+      <name>
+        <forename>Mark</forename>
+        <surname>Reed</surname>
+      </name>
+    </person>
+    <role type="editor"/>
+  </contributor>
+  <contributor>
+    <person>
+      <name>
+        <completename>Megan Rous</completename>
+      </name>
+    </person>
+    <role type="editor"/>
+  </contributor>
+  <contributor>
+    <role type="publisher"/>
+    <organization>
+      <name>Publisher</name>
+    </organization>
+  </contributor>
+  <edition number="1.2">2</edition>
+  <relation type="includedIn">
+    <bibitem>
+      <title>Book Title</title>
+    </bibitem>
+  </relation>
+  <series>
+    <title format="text/plain">Series</title>
+  </series>
+  <place>
+    <city>New York</city>
+    <region>NY</region>
+    <country iso="US" recommended="true">USA</country>
+  </place>
+  <extent>
+    <locality type="volume">
+      <referenceFrom>1</referenceFrom>
+    </locality>
+    <locality type="chapter">
+      <referenceFrom>2</referenceFrom>
+    </locality>
+    <locality type="page">
+      <referenceFrom>3</referenceFrom>
+      <referenceTo>4</referenceTo>
+    </locality>
+  </extent>
+</bibitem>

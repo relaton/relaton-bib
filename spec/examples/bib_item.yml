@@ -176,6 +176,8 @@ contributor:
           content: Bierman
           language: en
           script: Latn
+    role:
+      type: editor
 
   - organization:
       name: World Wide Web Consortium

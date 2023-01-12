@@ -1,5 +1,5 @@
 <bibdata type="standard" schema-version="v1.2.1">
-  <fetched>2022-11-25</fetched>
+  <fetched>2023-01-08</fetched>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
   <uri type="src" language="en" script="Latn">https://www.iso.org/standard/53798.html</uri>
   <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
@@ -100,7 +100,7 @@
     </person>
   </contributor>
   <contributor>
-    <role type="author"/>
+    <role type="editor"/>
     <person>
       <name>
         <forename language="en" script="Latn" initial="A">Arnold</forename>

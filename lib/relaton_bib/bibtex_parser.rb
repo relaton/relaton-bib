@@ -2,6 +2,7 @@ require "bibtex"
 require "iso639"
 
 module RelatonBib
+  # @todo: move this class to the RelatonBib::Bibtex module
   class BibtexParser
     class << self
       # @param bibtex [String]

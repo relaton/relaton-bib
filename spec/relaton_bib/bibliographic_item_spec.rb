@@ -117,7 +117,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         xml = File.read(file, encoding: "utf-8")
           .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
         expect(subject_xml).to be_equivalent_to xml
-        schema = Jing.new "spec/examples/isobib.rng"
+        schema = Jing.new "grammars/biblio-compile.rng"
         errors = schema.validate file
         expect(errors).to eq []
       end

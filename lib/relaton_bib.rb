@@ -11,6 +11,7 @@ require "relaton_bib/bibliographic_item"
 require "relaton_bib/hit_collection"
 require "relaton_bib/hit"
 require "relaton_bib/bibxml_parser"
+require "relaton_bib/renderer/bibtex_builder"
 
 module RelatonBib
   class Error < StandardError; end

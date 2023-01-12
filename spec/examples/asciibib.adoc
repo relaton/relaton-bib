@@ -221,7 +221,7 @@ contributor.person.given.formatted-initials.script:: Latn
 contributor.person.name.surname.content:: Bierman
 contributor.person.name.surname.language:: en
 contributor.person.name.surname.script:: Latn
-contributor.role.type:: author
+contributor.role.type:: editor
 contributor::
 contributor.organization.name:: World Wide Web Consortium
 contributor.role.description:: sponsor

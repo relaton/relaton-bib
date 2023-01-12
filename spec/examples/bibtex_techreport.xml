@@ -1,0 +1,36 @@
+<bibitem id="DOC123" type="techreport">
+  <title format="text/plain">Title</title>
+  <docidentifier type="DOC" primary="true">123</docidentifier>
+  <date type="published">
+    <on>2019</on>
+  </date>
+  <contributor>
+    <role type="author"/>
+    <person>
+      <name>
+        <completename>John Doe</completename>
+      </name>
+    </person>
+  </contributor>
+  <contributor>
+    <role type="author"/>
+    <person>
+      <name>
+        <forename>Mike</forename>
+        <surname>Brown</surname>
+      </name>
+    </person>
+  </contributor>
+  <contributor>
+    <role type="distributor"/>
+    <organization>
+      <name>Distributor</name>
+    </organization>
+  </contributor>
+  <edition>2</edition>
+  <place>
+    <city>New York</city>
+    <region>NY</region>
+    <country iso="US" recommended="true">USA</country>
+  </place>
+</bibitem>

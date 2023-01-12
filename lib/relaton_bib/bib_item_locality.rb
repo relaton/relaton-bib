@@ -62,9 +62,10 @@ module RelatonBib
       when "chapter" then item.chapter = reference_from
       when "page"
         value = reference_from
-        value += "-#{reference_to}" if reference_to
+        value += "--#{reference_to}" if reference_to
         item.pages = value
       when "volume" then item.volume = reference_from
+      when "issue" then item.number = reference_from
       end
     end
   end

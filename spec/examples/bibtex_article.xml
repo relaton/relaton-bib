@@ -1,0 +1,40 @@
+<bibitem id="DOC123" type="article">
+  <title format="text/plain">Miscellaneous</title>
+  <contributor>
+    <person>
+      <name>
+        <completename>John Doe</completename>
+      </name>
+    </person>
+    <role type="author"/>
+  </contributor>
+  <contributor>
+    <person>
+      <name>
+        <forename>Mike</forename>
+        <surname>Brown</surname>
+      </name>
+    </person>
+    <role type="author"/>
+  </contributor>
+  <series type="journal">
+    <title format="text/plain">Journal of Miscellaneous</title>
+  </series>
+  <date type="published">
+    <on>2019</on>
+  </date>
+  <extent>
+    <locality type="volume">
+      <referenceFrom>1</referenceFrom>
+    </locality>
+    <locality type="issue">
+      <referenceFrom>2</referenceFrom>
+    </locality>
+  </extent>
+  <extent>
+    <locality type="page">
+      <referenceFrom>3</referenceFrom>
+      <referenceTo>4</referenceTo>
+    </locality>
+  </extent>
+</bibitem>
