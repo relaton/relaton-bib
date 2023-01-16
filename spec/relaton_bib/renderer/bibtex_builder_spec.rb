@@ -3,7 +3,7 @@ describe RelatonBib::Renderer::BibtexBuilder do
     subject { RelatonBib::Renderer::BibtexBuilder.new bibitem }
     context "add_link" do
       let(:bibitem) { RelatonBib::BibliographicItem.new link: ["http://example.com"] }
-      it "ignore lins without type" do
+      it "ignore links without type" do
         item = double "item"
         expect(item).not_to receive :doi=
         expect(item).not_to receive :url=

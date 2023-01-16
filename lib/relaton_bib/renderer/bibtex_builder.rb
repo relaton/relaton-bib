@@ -1,3 +1,20 @@
+# Monkey patch to fix the issue with month quotes in BibTeX
+module BibTeX
+  class Value
+    def to_s(options = {})
+      if options.key?(:filter)
+        opts = options.reject { |k,| k == :filter || (k == :quotes && (!atomic? || symbol?)) }
+        return convert(options[:filter]).to_s(opts)
+      end
+
+      return value.to_s unless options.key?(:quotes) && atomic?
+
+      q = Array(options[:quotes])
+      [q[0], value, q[-1]].compact.join
+    end
+  end
+end
+
 module RelatonBib
   # BibTeX builder.
   module Renderer
