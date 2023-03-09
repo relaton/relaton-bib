@@ -1,6 +1,6 @@
 module RelatonBib
   class Forename < LocalizedString
-    # @return [RelatonBib::Forename] forename
+    # @return [String, nil]
     attr_accessor :initial
 
     #

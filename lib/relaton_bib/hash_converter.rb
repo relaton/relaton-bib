@@ -282,7 +282,7 @@ module RelatonBib
         return [] unless person[:affiliation]
 
         RelatonBib.array(person[:affiliation]).map do |a|
-          a[:description] = RelatonBib.array(a[:description])&.map do |d|
+          a[:description] = RelatonBib.array(a[:description]).map do |d|
             cnt = if d.is_a?(Hash)
                     { content: d[:content], language: d[:language],
                       script: d[:script], format: d[:format] }
@@ -323,7 +323,9 @@ module RelatonBib
         return unless ret[:copyright]
 
         ret[:copyright] = RelatonBib.array(ret[:copyright]).map do |c|
-          c[:owner] = RelatonBib.array(c[:owner])
+          c[:owner] = RelatonBib.array(c[:owner]).map do |o|
+            org_hash_to_bib(o)
+          end
           c
         end
       end

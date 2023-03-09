@@ -1,7 +1,7 @@
 # Monkey patch to fix the issue with month quotes in BibTeX
 module BibTeX
   class Value
-    def to_s(options = {})
+    def to_s(options = {}) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       if options.key?(:filter)
         opts = options.reject { |k,| k == :filter || (k == :quotes && (!atomic? || symbol?)) }
         return convert(options[:filter]).to_s(opts)

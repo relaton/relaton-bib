@@ -57,4 +57,23 @@ RSpec.describe RelatonBib::HashConverter do
     expect(address.first).to be_instance_of RelatonBib::Address
     expect(address.first.formatted_address).to eq "Address"
   end
+
+  it "create copyright" do
+    ret = {
+      copyright: {
+        owner: {
+          name: [{ content: "Owner Name" }], abbreviation: { content: "ABBR" },
+          contact: [{ uri: "http://example.com" }]
+        },
+        from: "2022",
+      },
+    }
+    copyright = described_class.copyright_hash_to_bib ret
+    expect(copyright).to be_instance_of Array
+    expect(copyright[0][:owner][0][:name][0][:content]).to eq "Owner Name"
+    expect(copyright[0][:owner][0][:abbreviation][:content]).to eq "ABBR"
+    expect(copyright[0][:owner][0][:contact][0]).to be_instance_of RelatonBib::Contact
+    expect(copyright[0][:owner][0][:contact][0].type).to eq "uri"
+    expect(copyright[0][:owner][0][:contact][0].value).to eq "http://example.com"
+  end
 end

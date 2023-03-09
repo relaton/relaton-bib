@@ -45,7 +45,7 @@ RSpec.describe RelatonBib do
     method = double "params"
     expect(method).to receive(:parameters).and_return [%i[req yaml]]
     expect(YAML).to receive(:method).with(:safe_load).and_return method
-    expect(YAML).to receive(:safe_load).with(kind_of(String), []).and_return({})
+    expect(YAML).to receive(:safe_load).with(kind_of(String), [], symbolize_names: false).and_return({})
     RelatonBib.parse_yaml "key: value"
   end
 
@@ -53,7 +53,9 @@ RSpec.describe RelatonBib do
     method = double "params"
     expect(method).to receive(:parameters).and_return [%i[req yaml permitted_classes]]
     expect(YAML).to receive(:method).with(:safe_load).and_return method
-    expect(YAML).to receive(:safe_load).with(kind_of(String), permitted_classes: []).and_return({})
+    expect(YAML).to receive(:safe_load)
+      .with(kind_of(String), permitted_classes: [], symbolize_names: false)
+      .and_return({})
     RelatonBib.parse_yaml "key: value"
   end
 end

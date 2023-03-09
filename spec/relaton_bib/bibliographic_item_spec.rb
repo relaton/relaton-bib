@@ -246,13 +246,6 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         expect(idxml).to be_equivalent_to File.read file, encoding: "UTF-8"
       end
 
-      it "upcase anchor for IANA" do
-        docid = RelatonBib::DocumentIdentifier.new id: "IANA dns-parameters", type: "IANA"
-        ref_attrs = RelatonBib::BibliographicItem.new(docid: [docid]).send :ref_attrs
-        expect(ref_attrs).to be_instance_of Hash
-        expect(ref_attrs[:anchor]).to eq "DNS-PARAMETERS"
-      end
-
       it "render keywords" do
         docid = RelatonBib::DocumentIdentifier.new type: "IETF", id: "ID"
         bibitem = RelatonBib::BibliographicItem.new keyword: ["kw"], docid: [docid]

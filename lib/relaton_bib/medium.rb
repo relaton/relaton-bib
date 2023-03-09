@@ -11,7 +11,7 @@ module RelatonBib
     # @param form [String, nil] form of the medium
     # @param carrier [String, nil] carrier of the medium
     # @param size [String, nil] size of the medium
-    # @param scale [String, nil] 
+    # @param scale [String, nil]
     #
     def initialize(**args)
       @content = args[:content]

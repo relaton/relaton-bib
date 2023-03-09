@@ -12,6 +12,7 @@ require "relaton_bib/hit_collection"
 require "relaton_bib/hit"
 require "relaton_bib/bibxml_parser"
 require "relaton_bib/renderer/bibtex_builder"
+require "relaton_bib/renderer/bibxml"
 
 module RelatonBib
   class Error < StandardError; end
@@ -67,15 +68,17 @@ module RelatonBib
     # Parse yaml content
     #
     # @param [String] yaml content
+    # @param [Array] classes classes to be allowed
+    # @param [Boolean] symbolize_names symbolize names if true (default: false)
     #
     # @return [Hash] data
     #
-    def parse_yaml(yaml, classes = [])
+    def parse_yaml(yaml, classes = [], symbolize_names: false)
       # Newer versions of Psych uses the `permitted_classes:` parameter
       if YAML.method(:safe_load).parameters.map(&:last).include? :permitted_classes
-        YAML.safe_load(yaml, permitted_classes: classes)
+        YAML.safe_load(yaml, permitted_classes: classes, symbolize_names: symbolize_names)
       else
-        YAML.safe_load(yaml, classes)
+        YAML.safe_load(yaml, classes, symbolize_names: symbolize_names)
       end
     end
   end

@@ -122,7 +122,7 @@ module RelatonBib
       str.gsub(/(?<=<)\w+:(?=\w+>)/, "").gsub(/(?<=<\/)\w+:(?=\w+>)/, "")
         .gsub(/<i>/, "<em>").gsub(/<\/i>/, "</em>")
         .gsub(/<b>/, "<strong>").gsub(/<\/b>/, "</strong>")
-        .gsub(/<(?!\/?(em|strong|stem|sup|sub|tt|br\s?\/|p))[^\s!]\/?.*?>/, " ")
+        .gsub(/<(?!\/?(em|strong|stem|sup|sub|tt|br\s?\/|p))[^\s!]\/?.*?>/, "")
         .gsub(/\s+([.,:;!?<])/, "\\1").strip
     end
   end

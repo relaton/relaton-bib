@@ -1,3 +1,5 @@
+require "weakref"
+
 module RelatonBib
   class Hit
     # @return [RelatonBib::HitCollection]
@@ -10,7 +12,7 @@ module RelatonBib
     # @param hit_collection [RelatonBib::HitCollection]
     def initialize(hit, hit_collection = nil)
       @hit            = hit
-      @hit_collection = hit_collection
+      @hit_collection = WeakRef.new hit_collection if hit_collection
     end
 
     # @return [String]
