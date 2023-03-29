@@ -1,11 +1,11 @@
 {
-"relaton-models": "v1.2.1",
-"basicdoc-models": "v1.0.1",
+"relaton-models": "v1.2.3",
+"basicdoc-models": "v1.0.2",
 "metanorma-requirements-models": "v1.0.0",
 "relaton-model-ieee": "v1.0.0",
 "relaton-model-iso": "v1.0.0",
 "relaton-model-iec": "v1.0.0",
-"relaton-model-bsi": "v1.0.0",
+"relaton-model-bsi": "v1.0.2",
 "relaton-model-gb": "v1.0.0",
 "relaton-model-mpfa": "v1.0.0",
 "relaton-model-bipm": "v1.0.0",
@@ -27,5 +27,6 @@
 "relaton-model-iana": "v1.0.0",
 "relaton-model-omg": "v1.0.0",
 "relaton-model-oasis": "v1.0.0",
-"date": "2022-12-01T15:03:50Z"
+"relaton-model-jis": "v0.0.1",
+"date": "2023-03-28T19:11:37Z"
 }

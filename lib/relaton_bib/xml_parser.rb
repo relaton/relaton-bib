@@ -363,7 +363,7 @@ module RelatonBib
       #
       # @param [Nokogiri::XML::Element] org XML element
       #
-      # @return [RelatonBib::Organization] organization
+      # @return [RelatonBib::Organization, nil] organization
       #
       def get_org(org) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         names = org.xpath("name").map do |n|
