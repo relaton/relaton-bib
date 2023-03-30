@@ -366,6 +366,8 @@ module RelatonBib
       # @return [RelatonBib::Organization, nil] organization
       #
       def get_org(org) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        return unless org
+
         names = org.xpath("name").map do |n|
           { content: n.text, language: n[:language], script: n[:script] }
         end
