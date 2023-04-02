@@ -1,0 +1,54 @@
+name: integration-tests
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+
+jobs:
+  tests:
+    name: Integration test ${{ matrix.repo }}
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: '${{ github.workflow }}-${{ github.job }}-${{ matrix.repo }}-${{ github.head_ref || github.ref_name }}'
+      cancel-in-progress: true
+
+    continue-on-error: true
+    strategy:
+      matrix:
+        repo: [ relaton-render ]
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.1'
+        bundler-cache: true
+
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        repository: relaton/${{ matrix.repo }}
+        path: ${{ matrix.repo }}
+        fetch-depth: 0
+
+    - if: github.event_name == 'pull_request'
+      run: |
+        if [ `git rev-parse --verify "${GITHUB_HEAD_REF}" 2>/dev/null` ]
+        then
+          git checkout "${GITHUB_HEAD_REF}"
+        fi
+      working-directory: ${{ matrix.repo }}
+
+    - run: |
+        gem_name=$(echo ${GITHUB_REPOSITORY} | cut -d "/" -f 2)
+        bundle remove ${gem_name} || true
+        bundle add ${gem_name} --path ..
+      working-directory: ${{ matrix.repo }}
+
+    - run: bundle exec rake
+      working-directory: ${{ matrix.repo }}
