@@ -28,17 +28,17 @@ module RelatonBib
     def remove_part
       case @type
       when "Chinese Standard" then @id.sub!(/\.\d+/, "")
-      when "ISO", "IEC", "BSI" then @id.sub!(/-[^:]+/, "")
       when "URN" then remove_urn_part
+      else @id.sub!(/-[^:]+/, "")
       end
     end
 
     def remove_date
       case @type
       when "Chinese Standard" then @id.sub!(/-[12]\d\d\d/, "")
-      when "ISO", "IEC", "BSI" then @id.sub!(/:[12]\d\d\d/, "")
       when "URN"
         @id.sub!(/^(urn:iec:std:[^:]+:[^:]+:)[^:]*/, '\1')
+      else @id.sub!(/:[12]\d\d\d/, "")
       end
     end
 
