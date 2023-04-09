@@ -75,6 +75,7 @@ module RelatonBib
       array_dup = instance_variable_get(:@array).deep_dup
       me.instance_variable_set(:@array, array_dup)
       array_dup.select!(&block)
+      array_dup.each { |h| h.hit_collection = WeakRef.new me }
       me
     end
 

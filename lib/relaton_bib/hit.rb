@@ -3,7 +3,7 @@ require "weakref"
 module RelatonBib
   class Hit
     # @return [RelatonBib::HitCollection]
-    attr_reader :hit_collection
+    attr_accessor :hit_collection
 
     # @return [Array<Hash>]
     attr_reader :hit
