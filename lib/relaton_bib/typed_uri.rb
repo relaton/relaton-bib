@@ -13,10 +13,10 @@ module RelatonBib
     # @param language [String, nil] language code Iso639 (optional) (default: nil)
     # @param script [String, nil] script code Iso15924 (optional) (default: nil)
     def initialize(content:, type: nil, language: nil, script: nil)
-      @type    = type
+      @type     = type
       @language = language
-      @script  = script
-      @content = Addressable::URI.parse content if content
+      @script   = script
+      @content  = Addressable::URI.parse content if content
     end
 
     # @param url [String]

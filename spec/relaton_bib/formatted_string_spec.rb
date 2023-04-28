@@ -92,7 +92,7 @@ describe RelatonBib::FormattedString do
 
     it "cleanup" do
       fs = described_class.new content: <<~XML, format: "text/html"
-        <i>Italic</i> <b>Bold</b> <u>Underline</u> <sup>Superscript</sup> <sub>Subscript</sub><br/>
+        <i>Italic</i> <b>Bold</b> <u>Underline</u>  <sup>Superscript</sup> <sub>Subscript</sub><br/>
         <jats:p>Paragraph</jats:p><tt>Monospace</tt><a href="http://example.com">Link</a>
         <italic>Italic</italic>.
       XML
