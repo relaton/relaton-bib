@@ -13,7 +13,7 @@
 "relaton-model-3gpp": "v1.0.1",
 "relaton-model-csa": "v1.0.0",
 "relaton-model-cc": "v1.0.0",
-"relaton-model-ietf": "v1.0.0",
+"relaton-model-ietf": "v1.0.1",
 "relaton-model-iho": "v1.0.0",
 "relaton-model-itu": "v1.0.0",
 "relaton-model-m3aawg": "v1.0.0",
@@ -28,5 +28,6 @@
 "relaton-model-omg": "v1.0.0",
 "relaton-model-oasis": "v1.0.0",
 "relaton-model-jis": "v0.0.1",
-"date": "2023-03-28T19:11:37Z"
+"metanorma-model": "v1.2.2",
+"date": "2023-07-01T23:31:41Z"
 }

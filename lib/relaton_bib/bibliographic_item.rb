@@ -465,7 +465,7 @@ module RelatonBib
     end
 
     # @param type [Symbol] type of url, can be :src/:obp/:rss
-    # @return [String]
+    # @return [String, nil]
     def url(type = :src)
       @link.detect { |s| s.type == type.to_s }&.content&.to_s
     end

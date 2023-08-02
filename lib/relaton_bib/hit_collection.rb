@@ -5,7 +5,7 @@ module RelatonBib
     extend Forwardable
 
     def_delegators :@array, :<<, :[], :first, :empty?, :any?, :size, :each,
-                   :each_slice, :reduce
+                   :each_slice, :reduce, :map
 
     # @return [TrueClass, FalseClass]
     attr_reader :fetched
