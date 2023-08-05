@@ -1,4 +1,6 @@
 RSpec.describe RelatonBib::XMLParser do
+  before(:each) { RelatonBib.instance_variable_set :@configuration, nil }
+
   it "creates item from xml" do
     xml = File.read "spec/examples/bib_item.xml", encoding: "UTF-8"
     item = RelatonBib::XMLParser.from_xml xml

@@ -4,6 +4,8 @@ require "yaml"
 require "jing"
 
 RSpec.describe "RelatonBib" => :BibliographicItem do
+  before(:each) { RelatonBib.instance_variable_set :@configuration, nil }
+
   context "initialize" do
     it "with keyword Hash" do
       keyword = [{ content: "keyword", language: "en", script: "Latn" }]

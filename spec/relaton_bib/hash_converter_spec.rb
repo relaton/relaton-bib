@@ -1,4 +1,6 @@
 RSpec.describe RelatonBib::HashConverter do
+  before(:each) { RelatonBib.instance_variable_set :@configuration, nil }
+
   it "warn if bibitem missig" do
     expect do
       ret = { relation: [type: "updates"] }
