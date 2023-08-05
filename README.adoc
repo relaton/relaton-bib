@@ -27,13 +27,24 @@ Or install it yourself as:
 
 == Usage
 
-=== Create bibliographic item
+=== Configuration
+
+Configuration is optional. The available option is `logger` which is a `Logger` instance. By default, the logger is `Logger.new($stderr)` with `Logger::WARN` level. To change the logger level, use `RelatonBib.configure` block.
 
 [source,ruby]
 ----
 require 'relaton_bib'
 => true
 
+RelatonBib.configure do |config|
+  config.logger.level = Logger::DEBUG
+end
+----
+
+=== Create bibliographic item
+
+[source,ruby]
+----
 hash = YAML.load_file "spec/examples/bib_item.yml"
 => {"id"=>"ISOTC211",
 "fetched"=>"2022-05-02",

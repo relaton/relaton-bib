@@ -17,8 +17,9 @@ module RelatonBib
         if bibitem
           bib_item item_data(bibitem)
         else
-          warn "[relaton-bib] WARNING: can't find bibitem or bibdata element " \
-               "in the XML"
+          Util.warn "WARNING: can't find bibitem or bibdata element " \
+                    "in the XML"
+          nil
         end
       end
 
