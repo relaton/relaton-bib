@@ -430,7 +430,7 @@ module RelatonBib
       if structuredidentifier&.presence?
         hash["structuredidentifier"] = structuredidentifier.to_hash
       end
-      hash["ext"] = { "schema-version" => ext_schema } if !embedded && respond_to?(:ext_schema)
+      hash["ext"] = { "schema-version" => ext_schema } if !embedded && respond_to?(:ext_schema) && ext_schema
       hash
     end
 
@@ -645,7 +645,7 @@ module RelatonBib
             ics.each { |i| i.to_xml b }
             structuredidentifier&.to_xml b
           end
-          ext["schema-version"] = ext_schema if !opts[:embedded] && respond_to?(:ext_schema)
+          ext["schema-version"] = ext_schema if !opts[:embedded] && respond_to?(:ext_schema) && ext_schema
         end
       end
       xml[:id] = id if id && !opts[:bibdata] && !opts[:embedded]
