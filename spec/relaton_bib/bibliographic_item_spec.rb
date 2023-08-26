@@ -146,7 +146,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
       it "render ext schema-verson" do
         expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
-        expect(subject).to receive(:ext_schema).and_return("v1.0.0")
+        expect(subject).to receive(:ext_schema).and_return("v1.0.0").twice
         expect(subject.to_xml(bibdata: true)).to include "<ext schema-version=\"v1.0.0\">"
       end
     end
@@ -169,7 +169,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
       it "with ext schema-version" do
         expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
-        expect(subject).to receive(:ext_schema).and_return "v1.0.0"
+        expect(subject).to receive(:ext_schema).and_return("v1.0.0").twice
         hash = subject.to_hash
         expect(hash["ext"]).to eq "schema-version" => "v1.0.0"
       end
