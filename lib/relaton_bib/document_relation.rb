@@ -5,7 +5,7 @@ module RelatonBib
 
     TYPES = %w[
       includes includedIn hasPart partOf merges mergedInto splits splitInto
-      instance hasInstance exemplarOf hasExemplar manifestationOf
+      instanceOf hasInstance exemplarOf hasExemplar manifestationOf
       hasManifestation reproductionOf hasReproduction reprintOf hasReprint
       expressionOf hasExpression translatedFrom hasTranslation arrangementOf
       hasArrangement abridgementOf hasAbridgement annotationOf hasAnnotation

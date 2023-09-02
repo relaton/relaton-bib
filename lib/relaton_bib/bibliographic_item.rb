@@ -487,7 +487,7 @@ module RelatonBib
     def to_all_parts # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength,Metrics/PerceivedComplexity
       me = deep_clone
       me.disable_id_attribute
-      me.relation << DocumentRelation.new(type: "instance", bibitem: self)
+      me.relation << DocumentRelation.new(type: "instanceOf", bibitem: self)
       me.language.each do |l|
         me.title.delete_title_part!
         ttl = me.title.select do |t|
@@ -518,7 +518,7 @@ module RelatonBib
     def to_most_recent_reference
       me = deep_clone
       disable_id_attribute
-      me.relation << DocumentRelation.new(type: "instance", bibitem: self)
+      me.relation << DocumentRelation.new(type: "instanceOf", bibitem: self)
       me.abstract = []
       me.date = []
       me.docidentifier.each &:remove_date

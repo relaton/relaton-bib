@@ -72,7 +72,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       item = subject.to_all_parts
       expect(item).to_not be subject
       expect(item.all_parts).to be true
-      expect(item.relation.last.type).to eq "instance"
+      expect(item.relation.last.type).to eq "instanceOf"
       expect(item.title.detect { |t| t.type == "title-part" }).to be_nil
       expect(item.title.detect { |t| t.type == "main" }.title.content).to eq(
         "Geographic information",

@@ -1,5 +1,5 @@
 {
-"relaton-models": "v1.2.3",
+"relaton-models": "v1.2.4",
 "basicdoc-models": "v1.0.2",
 "metanorma-requirements-models": "v1.0.0",
 "relaton-model-ieee": "v1.0.0",
@@ -28,6 +28,6 @@
 "relaton-model-omg": "v1.0.0",
 "relaton-model-oasis": "v1.0.1",
 "relaton-model-jis": "v0.0.1",
-"metanorma-model": "v1.2.2",
-"date": "2023-08-02T19:17:03Z"
+"metanorma-model": "v1.2.4",
+"date": "2023-08-31T02:58:33Z"
 }
