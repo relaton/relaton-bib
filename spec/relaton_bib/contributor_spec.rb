@@ -25,7 +25,9 @@ end
 
 describe RelatonBib::Affiliation do
   it "raises ArgumentError if organization is not provided" do
-    expect { RelatonBib::Affiliation.new }.to raise_error(ArgumentError)
+    expect { RelatonBib::Affiliation.new organization: nil }.to raise_error(
+      ArgumentError, /organization should be an instance of RelatonBib::Organization/
+    )
   end
 
   context "render affiliation" do
