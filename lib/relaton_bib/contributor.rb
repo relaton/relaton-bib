@@ -133,6 +133,10 @@ module RelatonBib
     # @param name [RelatonBib::LocalizedString, nil]
     # @param description [Array<RelatonBib::FormattedString>]
     def initialize(organization:, name: nil, description: [])
+      unless organization.is_a? RelatonBib::Organization
+        raise ArgumentError, "organization should be an instance of RelatonBib::Organization"
+      end
+
       @name = name
       @organization = organization
       @description  = description
