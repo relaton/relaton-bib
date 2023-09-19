@@ -22,7 +22,7 @@ module RelatonBib
     # @param description [Array<String>]
     def initialize(**args)
       if args[:type] && !TYPES.include?(args[:type])
-        Util.warn %{Contributor's type "#{args[:type]}" is invalid.}
+        Util.warn %{Contributor's type `#{args[:type]}` is invalid.}
       end
 
       @type = args[:type]

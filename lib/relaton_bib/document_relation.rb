@@ -46,7 +46,7 @@ module RelatonBib
                    source_locality: [])
       type = "obsoletes" if type == "Now withdrawn"
       unless self.class::TYPES.include? type
-        Util.warn "WARNING: invalid relation type: #{type}"
+        Util.warn "WARNING: invalid relation type: `#{type}`"
       end
       @type = type
       @description = description
