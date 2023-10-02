@@ -194,6 +194,9 @@ contributor.person.given.formatted-initials:: A.
 contributor.person.name.surname:: Bierman
 contributor.person.name.addition:: Addition
 contributor.person.name.prefix:: Prefix
+contributor.person.affiliation.name.content:: Name
+contributor.person.affiliation.name.language:: en
+contributor.person.affiliation.name.script:: Latn
 contributor.person.affiliation.description.content:: Description
 contributor.person.affiliation.description.language:: en
 contributor.person.affiliation.organization.name:: IETF

@@ -131,6 +131,12 @@ contributor:
         - content: IETF
         abbreviation:
           content: IETF
+      name:
+        content: Name
+        language:
+        - en
+        script:
+        - Latn
       description:
       - content: Description
         language:

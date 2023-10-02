@@ -180,13 +180,11 @@ module RelatonBib
       #
       def fetch_series(item) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/MethodLength,Metrics/PerceivedComplexity
         item.xpath("./series").reduce([]) do |mem, sr|
-          abbr = sr.at "abbreviation"
-          abbreviation = abbr &&
-            LocalizedString.new(abbr.text, abbr[:language], abbr[:script])
           formattedref = fref(sr)
           title = ttitle(sr.at("title"))
           next mem unless formattedref || title
 
+          abbreviation = localized_string sr.at("abbreviation")
           mem << Series.new(
             type: sr[:type], formattedref: formattedref,
             title: title, place: sr.at("place")&.text,
@@ -310,9 +308,7 @@ module RelatonBib
       # @param title [Nokogiri::XML::Element]
       # @return [Array<RelatonBib::LocalizedString>]
       def variants(elm)
-        elm.xpath("variant").map do |v|
-          LocalizedString.new v.text, v[:language], v[:script]
-        end
+        elm.xpath("variant").map { |v| localized_string v }
       end
 
       #
@@ -388,27 +384,20 @@ module RelatonBib
       #
       # @param [Nokogiri::XML::Element] person XML element
       #
-      # @return [RelatonBib::Person] person
+      # @return [RelatonBib::Person, nil] person
       #
-      def get_person(person) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-        affiliations = person.xpath("./affiliation").map do |a|
-          org = a.at "./organization"
-          desc = a.xpath("./description").map do |e|
-            FormattedString.new(content: e.text, language: e[:language],
-                                script: e[:script], format: e[:format])
-          end
-          Affiliation.new organization: get_org(org), description: desc
-        end
+      def get_person(person) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        return unless person
+
+        affiliations = person.xpath("./affiliation").map { |a| fetch_affiliation a }
 
         contact = parse_contact person
         identifier = person.xpath("./identifier").map do |pi|
           PersonIdentifier.new pi[:type], pi.text
         end
 
-        cn = person.at "./name/completename"
-        cname = cn && LocalizedString.new(cn.text, cn[:language], cn[:script])
-        sn = person.at "./name/surname"
-        sname = sn && LocalizedString.new(sn.text, sn[:language], sn[:script])
+        cname = localized_string person.at("./name/completename")
+        sname = localized_string person.at("./name/surname")
 
         name = FullName.new(
           completename: cname, surname: sname,
@@ -424,6 +413,22 @@ module RelatonBib
           contact: contact,
           identifier: identifier,
         )
+      end
+
+      def fetch_affiliation(elm)
+        org = get_org elm.at("./organization")
+        desc = elm.xpath("./description").map do |e|
+          FormattedString.new(content: e.text, language: e[:language],
+                              script: e[:script], format: e[:format])
+        end
+        name = localized_string elm.at("./name")
+        Affiliation.new organization: org, description: desc, name: name
+      end
+
+      def localized_string(elm)
+        return unless elm
+
+        LocalizedString.new(elm.text, elm[:language], elm[:script])
       end
 
       #
@@ -467,10 +472,7 @@ module RelatonBib
       # @return [RelatonBib::LocalizedString, nil] initials
       #
       def parse_initials(person)
-        inits = person.at "./name/formatted-initials"
-        return unless inits
-
-        LocalizedString.new(inits.text, inits[:language], inits[:script])
+        localized_string person.at("./name/formatted-initials")
       end
 
       #
@@ -497,24 +499,21 @@ module RelatonBib
       # @return [Array<RelatonBib::LocalizedString>] name parts
       #
       def name_part(person, part)
-        person.xpath("./name/#{part}").map do |np|
-          LocalizedString.new np.text, np[:language], np[:script]
-        end
+        person.xpath("./name/#{part}").map { |np| localized_string np }
       end
 
       # @param item [Nokogiri::XML::Element]
       # @return [Array<RelatonBib::ContributionInfo>]
       def fetch_contributors(item)
-        item.xpath("./contributor").map do |c|
-          entity = if (org = c.at "./organization") then get_org(org)
-                   elsif (person = c.at "./person") then get_person(person)
-                   end
-          role = c.xpath("./role").map do |r|
-            { type: r[:type],
-              description: r.xpath("./description").map(&:text) }
-          end
-          ContributionInfo.new entity: entity, role: role
+        item.xpath("./contributor").map { |c| fetch_contribution_info c }
+      end
+
+      def fetch_contribution_info(contrib)
+        entity = get_org(contrib.at("./organization")) || get_person(contrib.at("./person"))
+        role = contrib.xpath("./role").map do |r|
+          { type: r[:type], description: r.xpath("./description").map(&:text) }
         end
+        ContributionInfo.new entity: entity, role: role
       end
 
       # @param item [Nokogiri::XML::Element]
@@ -529,16 +528,13 @@ module RelatonBib
 
       # @param item [Nokogiri::XML::Element]
       # @return [Array<RelatonBib::CopyrightAssociation>]
-      def fetch_copyright(item) # rubocop:disable Metrics/AbcSize
+      def fetch_copyright(item)
         item.xpath("./copyright").map do |cp|
-          owner = cp.xpath("owner").map do |o|
-            ContributionInfo.new entity: get_org(o.at("organization"))
-          end
+          owner = cp.xpath("owner").map { |o| fetch_contribution_info o }
           from = cp.at("from")&.text
           to   = cp.at("to")&.text
           scope = cp.at("scope")&.text
-          CopyrightAssociation.new(owner: owner, from: from, to: to,
-                                   scope: scope)
+          CopyrightAssociation.new(owner: owner, from: from, to: to, scope: scope)
         end
       end
 

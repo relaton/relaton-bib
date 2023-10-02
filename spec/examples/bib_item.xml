@@ -1,5 +1,5 @@
 <bibitem id="ISOTC211" type="standard" schema-version="v1.2.4">
-  <fetched>2023-03-18</fetched>
+  <fetched>2023-10-02</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -84,6 +84,7 @@
         <addition>Addition</addition>
       </name>
       <affiliation>
+        <name language="en" script="Latn">Name</name>
         <description language="en">Description</description>
         <organization>
           <name>IETF</name>

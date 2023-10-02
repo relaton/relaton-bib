@@ -93,10 +93,10 @@ contributor:
     role:
       type: publisher
       description: Publisher role
- 
+
   - person:
-      name: 
-        completename: 
+      name:
+        completename:
           content: A. Bierman
           language: en
           script: Latn
@@ -129,7 +129,7 @@ contributor:
         description: Publisher description
       - type: editor
         description: Editor description
- 
+
   - person:
       name:
         given:
@@ -146,6 +146,10 @@ contributor:
         description:
           content: Description
           language: en
+        name:
+          content: Name
+          language: en
+          script: Latn
       contact:
         - address:
             street:
@@ -158,7 +162,7 @@ contributor:
       identifier:
         type: uri
         id: www.person.com
-    
+
   - person:
       name:
         given:
@@ -184,7 +188,7 @@ contributor:
     role:
       type: distributor
       description: sponsor
- 
+
 copyright:
   owner:
     name: International Organization for Standardization

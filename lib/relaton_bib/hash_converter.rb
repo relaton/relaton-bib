@@ -288,9 +288,10 @@ module RelatonBib
                   end
             FormattedString.new(**cnt)
           end
+          name = LocalizedString.new(a[:name][:content], a[:name][:language], a[:name][:script]) if a[:name]
           Affiliation.new(
             organization: Organization.new(**org_hash_to_bib(a[:organization])),
-            description: a[:description],
+            description: a[:description], name: name
           )
         end
       end
