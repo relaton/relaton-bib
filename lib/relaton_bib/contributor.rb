@@ -123,20 +123,13 @@ module RelatonBib
     # @return [RelatonBib::LocalizedString, nil]
     attr_reader :name
 
-    # @return [Array<RelatonBib::FormattedString>]
-    attr_reader :description
-
     # @return [RelatonBib::Organization]
     attr_reader :organization
 
-    # @param organization [RelatonBib::Organization]
+    # @param organization [RelatonBib::Organization, nil]
     # @param name [RelatonBib::LocalizedString, nil]
     # @param description [Array<RelatonBib::FormattedString>]
-    def initialize(organization:, name: nil, description: [])
-      unless organization.is_a? RelatonBib::Organization
-        raise ArgumentError, "organization should be an instance of RelatonBib::Organization"
-      end
-
+    def initialize(organization: nil, name: nil, description: [])
       @name = name
       @organization = organization
       @description  = description
@@ -145,19 +138,44 @@ module RelatonBib
     # @param opts [Hash]
     # @option opts [Nokogiri::XML::Builder] :builder XML builder
     # @option opts [String] :lang language
-    def to_xml(**opts) # rubocop:disable Metrics/AbcSize
+    def to_xml(**opts)
+      return unless organization || name || description&.any?
+
       opts[:builder].affiliation do |builder|
-        builder.name { name.to_xml builder } if name
-        desc = description.select { |d| d.language&.include? opts[:lang] }
-        desc = description unless desc.any?
-        desc.each { |d| builder.description { d.to_xml builder } }
-        organization.to_xml(**opts)
+        name_xml builder
+        description_xml builder
+        organization&.to_xml(**opts)
       end
     end
 
+    def name_xml(builder)
+      builder.name { name.to_xml builder } if name
+    end
+
+    def description_xml(builder)
+      description.each { |d| builder.description { d.to_xml builder } }
+    end
+
+    #
+    # Get description.
+    #
+    # @param [String, nil] lang language if nil return all description
+    #
+    # @return return [Array<RelatonBib::FormattedString>] description
+    #
+    def description(lang = nil)
+      return @description unless lang
+
+      @description.select { |d| d.language&.include? lang }
+    end
+
+    #
+    # Render affiliation as hash.
+    #
     # @return [Hash]
+    #
     def to_hash
-      hash = organization.to_hash
+      hash = organization&.to_hash || {}
       hash["name"] = name.to_hash if name
       if description&.any?
         hash["description"] = single_element_array(description)
@@ -175,7 +193,7 @@ module RelatonBib
       description.each do |d|
         out += d.to_asciibib "#{pref}affiliation.description", description.size
       end
-      out += organization.to_asciibib "#{pref}affiliation.*"
+      out += organization.to_asciibib "#{pref}affiliation.*" if organization
       out
     end
   end
