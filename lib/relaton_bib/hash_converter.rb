@@ -349,7 +349,7 @@ module RelatonBib
         if rel[:bibitem]
           rel[:bibitem] = bib_item hash_to_bib(rel[:bibitem])
         else
-          Util.warn "bibitem missing: `#{rel}`"
+          Util.warn "WARNING: bibitem missing: `#{rel}`"
           rel[:bibitem] = nil
         end
       end

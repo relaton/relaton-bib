@@ -165,7 +165,8 @@ contributor:
           script:
           - Latn
           initial: A
-        - initial: B
+        - content:
+          initial: B
         formatted_initials:
           content: A. B.
           language:

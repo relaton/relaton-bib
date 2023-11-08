@@ -99,7 +99,7 @@ module RelatonBib
         # return content unless language || script
 
         hash = {}
-        hash["content"] = content unless content.nil? || content.empty?
+        hash["content"] = content # unless content.nil? || content.empty?
         hash["language"] = single_element_array(language) if language&.any?
         hash["script"] = single_element_array(script) if script&.any?
         hash
