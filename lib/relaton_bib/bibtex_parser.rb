@@ -71,8 +71,8 @@ module RelatonBib
       # @return [RelatonBib::TypedTitleStringCollection]
       def fetch_title(bibtex)
         title = []
-        title << { type: "main", content: bibtex.title.to_s } if bibtex["title"]
-        title << { type: "main", content: bibtex.subtitle.to_s } if bibtex["subtitle"]
+        title << { type: "main", content: bibtex.convert(:latex).title.to_s } if bibtex["title"]
+        title << { type: "main", content: bibtex.convert(:latex).subtitle.to_s } if bibtex["subtitle"]
         TypedTitleStringCollection.new title
       end
 
@@ -240,7 +240,7 @@ module RelatonBib
       # @param bibtex [BibTeX::Entry]
       # @return [Array<String>]
       def fetch_keyword(bibtex)
-        bibtex["keywords"]&.split(", ") || []
+        bibtex["keywords"]&.split(/,\s?/) || []
       end
     end
   end

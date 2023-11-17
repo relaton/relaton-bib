@@ -73,4 +73,59 @@ RSpec.describe RelatonBib::BibtexParser do
     File.write(file, xml, encoding: "utf-8") unless File.exist? file
     expect(xml).to be_equivalent_to File.read(file, encoding: "utf-8")
   end
+
+  context "parse title" do
+    it "with subtitle" do
+      bibtex = BibTeX.parse <<~BIBTEX
+        @article{mrx05,
+          title = {Something Great},
+          subtitle = {Sub title},
+        }
+      BIBTEX
+      title = described_class.send :fetch_title, bibtex["mrx05"]
+      expect(title[0].title.content).to eq "Something Great"
+      expect(title[1].title.content).to eq "Sub title"
+    end
+
+    it "with double curly braces" do
+      bibtex = BibTeX.parse <<~BIBTEX
+        @article{mrx05,
+          title = {{Something Great}},
+        }
+      BIBTEX
+      title = described_class.send :fetch_title, bibtex["mrx05"]
+      expect(title[0].title.content).to eq "Something Great"
+    end
+  end
+
+  context "parse keywords" do
+    it "with comma separator" do
+      bibtex = BibTeX.parse <<~BIBTEX
+        @article{mrx05,
+          keywords = {Sensor Web,data acquisition},
+        }
+      BIBTEX
+      keywords = described_class.send :fetch_keyword, bibtex["mrx05"]
+      expect(keywords).to eq %w[Sensor\ Web data\ acquisition]
+    end
+
+    it "with comma and space separator" do
+      bibtex = BibTeX.parse <<~BIBTEX
+        @article{mrx05,
+          keywords = {Sensor Web, data acquisition},
+        }
+      BIBTEX
+      keywords = described_class.send :fetch_keyword, bibtex["mrx05"]
+      expect(keywords).to eq %w[Sensor\ Web data\ acquisition]
+    end
+
+    it "empty" do
+      bibtex = BibTeX.parse <<~BIBTEX
+        @article{mrx05,
+        }
+      BIBTEX
+      keywords = described_class.send :fetch_keyword, bibtex["mrx05"]
+      expect(keywords).to eq []
+    end
+  end
 end
