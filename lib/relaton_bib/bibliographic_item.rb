@@ -46,9 +46,12 @@ module RelatonBib
     attr_accessor :all_parts
 
     # @return [String, nil]
-    attr_reader :id, :type, :docnumber, :doctype, :subdoctype
+    attr_reader :id, :type, :docnumber, :subdoctype
 
-    # @return [RelatonBib::Edition, nil] <description>
+    # @return [RelatonBib::DocumentType] document type
+    attr_reader :doctype
+
+    # @return [RelatonBib::Edition, nil] edition
     attr_reader :edition
 
     # @!attribute [r] title
@@ -157,7 +160,7 @@ module RelatonBib
     # @param validity [RelatonBib:Validity, nil]
     # @param fetched [Date, nil] default nil
     # @param keyword [Array<String>]
-    # @param doctype [String]
+    # @param doctype [RelatonBib::DocumentType]
     # @param subdoctype [String]
     # @param editorialgroup [RelatonBib::EditorialGroup, nil]
     # @param ics [Array<RelatonBib::ICS>]
@@ -421,7 +424,7 @@ module RelatonBib
       hash["fetched"] = fetched.to_s if fetched
       hash["keyword"] = single_element_array(keyword) if keyword&.any?
       hash["license"] = single_element_array(license) if license&.any?
-      hash["doctype"] = doctype if doctype
+      hash["doctype"] = doctype.to_hash if doctype
       hash["subdoctype"] = subdoctype if subdoctype
       if editorialgroup&.presence?
         hash["editorialgroup"] = editorialgroup.to_hash
@@ -576,7 +579,7 @@ module RelatonBib
       end
       out += relation.to_asciibib prefix if relation
       series.each { |s| out += s.to_asciibib prefix, series.size }
-      out += "#{pref}doctype:: #{doctype}\n" if doctype
+      out += doctype.to_asciibib prefix if doctype
       out += "#{pref}subdoctype:: #{subdoctype}\n" if subdoctype
       out += "#{pref}formattedref:: #{formattedref}\n" if formattedref
       keyword.each { |kw| out += kw.to_asciibib "#{pref}keyword", keyword.size }
@@ -639,7 +642,7 @@ module RelatonBib
         elsif opts[:bibdata] && (doctype || editorialgroup || ics&.any? ||
                                  structuredidentifier&.presence?)
           ext = builder.ext do |b|
-            b.doctype doctype if doctype
+            doctype.to_xml b if doctype
             b.subdoctype subdoctype if subdoctype
             editorialgroup&.to_xml b
             ics.each { |i| i.to_xml b }

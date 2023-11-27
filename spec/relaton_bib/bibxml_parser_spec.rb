@@ -47,7 +47,9 @@ RSpec.describe "BibXML parser" do
   end
 
   it "parse I-D doctype" do
-    expect(RelatonBib::BibXMLParser.doctype("I-D")).to eq "internet-draft"
+    doctype = RelatonBib::BibXMLParser.doctype("I-D")
+    expect(doctype).to be_instance_of RelatonBib::DocumentType
+    expect(doctype.type).to eq "internet-draft"
   end
 
   context "parse PubID" do

@@ -8,8 +8,10 @@ title:
     script: Latn
 
 type: standard
-doctype: document
-subdoctype: subdocument
+doctype:
+  type: Doctype
+  abbreviation: DCT
+subdoctype: Subdoctype
 
 docid:
   - id: ISO TC 211

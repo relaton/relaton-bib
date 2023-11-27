@@ -63,7 +63,7 @@ module RelatonBib
           keyword: bibitem.xpath("keyword").map(&:text),
           license: bibitem.xpath("license").map(&:text),
           validity: fetch_validity(bibitem),
-          doctype: ext&.at("doctype")&.text,
+          doctype: fetch_doctype(ext),
           subdoctype: ext&.at("subdoctype")&.text,
           editorialgroup: fetch_editorialgroup(ext),
           ics: fetch_ics(ext),
@@ -272,6 +272,13 @@ module RelatonBib
         revision = (r = vl.at("revision")) &&
           Time.strptime(r.text, "%Y-%m-%d %H:%M")
         Validity.new begins: begins, ends: ends, revision: revision
+      end
+
+      def fetch_doctype(ext)
+        dt = ext&.at("doctype")
+        return unless dt
+
+        DocumentType.new type: dt.text, abbreviation: dt[:abbreviation]
       end
 
       # @param item [Nokogiri::XML::Element]

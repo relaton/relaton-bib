@@ -409,11 +409,12 @@ module RelatonBib
     # @param anchor [String]
     # @return [String]
     def doctype(anchor)
-      case anchor
-      when /I-D/ then "internet-draft"
-      when /IEEE/ then "ieee"
-      else "rfc"
-      end
+      type =  case anchor
+              when /I-D/ then "internet-draft"
+              when /IEEE/ then "ieee"
+              else "rfc"
+              end
+      DocumentType.new type: type
     end
 
     extend BibXMLParser

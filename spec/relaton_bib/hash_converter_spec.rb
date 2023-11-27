@@ -78,4 +78,22 @@ RSpec.describe RelatonBib::HashConverter do
     expect(copyright[0][:owner][0][:contact][0].type).to eq "uri"
     expect(copyright[0][:owner][0][:contact][0].value).to eq "http://example.com"
   end
+
+  context "create doctype" do
+    it "from string" do
+      ret = { doctype: "Doctype" }
+      described_class.doctype_hash_to_bib ret
+      expect(ret[:doctype]).to be_instance_of RelatonBib::DocumentType
+      expect(ret[:doctype].type).to eq "Doctype"
+      expect(ret[:doctype].abbreviation).to be_nil
+    end
+
+    it "from hash" do
+      ret = { doctype: { type: "Doctype", abbreviation: "DCT" } }
+      described_class.doctype_hash_to_bib ret
+      expect(ret[:doctype]).to be_instance_of RelatonBib::DocumentType
+      expect(ret[:doctype].type).to eq "Doctype"
+      expect(ret[:doctype].abbreviation).to eq "DCT"
+    end
+  end
 end

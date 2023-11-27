@@ -390,8 +390,10 @@ keyword:
 - content: Key Word
 license:
 - License
-doctype: document
-subdoctype: subdocument
+doctype:
+  type: Doctype
+  abbreviation: DCT
+subdoctype: Subdoctype
 editorialgroup:
 - name: Editorial group
   number: 1

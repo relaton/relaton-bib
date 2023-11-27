@@ -290,8 +290,9 @@ series::
 series.title.content:: RFC
 series.title.format:: text/plain
 series.number:: 4
-doctype:: document
-subdoctype:: subdocument
+doctype.type:: Doctype
+doctype.abbreviation:: DCT
+subdoctype:: Subdoctype
 keyword:: Keyword
 keyword:: Key Word
 editorialgroup.technical_committee.name:: Editorial group

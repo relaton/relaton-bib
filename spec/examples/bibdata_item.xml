@@ -1,5 +1,5 @@
 <bibdata type="standard" schema-version="v1.2.5">
-  <fetched>2023-10-02</fetched>
+  <fetched>2023-11-24</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -276,8 +276,8 @@
     <revision>2011-03-04 09:00</revision>
   </validity>
   <ext>
-    <doctype>document</doctype>
-    <subdoctype>subdocument</subdoctype>
+    <doctype abbreviation="DCT">Doctype</doctype>
+    <subdoctype>Subdoctype</subdoctype>
     <editorialgroup>
       <technical-committee number="1" type="Type" identifier="Identifier" prefix="Prefix">Editorial group</technical-committee>
     </editorialgroup>
