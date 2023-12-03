@@ -24,6 +24,17 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       RelatonBib::BibliographicItem.from_hash(hash)
     end
 
+    context "makeid" do
+      it "with docid" do
+        expect(subject.makeid(nil, false)).to eq "ISOTC211"
+      end
+
+      it "with argument" do
+        docid = RelatonBib::DocumentIdentifier.new type: "ISO", id: "ISO 123 (E)"
+        expect(subject.makeid(docid, false)).to eq "ISO123E"
+      end
+    end
+
     it "has schema-version" do
       expect(subject.schema).to match(/^v\d+\.\d+\.\d+$/)
     end

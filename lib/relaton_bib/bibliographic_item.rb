@@ -324,7 +324,7 @@ module RelatonBib
       end
     end
 
-    # @param identifier [RelatonBib::DocumentIdentifier]
+    # @param identifier [RelatonBib::DocumentIdentifier, nil]
     # @param attribute [Boolean, nil]
     # @return [String]
     def makeid(identifier, attribute)
@@ -333,11 +333,7 @@ module RelatonBib
       identifier ||= @docidentifier.reject { |i| i.type == "DOI" }[0]
       return unless identifier
 
-      # contribs = publishers.map { |p| p&.entity&.abbreviation }.join '/'
-      # idstr = "#{contribs}#{delim}#{id.project_number}"
-      # idstr = id.project_number.to_s
-      idstr = identifier.id.gsub(/[:\/]/, "-").gsub(/\s/, "")
-      # if id.part_number&.size&.positive? then idstr += "-#{id.part_number}"
+      idstr = identifier.id.gsub(/[:\/]/, "-").gsub(/[\s\(\)]/, "")
       idstr.strip
     end
 
