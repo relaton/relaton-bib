@@ -98,6 +98,47 @@ RSpec.describe RelatonBib::BibtexParser do
     end
   end
 
+  context "parse contributor" do
+    it "howpublished" do
+      bibtex = BibTeX.parse <<~BIBTEX
+        @article{mrx05,
+        howpublished = "\\publisher{Taylor {\\&} Francis},\\url{http://www.tandfonline.com/doi/abs/10.1080/17538940802439549}"
+        }
+      BIBTEX
+      contribs = described_class.send :fetch_contributor, bibtex["mrx05"]
+      expect(contribs[0][:entity]).to be_instance_of RelatonBib::Organization
+      expect(contribs[0][:entity].name[0].content).to eq "Taylor & Francis"
+      expect(contribs[0][:role][0][:type]).to eq "publisher"
+    end
+  end
+
+  context "parse note" do
+    it "with howpublished as note" do
+      bibtex = BibTeX.parse <<~BIBTEX
+        @article{mrx05,
+          howpublished = {How Published Note},
+        }
+      BIBTEX
+      note = described_class.send :fetch_note, bibtex["mrx05"]
+      expect(note).to be_instance_of RelatonBib::BiblioNoteCollection
+      expect(note[0]).to be_instance_of RelatonBib::BiblioNote
+      expect(note[0].type).to eq "howpublished"
+      expect(note[0].content).to eq "How Published Note"
+    end
+
+    it "don't parse howpublished as note" do
+      bibtex = <<~BIBTEX
+        @article{mrx05,
+          howpublished = "\\publisher{Taylor {\&} Francis},\\url{http://www.tandfonline.com/doi/abs/10.1080/17538940802439549}"
+        }
+      BIBTEX
+      docs = BibTeX.parse bibtex
+      note = described_class.send :fetch_note, docs["mrx05"]
+      expect(note).to be_instance_of RelatonBib::BiblioNoteCollection
+      expect(note).to be_empty
+    end
+  end
+
   context "parse keywords" do
     it "with comma separator" do
       bibtex = BibTeX.parse <<~BIBTEX

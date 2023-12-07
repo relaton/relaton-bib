@@ -78,54 +78,50 @@ module RelatonBib
 
       # @param bibtex [BibTeX::Entry]
       # @return [Array<Hash>]
-      def fetch_contributor(bibtex) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
-        contributor = []
-        fetch_person(bibtex["author"]).each do |entity|
-          contributor << { entity: entity, role: [{ type: "author" }] }
-        end
+      def fetch_contributor(bibtex) # rubocop:disable Metrics/AbcSize
+        contribs = []
+        fetch_person(bibtex, "author") { |author| contribs << author }
+        fetch_person(bibtex, "editor") { |editor| contribs << editor }
 
-        fetch_person(bibtex["editor"]).each do |entity|
-          contributor << { entity: entity, role: [{ type: "editor" }] }
-        end
+        fetch_org(bibtex["publisher"], "publisher") { |pub| contribs << pub }
+        fetch_org(bibtex["institution"], "distributor", "sponsor") { |distr| contribs << distr }
+        fetch_org(bibtex["organization"], "distributor", "sponsor") { |org| contribs << org }
+        fetch_org(bibtex["school"], "distributor", "sponsor") { |school| contribs << school }
 
-        if bibtex["publisher"]
-          contributor << { entity: { name: bibtex.publisher.to_s }, role: [{ type: "publisher" }] }
-        end
+        fetch_howpublished(bibtex) { |pub| contribs << pub }
 
-        if bibtex["institution"]
-          contributor << {
-            entity: { name: bibtex.institution.to_s },
-            role: [{ type: "distributor", description: ["sponsor"] }],
-          }
-        end
+        contribs
+      end
 
-        if bibtex["organization"]
-          contributor << {
-            entity: { name: bibtex.organization.to_s },
-            role: [{ type: "distributor", description: ["sponsor"] }],
-          }
-        end
+      def fetch_howpublished(bibtex, &_)
+        return unless bibtex["howpublished"]
 
-        if bibtex["school"]
-          contributor << {
-            entity: { name: bibtex.school.to_s },
-            role: [{ type: "distributor", description: ["sponsor"] }],
-          }
-        end
-        contributor
+        /\\publisher\{(?<name>.+)\},\\url\{(?<url>.+)\}/ =~ bibtex.howpublished.to_s
+        return unless name && url
+
+        name.gsub!(/\{\\?([^\\]+)\}/, '\1')
+        org = Organization.new(name: name, url: url)
+        yield entity: org, role: [{ type: "publisher" }]
+      end
+
+      def fetch_org(org, type, desc = nil, &_)
+        return unless org
+
+        role = { type: type }
+        role[:description] = [desc] if desc
+        yield entity: Organization.new(name: org.to_s), role: [role]
       end
 
       # @param bibtex [BibTeX::Entry]
       # @return [Array<RelatonBib::Person>]
-      def fetch_person(person)
-        return [] unless person
-
-        person.map do |name|
+      def fetch_person(bibtex, role, &_) # rubocop:disable Metrics/AbcSize
+        bibtex[role]&.each do |name|
           parts = name.split ", "
           surname = LocalizedString.new parts.first
           fname = parts.size > 1 ? parts[1].split : []
           forename = fname.map { |fn| Forename.new content: fn }
-          Person.new name: FullName.new(surname: surname, forename: forename)
+          name = FullName.new(surname: surname, forename: forename)
+          yield entity: Person.new(name: name), role: [{ type: role }]
         end
       end
 
@@ -147,7 +143,7 @@ module RelatonBib
 
       # @param bibtex [BibTeX::Entry]
       # @return [RelatonBib::BiblioNoteCollection]
-      def fetch_note(bibtex)
+      def fetch_note(bibtex) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
         bibtex.select do |k, _v|
           %i[annote howpublished comment note content].include? k
         end.reduce(BiblioNoteCollection.new([])) do |mem, note|
@@ -156,6 +152,8 @@ module RelatonBib
                  when :content then "tableOfContents"
                  else note[0].to_s
                  end
+          next mem if type == "howpublished" && note[1].to_s.match?(/^\\publisher\{.+\},\\url\{.+\}$/)
+
           mem << BiblioNote.new(type: type, content: note[1].to_s)
         end
       end
