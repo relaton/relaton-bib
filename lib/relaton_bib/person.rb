@@ -66,6 +66,9 @@ module RelatonBib
     # @return [RelatonBib::FullName]
     attr_accessor :name
 
+    # @return [Array<String>]
+    attr_reader :credential
+
     # @return [Array<RelatonBib::Affiliation>]
     attr_accessor :affiliation
 
@@ -73,24 +76,27 @@ module RelatonBib
     attr_accessor :identifier
 
     # @param name [RelatonBib::FullName]
+    # @param credential [Array<String>]
     # @param affiliation [Array<RelatonBib::Affiliation>]
     # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
     # @param identifier [Array<RelatonBib::PersonIdentifier>]
     # @param url [String, nil]
-    def initialize(name:, affiliation: [], contact: [], identifier: [],
-                   url: nil)
-      super(contact: contact, url: url)
+    def initialize(name:, **args)
+      contact = args[:contact] || []
+      super(contact: contact, url: args[:url])
       @name        = name
-      @affiliation = affiliation
-      @identifier = identifier
+      @credential  = args[:credential] || []
+      @affiliation = args[:affiliation] || []
+      @identifier = args[:identifier] || []
     end
 
     # @param opts [Hash]
     # @option opts [Nokogiri::XML::Builder] :builder XML builder
     # @option opts [String, Symbol] :lang language
-    def to_xml(**opts)
+    def to_xml(**opts) # rubocop:disable Metrics/AbcSize
       opts[:builder].person do |builder|
         name.to_xml(**opts)
+        credential.each { |c| builder.credential c }
         affiliation.each { |a| a.to_xml(**opts) }
         identifier.each { |id| id.to_xml builder }
         contact.each { |contact| contact.to_xml builder }
@@ -98,12 +104,11 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_hash # rubocop:disable Metrics/AbcSize
       hash = { "name" => name.to_hash }
-      if affiliation&.any?
-        hash["affiliation"] = single_element_array(affiliation)
-      end
-      hash["identifier"] = single_element_array(identifier) if identifier&.any?
+      hash["credential"] = credential if credential.any?
+      hash["affiliation"] = affiliation.map &:to_hash if affiliation.any?
+      hash["identifier"] = identifier.map &:to_hash if identifier.any?
       { "person" => hash.merge(super) }
     end
 
@@ -114,6 +119,7 @@ module RelatonBib
       pref = prefix.sub(/\*$/, "person")
       out = count > 1 ? "#{pref}::\n" : ""
       out += name.to_asciibib pref
+      credential.each { |c| out += "#{pref}.credential:: #{c}\n" }
       affiliation.each { |af| out += af.to_asciibib pref, affiliation.size }
       identifier.each { |id| out += id.to_asciibib pref, identifier.size }
       out += super pref

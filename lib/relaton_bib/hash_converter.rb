@@ -238,6 +238,7 @@ module RelatonBib
     def person_hash_to_bib(person)
       Person.new(
         name: fullname_hash_to_bib(person),
+        credential: RelatonBib.array(person[:credential]),
         affiliation: affiliation_hash_to_bib(person),
         contact: contacts_hash_to_bib(person),
         identifier: person_identifiers_hash_to_bib(person),
@@ -289,10 +290,9 @@ module RelatonBib
                 end
           FormattedString.new(**cnt)
         end
-        name = LocalizedString.new(a[:name][:content], a[:name][:language], a[:name][:script]) if a[:name]
         Affiliation.new(
           organization: Organization.new(**org_hash_to_bib(a[:organization])),
-          description: a[:description], name: name
+          description: a[:description], name: localizedstring(a[:name])
         )
       end
     end

@@ -42,7 +42,7 @@ module RelatonBib
     # @return [String] AsciiBib representation
     #
     def to_asciibib(prefix = "")
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       pref += "doctype."
       out = "#{pref}type:: #{@type}\n"
       out += "#{pref}abbreviation:: #{@abbreviation}\n" if @abbreviation

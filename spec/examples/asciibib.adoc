@@ -166,6 +166,7 @@ contributor::
 contributor.person.name.completename.content:: A. Bierman
 contributor.person.name.completename.language:: en
 contributor.person.name.completename.script:: Latn
+contributor.person.credential:: Credential
 contributor.person.affiliation.organization.name:: IETF
 contributor.person.affiliation.organization.abbreviation:: IETF
 contributor.person.affiliation.organization.identifier.type:: uri

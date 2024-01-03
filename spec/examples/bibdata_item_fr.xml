@@ -1,5 +1,5 @@
 <bibdata type="standard" schema-version="v1.2.7">
-  <fetched>2023-11-24</fetched>
+  <fetched>2024-01-02</fetched>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
   <uri type="src" language="en" script="Latn">https://www.iso.org/standard/53798.html</uri>
   <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
@@ -41,6 +41,7 @@
       <name>
         <completename language="en" script="Latn">A. Bierman</completename>
       </name>
+      <credential>Credential</credential>
       <affiliation>
         <organization>
           <name>IETF</name>

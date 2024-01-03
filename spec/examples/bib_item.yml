@@ -102,6 +102,8 @@ contributor:
           content: A. Bierman
           language: en
           script: Latn
+      credential:
+        - Credential
       affiliation:
         - organization:
             name: IETF

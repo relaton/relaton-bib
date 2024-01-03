@@ -77,6 +77,8 @@ contributor:
         - en
         script:
         - Latn
+    credential:
+    - Credential
     affiliation:
     - organization:
         name:

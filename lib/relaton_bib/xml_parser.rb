@@ -416,6 +416,7 @@ module RelatonBib
 
         Person.new(
           name: name,
+          credential: person.xpath("./credential").map(&:text),
           affiliation: affiliations,
           contact: contact,
           identifier: identifier,
