@@ -249,6 +249,7 @@ module RelatonBib
       n = person[:name]
       fname, inits = given_hash_to_bib n[:given] || n # `n` is for backward compatibility
       FullName.new(
+        abbreviation: localizedstring(n[:abbreviation]),
         forename: fname, initials: inits,
         addition: RelatonBib.array(n[:addition])&.map { |f| localizedstring(f) },
         prefix: RelatonBib.array(n[:prefix])&.map { |f| localizedstring(f) },

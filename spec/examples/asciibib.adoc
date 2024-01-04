@@ -163,6 +163,7 @@ contributor.organization.url:: www.iso.org
 contributor.role.description:: Publisher role
 contributor.role.type:: publisher
 contributor::
+contributor.person.name.abbreviation:: AB
 contributor.person.name.completename.content:: A. Bierman
 contributor.person.name.completename.language:: en
 contributor.person.name.completename.script:: Latn

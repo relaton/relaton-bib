@@ -403,23 +403,24 @@ module RelatonBib
           PersonIdentifier.new pi[:type], pi.text
         end
 
-        cname = localized_string person.at("./name/completename")
-        sname = localized_string person.at("./name/surname")
-
-        name = FullName.new(
-          completename: cname, surname: sname,
-          initials: parse_initials(person),
-          forename: parse_forename(person),
-          addition: name_part(person, "addition"),
-          prefix: name_part(person, "prefix")
-        )
-
         Person.new(
-          name: name,
+          name: full_name(person.at("./name")),
           credential: person.xpath("./credential").map(&:text),
           affiliation: affiliations,
           contact: contact,
           identifier: identifier,
+        )
+      end
+
+      def full_name(name)
+        cname = localized_string name.at("./completename")
+        sname = localized_string name.at("./surname")
+        abbreviation = localized_string name.at("./abbreviation")
+
+        FullName.new(
+          completename: cname, surname: sname, abbreviation: abbreviation,
+          initials: parse_initials(name), forename: parse_forename(name),
+          addition: name_part(name, "addition"), prefix: name_part(name, "prefix")
         )
       end
 
@@ -475,23 +476,23 @@ module RelatonBib
       #
       # Parse initials
       #
-      # @param [Nokogiri::XML::Element] person person element
+      # @param [Nokogiri::XML::Element] name person name element
       #
       # @return [RelatonBib::LocalizedString, nil] initials
       #
-      def parse_initials(person)
-        localized_string person.at("./name/formatted-initials")
+      def parse_initials(name)
+        localized_string name.at("./formatted-initials")
       end
 
       #
       # Parse forename
       #
-      # @param [Nokogiri::XML::Element] person person element
+      # @param [Nokogiri::XML::Element] name person name element
       #
       # @return [Array<RelatonBib::Forename>] forenames
       #
-      def parse_forename(person)
-        person.xpath("./name/forename").map do |np|
+      def parse_forename(name)
+        name.xpath("./forename").map do |np|
           args = np.attributes.each_with_object({}) { |(k, v), h| h[k.to_sym] = v.to_s }
           args[:content] = np.text
           Forename.new(**args)
@@ -501,13 +502,13 @@ module RelatonBib
       #
       # Parse name part
       #
-      # @param [Nokogiri::XML::Element] person person element
+      # @param [Nokogiri::XML::Element] name person name element
       # @param [String] part name part
       #
       # @return [Array<RelatonBib::LocalizedString>] name parts
       #
-      def name_part(person, part)
-        person.xpath("./name/#{part}").map { |np| localized_string np }
+      def name_part(name, part)
+        name.xpath("./#{part}").map { |np| localized_string np }
       end
 
       # @param item [Nokogiri::XML::Element]

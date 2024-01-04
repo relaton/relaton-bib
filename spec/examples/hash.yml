@@ -1,5 +1,5 @@
 ---
-schema-version: v1.2.7
+schema-version: v1.2.8
 id: ISOTC211
 title:
 - content: Geographic information
@@ -71,6 +71,8 @@ contributor:
     type: publisher
 - person:
     name:
+      abbreviation:
+        content: AB
       completename:
         content: A. Bierman
         language:

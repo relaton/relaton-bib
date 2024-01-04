@@ -7,35 +7,29 @@ module RelatonBib
     attr_accessor :forename
 
     # @return [Array<RelatonBib::LocalizedString>]
-    attr_accessor :initials
+    attr_accessor :initials, :addition, :prefix
 
     # @return [RelatonBib::LocalizedString, nil]
-    attr_accessor :surname, :completename
-
-    # @return [Array<RelatonBib::LocalizedString>]
-    attr_accessor :addition
-
-    # @return [Array<RelatonBib::LocalizedString>]
-    attr_accessor :prefix
+    attr_accessor :surname, :abbreviation, :completename
 
     #
     # Initialize FullName instance
     #
-    # @param surname [RelatonBib::LocalizedString, nil] surname or completename
-    #   should be present
+    # @param surname [RelatonBib::LocalizedString, nil] surname or completename should be present
+    # @param abbreviation [RelatonBib::LocalizedString, nil] abbreviation
     # @param forename [Array<RelatonBib::Forename>] forename
     # @param initials [RelatonBib::LocalizedString, String, nil] string of initials
     # @param addition [Array<RelatonBib::LocalizedString>] array of additions
     # @param prefix [Array<RelatonBib::LocalizedString>] array of prefixes
-    # @param completename [RelatonBib::LocalizedString, nil] completename or
-    #   surname should be present
+    # @param completename [RelatonBib::LocalizedString, nil] completename or surname should be present
     #
-    def initialize(**args)
+    def initialize(**args) # rubocop:disable Metrics/AbcSize
       unless args[:surname] || args[:completename]
         raise ArgumentError, "Should be given :surname or :completename"
       end
 
       @surname      = args[:surname]
+      @abbreviation = args[:abbreviation]
       @forename     = args.fetch :forename, []
       @initials     = args[:initials].is_a?(String) ? LocalizedString.new(args[:initials]) : args[:initials]
       @addition     = args.fetch :addition, []
@@ -48,6 +42,7 @@ module RelatonBib
     # @option opts [String] :lang language
     def to_xml(**opts) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       opts[:builder].name do |builder|
+        builder.abbreviation { abbreviation.to_xml builder } if abbreviation
         if completename
           builder.completename { completename.to_xml builder }
         else
@@ -69,6 +64,7 @@ module RelatonBib
     # @return [Hash]
     def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength
       hash = {}
+      hash["abbreviation"] = abbreviation.to_hash if abbreviation
       if forename.any? || initials
         hash["given"] = {}
         hash["given"]["forename"] = single_element_array(forename) if forename&.any?
@@ -86,8 +82,10 @@ module RelatonBib
     def to_asciibib(pref) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
       prf = pref.empty? ? pref : "#{pref}."
       prf += "name"
+      out = ""
+      out += abbreviation.to_asciibib "#{prf}.abbreviation" if abbreviation
       given = "#{pref}.given"
-      out = forename.map do |fn|
+      out += forename.map do |fn|
         fn.to_asciibib given, forename.size
       end.join
       out += initials.to_asciibib "#{given}.formatted-initials" if initials
