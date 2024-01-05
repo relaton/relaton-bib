@@ -379,11 +379,18 @@ module RelatonBib
         end
         subdiv = org.xpath("subdivision").map &:text
         contact = parse_contact org
+        logo = fetch_image org.at("./logo/image")
         Organization.new(
           name: names, abbreviation: org.at("abbreviation")&.text,
           subdivision: subdiv, # url: org.at("uri")&.text,
-          identifier: identifier, contact: contact
+          identifier: identifier, contact: contact, logo: logo
         )
+      end
+
+      def fetch_image(elm)
+        return unless elm
+
+        Image.new(**elm.to_h.transform_keys(&:to_sym))
       end
 
       #

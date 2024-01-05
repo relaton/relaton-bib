@@ -92,6 +92,17 @@ contributor:
       url: www.iso.org
       abbreviation: ISO
       subdivision: division
+      logo:
+        image:
+          id: logo1
+          src: logo1.png
+          mimetype: image/png
+          filename: logo1.png
+          height: "100%"
+          width: "200"
+          alt: Logo 1
+          title: "Logo #1"
+          longdesc: Logo number 1
     role:
       type: publisher
       description: Publisher role

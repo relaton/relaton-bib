@@ -64,6 +64,17 @@ contributor:
       content: ISO
     subdivision:
     - content: division
+    logo:
+      image:
+        id: logo1
+        src: logo1.png
+        mimetype: image/png
+        filename: logo1.png
+        width: '200'
+        height: 100%
+        alt: Logo 1
+        title: 'Logo #1'
+        longdesc: Logo number 1
     url: www.iso.org
   role:
   - description:
@@ -98,13 +109,10 @@ contributor:
         state: State
         country: Country
         postcode: '123456'
-    - phone:
-        value: '223322'
-        subtype: mobile
-    - email:
-        value: person@email.org
-    - uri:
-        value: www.person.com
+    - phone: '223322'
+      type: mobile
+    - email: person@email.org
+    - uri: www.person.com
   role:
   - type: author
 - organization:
@@ -162,9 +170,8 @@ contributor:
         state: State
         country: Country
         postcode: '123456'
-    - phone:
-        value: '223322'
-        subtype: work
+    - phone: '223322'
+      type: work
   role:
   - type: author
 - person:

@@ -108,8 +108,8 @@ module RelatonBib
 
     # @return [Hash]
     def to_hash
-      hash = { type => { "value" => value } }
-      hash[type]["subtype"] = subtype if subtype
+      hash = { type => value }
+      hash["type"] = subtype if subtype
       hash
     end
 

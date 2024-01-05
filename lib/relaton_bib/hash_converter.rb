@@ -232,6 +232,7 @@ module RelatonBib
         LocalizedString.new sd
       end
       org[:contact] = contacts_hash_to_bib(org)
+      org[:logo] = Image.new(**org[:logo][:image]) if org[:logo]
       org
     end
 

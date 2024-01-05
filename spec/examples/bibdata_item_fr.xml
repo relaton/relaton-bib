@@ -1,5 +1,5 @@
 <bibdata type="standard" schema-version="v1.2.8">
-  <fetched>2024-01-04</fetched>
+  <fetched>2024-01-05</fetched>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
   <uri type="src" language="en" script="Latn">https://www.iso.org/standard/53798.html</uri>
   <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
@@ -33,6 +33,9 @@
       <subdivision>division</subdivision>
       <abbreviation>ISO</abbreviation>
       <uri>www.iso.org</uri>
+      <logo>
+        <image id="logo1" src="logo1.png" mimetype="image/png" filename="logo1.png" width="200" height="100%" alt="Logo 1" title="Logo #1" longdesc="Logo number 1"/>
+      </logo>
     </organization>
   </contributor>
   <contributor>

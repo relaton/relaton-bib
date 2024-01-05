@@ -160,6 +160,15 @@ contributor.organization.name:: International Organization for Standardization
 contributor.organization.abbreviation:: ISO
 contributor.organization.subdivision:: division
 contributor.organization.url:: www.iso.org
+contributor.organization.logo.image.id:: logo1
+contributor.organization.logo.image.src:: logo1.png
+contributor.organization.logo.image.mimetype:: image/png
+contributor.organization.logo.image.filename:: logo1.png
+contributor.organization.logo.image.width:: 200
+contributor.organization.logo.image.height:: 100%
+contributor.organization.logo.image.alt:: Logo 1
+contributor.organization.logo.image.title:: Logo #1
+contributor.organization.logo.image.longdesc:: Logo number 1
 contributor.role.description:: Publisher role
 contributor.role.type:: publisher
 contributor::

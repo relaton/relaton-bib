@@ -61,12 +61,16 @@ module RelatonBib
     # @return [Array<RelatonBib::OrgIdentifier>]
     attr_reader :identifier
 
+    # @return [RelatonBib::Image, nil]
+    attr_reader :logo
+
     # @param name [String, Hash, Array<String, Hash>]
     # @param abbreviation [RelatoBib::LocalizedString, String]
     # @param subdivision [Array<RelatoBib::LocalizedString>]
     # @param url [String]
     # @param identifier [Array<RelatonBib::OrgIdentifier>]
     # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
+    # @param logo [RelatonBib::Image, nil]
     def initialize(**args) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       raise ArgumentError, "missing keyword: name" unless args[:name]
 
@@ -83,6 +87,7 @@ module RelatonBib
         localized_string sd
       end
       @identifier = args.fetch(:identifier, [])
+      @logo = args[:logo]
     end
 
     # @param opts [Hash]
@@ -100,24 +105,26 @@ module RelatonBib
         builder.uri url if uri
         identifier.each { |identifier| identifier.to_xml builder }
         super builder
+        builder.logo { |b| logo.to_xml b } if logo
       end
     end
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize
+    def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
       hash = { "name" => single_element_array(name) }
       hash["abbreviation"] = abbreviation.to_hash if abbreviation
       hash["identifier"] = single_element_array(identifier) if identifier&.any?
       if subdivision&.any?
         hash["subdivision"] = single_element_array(subdivision)
       end
+      hash["logo"] = logo.to_hash if logo
       { "organization" => hash.merge(super) }
     end
 
     # @param prefix [String]
     # @param count [Integer]
     # @return [String]
-    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
       pref = prefix.sub(/\*$/, "organization")
       out = count > 1 ? "#{pref}::\n" : ""
       name.each { |n| out += n.to_asciibib "#{pref}.name", name.size }
@@ -128,6 +135,7 @@ module RelatonBib
       end
       identifier.each { |n| out += n.to_asciibib pref, identifier.size }
       out += super pref
+      out += logo.to_asciibib "#{pref}.logo" if logo
       out
     end
 
