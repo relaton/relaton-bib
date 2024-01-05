@@ -298,23 +298,22 @@ module RelatonBib
       end
     end
 
-    def contacts_hash_to_bib(entity) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength,Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
+    def contacts_hash_to_bib(entity) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity
       return [] unless entity[:contact]
 
       RelatonBib.array(entity[:contact]).map do |a|
-        if a[:city] || a[:country] # it's for old version compatibility, should be removed in the future
-          RelatonBib::Address.new(
-            street: Array(a[:street]), city: a[:city], postcode: a[:postcode],
-            country: a[:country], state: a[:state]
-          )
-        elsif a[:address]
+        type, value = a.reject { |k, _| k == :type }.flatten
+        case type
+        when :street, :city, :state, :country, :postcode # it's for old version compatibility, should be removed in the future
+          a[:street] = RelatonBib.array(a[:street])
+          Address.new(**a)
+        when :address
           a[:address][:street] = RelatonBib.array(a[:address][:street])
-          RelatonBib::Address.new(**a[:address])
-        elsif a[:type] # it's for old version compatibility, should be removed in the future
-          RelatonBib::Contact.new(type: a[:type], value: a[:value])
-        else
-          type, value = a.flatten
-          RelatonBib::Contact.new(type: type.to_s, value: value)
+          Address.new(**a[:address])
+        when :phone, :email, :uri
+          Contact.new(type: type.to_s, value: value, subtype: a[:type])
+        else # it's for old version compatibility, should be removed in the future
+          Contact.new(**a)
         end
       end
     end

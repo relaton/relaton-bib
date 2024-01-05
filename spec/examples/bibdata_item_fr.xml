@@ -57,7 +57,9 @@
         <country>Country</country>
         <postcode>123456</postcode>
       </address>
-      <phone>223322</phone>
+      <phone type="mobile">223322</phone>
+      <email>person@email.org</email>
+      <uri>www.person.com</uri>
     </person>
   </contributor>
   <contributor>
@@ -99,7 +101,7 @@
         <country>Country</country>
         <postcode>123456</postcode>
       </address>
-      <phone>223322</phone>
+      <phone type="work">223322</phone>
     </person>
   </contributor>
   <contributor>

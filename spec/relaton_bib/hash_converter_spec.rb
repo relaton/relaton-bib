@@ -52,12 +52,43 @@ RSpec.describe RelatonBib::HashConverter do
     expect(r.to_s).to match(/^1999-02-28/)
   end
 
-  it "create formatted address" do
-    entity = { contact: [{ address: { formatted_address: "Address" } }] }
-    address = RelatonBib::HashConverter.contacts_hash_to_bib entity
-    expect(address).to be_instance_of Array
-    expect(address.first).to be_instance_of RelatonBib::Address
-    expect(address.first.formatted_address).to eq "Address"
+  context "contacts_hash_to_bib" do
+    it "create address form old hash" do
+      hash = { contact: [{ street: "Street", city: "City", country: "Country" }] }
+      address = described_class.contacts_hash_to_bib hash
+      expect(address).to be_instance_of Array
+      expect(address.first).to be_instance_of RelatonBib::Address
+      expect(address.first.street).to eq ["Street"]
+      expect(address.first.city).to eq "City"
+      expect(address.first.country).to eq "Country"
+    end
+
+    it "create formatted address" do
+      entity = { contact: [{ address: { formatted_address: "Address" } }] }
+      address = RelatonBib::HashConverter.contacts_hash_to_bib entity
+      expect(address).to be_instance_of Array
+      expect(address.first).to be_instance_of RelatonBib::Address
+      expect(address.first.formatted_address).to eq "Address"
+    end
+
+    it "create contact form old hash" do
+      hash = { contact: [{ type: "phone", value: "123" }] }
+      contact = described_class.contacts_hash_to_bib hash
+      expect(contact).to be_instance_of Array
+      expect(contact.first).to be_instance_of RelatonBib::Contact
+      expect(contact.first.type).to eq "phone"
+      expect(contact.first.value).to eq "123"
+    end
+
+    it "create phone" do
+      hash = { contact: [{ phone: "223322", type: "mobile" }] }
+      contact = described_class.contacts_hash_to_bib hash
+      expect(contact).to be_instance_of Array
+      expect(contact.first).to be_instance_of RelatonBib::Contact
+      expect(contact.first.type).to eq "phone"
+      expect(contact.first.subtype).to eq "mobile"
+      expect(contact.first.value).to eq "223322"
+    end
   end
 
   it "create copyright" do

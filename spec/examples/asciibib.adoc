@@ -177,7 +177,13 @@ contributor.person.address.city:: City
 contributor.person.address.state:: State
 contributor.person.address.country:: Country
 contributor.person.address.postcode:: 123456
+contributor.person.contact::
 contributor.person.contact.phone:: 223322
+contributor.person.contact.type:: mobile
+contributor.person.contact::
+contributor.person.contact.email:: person@email.org
+contributor.person.contact::
+contributor.person.contact.uri:: www.person.com
 contributor.role.type:: author
 contributor::
 contributor.organization.name:: Institute of Electrical and Electronics Engineers
@@ -211,6 +217,7 @@ contributor.person.address.state:: State
 contributor.person.address.country:: Country
 contributor.person.address.postcode:: 123456
 contributor.person.contact.phone:: 223322
+contributor.person.contact.type:: work
 contributor.role.type:: author
 contributor::
 contributor.person.given.forename::

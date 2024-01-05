@@ -121,6 +121,9 @@ contributor:
             country: Country
             state: State
         - phone: "223322"
+          type: mobile
+        - email: person@email.org
+        - uri: www.person.com
     role: author
 
   - organization:
@@ -164,6 +167,7 @@ contributor:
             country: Country
             state: State
         - phone: "223322"
+          type: work
       identifier:
         type: uri
         id: www.person.com

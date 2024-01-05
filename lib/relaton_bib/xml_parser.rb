@@ -449,7 +449,7 @@ module RelatonBib
       #
       def parse_contact(contrib)
         contrib.xpath("./address|./phone|./email|./uri").map do |c|
-          parse_address(c) || Contact.new(type: c.name, value: c.text)
+          parse_address(c) || Contact.new(type: c.name, value: c.text, subtype: c[:type])
         end
       end
 

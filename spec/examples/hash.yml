@@ -98,7 +98,13 @@ contributor:
         state: State
         country: Country
         postcode: '123456'
-    - phone: '223322'
+    - phone:
+        value: '223322'
+        subtype: mobile
+    - email:
+        value: person@email.org
+    - uri:
+        value: www.person.com
   role:
   - type: author
 - organization:
@@ -156,7 +162,9 @@ contributor:
         state: State
         country: Country
         postcode: '123456'
-    - phone: '223322'
+    - phone:
+        value: '223322'
+        subtype: work
   role:
   - type: author
 - person:
