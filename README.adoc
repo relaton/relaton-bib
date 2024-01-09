@@ -6,7 +6,7 @@ image:https://codeclimate.com/github/relaton/relaton-bib/badges/gpa.svg["Code Cl
 image:https://img.shields.io/github/issues-pr-raw/relaton/relaton-bib.svg["Pull Requests", link="https://github.com/relaton/relaton-bib/pulls"]
 image:https://img.shields.io/github/commits-since/relaton/relaton-bib/latest.svg["Commits since latest",link="https://github.com/relaton/relaton-bib/releases"]
 
-RlatonBib is a Ruby gem that implements the https://github.com/metanorma/relaton-models#bibliography-uml-models[BibliographicItem model].
+RelatonBib is a Ruby gem that implements the https://github.com/metanorma/relaton-models#bibliography-uml-models[BibliographicItem model].
 
 == Installation
 
