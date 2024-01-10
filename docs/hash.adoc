@@ -88,9 +88,12 @@ biblionote:
       home run record in 1998.
 # document status has stage, and optional substage and iteration
 docstatus:
-  stage: stage
-  substage: substage
-  iteration: iteration
+  stage:
+    value: '30'
+    abbreviation: CD
+  substage:
+    value: '00'
+  iteration: final
 # date is an array, with mandatory type, and either an "on" value or a "from" and optional "to" value
 date:
   - type: issued
@@ -112,27 +115,35 @@ abstract:
 # contributors are an array of entity/role pairs, where entity is either person or organization.
 # The role is an array of type and description; it can be a an array of just string, which are treated
 # as the type.
-# Organisations have attributes name, url, abbreviation, subdivision, contacts, identifiers
+# Organisations have attributes name, url, abbreviation, subdivision, contacts, identifiers, logo.
 # Persons have attributes name, affiliation, contacts
-# Person names have attributes, given, surname, additions, prefixes or completename.
-# Given has formatted_initials or forename.
+# Person names have attributes abbreviation, surname, completename, initials, forename, additions, prefixes.
 # Initials, forename, additions, prefixes are arrays.
 # Name field values are either strings, or hashes, with content and language and script attributes.
 # The language and script attribute can also be given on the name.
 # Contacts are an array, containing either addresses, or other fields.
 # Addresses are identified as hashes containing a city attribute; they can also contain a street
 # (which is an array), a postcode, a state, and a country. The other contact fields
-# are phones, emails, uris; they contain a type giving the field name, and a value.
+# are phones, emails, uris; they can contain a type.
 # Affiliations are an array, and they contains an organization, and an optional description.
 # The affiliation description can be a single string, or a hash of content, language, script, and format.
 contributor:
   - organization:
-      name:
-        content: International Organization for Standardization
+      name: International Organization for Standardization
       url: www.iso.org
-      abbreviation:
-        content: ISO
+      abbreviation: ISO
       subdivision: division
+      logo:
+        image:
+          id: logo1
+          src: logo1.png
+          mimetype: image/png
+          filename: logo1.png
+          height: "100%"
+          width: "200"
+          alt: Logo 1
+          title: "Logo #1"
+          longdesc: Logo number 1
     role:
       type: publisher
       description: Publisher role
@@ -143,10 +154,8 @@ contributor:
           language: en
       affiliation:
         - organization:
-            name:
-              content: IETF
-            abbreviation:
-              content: IETF
+            name: IETF
+            abbreviation: IETF
             identifier:
               - type: uri
                 id: www.ietf.org
@@ -160,12 +169,11 @@ contributor:
             country: Country
             state: State
         - phone: '223322'
+          type: mobile
     role: author
   - organization:
-      name:
-        content: Internet Engineering Task Force
-      abbreviation:
-        content: IETF
+      name: IETF
+      abbreviation: IETF
       identifier:
         - type: uri
           id: www.ietf.org
@@ -173,24 +181,19 @@ contributor:
       publisher
   - person:
       name:
-        given:
-          forename:
-            initial: A
-            language: en
-          formatted_initials:
-            content: A.
-        surname:
-          content: Bierman
+        abbreviation: AB
+        language: en
+        initial:
+          - A.
+        surname: Bierman
       affiliation:
-        - organization:
-            name:
-              content: IETF
-            abbreviation:
-              content: IETF
-        description:
-          content: Affiliation description
-          language: en
-          script: Latn
+        -  organization:
+             name: IETF
+             abbreviation: IETF
+           description:
+             content: Affiliation description
+             language: en
+             script: Latn
       identifier:
         - type: uri
           id: www.person.com
@@ -200,10 +203,8 @@ contributor:
 # a "from" date, and an optional "to" date
 copyright:
    owner:
-     name:
-      content: International Organization for Standardization
-     abbreviation:
-      content: ISO
+     name: International Organization for Standardization
+     abbreviation: ISO
      url: www.iso.org
    from: '2014'
    to: '2020'
@@ -215,26 +216,45 @@ link:
     content: https://www.iso.org/obp/ui/#!iso:std:53798:en
   - type: rss
     content: https://www.iso.org/contents/data/standard/05/37/53798.detail.rss
-# relations are an array of type, bibitem, and bib_locality.
+# relations are an array of type, bibitem, locality, source_locality, and description.
 # bibitem contains any of the attributes of a bibliographic item.
-# bib_locality is an array that contains a type, a reference_from, and optionally a reference_to
+# locality is an array of locality_stack which is an array of hash of type,
+#   reference_from, and optionally reference_to
+# source_locality is an array of source_locality_stack which is similar to locality_stack
+# description is optional and contains content and optional format, language, ans script.
 relation:
   - type: updates
     bibitem:
-      formattedref:
-        content: ISO 19115:2003
-    bib_locality:
-      type: page
-      reference_from: '7'
-      reference_to: '10'
+      formattedref: ISO 19115:2003
+    locality:
+      locality_stack:
+        type: page
+        reference_from: '7'
+        reference_to: '10'
+    source_locality:
+      source_locality_stack:
+        - type: volume
+          reference_from: '1'
+        - type: chapter
+          reference_from: '2'
   - type: updates
     bibitem:
       type: standard
       formattedref:
         content: ISO 19115:2003/Cor 1:2006
-# series are an array, containing a type, and either a formattedref, or:
-# a title, a place, an organization (string),
-# an abbreviation, a from, a to, a number, and a partnumber.
+        format: text/plain
+    description:
+      content: supersedes
+      format: text/plain
+  - type: partOf
+    bibitem:
+      title:
+        type: main
+        content: Book title
+        format: text/plain
+# series are an array, containing a title, a type, a formattedref, a place,
+# an organization (string), an abbreviation, a from, a to, a number, and a partnumber.
+# The title is mandatory, and all other fields are optional.
 # The series title, like the titles of bibliographic items, contains a type,
 # content, and optional language, script, and format attributes.
 # The abbreviation and formattedref are either a string,
@@ -257,22 +277,37 @@ series:
     to: '2010-12-20'
     number: serie1234
     partnumber: part5678
-  - type: alt
-    formattedref:
-      content: serieref
-      language: en
-      script: Latn
+  - title:
+      - content: Series
+        language: en
+        script: Latn
+      - content: Séries
+        language: fr
+        script: Latn
+        format: text/plain
 # medium contains a form, a size, and a scale
 medium:
   form: medium form
   size: medium size
   scale: medium scale
-# place is an array of strings
-place: bib place
-# extent is an array, containing type, a reference_from, and an optional reference_to
+# place is an array of strings or hashes. Can have name or city, region and country.
+# Name or city is mandatory, region and country are optional.
+# String and hash with name are equivalent.
+place:
+  - bib place
+  - city: Geneva
+    region:
+      - name: Region
+    country:
+      - iso: CH
+        name: Switzelznd
+        recommended: true
+# extent is an array, localities are an array of locality_stack
 extent:
-  type: section
-  reference_from: '7'
+  locality:
+    type: section
+    reference_from: '7'
+    reference_to: '10'
 # accesslocation is an array of strings
 accesslocation:
   - accesslocation1
@@ -286,6 +321,12 @@ validity:
   begins: '2010-10-10 12:21'
   ends: '2011-02-03 18:30'
   revision: '2011-03-04 09:00'
+# keyword is an array of strings or hashes of content, language, script, and format
+keyword:
+  - Keyword
+  - Key Word
+# license is a string
+license: License
 ----
 
 == Metanorma structure (AsciiBib): nested definition list
@@ -545,8 +586,9 @@ medium::
   scale::: medium scale
 place:: bib place
 extent::
-  type::: section
-  reference_from::: 7
+  locality:::
+    type::: section
+    reference_from::: 7
 accesslocation::
   . accesslocation1
   . accesslocation2
@@ -588,7 +630,7 @@ type::: uri
 id::: www.ietf.org
 --
     description:::: Affiliation description
-  contact:::
+  address:::
     street::::
       . 8 Street St
     city:::: City
@@ -596,8 +638,8 @@ id::: www.ietf.org
     country:::: Country
     state:::: State
   contact:::
-    type:::: phone
-    value:::: 223322
+    mobile:::: 223322
+    phone:::: mobile
 role:: author
 
 ==== Contributor
@@ -716,7 +758,6 @@ docid::
 docid::
   type::: ABC
   id::: 32784
-type:: standard
 ----
 
 can instead be represented as:
@@ -743,15 +784,11 @@ Embedded elements can also repeat:
 ==== Contributor
 person::
   contact:::
-    street::::
-      . 8 Street St
-    city:::: City
-    postcode:::: 123456
-    country:::: Country
-    state:::: State
+    phone:::: 223322
+    type:::: mobile
   contact:::
-    type:::: phone
-    value:::: 223322
+    phone:::: 332233
+    type:::: work
 ----
 
 can instead be represented as:
@@ -761,14 +798,11 @@ can instead be represented as:
 [%bibitem]
 ...
 contributor.person.contact::
-contributor.person.contact.street:: 8 Street St
-contributor.person.contact.city:: City
-contributor.person.contact.postcode:: 123456
-contributor.person.contact.country:: Country
-contributor.person.contact.state:: State
+contributor.person.contact.phone:: 223322
+contributor.person.contact.type:: mobile
 contributor.person.contact::
-contributor.person.contact.type:: phone
-contributor.person.contact.value:: 223322
+contributor.person.contact.phone:: 332233
+contributor.person.contact.type:: work
 ----
 
 The following is Metanorma AsciiDoc markup corresponding to the YAML
@@ -873,15 +907,13 @@ contributor.person.affiliation.organization.abbreviation:: IETF
 contributor.person.affiliation.organization.identifier.type:: uri
 contributor.person.affiliation.organization.identifier.id:: www.ietf.org
 contributor.person.affiliation.description:: Affiliation description
-contributor.person.contact::
-contributor.person.contact.street:: 8 Street St
-contributor.person.contact.city:: City
-contributor.person.contact.postcode:: 123456
-contributor.person.contact.country:: Country
-contributor.person.contact.state:: State
-contributor.person.contact::
-contributor.person.contact.type:: phone
-contributor.person.contact.value:: 223322
+contributor.person.address.street:: 8 Street St
+contributor.person.address.city:: City
+contributor.person.address.postcode:: 123456
+contributor.person.address.country:: Country
+contributor.person.address.state:: State
+contributor.person.contact.phone:: 223322
+contributor.person.contact.type:: mobile
 contributor.role:: author
 contributor::
 contributor.organization.name:: IETF
