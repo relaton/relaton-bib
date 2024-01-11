@@ -1,5 +1,5 @@
 <bibdata type="standard" schema-version="v1.2.8">
-  <fetched>2024-01-05</fetched>
+  <fetched>2024-01-10</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -78,6 +78,9 @@
       <name>Institute of Electrical and Electronics Engineers</name>
       <abbreviation>IEEE</abbreviation>
       <identifier type="uri">www.ieee.org</identifier>
+      <address>
+        <formattedAddress>Formatted address</formattedAddress>
+      </address>
     </organization>
   </contributor>
   <contributor>
@@ -126,6 +129,9 @@
     </role>
     <organization>
       <name>World Wide Web Consortium</name>
+      <address>
+        <formattedAddress>Address string</formattedAddress>
+      </address>
     </organization>
   </contributor>
   <edition number="1.2">Edition 1</edition>

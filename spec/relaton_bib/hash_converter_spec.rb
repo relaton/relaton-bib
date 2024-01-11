@@ -23,13 +23,13 @@ RSpec.describe RelatonBib::HashConverter do
     expect(ls).to be_instance_of RelatonBib::LocalizedString
   end
 
-  it "make localityStack form unwrapped loclaity" do
+  it "make localityStack from unwrapped loclaity" do
     hash = { locality: [{ type: "section", reference_from: "1" }] }
     RelatonBib::HashConverter.relation_locality_hash_to_bib hash
     expect(hash[:locality].first).to be_instance_of RelatonBib::LocalityStack
   end
 
-  it "make sourceLocalityStack form unwrapped sourceLoclaity" do
+  it "make sourceLocalityStack from unwrapped sourceLoclaity" do
     hash = { source_locality: [{ type: "section", reference_from: "1" }] }
     RelatonBib::HashConverter.relation_source_locality_hash_to_bib hash
     expect(hash[:source_locality].first).to be_instance_of(
@@ -53,7 +53,7 @@ RSpec.describe RelatonBib::HashConverter do
   end
 
   context "contacts_hash_to_bib" do
-    it "create address form old hash" do
+    it "create address from old hash" do
       hash = { contact: [{ street: "Street", city: "City", country: "Country" }] }
       address = described_class.contacts_hash_to_bib hash
       expect(address).to be_instance_of Array
@@ -71,7 +71,15 @@ RSpec.describe RelatonBib::HashConverter do
       expect(address.first.formatted_address).to eq "Address"
     end
 
-    it "create contact form old hash" do
+    it "create formatted address from string" do
+      entity = { contact: [{ address: "Address" }] }
+      address = RelatonBib::HashConverter.contacts_hash_to_bib entity
+      expect(address).to be_instance_of Array
+      expect(address.first).to be_instance_of RelatonBib::Address
+      expect(address.first.formatted_address).to eq "Address"
+    end
+
+    it "create contact from old hash" do
       hash = { contact: [{ type: "phone", value: "123" }] }
       contact = described_class.contacts_hash_to_bib hash
       expect(contact).to be_instance_of Array

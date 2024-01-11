@@ -199,6 +199,7 @@ contributor.organization.name:: Institute of Electrical and Electronics Engineer
 contributor.organization.abbreviation:: IEEE
 contributor.organization.identifier.type:: uri
 contributor.organization.identifier.value:: www.ieee.org
+contributor.organization.address.formatted_address:: Formatted address
 contributor.role::
 contributor.role.description:: Publisher description
 contributor.role.type:: publisher
@@ -245,6 +246,7 @@ contributor.person.name.surname.script:: Latn
 contributor.role.type:: editor
 contributor::
 contributor.organization.name:: World Wide Web Consortium
+contributor.organization.address.formatted_address:: Address string
 contributor.role.description:: sponsor
 contributor.role.type:: distributor
 relation::

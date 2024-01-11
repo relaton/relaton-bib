@@ -143,6 +143,9 @@ contributor:
       identifier:
         type: uri
         id: www.ieee.org
+      contact:
+        address:
+          formatted_address: Formatted address
     role:
       - type: publisher
         description: Publisher description
@@ -205,6 +208,8 @@ contributor:
 
   - organization:
       name: World Wide Web Consortium
+      contact:
+        address: Address string
     role:
       type: distributor
       description: sponsor

@@ -124,12 +124,10 @@ module RelatonBib
       # @param [RelatonBib::ContributionInfo] contrib contributor
       #
       def render_address(builder, contrib) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-        # addr = contrib.entity.contact.reject do |cn|
-        #   cn.is_a?(Address) && cn.postcode.nil?
-        # end
-        if contrib.entity.contact.any?
+        address, contact = address_contact contrib.entity.contact
+        if address || contact.any?
           builder.address do |xml|
-            address = contrib.entity.contact.detect { |cn| cn.is_a? Address }
+            # address = contrib.entity.contact.detect { |cn| cn.is_a? Address }
             if address
               xml.postal do
                 xml.city address.city if address.city
@@ -139,9 +137,17 @@ module RelatonBib
                 xml.street address.street[0] if address.street.any?
               end
             end
-            render_contact xml, contrib.entity.contact
+            render_contact xml, contact
           end
         end
+      end
+
+      def address_contact(contact) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+        addr = contact.detect do |c|
+          c.is_a?(Address) && (c.city || c.postcode || c.country || c.state || c.street.any?)
+        end
+        cont = contact.select { |c| c.is_a?(Contact) }
+        [addr, cont]
       end
 
       #

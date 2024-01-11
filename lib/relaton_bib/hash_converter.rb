@@ -308,14 +308,21 @@ module RelatonBib
         when :street, :city, :state, :country, :postcode # it's for old version compatibility, should be removed in the future
           a[:street] = RelatonBib.array(a[:street])
           Address.new(**a)
-        when :address
-          a[:address][:street] = RelatonBib.array(a[:address][:street])
-          Address.new(**a[:address])
+        when :address then create_address(a[:address])
         when :phone, :email, :uri
           Contact.new(type: type.to_s, value: value, subtype: a[:type])
         else # it's for old version compatibility, should be removed in the future
           Contact.new(**a)
         end
+      end
+    end
+
+    def create_address(adr)
+      if adr.is_a?(Hash)
+        adr[:street] = RelatonBib.array(adr[:street])
+        Address.new(**adr)
+      else
+        Address.new(formatted_address: adr)
       end
     end
 
