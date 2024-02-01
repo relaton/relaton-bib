@@ -278,7 +278,11 @@ module RelatonBib
         dt = ext&.at("doctype")
         return unless dt
 
-        DocumentType.new type: dt.text, abbreviation: dt[:abbreviation]
+        create_doctype dt
+      end
+
+      def create_doctype(type)
+        DocumentType.new type: type.text, abbreviation: type[:abbreviation]
       end
 
       # @param item [Nokogiri::XML::Element]
