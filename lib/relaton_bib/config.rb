@@ -12,15 +12,15 @@ module RelatonBib
   class Configuration
     PROGNAME = "relaton-bib".freeze
 
-    attr_accessor :logger
+    attr_reader :logger_pool
 
     def initialize
-      @logger = ::Logger.new $stderr
-      @logger.level = ::Logger::WARN
-      @logger.progname = self.class::PROGNAME
-      @logger.formatter = proc do |_severity, _datetime, progname, msg|
-        "[#{progname}] #{msg}\n"
-      end
+      @logger_pool = RelatonBib::LoggerPool.new
+      @logger_pool << RelatonBib::Logger.new($stderr, level: ::Logger::INFO, progname: self.class::PROGNAME)
+    end
+
+    def logger_pool=(loggers)
+      @logger_pool.loggers = loggers
     end
   end
 

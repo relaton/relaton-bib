@@ -18,7 +18,7 @@ module RelatonBib
         whole|table|annex|figure|note|list|example|volume|issue|time|anchor|
         locality:[a-zA-Z0-9_]+}x
       unless type&.match? type_ptrn
-        Util.warn "WARNING: invalid locality type: `#{type}`"
+        Util.warn "Invalid locality type: `#{type}`"
       end
 
       @type           = type
