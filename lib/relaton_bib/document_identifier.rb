@@ -61,7 +61,7 @@ module RelatonBib
               id.sub %r{(?<=:)(?:\w{2},)*?(#{opts[:lang]})(?:,\w{2})*}, '\1'
             else id
             end
-      element = opts[:builder].docidentifier lid
+      element = opts[:builder].docidentifier { |b| b.parent.inner_html = lid }
       element[:type] = type if type
       element[:scope] = scope if scope
       element[:primary] = primary if primary

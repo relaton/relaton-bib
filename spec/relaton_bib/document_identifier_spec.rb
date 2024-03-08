@@ -21,7 +21,7 @@ RSpec.describe RelatonBib::DocumentIdentifier do
     context "ISO" do
       subject do
         RelatonBib::DocumentIdentifier.new(
-          type: "URN", id: "urn:iso:std:iso:1111:-1:stage-60.60:ed-1:v1:en,fr"
+          type: "URN", id: "urn:iso:std:iso:1111:-1:stage-60.60:ed-1:v1:en,fr",
         )
       end
 
@@ -35,20 +35,18 @@ RSpec.describe RelatonBib::DocumentIdentifier do
       subject do
         RelatonBib::DocumentIdentifier.new(
           type: "URN",
-          id: "urn:iec:std:iec:61058-2-4:1995::csv:en:plus:amd:1:2003"
+          id: "urn:iec:std:iec:61058-2-4:1995::csv:en:plus:amd:1:2003",
         )
       end
 
       it "remove part" do
         subject.remove_part
-        expect(subject.id).to eq "urn:iec:std:iec:61058:1995::csv:en:plus:"\
-        "amd:1:2003"
+        expect(subject.id).to eq "urn:iec:std:iec:61058:1995::csv:en:plus:amd:1:2003"
       end
 
       it "remove date" do
         subject.remove_date
-        expect(subject.id).to eq "urn:iec:std:iec:61058-2-4:::csv:en:plus:"\
-        "amd:1:2003"
+        expect(subject.id).to eq "urn:iec:std:iec:61058-2-4:::csv:en:plus:amd:1:2003"
       end
 
       it "set all parts" do
@@ -60,8 +58,7 @@ RSpec.describe RelatonBib::DocumentIdentifier do
 
   context "GB" do
     subject do
-      RelatonBib::DocumentIdentifier.new(id: "1111.2-2014",
-                                         type: "Chinese Standard")
+      RelatonBib::DocumentIdentifier.new(id: "1111.2-2014", type: "Chinese Standard")
     end
 
     it "remove part" do
@@ -72,6 +69,16 @@ RSpec.describe RelatonBib::DocumentIdentifier do
     it "remove date" do
       subject.remove_date
       expect(subject.id).to eq "1111.2"
+    end
+  end
+
+  context "#to_xml" do
+    it "with superscription" do
+      subject = RelatonBib::DocumentIdentifier.new(id: "CIPM 43<sup>e</sup> réunion (1950)", type: "BIPM")
+      xml = Nokogiri::XML::Builder.new do |builder|
+        subject.to_xml(builder: builder, lang: "en")
+      end.doc.root
+      expect(xml.to_xml).to eq "<docidentifier type=\"BIPM\">CIPM 43<sup>e</sup> r&#xE9;union (1950)</docidentifier>"
     end
   end
 end
