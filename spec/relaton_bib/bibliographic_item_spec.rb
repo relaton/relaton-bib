@@ -4,8 +4,6 @@ require "yaml"
 require "jing"
 
 RSpec.describe "RelatonBib" => :BibliographicItem do
-  before(:each) { RelatonBib.instance_variable_set :@configuration, nil }
-
   context "initialize" do
     it "with keyword Hash" do
       keyword = [{ content: "keyword", language: "en", script: "Latn" }]
@@ -337,7 +335,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
   it "warn invalid type argument error" do
     expect { RelatonBib::BibliographicItem.new type: "type" }.to output(
       /\[relaton-bib\] WARN: Type `type` is invalid./,
-    ).to_stderr
+    ).to_stderr_from_any_process
   end
 
   context RelatonBib::CopyrightAssociation do

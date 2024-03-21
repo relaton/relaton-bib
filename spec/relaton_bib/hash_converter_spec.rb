@@ -1,11 +1,9 @@
 RSpec.describe RelatonBib::HashConverter do
-  before(:each) { RelatonBib.instance_variable_set :@configuration, nil }
-
   it "warn if bibitem missig" do
     expect do
       ret = { relation: [type: "updates"] }
       RelatonBib::HashConverter.relation_bibitem_hash_to_bib ret[:relation][0]
-    end.to output(/Bibitem missing/).to_stderr
+    end.to output(/Bibitem missing/).to_stderr_from_any_process
   end
 
   it "make affiliation description from string" do

@@ -28,4 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "htmlentities"
   spec.add_dependency "iso639"
   spec.add_dependency "nokogiri", "~> 1.15.0"
+  spec.add_dependency "relaton-logger", "~> 0.1.0"
 end
