@@ -50,10 +50,8 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     end
 
     it "has array of titiles" do
-      expect(subject.title).to be_instance_of(
-        RelatonBib::TypedTitleStringCollection,
-      )
-      expect(subject.title(lang: "fr")[0].title.content).to eq(
+      expect(subject.title).to be_instance_of RelatonBib::TypedTitleStringCollection
+      expect(subject.title(lang: "fr")[0].to_s).to eq(
         "Information g\u00E9ographique",
       )
     end
@@ -67,10 +65,14 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(subject.shortref(subject.docidentifier.first)).to eq "ISOTC211:2014"
     end
 
-    it "returns abstract with en language" do
-      expect(subject.abstract(lang: "en")).to be_instance_of(
-        RelatonBib::FormattedString,
-      )
+    it "returns abstracts with en language" do
+      abstract = subject.abstract("en")
+      expect(abstract).to be_instance_of Array
+      expect(abstract.size).to eq 1
+      expect(abstract[0]).to be_instance_of RelatonBib::Abstract
+      expect(abstract[0].to_s).to eq "<p>ISO 19115-1:2014 defines the schema required for...</p>"
+      expect(abstract[0].language).to eq ["en"]
+      expect(abstract[0].script).to eq ["Latn"]
     end
 
     it "to most recent reference" do
@@ -85,7 +87,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(item.all_parts).to be true
       expect(item.relation.last.type).to eq "instanceOf"
       expect(item.title.detect { |t| t.type == "title-part" }).to be_nil
-      expect(item.title.detect { |t| t.type == "main" }.title.content).to eq(
+      expect(item.title.detect { |t| t.type == "main" }.to_s).to eq(
         "Geographic information",
       )
       expect(item.abstract).to be_empty
@@ -326,11 +328,11 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     owner = [RelatonBib::ContributionInfo.new(entity: org)]
     copyright = RelatonBib::CopyrightAssociation.new(owner: owner, from: "2018")
     bibitem = RelatonBib::BibliographicItem.new(
-      formattedref: RelatonBib::FormattedRef.new(content: "ISO123"),
+      formattedref: RelatonBib::FormattedRef.new("ISO123"),
       copyright: [copyright],
     )
     expect(bibitem.to_xml).to include(
-      "<formattedref format=\"text/plain\">ISO123</formattedref>",
+      "<formattedref>ISO123</formattedref>",
     )
   end
 

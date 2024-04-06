@@ -67,7 +67,7 @@ module RelatonBib
               @bib.editorialgroup&.technical_committee&.any? ||
               (include_keywords && @bib.keyword.any?)
             xml.front do
-              xml.title @bib.title[0].title.content if @bib.title.any?
+              xml.title @bib.title[0].to_s if @bib.title.any?
               render_authors xml
               render_date xml
               render_workgroup xml
@@ -262,7 +262,7 @@ module RelatonBib
       def render_abstract(builder)
         return unless @bib.abstract.any?
 
-        builder.abstract { |xml| xml << @bib.abstract[0].content.gsub(/(<\/?)p(>)/, '\1t\2') }
+        builder.abstract { |xml| xml << @bib.abstract[0].to_s.gsub(/(<\/?)p(>)/, '\1t\2') }
       end
 
       #
@@ -279,9 +279,9 @@ module RelatonBib
         # di_types = docidentifier.map(&:type)
         @bib.series.select do |s|
           s.title && # !di_types.include?(s.title.title.to_s) &&
-            !BibXMLParser::SERIESINFONAMES.include?(s.title.title.to_s)
-        end.uniq { |s| s.title.title.to_s }.each do |s|
-          si = builder.seriesInfo(name: s.title.title.to_s)
+            !BibXMLParser::SERIESINFONAMES.include?(s.title.content.to_s)
+        end.uniq { |s| s.title.to_s }.each do |s|
+          si = builder.seriesInfo(name: s.title.to_s)
           si[:value] = s.number if s.number
         end
       end

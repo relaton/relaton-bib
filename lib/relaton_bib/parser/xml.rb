@@ -1,8 +1,12 @@
 require "nokogiri"
+require "relaton_bib/parser/xml/locality"
 
 module RelatonBib
-  class XMLParser
-    class << self
+  module Parser
+    module XML
+      extend self
+      extend RelatonBib::Parser::XML::Locality
+
       #
       # Parse XML bibdata
       #
@@ -11,7 +15,7 @@ module RelatonBib
       # @return [RelatonBib::BibliographicItem, nil] bibliographic item
       #
       def from_xml(xml)
-        doc = Nokogiri::XML(xml)
+        doc = Nokogiri::XML(xml) #, nil, nil, Nokogiri::XML::ParseOptions::NOENT)
         doc.remove_namespaces!
         bibitem = doc.at "/bibitem|/bibdata"
         if bibitem
@@ -308,12 +312,9 @@ module RelatonBib
       def ttitle(title)
         return unless title
 
-        content = variants(title)
-        content = title.text unless content.any?
-        TypedTitleString.new(
-          type: title[:type], content: content, language: title[:language],
-          script: title[:script], format: title[:format]
-        )
+        content = Element.parse_text_elements title
+        attrs = title.to_h.transform_keys(&:to_sym)
+        TypedTitleString.new(content: content, **attrs)
       end
 
       # @param title [Nokogiri::XML::Element]
@@ -346,8 +347,7 @@ module RelatonBib
       def stage(elm)
         return unless elm
 
-        DocumentStatus::Stage.new(value: elm.text,
-                                  abbreviation: elm[:abbreviation])
+        DocumentStatus::Stage.new(value: elm.text, abbreviation: elm[:abbreviation])
       end
 
       # @param node [Nokogiri::XML::Elemen]
@@ -375,26 +375,41 @@ module RelatonBib
       def get_org(org) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         return unless org
 
-        names = org.xpath("name").map do |n|
+        Organization.new(**create_org_args(org))
+      end
+
+      def create_org_args(org)
+        logo = fetch_image org.at("./logo/image")
+        {
+          name: org_name(org), abbreviation: org.at("abbreviation")&.text,
+          subdivision: org_subdivision(org), # url: org.at("uri")&.text,
+          identifier: org_identifier(org), contact: parse_contact(org), logo: logo
+        }
+      end
+
+      def org_name(org)
+        org.xpath("name").map do |n|
           { content: n.text, language: n[:language], script: n[:script] }
         end
-        identifier = org.xpath("./identifier").map do |i|
+      end
+
+      def org_subdivision(org)
+        org.xpath("subdivision").map do |sd|
+          org = OrganizationType.new(**create_org_args(sd))
+          Subdivision.new organization: org, type: sd[:type]
+        end
+      end
+
+      def org_identifier(org)
+        org.xpath("./identifier").map do |i|
           OrgIdentifier.new(i[:type], i.text)
         end
-        subdiv = org.xpath("subdivision").map &:text
-        contact = parse_contact org
-        logo = fetch_image org.at("./logo/image")
-        Organization.new(
-          name: names, abbreviation: org.at("abbreviation")&.text,
-          subdivision: subdiv, # url: org.at("uri")&.text,
-          identifier: identifier, contact: contact, logo: logo
-        )
       end
 
       def fetch_image(elm)
         return unless elm
 
-        Image.new(**elm.to_h.transform_keys(&:to_sym))
+        Element::Image.new(**elm.to_h.transform_keys(&:to_sym))
       end
 
       #
@@ -438,8 +453,8 @@ module RelatonBib
       def fetch_affiliation(elm)
         org = get_org elm.at("./organization")
         desc = elm.xpath("./description").map do |e|
-          FormattedString.new(content: e.text, language: e[:language],
-                              script: e[:script], format: e[:format])
+          args = e.to_h.transform_keys(&:to_sym)
+          Affiliation::Description.new(content: e.text, **args)
         end
         name = localized_string elm.at("./name")
         Affiliation.new organization: org, description: desc, name: name
@@ -538,11 +553,11 @@ module RelatonBib
 
       # @param item [Nokogiri::XML::Element]
       # @return [Array<RelatonBib::FormattedString>]
-      def fetch_abstract(item)
+      def fetch_abstract(item) # rubocop:disable Metrics/AbcSize
         item.xpath("./abstract").map do |a|
-          c = a.children.to_xml(encoding: "utf-8").strip
-          FormattedString.new(content: c, language: a[:language],
-                              script: a[:script], format: a[:format])
+          c = a.children.map { |ch| ch.name == "text" ? ch.text : ch.to_xml(encoding: "UTf-8") }.join
+          args = a.attributes.each_with_object({}) { |(k, v), h| h[k.to_sym] = v.to_s }
+          Abstract.new(content: c, **args)
         end
       end
 
@@ -604,64 +619,13 @@ module RelatonBib
         BibliographicItem.new(**item_hash)
       end
 
-      #
-      # Parse locality
-      #
-      # @param rel [Nokogiri::XML::Element] relation element
-      #
-      # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>] localities
-      #
-      def localities(rel)
-        rel.xpath("./locality|./localityStack").map do |lc|
-          if lc.name == "locality"
-            locality lc
-          else
-            LocalityStack.new(lc.xpath("./locality").map { |l| locality l })
-          end
-        end
-      end
-
-      #
-      # Create Locality object from Nokogiri::XML::Element
-      #
-      # @param loc [Nokogiri::XML::Element]
-      # @param klass [RelatonBib::Locality, RelatonBib::LocalityStack]
-      #
-      # @return [RelatonBib::Locality]
-      def locality(loc, klass = Locality)
-        klass.new(
-          loc[:type],
-          loc.at("./referenceFrom")&.text,
-          loc.at("./referenceTo")&.text,
-        )
-      end
-
-      # @param rel [Nokogiri::XML::Element]
-      # @return [Array<RelatonBib::SourceLocality,
-      #   RelatonBib::SourceLocalityStack>]
-      def source_localities(rel)
-        rel.xpath("./sourceLocality|./sourceLocalityStack").map do |lc|
-          if lc[:type]
-            SourceLocalityStack.new [locality(lc, SourceLocality)]
-          else
-            sls = lc.xpath("./sourceLocality").map do |l|
-              locality l, SourceLocality
-            end
-            SourceLocalityStack.new sls
-          end
-        end
-      end
-
       # @param item [Nokogiri::XML::Element]
       # @return [RelatonBib::FormattedRef, nil]
       def fref(item)
         ident = item&.at("./formattedref")
         return unless ident
 
-        FormattedRef.new(
-          content: ident.children.to_s, format: ident[:format],
-          language: ident[:language], script: ident[:script]
-        )
+        FormattedRef.new Element::Parser.parse_text_elements(ident)
       end
 
       # @param ext [Nokogiri::XML::Element]

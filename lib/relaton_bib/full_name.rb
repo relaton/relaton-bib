@@ -1,8 +1,6 @@
 module RelatonBib
   # Person's full name
   class FullName
-    include RelatonBib
-
     # @return [Array<RelatonBib::Forename>]
     attr_accessor :forename
 
@@ -67,12 +65,12 @@ module RelatonBib
       hash["abbreviation"] = abbreviation.to_hash if abbreviation
       if forename.any? || initials
         hash["given"] = {}
-        hash["given"]["forename"] = single_element_array(forename) if forename&.any?
+        hash["given"]["forename"] = forename.map(&:to_hash) if forename&.any?
         hash["given"]["formatted_initials"] = initials.to_hash if initials
       end
       hash["surname"] = surname.to_hash if surname
-      hash["addition"] = single_element_array(addition) if addition&.any?
-      hash["prefix"] = single_element_array(prefix) if prefix&.any?
+      hash["addition"] = addition.map(&:to_hash) if addition&.any?
+      hash["prefix"] = prefix.map(&:to_hash) if prefix&.any?
       hash["completename"] = completename.to_hash if completename
       hash
     end

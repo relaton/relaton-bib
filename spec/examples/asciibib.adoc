@@ -5,16 +5,13 @@ fetched:: 2022-05-02
 title::
 title.type:: title-main
 title.content:: Geographic information
-title.format:: text/plain
 title::
 title.type:: main
 title.content:: Geographic information
-title.format:: text/plain
 title::
 title.content:: Information géographique
 title.language:: fr
 title.script:: Latn
-title.format:: text/plain
 type:: standard
 docid::
 docid.type:: ISO
@@ -79,16 +76,14 @@ abstract::
 abstract.content:: <p>ISO 19115-1:2014 defines the schema required for...</p>
 abstract.language:: en
 abstract.script:: Latn
-abstract.format:: text/html
+abstract.locale:: en-US
 abstract::
 abstract.content:: L'ISO 19115-1:2014 définit le schéma requis pour...
 abstract.language:: fr
 abstract.script:: Latn
-abstract.format:: text/plain
-copyright.owner.name:: International Organization for Standardization
-copyright.owner.abbreviation:: ISO
-copyright.owner.url:: www.iso.org
-copyright.role.type:: publisher
+copyright.owner.organization.name:: International Organization for Standardization
+copyright.owner.organization.abbreviation:: ISO
+copyright.owner.organization.url:: www.iso.org
 copyright.from:: 2014
 copyright.to:: 2020
 copyright.scope:: Scope
@@ -158,7 +153,8 @@ validity.revision:: 2011-03-04 09:00
 contributor::
 contributor.organization.name:: International Organization for Standardization
 contributor.organization.abbreviation:: ISO
-contributor.organization.subdivision:: division
+contributor.organization.subdivision.name:: ISO
+contributor.organization.subdivision.type:: division
 contributor.organization.url:: www.iso.org
 contributor.organization.logo.image.id:: logo1
 contributor.organization.logo.image.src:: logo1.png
@@ -262,11 +258,9 @@ relation::
 relation.type:: partOf
 relation.bibitem.title.type:: main
 relation.bibitem.title.content:: Book title
-relation.bibitem.title.format:: text/plain
 series::
 series.type:: Internet-Draft
 series.title.content:: Internet-Draft
-series.title.format:: text/plain
 series.number:: draft-ietf-somewg-someprotocol-07
 series.run:: seriesrun
 series::
@@ -275,7 +269,6 @@ series.title.type:: original
 series.title.content:: ISO/IEC FDIS 10118-3
 series.title.language:: en
 series.title.script:: Latn
-series.title.format:: text/plain
 series.place:: Serie's place
 series.organization:: Serie's organization
 series.abbreviation:: ABVR
@@ -285,30 +278,18 @@ series.number:: serie1234
 series.partnumber:: part5678
 series::
 series.type:: alt
-series.formattedref.content:: serieref
-series.formattedref.language:: en
-series.formattedref.script:: Latn
-series.formattedref.format:: text/plain
+series.formattedref:: serieref
 series.title.content:: Formattedref
-series.title.format:: text/plain
 series::
 series.type:: journal
 series.title.content:: Journal
-series.title.format:: text/plain
 series.number:: 7
 series::
-series.title.variant::
-series.title.variant.content:: Series
-series.title.variant.language:: en
-series.title.variant.script:: Latn
-series.title.variant::
-series.title.variant.content:: Séries
-series.title.variant.language:: fr
-series.title.variant.script:: Latn
-series.title.format:: text/plain
+series.title.content:: Series
+series.title.language:: en
+series.title.script:: Latn
 series::
 series.title.content:: RFC
-series.title.format:: text/plain
 series.number:: 4
 doctype.type:: Doctype
 doctype.abbreviation:: DCT

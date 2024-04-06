@@ -1,7 +1,7 @@
-<bibitem id="mrx05" type="article" schema-version="v1.2.8">
+<bibitem id="mrx05" type="article" schema-version="v1.3.0">
   <fetched>2019-12-05</fetched>
-  <title type="main" format="text/plain">Something Great</title>
-  <title type="main" format="text/plain">Sub title</title>
+  <title type="main">Something Great</title>
+  <title type="main">Sub title</title>
   <uri type="src">http://standars.org/123</uri>
   <uri type="doi">http://standard.org/doi-123</uri>
   <uri type="file">file://path/file</uri>
@@ -80,15 +80,15 @@
   <language>en</language>
   <relation type="partOf">
     <bibitem>
-      <title type="main" format="text/plain">Book title</title>
+      <title type="main">Book title</title>
     </bibitem>
   </relation>
   <series type="journal">
-    <title format="text/plain">Journal</title>
+    <title>Journal</title>
     <number>7</number>
   </series>
   <series>
-    <title format="text/plain">Series</title>
+    <title>Series</title>
   </series>
   <place>Some address</place>
   <extent type="chapter">

@@ -2,8 +2,6 @@ module RelatonBib
   # Version
   class BibliographicItem
     class Version
-      include RelatonBib
-
       # @return [String, nil]
       attr_reader :revision_date, :draft
 

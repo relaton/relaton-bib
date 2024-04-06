@@ -95,7 +95,7 @@
       <text/>
     </element>
   </define>
-  <define name="LocalizedString1">
+  <define name="LocalizedStringAttrs">
     <optional>
       <!-- multiple languages and scripts possible: comma delimit them if so -->
       <attribute name="language"/>
@@ -106,6 +106,10 @@
     <optional>
       <attribute name="script"/>
     </optional>
+  </define>
+  <define name="LocalizedString1">
+    <!-- multiple languages and scripts possible: comma delimit them if so -->
+    <ref name="LocalizedStringAttrs"/>
     <text/>
   </define>
   <define name="LocalizedString">
@@ -142,16 +146,8 @@
     <ref name="LocalizedStringOrXsAny"/>
   </define>
   <define name="LocalizedStringOrXsAny1">
-    <optional>
-      <!-- multiple languages and scripts possible: comma delimit them if so -->
-      <attribute name="language"/>
-    </optional>
-    <optional>
-      <attribute name="locale"/>
-    </optional>
-    <optional>
-      <attribute name="script"/>
-    </optional>
+    <!-- multiple languages and scripts possible: comma delimit them if so -->
+    <ref name="LocalizedStringAttrs"/>
     <oneOrMore>
       <choice>
         <text/>
@@ -208,7 +204,10 @@
   </define>
   <define name="roledescription">
     <element name="description">
-      <ref name="FormattedString"/>
+      <ref name="LocalizedStringAttrs"/>
+      <oneOrMore>
+        <ref name="TextElement"/>
+      </oneOrMore>
     </element>
   </define>
   <define name="person">
@@ -333,33 +332,39 @@
   </define>
   <define name="affiliationdescription">
     <element name="description">
-      <ref name="FormattedString"/>
+      <ref name="LocalizedStringAttrs"/>
+      <oneOrMore>
+        <ref name="TextElement"/>
+      </oneOrMore>
     </element>
   </define>
   <define name="organization">
     <element name="organization">
-      <oneOrMore>
-        <ref name="orgname"/>
-      </oneOrMore>
-      <zeroOrMore>
-        <ref name="subdivision"/>
-      </zeroOrMore>
-      <optional>
-        <ref name="abbreviation"/>
-      </optional>
-      <zeroOrMore>
-        <ref name="uri"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="org-identifier"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="contact"/>
-      </zeroOrMore>
-      <optional>
-        <ref name="logo"/>
-      </optional>
+      <ref name="OrganizationType"/>
     </element>
+  </define>
+  <define name="OrganizationType">
+    <oneOrMore>
+      <ref name="orgname"/>
+    </oneOrMore>
+    <zeroOrMore>
+      <ref name="subdivision"/>
+    </zeroOrMore>
+    <optional>
+      <ref name="abbreviation"/>
+    </optional>
+    <zeroOrMore>
+      <ref name="uri"/>
+    </zeroOrMore>
+    <zeroOrMore>
+      <ref name="org-identifier"/>
+    </zeroOrMore>
+    <zeroOrMore>
+      <ref name="contact"/>
+    </zeroOrMore>
+    <optional>
+      <ref name="logo"/>
+    </optional>
   </define>
   <define name="orgname">
     <element name="name">
@@ -371,10 +376,10 @@
   </define>
   <define name="subdivision">
     <element name="subdivision">
-      <choice>
-        <ref name="LocalizedString"/>
-        <ref name="NameWithVariants"/>
-      </choice>
+      <optional>
+        <attribute name="type"/>
+      </optional>
+      <ref name="OrganizationType"/>
     </element>
   </define>
   <define name="logo">
@@ -894,7 +899,9 @@
   </define>
   <define name="formattedref">
     <element name="formattedref">
-      <ref name="FormattedString"/>
+      <oneOrMore>
+        <ref name="TextElement"/>
+      </oneOrMore>
     </element>
   </define>
   <define name="license">
@@ -939,7 +946,10 @@
     <optional>
       <attribute name="type"/>
     </optional>
-    <ref name="FormattedString"/>
+    <ref name="LocalizedStringAttrs"/>
+    <zeroOrMore>
+      <ref name="TextElement"/>
+    </zeroOrMore>
   </define>
   <!-- TitleType = ( "alternative" | "original" | "unofficial" | "subtitle" | "main" ) -->
   <define name="TypedUri">
@@ -1030,16 +1040,10 @@
           <data type="boolean"/>
         </attribute>
       </optional>
-      <optional>
-        <attribute name="language"/>
-      </optional>
-      <optional>
-        <attribute name="locale"/>
-      </optional>
-      <optional>
-        <attribute name="script"/>
-      </optional>
-      <text/>
+      <ref name="LocalizedStringAttrs"/>
+      <oneOrMore>
+        <ref name="TextElement"/>
+      </oneOrMore>
     </element>
   </define>
   <define name="docnumber">
@@ -1264,12 +1268,23 @@
       <optional>
         <attribute name="type"/>
       </optional>
-      <ref name="FormattedString"/>
+      <ref name="LocalizedStringAttrs"/>
+      <oneOrMore>
+        <ref name="TextElement"/>
+      </oneOrMore>
     </element>
   </define>
   <define name="bibabstract">
     <element name="abstract">
-      <ref name="FormattedString"/>
+      <ref name="LocalizedStringAttrs"/>
+      <choice>
+        <oneOrMore>
+          <ref name="BasicBlock"/>
+        </oneOrMore>
+        <oneOrMore>
+          <ref name="TextElement"/>
+        </oneOrMore>
+      </choice>
     </element>
   </define>
   <define name="copyright">
@@ -1374,7 +1389,10 @@
       </attribute>
       <optional>
         <element name="description">
-          <ref name="FormattedString"/>
+          <ref name="LocalizedStringAttrs"/>
+          <oneOrMore>
+            <ref name="TextElement"/>
+          </oneOrMore>
         </element>
       </optional>
       <element name="bibitem">

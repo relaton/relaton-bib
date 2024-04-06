@@ -1,3 +1,4 @@
+require "uri"
 require "forwardable"
 require "yaml"
 require "htmlentities"
@@ -5,19 +6,17 @@ require "relaton_bib/version"
 require "relaton_bib/deep_dup"
 require "relaton_bib/config"
 require "relaton_bib/util"
-require "relaton_bib/localized_string"
-require "relaton_bib/forename"
-require "relaton_bib/full_name"
-require "relaton_bib/contributor"
-require "relaton_bib/document_type"
-require "relaton_bib/image"
+require "relaton_bib/element/parser"
 require "relaton_bib/bibliographic_item"
 require "relaton_bib/hit_collection"
 require "relaton_bib/hit"
+require "relaton_bib/parser/xml"
 require "relaton_bib/bibxml_parser"
 require "relaton_bib/renderer/bibtex_builder"
 require "relaton_bib/renderer/bibxml"
 
+Encoding.default_external = "UTF-8"
+Encoding.default_internal = "UTF-8"
 module RelatonBib
   class Error < StandardError; end
 
@@ -94,15 +93,15 @@ module RelatonBib
     Digest::MD5.hexdigest RelatonBib::VERSION # grammars
   end
 
-  private
+  # private
 
-  # @param array [Array]
-  # @return [Array<String>, String]
-  def single_element_array(array)
-    # if array.size > 1
-    array.map { |e| e.is_a?(String) ? e : e.to_hash }
-    # else
-    #   array.first.is_a?(String) ? array[0] : array.first&.to_hash
-    # end
-  end
+  # # @param array [Array]
+  # # @return [Array<String>, String]
+  # def single_element_array(array)
+  #   # if array.size > 1
+  #   array.map { |e| e.is_a?(String) ? e : e.to_hash }
+  #   # else
+  #   #   array.first.is_a?(String) ? array[0] : array.first&.to_hash
+  #   # end
+  # end
 end

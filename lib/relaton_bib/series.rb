@@ -83,7 +83,7 @@ module RelatonBib
     def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       hash = {}
       hash["type"] = type if type
-      hash["formattedref"] = formattedref.to_hash if formattedref
+      hash["formattedref"] = formattedref.to_s if formattedref
       hash["title"] = title.to_hash
       hash["place"] = place if place
       hash["organization"] = organization if organization
@@ -100,7 +100,7 @@ module RelatonBib
     # @param count [Integer]
     # @return [String]
     def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength,Metrics/PerceivedComplexity
-      pref = prefix.empty? ? "series" : prefix + ".series"
+      pref = prefix.empty? ? "series" : "#{prefix}.series"
       out = count > 1 ? "#{pref}::\n" : ""
       out += "#{pref}.type:: #{type}\n" if type
       out += formattedref.to_asciibib pref if formattedref

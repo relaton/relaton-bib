@@ -116,7 +116,7 @@ module RelatonBib
     # @count [Integer] number of persons
     # @return [String]
     def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize
-      pref = prefix.sub(/\*$/, "person")
+      pref = prefix.empty? ? "person" : "#{prefix}.person"
       out = count > 1 ? "#{pref}::\n" : ""
       out += name.to_asciibib pref
       credential.each { |c| out += "#{pref}.credential:: #{c}\n" }

@@ -3,27 +3,26 @@
 module RelatonBib
   # Localized string.
   class LocalizedString
-    include RelatonBib
-
-    # @return [Array<String>] language Iso639 code
-    attr_reader :language
-
-    # @return [Array<String>] script Iso15924 code
-    attr_reader :script
+    include RelatonBib::LocalizedStringAttrs
 
     # @return [String, Array<RelatonBib::LocalizedString>]
     attr_accessor :content
 
+    #
+    # Initialize new instance of LocalizedString.
+    #
     # @param content [String, Array<RelatonBib::LocalizedString>]
-    # @param language [String] language code Iso639
-    # @param script [String] script code Iso15924
-    def initialize(content, language = nil, script = nil) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    # @param language [Array<String>, String] language code Iso639
+    # @param script [Array<String>, String] script code Iso15924
+    # @param locale [String, nil]
+    #
+    def initialize(content, language = [], script = [], locale = nil) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
       if content.is_a?(Array) && content.none?
         raise ArgumentError, "LocalizedString content is empty"
       end
 
-      @language = language.is_a?(String) ? [language] : language
-      @script = script.is_a?(String) ? [script] : script
+      super(language: language, script: script, locale: locale)
+
       @content = if content.is_a?(Array)
                    content.map do |c|
                      case c
@@ -56,14 +55,13 @@ module RelatonBib
     end
 
     # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    def to_xml(builder)
       return unless content
 
       if content.is_a?(Array)
         content.each { |c| builder.variant { c.to_xml builder } }
       else
-        builder.parent["language"] = language.join(",") if language&.any?
-        builder.parent["script"]   = script.join(",") if script&.any?
+        super
         builder.parent.inner_html = encode content
       end
     end
@@ -100,8 +98,8 @@ module RelatonBib
 
         hash = {}
         hash["content"] = content # unless content.nil? || content.empty?
-        hash["language"] = single_element_array(language) if language&.any?
-        hash["script"] = single_element_array(script) if script&.any?
+        hash["language"] = language if language&.any?
+        hash["script"] = script if script&.any?
         hash
       else content&.map &:to_hash
       end

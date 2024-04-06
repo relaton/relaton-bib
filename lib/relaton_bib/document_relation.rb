@@ -1,8 +1,6 @@
 module RelatonBib
   # Documett relation
   class DocumentRelation
-    include RelatonBib
-
     TYPES = %w[
       includes includedIn hasPart partOf merges mergedInto splits splitInto
       instanceOf hasInstance exemplarOf hasExemplar manifestationOf
@@ -71,20 +69,18 @@ module RelatonBib
     # rubocop:enable Metrics/AbcSize
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize
+    def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       hash = { "type" => type, "bibitem" => bibitem.to_hash(embedded: true) }
       hash["description"] = description.to_hash if description
-      hash["locality"] = single_element_array(locality) if locality&.any?
-      if source_locality&.any?
-        hash["source_locality"] = single_element_array(source_locality)
-      end
+      hash["locality"] = locality.map(&:to_hash) if locality&.any?
+      hash["source_locality"] = source_locality.map(&:to_hash) if source_locality&.any?
       hash
     end
 
     # @param prefix [String]
     # @return [String]
     def to_asciibib(prefix = "")
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       out = "#{prefix}.type:: #{type}\n"
       out += description.to_asciibib "#{pref}desctiption" if description
       out += bibitem.to_asciibib "#{pref}bibitem" if bibitem

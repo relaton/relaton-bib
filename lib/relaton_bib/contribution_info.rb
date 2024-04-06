@@ -6,8 +6,6 @@ require "relaton_bib/person"
 module RelatonBib
   # Contributor's role.
   class ContributorRole
-    include RelatonBib
-
     TYPES = %w[author performer publisher editor adapter translator
                distributor realizer owner authorizer enabler subject].freeze
 
@@ -68,13 +66,10 @@ module RelatonBib
 
   # Contribution info.
   class ContributionInfo
-    include RelatonBib
-
     # @return [Array<RelatonBib::ContributorRole>]
     attr_reader :role
 
-    # @return
-    #   [RelatonBib::Person, RelatonBib::Organization]
+    # @return [RelatonBib::Person, RelatonBib::Organization]
     attr_reader :entity
 
     # @param entity [RelatonBib::Person, RelatonBib::Organization]
@@ -99,7 +94,7 @@ module RelatonBib
     # @return [Hash]
     def to_hash
       hash = entity.to_hash
-      hash["role"] = single_element_array(role) if role&.any?
+      hash["role"] = role.map(&:to_hash) if role&.any?
       hash
     end
 

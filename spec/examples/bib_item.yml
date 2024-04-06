@@ -80,18 +80,20 @@ abstract:
   - content: <p>ISO 19115-1:2014 defines the schema required for...</p>
     language: en
     script: Latn
-    format: text/html
+    locale: en-US
   - content: L'ISO 19115-1:2014 définit le schéma requis pour...
     language: fr
     script: Latn
-    format: text/plain
 
 contributor:
   - organization:
       name: International Organization for Standardization
       url: www.iso.org
       abbreviation: ISO
-      subdivision: division
+      subdivision:
+        type: division
+        organization:
+          name: ISO
       logo:
         image:
           id: logo1
@@ -280,7 +282,6 @@ series:
       content: ISO/IEC FDIS 10118-3
       language: en
       script: Latn
-      format: text/plain
     place: Serie's place
     organization: Serie's organization
     abbreviation: ABVR
@@ -292,20 +293,19 @@ series:
     title: Formattedref
     formattedref:
       content: serieref
-      language: en
-      script: Latn
+      # language: en
+      # script: Latn
   - type: journal
     title:
       content: Journal
     number: "7"
   - title:
-      content:
-        - content: Series
-          language: en
-          script: Latn
-        - content: Séries
-          language: fr
-          script: Latn
+      content: Series
+      language: en
+      script: Latn
+      # - content: Séries
+      #   language: fr
+      #   script: Latn
   - title:
       content: RFC
     number: "4"

@@ -1,6 +1,5 @@
 module RelatonBib
   class StructuredIdentifierCollection
-    include RelatonBib
     extend Forwardable
 
     def_delegators :@collection, :any?, :size, :[], :detect, :map, :each,
@@ -18,7 +17,7 @@ module RelatonBib
 
     # @return [Array<Hash>]
     def to_hash
-      single_element_array @collection
+      @collection.map(&:to_hash)
     end
 
     # @param prefix [String]
@@ -56,8 +55,6 @@ module RelatonBib
   end
 
   class StructuredIdentifier
-    include RelatonBib
-
     # @return [String]
     attr_reader :docnumber
 
@@ -119,7 +116,7 @@ module RelatonBib
     def to_hash
       hash = { "docnumber" => docnumber }
       hash["type"] = type if type
-      hash["agency"] = single_element_array agency if agency&.any?
+      hash["agency"] = agency if agency&.any?
       hash["class"] = klass if klass
       hash["partnumber"] = partnumber if partnumber
       hash["edition"] = edition if edition

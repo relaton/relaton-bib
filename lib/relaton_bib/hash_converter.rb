@@ -105,7 +105,7 @@ module RelatonBib
       return unless ret[:abstract]
 
       ret[:abstract] = RelatonBib.array(ret[:abstract]).map do |a|
-        a.is_a?(String) ? FormattedString.new(content: a) : a
+        Abstract.new(**a)
       end
     end
 
@@ -168,7 +168,7 @@ module RelatonBib
 
       ret[:biblionote] = RelatonBib.array(ret[:biblionote])
         .reduce(BiblioNoteCollection.new([])) do |mem, n|
-        mem << if n.is_a?(String) then BiblioNote.new content: n
+        mem <<  if n.is_a?(String) then BiblioNote.new content: n
                 else BiblioNote.new(**n)
                 end
       end
@@ -229,10 +229,11 @@ module RelatonBib
         OrgIdentifier.new(a[:type], a[:id])
       end
       org[:subdivision] = RelatonBib.array(org[:subdivision]).map do |sd|
-        LocalizedString.new sd
+        sd[:organization] = OrganizationType.new(**org_hash_to_bib(sd[:organization]))
+        Subdivision.new(**sd)
       end
       org[:contact] = contacts_hash_to_bib(org)
-      org[:logo] = Image.new(**org[:logo][:image]) if org[:logo]
+      org[:logo] = Element::Image.new(**org[:logo][:image]) if org[:logo]
       org
     end
 
@@ -284,17 +285,13 @@ module RelatonBib
       return [] unless person[:affiliation]
 
       RelatonBib.array(person[:affiliation]).map do |a|
-        a[:description] = RelatonBib.array(a[:description]).map do |d|
-          cnt = if d.is_a?(Hash)
-                  { content: d[:content], language: d[:language],
-                    script: d[:script], format: d[:format] }
-                else { content: d }
-                end
-          FormattedString.new(**cnt)
+        description = RelatonBib.array(a[:description]).map do |d|
+          cnt = d.is_a?(Hash) ? d : { content: d }
+          Affiliation::Description.new(**cnt)
         end
         Affiliation.new(
           organization: Organization.new(**org_hash_to_bib(a[:organization])),
-          description: a[:description], name: localizedstring(a[:name])
+          description: description, name: localizedstring(a[:name])
         )
       end
     end
@@ -331,10 +328,20 @@ module RelatonBib
       return unless ret[:copyright]
 
       ret[:copyright] = RelatonBib.array(ret[:copyright]).map do |c|
-        c[:owner] = RelatonBib.array(c[:owner]).map do |o|
-          org_hash_to_bib(o)
+        owner = owners_hash_to_bib(c[:owner])
+        CopyrightAssociation.new(owner: owner, from: c[:from], to: c[:to], scope: c[:scope])
+      end
+    end
+
+    def owners_hash_to_bib(owners)
+      RelatonBib.array(owners).map do |o|
+        if o[:person]
+          person_hash_to_bib(o[:person])
+        elsif o[:organization]
+          Organization.new(**org_hash_to_bib(o[:organization]))
+        else
+          Organization.new(**org_hash_to_bib(o))
         end
-        c
       end
     end
 
@@ -520,9 +527,9 @@ module RelatonBib
     # @return [RelatonBib::FormattedRef]
     def formattedref(frf)
       if frf.is_a?(Hash)
-        RelatonBib::FormattedRef.new(**frf)
+        FormattedRef.new(frf[:content])
       else
-        RelatonBib::FormattedRef.new(content: frf)
+        FormattedRef.new(frf)
       end
     end
 

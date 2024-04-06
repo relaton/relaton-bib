@@ -1,4 +1,4 @@
-describe RelatonBib::Image do
+describe RelatonBib::Element::Image do
   subject do
     described_class.new(
       id: "id",

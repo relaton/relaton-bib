@@ -59,7 +59,7 @@ module RelatonBib
     def to_xml(**opts)
       tl = select_lang(opts[:lang])
       tl = titles unless tl.any?
-      tl.each { |t| opts[:builder].title { t.to_xml opts[:builder] } }
+      tl.each { |t| opts[:builder].title { |b| t.to_xml b } }
     end
 
     def to_hash
@@ -75,7 +75,7 @@ module RelatonBib
       tl = titles.detect { |t| t.type == "main" } || titles.first
       return unless tl
 
-      item.title = tl.title.content
+      item.title = tl.to_s
     end
 
     private
@@ -83,68 +83,62 @@ module RelatonBib
     # @param lang [String]
     # @return [Array<RelatonBib::TypedTitleString]
     def select_lang(lang)
-      titles.select { |t| t.title.language&.include? lang }
+      titles.select { |t| t.language.include? lang }
     end
   end
 
   class TypedTitleString
-    ARGS = %i[content language script format].freeze
+    include RelatonBib::Element::Base
+    include RelatonBib::LocalizedStringAttrs
 
-    # @return [String]
+    # @return [String, nil]
     attr_reader :type
 
-    # @return [RelatonBib::FormattedString]
-    attr_reader :title
+    # @return [Array<RelatonBib::Element::Base, RelatonBib::Element::Text>]
+    attr_reader :content
 
-    # @param type [String]
-    # @param title [RelatonBib::FormattedString, Hash]
-    # @param content [String]
-    # @param language [String]
-    # @param script [String]
-    # @param format [String]
-    def initialize(**args) # rubocop:disable Metrics/MethodLength
-      unless args[:title] || args[:content]
-        raise ArgumentError, %{Keyword "title" or "content" should be passed.}
+    # @param content [Array<RelatonBib::Element::Base, RelatonBib::Element::Text>, String]
+    # @param type [String, nil]
+    # @param language [String, nil]
+    # @param script [String, nil]
+    # @param locale [String, nil]
+    def initialize(content:, type: nil, **args)
+      unless content
+        raise ArgumentError, %{Keyword "content" should be passed.}
       end
 
-      @type = args[:type]
-
-      case args[:title]
-      when FormattedString then @title = args[:title]
-      when Hash then @title = FormattedString.new(**args[:title])
-      else
-        fsargs = args.select { |k, _v| ARGS.include? k }
-        @title = FormattedString.new(**fsargs)
-      end
+      @type = type
+      @content = content.is_a?(String) ? Element.parse_text_elements(content) : content
+      super(**args)
     end
 
     #
     # Create TypedTitleStringCollection from string
     #
-    # @param title [String] title string
+    # @param content [String] title string
     # @param lang [String, nil] language code Iso639
     # @param script [String, nil] script code Iso15924
-    # @param format [String] format text/html, text/plain
+    # @param locale [String, nil]
     #
     # @return [TypedTitleStringCollection] collection of TypedTitleString
     #
-    def self.from_string(title, lang = nil, script = nil, format = "text/plain")
+    def self.from_string(content, lang: nil, script: nil, locale: nil)
       types = %w[title-intro title-main title-part]
-      ttls = split_title(title)
+      ttls = split_title(content)
       tts = ttls.map.with_index do |p, i|
         next unless p
 
-        new type: types[i], content: p, language: lang, script: script, format: format
+        new type: types[i], content: p, language: lang, script: script
       end.compact
-      tts << new(type: "main", content: ttls.compact.join(" - "),
-                 language: lang, script: script, format: format)
+      main = tts.map(&:to_s).join " - "
+      tts << new(type: "main", content: main, language: lang, script: script, locale: locale)
       TypedTitleStringCollection.new tts
     end
 
-    # @param title [String]
+    # @param content [String]
     # @return [Array<String, nil>]
-    def self.split_title(title)
-      ttls = title.sub(/\w\.Imp\s?\d+\u00A0:\u00A0/, "").split " - "
+    def self.split_title(content)
+      ttls = content.sub(/\w\.Imp\s?\d+\u00A0:\u00A0/, "").split " - "
       case ttls.size
       when 0, 1 then [nil, ttls.first.to_s, nil]
       else intro_or_part ttls
@@ -163,28 +157,33 @@ module RelatonBib
       end
     end
 
+    def content=(content)
+      @content = content.is_a?(String) ? Element.parse_text_elements(content) : content
+    end
+
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       builder.parent[:type] = type if type
-      title.to_xml builder
+      Element::Base.instance_method(:to_xml).bind_call self, builder
+      super
     end
 
     # @return [Hash]
     def to_hash
-      th = title.to_hash
-      return th unless type
-
-      th.merge "type" => type
+      hash = { "content" => to_s }
+      hash["type"] = type if type
+      hash.merge super
     end
 
     # @param prefix [String]
     # @param count [Integer] number of titles
     # @return [String]
     def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize
-      pref = prefix.empty? ? prefix : "#{prefix}."
-      out = count > 1 ? "#{pref}title::\n" : ""
-      out += "#{pref}title.type:: #{type}\n" if type
-      out += title.to_asciibib "#{pref}title", 1, !(type.nil? || type.empty?)
+      pref = prefix.empty? ? "title" : "#{prefix}.title"
+      out = count > 1 ? "#{pref}::\n" : ""
+      out += "#{pref}.type:: #{type}\n" if type
+      out += "#{pref}.content:: #{self}\n"
+      out += super(pref)
       out
     end
   end

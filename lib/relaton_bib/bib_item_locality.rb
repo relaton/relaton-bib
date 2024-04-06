@@ -100,8 +100,6 @@ module RelatonBib
   end
 
   class LocalityStack
-    include RelatonBib
-
     # @return [Array<RelatonBib::Locality>]
     attr_reader :locality
 
@@ -119,7 +117,7 @@ module RelatonBib
 
     # @returnt [Hash]
     def to_hash
-      { "locality_stack" => single_element_array(locality) }
+      { "locality_stack" => locality.map(&:to_hash) }
     end
 
     #
@@ -164,7 +162,7 @@ module RelatonBib
 
     # @returnt [Hash]
     def to_hash
-      { "source_locality_stack" => single_element_array(locality) }
+      { "source_locality_stack" => locality.map(&:to_hash) }
     end
   end
 end

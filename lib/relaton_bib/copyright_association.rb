@@ -1,8 +1,6 @@
 module RelatonBib
   # Copyright association.
   class CopyrightAssociation
-    include RelatonBib
-
     # @return [Date]
     attr_reader :from
 
@@ -12,15 +10,12 @@ module RelatonBib
     # @return [String, nil]
     attr_reader :scope
 
-    # @return [Array<RelatonBib::ContributionInfo>]
+    # @return [Array<RelatonBib::Organization, RelatonBib::Person>]
     attr_reader :owner
 
     # rubocop:disable Metrics/AbcSize
 
-    # @param owner [Array<Hash, RelatonBib::ContributionInfo>] contributor
-    # @option owner [String] :name
-    # @option owner [String] :abbreviation
-    # @option owner [String] :url
+    # @param owner [Array<RelatonBib::Organization, RelatonBib::Person>] contributor
     # @param from [String] date
     # @param to [String, nil] date
     # @param scope [String, nil]
@@ -29,10 +24,7 @@ module RelatonBib
         raise ArgumentError, "at least one owner should exist."
       end
 
-      @owner = owner.map do |o|
-        o.is_a?(Hash) ? ContributionInfo.new(entity: Organization.new(**o)) : o
-      end
-
+      @owner = owner
       @from  = Date.strptime(from.to_s, "%Y") if from.to_s.match?(/\d{4}/)
       @to    = Date.strptime(to.to_s, "%Y") unless to.to_s.empty?
       @scope = scope
@@ -52,12 +44,8 @@ module RelatonBib
     # rubocop:enable Metrics/AbcSize
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize
-      owners = single_element_array(owner.map { |o| o.to_hash["organization"] })
-      hash = {
-        "owner" => owners,
-        "from" => from.year.to_s,
-      }
+    def to_hash
+      hash = { "owner" => owner.map(&:to_hash), "from" => from.year.to_s }
       hash["to"] = to.year.to_s if to
       hash["scope"] = scope if scope
       hash

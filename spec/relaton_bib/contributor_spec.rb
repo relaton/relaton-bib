@@ -26,7 +26,7 @@ end
 describe RelatonBib::Affiliation do
   let(:org) { RelatonBib::Organization.new(name: "Org") }
   let(:name) { RelatonBib::LocalizedString.new("Name", "en") }
-  let(:desc) { RelatonBib::FormattedString.new(content: "Description", language: "en") }
+  let(:desc) { RelatonBib::Affiliation::Description.new(content: "Description", language: "en") }
   subject do
     description = desc ? [desc] : []
     described_class.new(organization: org, name: name, description: description)
@@ -39,7 +39,7 @@ describe RelatonBib::Affiliation do
         expect(xml.to_s).to be_equivalent_to <<~XML
           <affiliation>
             <name language="en">Name</name>
-            <description format="text/plain" language="en">Description</description>
+            <description language="en">Description</description>
             <organization>
               <name>Org</name>
             </organization>
@@ -62,7 +62,6 @@ describe RelatonBib::Affiliation do
           affiliation.name.language:: en
           affiliation.description.content:: Description
           affiliation.description.language:: en
-          affiliation.description.format:: text/plain
           affiliation.organization.name:: Org
         ASCIIBIB
       end
@@ -76,7 +75,7 @@ describe RelatonBib::Affiliation do
         expect(xml.to_s).to be_equivalent_to <<~XML
           <affiliation>
             <name language="en">Name</name>
-            <description format="text/plain" language="en">Description</description>
+            <description language="en">Description</description>
           </affiliation>
         XML
       end
@@ -98,7 +97,7 @@ describe RelatonBib::Affiliation do
         xml = Nokogiri::XML::Builder.new { |b| subject.to_xml(builder: b) }.doc.root
         expect(xml.to_s).to be_equivalent_to <<~XML
           <affiliation>
-            <description format="text/plain" language="en">Description</description>
+            <description language="en">Description</description>
             <organization>
               <name>Org</name>
             </organization>
