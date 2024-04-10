@@ -5,6 +5,7 @@ module RelatonBib
     #
     class Em
       include RelatonBib::Element::Base
+
       # @param builder [Nokogiri::XML::Builder]
       def to_xml(builder)
         builder.em { |b| super b }

@@ -73,7 +73,8 @@ module RelatonBib
   class Locality < BibItemLocality
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
-      builder.locality { |b| super(b) }
+      super_to_xml = method(:to_xml).super_method
+      builder.locality { |b| super_to_xml.call(b) }
     end
 
     #

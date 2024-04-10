@@ -1,6 +1,8 @@
 module RelatonBib
   module Element
     class CitationType
+      include ToString
+
       # @return [String]
       attr_reader :bibitemid
 
@@ -14,9 +16,8 @@ module RelatonBib
       # Initialize CitationType
       #
       # @param [String] bibitemid IDREF of the bibliographic item
-      # @param [Hash] **args
-      # @option args [Array<RelatonBib::Locality, RelatonBib::LocalityStack, nil>] :locality
-      # @option args [String, nil] :date ISO8601Date
+      # @param [Array<RelatonBib::Locality, RelatonBib::LocalityStack>] locality
+      # @param [String, nil] date ISO8601Date
       #
       def initialize(bibitemid, **args)
         @bibitemid = bibitemid
@@ -27,8 +28,8 @@ module RelatonBib
       # @param builder [Nokogiri::XML::Builder]
       def to_xml(builder)
         builder.parent[:bibitemid] = bibitemid
-        builder.parent[:date] = date if date
-        builder.parent { |b| locality.each { |l| l.to_xml b } }
+        locality.each { |l| l.to_xml builder }
+        builder.date date if date
       end
     end
   end

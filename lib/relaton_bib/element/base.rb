@@ -4,6 +4,8 @@ module RelatonBib
     # Base module for many elements.
     #
     module Base
+      include ToString
+
       # @return [Array<RelatonBib::Element::Text>]
       attr_reader :content
 

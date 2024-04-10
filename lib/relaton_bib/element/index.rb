@@ -1,6 +1,8 @@
 module RelatonBib
   module Element
     module IndexShared
+      include ToString
+
       # @return [Array<RelatonBib::PureTextElement>]
       attr_reader :primary, :secondary, :tertiary
 

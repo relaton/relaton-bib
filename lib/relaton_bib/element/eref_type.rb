@@ -4,45 +4,43 @@ module RelatonBib
     # ErefType can contain both, CitationType and PureText elements.
     #
     class ErefType
-      include RelatonBib::Element::Base
       include RelatonBib::Element::ReferenceFormat
+      include RelatonBib::Element::Base
 
       # @return [String]
       attr_reader :type, :citeas
 
       # @return [RelatonBib::Element::CitationType]
-      attr_reader :citaion_type
+      attr_reader :citation_type
 
       # @return [String, nil]
       attr_reader :normative, :alt
 
-      # @param content [Array<RelatonBib::Element::Base, RelatonBib::Element::Text, RelatonBib::Edition::PureText>]
+      # @param content [Array<RelatonBib::Element::Base, RelatonBib::Element::Text, RelatonBib::Element::PureText>]
       # @param citeas [String]
-      # @param type [String]
-      # @param citaion_type [RelatonBib::Edition::CitationType]
+      # @param type [String] one of external, inline, footnote, or callout
+      # @param citation_type [RelatonBib::Element::CitationType]
       # @param args [Hash]
       # @option args [String, nil] :normative
       # @option args [String, nil] :alt
-      def initialize(content:, citeas:, type:, citaion_type:, **args)
-        Util.warn "invalid eref type: `#{type}`" unless TYPES.include? type
+      def initialize(content, citeas:, type:, citation_type:, **args)
+        check_type type
         super content
         @citeas = citeas
         @type = type
-        @citaion_type = citaion_type
+        @citation_type = citation_type
         @normative = args[:normative]
         @alt = args[:alt]
       end
 
       # @param builder [Nokogiri::XML::Builder]
       def to_xml(builder) # rubocop:disable Metrics/AbcSize
-        builder.parent do |b|
-          citaion_type.to_xml b
-          super b
-        end
+        builder.parent["normative"] = normative if normative
         builder.parent["citeas"] = citeas
         builder.parent["type"] = type
-        builder.parent["normative"] = normative if normative
         builder.parent["alt"] = alt if alt
+        citation_type.to_xml(builder)
+        super builder
       end
     end
   end

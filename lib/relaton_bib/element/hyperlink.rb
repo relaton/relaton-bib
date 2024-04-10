@@ -4,11 +4,8 @@ module RelatonBib
     # Hyperlink contains PureTextElement elements.
     #
     class Hyperlink
-      include RelatonBib::Element::Base
       include RelatonBib::Element::ReferenceFormat
-
-      # @return [Array<RelatonBib::Element::PureText>]
-      attr_reader :content
+      include RelatonBib::Element::Base
 
       # @return [String]
       attr_reader :link, :type
@@ -19,13 +16,13 @@ module RelatonBib
       #
       # Initialize new instance of Hyperlink
       #
-      # @param [Array<RelatonBib::Element::PureText>] content
+      # @param [Array<RelatonBib::Element::Text, RelatonBib::Element::Base>] content PureTextElement elements
       # @param [String] link anyURI
       # @param [String] type
       # @param [String, nil] alt
       #
-      def initialize(content, link:, type:, alt: nil)
-        Util.warn "invalid hyperlink type: #{type}" unless TYPES.include?(type)
+      def initialize(content, link, type, alt = nil)
+        check_type type
         super content
         @link = link
         @type = type

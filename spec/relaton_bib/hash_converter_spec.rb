@@ -5,7 +5,7 @@ RSpec.describe RelatonBib::HashConverter do
     expect do
       ret = { relation: [type: "updates"] }
       RelatonBib::HashConverter.relation_bibitem_hash_to_bib ret[:relation][0]
-    end.to output(/bibitem missing/).to_stderr
+    end.to output(/bibitem missing/).to_stderr_from_any_process
   end
 
   it "make affiliation description from string" do

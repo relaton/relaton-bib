@@ -13,7 +13,7 @@ RSpec.describe RelatonBib::TypedTitleString do
     subject do
       RelatonBib::TypedTitleString.new(
         type: "main",
-        content: RelatonBib::Element.parse_text_elements("Title")
+        content: RelatonBib::Element.parse_text_elements("Title"),
       )
     end
 

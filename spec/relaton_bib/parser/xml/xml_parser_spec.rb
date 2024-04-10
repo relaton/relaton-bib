@@ -111,7 +111,7 @@ RSpec.describe RelatonBib::Parser::XML do
     item = ""
     expect { item = RelatonBib::Parser::XML.from_xml "" }.to output(
       /can't find bibitem/,
-    ).to_stderr
+    ).to_stderr_from_any_process
     expect(item).to be_nil
   end
 end

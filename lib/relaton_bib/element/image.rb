@@ -1,6 +1,8 @@
 module RelatonBib
   module Element
     class Image
+      include ToString
+
       # @return [String]
       attr_reader :id, :src, :mimetype, :filename, :width, :height, :alt, :title, :longdesc
 

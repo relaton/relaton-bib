@@ -625,7 +625,7 @@ module RelatonBib
         ident = item&.at("./formattedref")
         return unless ident
 
-        FormattedRef.new Element::Parser.parse_text_elements(ident)
+        FormattedRef.new Element::parse_text_elements(ident)
       end
 
       # @param ext [Nokogiri::XML::Element]

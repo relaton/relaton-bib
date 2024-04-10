@@ -4,18 +4,25 @@ module RelatonBib
     # Xref can contain PureTextElement elements.
     #
     class Xref
-      include RelatonBib::Element::Base
       include RelatonBib::Element::ReferenceFormat
+      include RelatonBib::Element::Base
+
+      # @return [String]
+      attr_reader :target, :type
+
+      # @return [String, nil]
+      attr_reader :alt
 
       #
       # Initialize new instance of Xref
       #
-      # @param [Array<RelatonBib::Element::PureText>] content
+      # @param [Array<RelatonBib::Element::Text, RelatonBib::Element::Base>] content PureTextElement elements
       # @param [String] target IDREF
       # @param [String] type
       # @param [String, nil] alt
       #
-      def initialize(content, target:, type:, alt: nil)
+      def initialize(content, target, type, alt = nil)
+        check_type type
         @content = content
         @target = target
         @type = type

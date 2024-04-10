@@ -1,6 +1,8 @@
 module RelatonBib
   module Element
     class Bookmark
+      include ToString
+
       # @return [String]
       attr_reader :id
 

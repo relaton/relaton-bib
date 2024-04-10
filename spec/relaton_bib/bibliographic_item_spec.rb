@@ -52,7 +52,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     it "has array of titiles" do
       expect(subject.title).to be_instance_of RelatonBib::TypedTitleStringCollection
       expect(subject.title(lang: "fr")[0].to_s).to eq(
-        "Information g\u00E9ographique",
+        "Information géographique",
       )
     end
 
@@ -339,7 +339,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
   it "warn invalid type argument error" do
     expect { RelatonBib::BibliographicItem.new type: "type" }.to output(
       /\[relaton-bib\] WARNING: type `type` is invalid./,
-    ).to_stderr
+    ).to_stderr_from_any_process
   end
 
   context RelatonBib::CopyrightAssociation do

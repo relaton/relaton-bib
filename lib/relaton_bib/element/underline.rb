@@ -12,7 +12,7 @@ module RelatonBib
       #
       # Initialize new instance of Underline
       #
-      # @param [Array<RelatonBib::Element::Base, RelatonBib::Element::Text, RelatonBib::Element::PureText>] content
+      # @param [Array<RelatonBib::Element::Base, RelatonBib::Element::Text>] content PureText elements
       # @param [String, nil] style
       #
       def initialize(content, style = nil)

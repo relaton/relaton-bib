@@ -4,19 +4,21 @@ module RelatonBib
     # Ruby element contains two elements: pronunciation/annotation and text/ruby.
     #
     class Ruby
+      include ToString
+
       # @return [RelatonBib::Element::Pronunciation, RelatonBib::Element::Annotation]
       attr_reader :annotation
 
-      # @return [String, RelatonBib::Element::Ruby]
+      # @return [RelatonBib::Element::Text, RelatonBib::Element::Ruby]
       attr_reader :content
 
       #
       # Initialize Ruby element
       #
+      # @param [RelatonBib::Element::Text, RelatonBib::Element::Ruby] content
       # @param [RelatonBib::Element::Pronunciation, RelatonBib::Element::Annotation] annotation annotation or pronunciation
-      # @param [String, RelatonBib::Element::Ruby] content
       #
-      def initialize(annotation, content)
+      def initialize(content, annotation)
         @annotation = annotation
         @content = content
       end
