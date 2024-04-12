@@ -409,7 +409,7 @@ module RelatonBib
       def fetch_image(elm)
         return unless elm
 
-        Element::Image.new(**elm.to_h.transform_keys(&:to_sym))
+        Element::Parser.parse_image elm
       end
 
       #

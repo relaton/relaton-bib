@@ -1,5 +1,6 @@
 require "relaton_bib/element/to_string"
 require "relaton_bib/element/base"
+require "relaton_bib/element/any_element"
 require "relaton_bib/element/reference_format"
 require "relaton_bib/element/em"
 require "relaton_bib/element/strong"
@@ -41,15 +42,11 @@ module RelatonBib
     # @return [Array<RelatonBib::Element::Base>] elements of TextElement
     #
     def parse_text_elements(content)
-      Parser.parse_children content_to_node(content) do |node|
-        Parser.parse_text_element node
-      end
+      Parser.parse_text_elements content_to_node(content)
     end
 
     def parse_pure_text_elements(content)
-      Parser.parse_children content_to_node(content) do |node|
-        Parser.parse_pure_text_element node
-      end
+      Parser.parse_pure_text_elements content_to_node(content)
     end
 
     def content_to_node(content)
@@ -58,62 +55,203 @@ module RelatonBib
 
     module Parser
       extend self
+      extend RelatonBib::Parser::XML::Locality
 
-      def parse_children(element, &block)
-        element.xpath("text()|*").map(&block)
+      def parse_children(node, &block)
+        node.xpath("text()|*").map(&block)
       end
 
-      def parse_text_element(node) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
-        case node.name
-        when "em" then Em.new parse_em(node)
-        when "eref" then create_eref(node)
-        when "strong" then Strong.new parse_children(node)
-        when "sub" then Sub.new parse_children(node)
-        when "sup" then Sup.new parse_children(node)
-        when "tt" then Tt.new parse_children(node)
-        when "underline" then Underline.new parse_children(node), node["style"]
-        when "strike" then Strike.new parse_children(node)
-        when "smallcap" then Smallcap.new parse_children(node)
-        when "br" then Br.new
-        when "hyperlink" then parse_hyperlink
-        else Text.new(node.to_xml(encoding: "UTF-8"))
+      def parse_node(node)
+        send "parse_#{node.name.tr('-', '_')}", node
+      end
+
+      def parse_text_elements(node)
+        parse_children(node) { |n| parse_text_element n }
+      end
+
+      def parse_pure_text_elements(node)
+        parse_children(node) { |n| parse_pure_text_element n }
+      end
+
+      def parse_text_element(node)
+        if %w[eref stem keyword ruby xref hyperlink hr pagebreak bookmark imaage
+              index index-xref].include? node.name
+          parse_node node
+        else
+          parse_pure_text_element node
         end
       end
 
-      def parse_pure_text_element(node) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
-        case node.name
-        when "em" then Em.new parse_em(node)
-        when "strong" then Strong.new parse_children(node)
-        when "sub" then Sub.new parse_children(node)
-        when "sup" then Sup.new parse_children(node)
-        when "tt" then Tt.new parse_children(node)
-        when "underline" then Underline.new parse_children(node), node["style"]
-        when "strike" then Strike.new parse_children
-        when "smallcap" then Smallcap.new parse_children
-        when "br" then Br.new
-        else Text.new(node.to_xml(encoding: "UTF-8"))
+      def parse_pure_text_element(node)
+        if %w[em strong sub sup tt underline strike smallcap br].include? node.name
+          parse_node node
+        else
+          Text.new node.to_xml(encoding: "UTF-8")
         end
       end
 
-      def create_eref(element)
-        Eref.new(**parse_eref_type(element))
+      def parse_em(node)
+        Em.new parse_children(node) { |n| parse_em_element n }
       end
 
-      def parse_eref_type(element)
-        args = { citeas: element[:citeas], type: element["type"] }
-        args[:normative] = element["normative"] if element["normative"]
-        args[:alt] = element["alt"] if element["alt"]
-        args.merge parse_citation_type(element)
-        args[:content] = parse_pure_text(element)
-        args
-      end
-
-      def parse_citation_type(element)
-        args = { bibitemid: element[:bibitemid] }
-        locality = element.xpath("locality").map do |l|
-          Locality.new(l[:type])
+      def parse_em_element(node)
+        if %w(stem eref xref hyperlink index index-xref).include? node.name
+          parse_node(node)
+        else
+          parse_pure_text_element node
         end
-        args
+      end
+
+      def parse_eref(node)
+        content, args = parse_eref_type node
+        Eref.new(content, **args)
+      end
+
+      def parse_eref_type(node)
+        args = { citeas: node[:citeas], type: node["type"] }
+        args[:normative] = node["normative"] if node["normative"]
+        args[:alt] = node["alt"] if node["alt"]
+        args[:citation_type] = parse_citation_type(node)
+        [parse_pure_text_elements(node), **args]
+      end
+
+      def parse_citation_type(node)
+        date = node.at("./date")&.text
+        CitationType.new(node[:bibitemid], locality: localities(node), date: date)
+      end
+
+      def parse_strong(node)
+        Strong.new parse_children(node) { |n| parse_strong_element n }
+      end
+      alias_method :parse_strong_element, :parse_em_element
+
+      def parse_stem(node)
+        content = parse_any_elements node
+        Stem.new content, node[:type]
+      end
+
+      def parse_any_elements(node)
+        parse_children(node) { |n| parse_any_element n }
+      end
+
+      def parse_any_element(node)
+        content = node.name == "text" ? Text.new(node.text) : parse_any_elements(node)
+        AnyElement.new node.name, content, node.attributes
+      end
+
+      def parse_sub(node)
+        Sup.new parse_pure_text_elements(node)
+      end
+
+      def parse_sup(node)
+        Sup.new parse_pure_text_elements(node)
+      end
+
+      def parse_tt(node)
+        Tt.new(parse_children(node) { |n| parse_tt_element(n) })
+      end
+
+      def parse_tt_element(node)
+        if %w[eref xref hyperlink index index-xref].include? node.name
+          parse_node node
+        else
+          parse_pure_text_element(node)
+        end
+      end
+
+      def parse_underline(node)
+        Underline.new(parse_pure_text_elements(node), node[:style])
+      end
+
+      def parse_keyword(node)
+        Keyword.new(parse_children(node) { |n| parse_keyword_element n })
+      end
+
+      def parse_keyword_element(node)
+        if %w[index index-xref].include? node.name
+          parse_node node
+        else
+          parse_pure_text_elements(node)
+        end
+      end
+
+      def parse_ruby(node)
+        annotation = parse_annotation(node) || parse_pronunciation(node)
+        content = node.name == "text" ? Text.new(node.text) : parse_ruby(node.at("./ruby"))
+        Ruby.new content, annotation
+      end
+
+      def parse_annotation(node)
+        annotation = node.at("./annotation")
+        return unless annotation
+
+        Annotation.new annotation.text, script: node[:script], lang: node[:lang]
+      end
+
+      def parse_pronunciation(node)
+        pronunciation = node.at("./pronunciation")
+        return unless pronunciation
+
+        Pronunciation.new pronunciation.text, script: node[:script], lang: node[:lang]
+      end
+
+      def parse_strike(node)
+        Strike.new == parse_children(node) { |n| parse_strike_element n }
+      end
+      alias_method :parse_strike_element, :parse_keyword_element
+
+      def parse_smallcap(node)
+        Smallcap.new parse_pure_text_elements(node)
+      end
+
+      def parse_xref(node)
+        Xref.new(*parse_xref_element(node))
+      end
+
+      def parse_xref_element(node)
+        content = parse_pure_text_elements(node)
+        [content, { target: node[:target], type: node[:type], alt: node[:alt] }]
+      end
+
+      def parse_br(_node)
+        Br.new
+      end
+
+      # Hyperlink
+      def parse_link(node)
+        Hyperlink.new(*parse_hyperlink_element(node))
+      end
+      alias_method :parse_hyperlink_element, :parse_xref_element
+
+      def parse_hr(_node)
+        Hr.new
+      end
+
+      def parse_pagebreak(_node)
+        Pagebreak.new
+      end
+
+      def parse_bookmark(node)
+        Bookmark.new node[:id]
+      end
+
+      def parse_image(node)
+        Image.new(**node.to_h.transform_keys(&:to_sym))
+      end
+
+      def parse_index(node)
+        primary = parse_pure_text_elements(node.at("./primary"))
+        secondary = parse_pure_text_elements(node.at("./secondary"))
+        tertiary = parse_pure_text_elements(node.at("./tertiary"))
+        Index.new primary, secondary: secondary, tertiary: tertiary, to: node[:to]
+      end
+
+      def parse_index_xref(node)
+        primary = parse_pure_text_elements(node.at("./primary"))
+        secondary = parse_pure_text_elements(node.at("./secondary"))
+        tertiary = parse_pure_text_elements(node.at("./tertiary"))
+        target = parse_pure_text_elements(node.at("./target"))
+        IndexXref.new primary, secondary: secondary, tertiary: tertiary, target: target, also: node[:also]
       end
     end
   end
