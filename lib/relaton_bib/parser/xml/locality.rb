@@ -14,7 +14,7 @@ module RelatonBib
             if lc.name == "locality"
               locality lc
             else
-              LocalityStack.new(lc.xpath("./locality").map { |l| locality l })
+              locality_stack lc
             end
           end
         end
@@ -32,6 +32,10 @@ module RelatonBib
             loc.at("./referenceFrom")&.text,
             loc.at("./referenceTo")&.text,
           )
+        end
+
+        def locality_stack(loc)
+          LocalityStack.new(loc.xpath("./locality").map { |l| locality l })
         end
 
         # @param rel [Nokogiri::XML::Element]

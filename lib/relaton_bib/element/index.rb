@@ -36,9 +36,9 @@ module RelatonBib
       #
       # Initialize index element
       #
-      # @param [Array<RelatonBib::Element::PureText>] primary
-      # @param [Array<RelatonBib::Element::PureText>] secondary
-      # @param [Array<RelatonBib::Element::PureText>] tertiary
+      # @param [Array<RelatonBib::Element::Text, RelatonBib::Element::Base>] primary
+      # @param [Array<RelatonBib::Element::Text, RelatonBib::Element::Base>] secondary
+      # @param [Array<RelatonBib::Element::Text, RelatonBib::Element::Base>] tertiary
       # @param [String, nil] to IDREF
       #
       def initialize(primary, secondary: [], tertiary: [], to: nil)

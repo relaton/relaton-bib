@@ -8,7 +8,7 @@ module RelatonBib
       include RelatonBib::Element::Base
 
       # @return [String]
-      attr_reader :link, :type
+      attr_reader :target, :type
 
       # @return [String, nil]
       attr_reader :alt
@@ -17,21 +17,21 @@ module RelatonBib
       # Initialize new instance of Hyperlink
       #
       # @param [Array<RelatonBib::Element::Text, RelatonBib::Element::Base>] content PureTextElement elements
-      # @param [String] link anyURI
+      # @param [String] target anyURI
       # @param [String] type
       # @param [String, nil] alt
       #
-      def initialize(content, link, type, alt = nil)
+      def initialize(content, target, type, alt = nil)
         check_type type
         super content
-        @link = link
+        @target = target
         @type = type
         @alt = alt
       end
 
       # @param builder [Nokogiri::XML::Builder]
       def to_xml(builder)
-        node = builder.hyperlink(link: link, type: type) { |b| super b }
+        node = builder.link(target: target, type: type) { |b| super b }
         node[:alt] = alt if alt
       end
     end

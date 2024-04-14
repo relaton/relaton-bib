@@ -58,7 +58,7 @@ module RelatonBib
       extend RelatonBib::Parser::XML::Locality
 
       def parse_children(node, &block)
-        node.xpath("text()|*").map(&block)
+        node.xpath("text()|*").map(&block).compact
       end
 
       def parse_node(node)
@@ -70,6 +70,8 @@ module RelatonBib
       end
 
       def parse_pure_text_elements(node)
+        return [] if node.nil?
+
         parse_children(node) { |n| parse_pure_text_element n }
       end
 
@@ -86,7 +88,8 @@ module RelatonBib
         if %w[em strong sub sup tt underline strike smallcap br].include? node.name
           parse_node node
         else
-          Text.new node.to_xml(encoding: "UTF-8")
+          text = node.to_xml(encoding: "UTF-8").strip
+          Text.new text unless text.empty?
         end
       end
 
@@ -111,13 +114,27 @@ module RelatonBib
         args = { citeas: node[:citeas], type: node["type"] }
         args[:normative] = node["normative"] if node["normative"]
         args[:alt] = node["alt"] if node["alt"]
-        args[:citation_type] = parse_citation_type(node)
-        [parse_pure_text_elements(node), **args]
+        pure_text, citation_type = parse_eref_elements node
+        args[:citation_type] = citation_type
+        [pure_text, **args]
       end
 
-      def parse_citation_type(node)
-        date = node.at("./date")&.text
-        CitationType.new(node[:bibitemid], locality: localities(node), date: date)
+      def parse_eref_elements(node) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+        citation_type_args = { locality: [] }
+        content = []
+        parse_children(node) do |n|
+          case n.name
+          when "locality"
+            citation_type_args[:locality] << locality(n)
+          when "localityStack"
+            citation_type_args[:locality] << locality_stack(n)
+          when "date" then citation_type_args[:date] = n.text
+          else
+            element = parse_pure_text_element(n)
+            content << element if element
+          end
+        end
+        [content, CitationType.new(node[:bibitemid], **citation_type_args)]
       end
 
       def parse_strong(node)
@@ -135,12 +152,15 @@ module RelatonBib
       end
 
       def parse_any_element(node)
-        content = node.name == "text" ? Text.new(node.text) : parse_any_elements(node)
-        AnyElement.new node.name, content, node.attributes
+        if node.name == "text"
+          Text.new(node.text)
+        else
+          AnyElement.new node.name, parse_any_elements(node), node.attributes
+        end
       end
 
       def parse_sub(node)
-        Sup.new parse_pure_text_elements(node)
+        Sub.new parse_pure_text_elements(node)
       end
 
       def parse_sup(node)
@@ -171,32 +191,26 @@ module RelatonBib
         if %w[index index-xref].include? node.name
           parse_node node
         else
-          parse_pure_text_elements(node)
+          parse_pure_text_element(node)
         end
       end
 
       def parse_ruby(node)
-        annotation = parse_annotation(node) || parse_pronunciation(node)
-        content = node.name == "text" ? Text.new(node.text) : parse_ruby(node.at("./ruby"))
-        Ruby.new content, annotation
+        ruby = node.at("./ruby")
+        content = ruby ? parse_ruby(node.at("./ruby")) : Text.new(node.text)
+        Ruby.new content, parse_ruby_attrs(node)
       end
 
-      def parse_annotation(node)
-        annotation = node.at("./annotation")
-        return unless annotation
-
-        Annotation.new annotation.text, script: node[:script], lang: node[:lang]
-      end
-
-      def parse_pronunciation(node)
-        pronunciation = node.at("./pronunciation")
-        return unless pronunciation
-
-        Pronunciation.new pronunciation.text, script: node[:script], lang: node[:lang]
+      def parse_ruby_attrs(node)
+        if node&.attr(:annotation)
+          Annotation.new node[:annotation], script: node[:script], lang: node[:lang]
+        elsif node&.attr(:pronunciation)
+          Annotation.new node[:pronunciation], script: node[:script], lang: node[:lang]
+        end
       end
 
       def parse_strike(node)
-        Strike.new == parse_children(node) { |n| parse_strike_element n }
+        Strike.new parse_children(node) { |n| parse_strike_element n }
       end
       alias_method :parse_strike_element, :parse_keyword_element
 
@@ -210,7 +224,7 @@ module RelatonBib
 
       def parse_xref_element(node)
         content = parse_pure_text_elements(node)
-        [content, { target: node[:target], type: node[:type], alt: node[:alt] }]
+        [content, node[:target], node[:type], node[:alt] ]
       end
 
       def parse_br(_node)
@@ -228,7 +242,7 @@ module RelatonBib
       end
 
       def parse_pagebreak(_node)
-        Pagebreak.new
+        PageBreak.new
       end
 
       def parse_bookmark(node)
