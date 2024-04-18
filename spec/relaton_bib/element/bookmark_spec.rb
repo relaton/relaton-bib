@@ -11,4 +11,8 @@ describe RelatonBib::Element::Bookmark do
       <bookmark id="id"/>
     XML
   end
+
+  it "to_s" do
+    expect(subject.to_s).to eq "<bookmark id=\"id\"/>"
+  end
 end

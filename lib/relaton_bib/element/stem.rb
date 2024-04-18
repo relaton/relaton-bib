@@ -1,7 +1,8 @@
 module RelatonBib
   module Element
     class Stem
-      include RelatonBib::Element::Base
+      include Base
+      include ToString
 
       TYPES = %w[MathML AsciiMath].freeze
 
@@ -20,7 +21,7 @@ module RelatonBib
       def initialize(content, type)
         Util.warn "invalid stem type: `#{type}`" unless TYPES.include? type
 
-        super content
+        super content: content
         @type = type
       end
 

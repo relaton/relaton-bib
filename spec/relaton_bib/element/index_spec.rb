@@ -24,6 +24,13 @@ describe RelatonBib::Element::Index do
       </index>
     XML
   end
+
+  it "to_s" do
+    expect(subject.to_s).to eq(
+      "<index to=\"To\"><primary>Primary</primary><secondary>Secondary</secondary>" \
+      "<tertiary>Tertiary</tertiary></index>"
+    )
+  end
 end
 
 describe RelatonBib::Element::IndexXref do
@@ -54,5 +61,12 @@ describe RelatonBib::Element::IndexXref do
         <target>Target</target>
       </index-xref>
     XML
+  end
+
+  it "to_s" do
+    expect(subject.to_s).to eq(
+      "<index-xref also=\"true\"><primary>Primary</primary><secondary>Secondary</secondary>" \
+      "<tertiary>Tertiary</tertiary><target>Target</target></index-xref>"
+    )
   end
 end

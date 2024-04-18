@@ -4,6 +4,7 @@ require "iso639"
 module RelatonBib
   # @todo: move this class to the RelatonBib::Bibtex module
   class BibtexParser
+    extend Factory
     class << self
       # @param bibtex [String]
       # @return [Hash{String=>RelatonBib::BibliographicItem}]
@@ -38,9 +39,9 @@ module RelatonBib
       # @return [Array<RelatonBib::DocumentIdentifier>]
       def fetch_docid(bibtex) # rubocop:disable Metrics/AbcSize
         docid = []
-        docid << DocumentIdentifier.new(id: bibtex.isbn.to_s, type: "isbn") if bibtex["isbn"]
-        docid << DocumentIdentifier.new(id: bibtex.lccn.to_s, type: "lccn") if bibtex["lccn"]
-        docid << DocumentIdentifier.new(id: bibtex.issn.to_s, type: "issn") if bibtex["issn"]
+        docid << create_docid(id: bibtex.isbn.to_s, type: "isbn") if bibtex["isbn"]
+        docid << create_docid(id: bibtex.lccn.to_s, type: "lccn") if bibtex["lccn"]
+        docid << create_docid(id: bibtex.issn.to_s, type: "issn") if bibtex["issn"]
         docid
       end
 
@@ -108,7 +109,10 @@ module RelatonBib
         return unless org
 
         role = { type: type }
-        role[:description] = [desc] if desc
+        if desc
+          d = ContributionInfo::Role::Description.new(content: desc)
+          role[:description] = [d]
+        end
         yield entity: Organization.new(name: org.to_s), role: [role]
       end
 

@@ -4,7 +4,8 @@ module RelatonBib
     # Em element can contain PureText, stem, eref, xref, hyperlink, index, and index-xref elements.
     #
     class Em
-      include RelatonBib::Element::Base
+      include Base
+      include ToString
 
       # @param builder [Nokogiri::XML::Builder]
       def to_xml(builder)

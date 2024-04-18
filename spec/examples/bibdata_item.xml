@@ -1,7 +1,7 @@
 <bibdata type="standard" schema-version="v1.3.0">
   <fetched>2024-01-10</fetched>
-  <title type="title-main">Geographic information</title>
-  <title type="main">Geographic information</title>
+  <title type="title-main">Geographic <em>information</em></title>
+  <title type="main">Geographic <em>information</em></title>
   <title language="fr" script="Latn">Information géographique</title>
   <uri type="src" language="en" script="Latn">https://www.iso.org/standard/53798.html</uri>
   <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>

@@ -4,8 +4,9 @@ module RelatonBib
     # Hyperlink contains PureTextElement elements.
     #
     class Hyperlink
-      include RelatonBib::Element::ReferenceFormat
-      include RelatonBib::Element::Base
+      include ReferenceFormat
+      include Base
+      include ToString
 
       # @return [String]
       attr_reader :target, :type
@@ -23,7 +24,7 @@ module RelatonBib
       #
       def initialize(content, target, type, alt = nil)
         check_type type
-        super content
+        super content: content
         @target = target
         @type = type
         @alt = alt

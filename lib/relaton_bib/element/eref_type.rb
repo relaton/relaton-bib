@@ -4,8 +4,8 @@ module RelatonBib
     # ErefType can contain both, CitationType and PureText elements.
     #
     class ErefType
-      include RelatonBib::Element::ReferenceFormat
-      include RelatonBib::Element::Base
+      include ReferenceFormat
+      include Base
 
       # @return [String]
       attr_reader :type, :citeas
@@ -25,7 +25,7 @@ module RelatonBib
       # @option args [String, nil] :alt
       def initialize(content, citeas:, type:, citation_type:, **args)
         check_type type
-        super content
+        super content: content
         @citeas = citeas
         @type = type
         @citation_type = citation_type

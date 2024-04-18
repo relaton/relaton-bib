@@ -1,7 +1,7 @@
 module RelatonBib
   module HashConverter
     extend self
-    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    extend Factory
 
     # @param args [Hash]
     # @return [Hash]
@@ -40,7 +40,6 @@ module RelatonBib
       doctype_hash_to_bib ret
       ret
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def keyword_hash_to_bib(ret)
       ret[:keyword] = RelatonBib.array(ret[:keyword]).map do |keyword|
@@ -151,10 +150,6 @@ module RelatonBib
       end
     end
 
-    def create_docid(**args)
-      DocumentIdentifier.new(**args)
-    end
-
     def version_hash_to_bib(ret)
       return unless ret[:version]
 
@@ -202,23 +197,24 @@ module RelatonBib
       ret[:contributor] = RelatonBib.array(ret[:contributor])
       ret[:contributor]&.each_with_index do |c, i|
         roles = RelatonBib.array(ret[:contributor][i][:role]).map do |r|
-          if r.is_a? Hash
-            desc = RelatonBib.array(r[:description]).map { |d| d.is_a?(String) ? d : d[:content] }
-            { type: r[:type], description: desc }
-          # elsif r.is_a? Array
-          #   { type: r[0], description: r.fetch(1) }
-          else
-            { type: r }
-          end
+          create_contibutor_role(r)
         end
         ret[:contributor][i][:role] = roles
-        ret[:contributor][i][:entity] = if c[:person]
-                                          person_hash_to_bib(c[:person])
-                                        else
-                                          org_hash_to_bib(c[:organization])
-                                        end
+        entity = person_hash_to_bib(c[:person]) || org_hash_to_bib(c[:organization])
+        ret[:contributor][i][:entity] = entity
         ret[:contributor][i].delete(:person)
         ret[:contributor][i].delete(:organization)
+      end
+    end
+
+    def create_contibutor_role(role)
+      if role.is_a? Hash
+        description = RelatonBib.array(role[:description]).map do |d|
+          desc = d.is_a?(String) ? { content: d } : d
+          ContributionInfo::Role::Description.new(**desc)
+        end
+        { type: role[:type], description: description }
+      else { type: role }
       end
     end
 
@@ -238,6 +234,8 @@ module RelatonBib
     end
 
     def person_hash_to_bib(person)
+      return if person.nil?
+
       Person.new(
         name: fullname_hash_to_bib(person),
         credential: RelatonBib.array(person[:credential]),

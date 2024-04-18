@@ -2,9 +2,9 @@
 schema-version: v1.3.0
 id: ISOTC211
 title:
-- content: Geographic information
+- content: Geographic <em>information</em>
   type: title-main
-- content: Geographic information
+- content: Geographic <em>information</em>
   type: main
 - content: Information géographique
   language:

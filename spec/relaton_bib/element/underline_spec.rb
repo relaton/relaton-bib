@@ -13,4 +13,8 @@ describe RelatonBib::Element::Underline do
       <underline style="style">content</underline>
     XML
   end
+
+  it "to_s" do
+    expect(subject.to_s).to eq "<underline style=\"style\">content</underline>"
+  end
 end

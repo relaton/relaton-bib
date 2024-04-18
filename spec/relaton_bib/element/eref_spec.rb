@@ -19,4 +19,11 @@ describe RelatonBib::Element::Eref do
       </eref>
     XML
   end
+
+  it "to_s" do
+    expect(subject.to_s).to eq(
+      "<eref citeas=\"citeas\" type=\"type\" bibitemid=\"ISO 123\"><locality type=\"section\">" \
+      "<referenceFrom>1</referenceFrom></locality>content</eref>"
+    )
+  end
 end

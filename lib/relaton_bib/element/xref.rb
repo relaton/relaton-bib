@@ -4,8 +4,9 @@ module RelatonBib
     # Xref can contain PureTextElement elements.
     #
     class Xref
-      include RelatonBib::Element::ReferenceFormat
-      include RelatonBib::Element::Base
+      include ReferenceFormat
+      include Base
+      include ToString
 
       # @return [String]
       attr_reader :target, :type

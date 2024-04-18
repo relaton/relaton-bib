@@ -28,4 +28,10 @@ describe RelatonBib::Element::ParagraphWithFootnote do
       </p>
     XML
   end
+
+  it "to_s" do
+    expect(subject.to_s).to eq(
+      "<p id=\"id-1\" align=\"left\">text<note id=\"id-3\"><p id=\"id-2\">Note</p></note></p>"
+    )
+  end
 end

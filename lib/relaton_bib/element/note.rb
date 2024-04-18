@@ -2,6 +2,7 @@ module RelatonBib
   module Element
     class Note
       include Base
+      include ToString
 
       # @return [String]
       attr_reader :id
@@ -13,7 +14,7 @@ module RelatonBib
       # @param id [String] ID
       #
       def initialize(content, id)
-        super content
+        super content: content
         @id = id
       end
 

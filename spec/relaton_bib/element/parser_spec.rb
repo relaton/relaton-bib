@@ -82,9 +82,7 @@ describe RelatonBib::Element::Parser do
             <referenceFrom>"2"</referenceFrom>
           </locality>
         </localityStack>
-        <date>2000-01-01</date>
-        text
-      </eref>
+        <date>2000-01-01</date>text</eref>
     XML
     eref = described_class.parse_eref(node)
     expect(eref).to be_instance_of RelatonBib::Element::Eref

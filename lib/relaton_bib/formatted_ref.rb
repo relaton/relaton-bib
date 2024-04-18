@@ -2,12 +2,12 @@ require "relaton_bib/formatted_string"
 
 module RelatonBib
   class FormattedRef
-    include RelatonBib::Element::Base
+    include Element::Base
 
     #
     # Formatted reference content.
     #
-    # @param [String, RelatonBib::Element::Base] content
+    # @param [String, Array<RelatonBib::Element::Base, RelatonBib::Element::Text>] content
     #
     def initialize(content)
       @content = content.is_a?(String) ? Element.parse_text_elements(content) : content

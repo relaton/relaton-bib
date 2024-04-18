@@ -4,10 +4,10 @@ id:: ISOTC211
 fetched:: 2022-05-02
 title::
 title.type:: title-main
-title.content:: Geographic information
+title.content:: Geographic <em>information</em>
 title::
 title.type:: main
-title.content:: Geographic information
+title.content:: Geographic <em>information</em>
 title::
 title.content:: Information géographique
 title.language:: fr
@@ -165,7 +165,7 @@ contributor.organization.logo.image.height:: 100%
 contributor.organization.logo.image.alt:: Logo 1
 contributor.organization.logo.image.title:: Logo #1
 contributor.organization.logo.image.longdesc:: Logo number 1
-contributor.role.description:: Publisher role
+contributor.role.description.content:: Publisher role
 contributor.role.type:: publisher
 contributor::
 contributor.person.name.abbreviation:: AB
@@ -197,10 +197,10 @@ contributor.organization.identifier.type:: uri
 contributor.organization.identifier.value:: www.ieee.org
 contributor.organization.address.formatted_address:: Formatted address
 contributor.role::
-contributor.role.description:: Publisher description
+contributor.role.description.content:: Publisher description
 contributor.role.type:: publisher
 contributor.role::
-contributor.role.description:: Editor description
+contributor.role.description.content:: Editor description
 contributor.role.type:: editor
 contributor::
 contributor.person.given.forename:: Arnold
@@ -243,7 +243,7 @@ contributor.role.type:: editor
 contributor::
 contributor.organization.name:: World Wide Web Consortium
 contributor.organization.address.formatted_address:: Address string
-contributor.role.description:: sponsor
+contributor.role.description.content:: sponsor
 contributor.role.type:: distributor
 relation::
 relation.type:: updates

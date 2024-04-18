@@ -11,4 +11,8 @@ describe RelatonBib::Element::AnyElement do
       <elm type="type">text</elm>
     XML
   end
+
+  it "to_s" do
+    expect(subject.to_s).to eq "<elm type=\"type\">text</elm>"
+  end
 end

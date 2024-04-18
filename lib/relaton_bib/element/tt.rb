@@ -4,7 +4,8 @@ module RelatonBib
     # TT can contain PureText eref, xref, hyperlink, index, and index-xref elements.
     #
     class Tt
-      include RelatonBib::Element::Base
+      include Base
+      include ToString
 
       # @param builder [Nokogiri::XML::Builder]
       def to_xml(builder)

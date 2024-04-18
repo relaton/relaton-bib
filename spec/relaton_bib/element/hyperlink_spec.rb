@@ -14,4 +14,8 @@ describe RelatonBib::Element::Hyperlink do
       <link target="http://example.com" type="external" alt="alt">text</link>
     XML
   end
+
+  it "to_s" do
+    expect(subject.to_s).to eq "<link target=\"http://example.com\" type=\"external\" alt=\"alt\">text</link>"
+  end
 end

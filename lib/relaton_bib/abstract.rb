@@ -1,7 +1,7 @@
 module RelatonBib
   class Abstract
-    include RelatonBib::Element::Base
-    include RelatonBib::LocalizedStringAttrs
+    include Element::Base
+    include LocalizedStringAttrs
 
     #
     # Initialize abstract

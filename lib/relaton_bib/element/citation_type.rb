@@ -1,8 +1,6 @@
 module RelatonBib
   module Element
     class CitationType
-      include ToString
-
       # @return [String]
       attr_reader :bibitemid
 

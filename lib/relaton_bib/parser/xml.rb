@@ -1,11 +1,9 @@
-require "nokogiri"
-require "relaton_bib/parser/xml/locality"
-
 module RelatonBib
   module Parser
     module XML
       extend self
-      extend RelatonBib::Parser::XML::Locality
+      extend Parser::XML::Locality
+      extend Factory
 
       #
       # Parse XML bibdata
@@ -296,7 +294,7 @@ module RelatonBib
           did = id.to_h.transform_keys(&:to_sym)
           did[:id] = id.text
           did[:primary] = id[:primary] == "true" ? true : nil
-          DocumentIdentifier.new(**did)
+          create_docid(**did)
         end
       end
 
@@ -546,9 +544,16 @@ module RelatonBib
       def fetch_contribution_info(contrib)
         entity = get_org(contrib.at("./organization")) || get_person(contrib.at("./person"))
         role = contrib.xpath("./role").map do |r|
-          { type: r[:type], description: r.xpath("./description").map(&:text) }
+          { type: r[:type], description: fetch_contrib_role_desc(r) }
         end
         ContributionInfo.new entity: entity, role: role
+      end
+
+      def fetch_contrib_role_desc(role)
+        role.xpath("./description").map do |d|
+          attrs = d.to_h.transform_keys(&:to_sym)
+          ContributionInfo::Role::Description.new(content: d.text, **attrs)
+        end
       end
 
       # @param item [Nokogiri::XML::Element]

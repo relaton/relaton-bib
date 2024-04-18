@@ -33,6 +33,8 @@ module RelatonBib
     end
 
     class Annotation
+      include ToString
+
       # @return [String]
       attr_reader :value
 

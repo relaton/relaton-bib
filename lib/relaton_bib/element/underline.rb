@@ -4,7 +4,8 @@ module RelatonBib
     # Underline can contain PureText elements.
     #
     class Underline
-      include RelatonBib::Element::Base
+      include Base
+      include ToString
 
       # @return [String] Style
       attr_reader :style
@@ -16,7 +17,7 @@ module RelatonBib
       # @param [String, nil] style
       #
       def initialize(content, style = nil)
-        super content
+        super content: content
         @style = style
       end
 

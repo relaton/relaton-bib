@@ -7,10 +7,6 @@ module RelatonBib
       def to_xml(builder)
         builder.br
       end
-
-      def to_s
-        "<br/>"
-      end
     end
   end
 end

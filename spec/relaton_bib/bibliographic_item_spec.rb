@@ -61,6 +61,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(subject.url(:rss)).to eq "https://www.iso.org/contents/data/"\
                                       "standard/05/37/53798.detail.rss"
     end
+
     it "returns shortref" do
       expect(subject.shortref(subject.docidentifier.first)).to eq "ISOTC211:2014"
     end
@@ -87,27 +88,20 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(item.all_parts).to be true
       expect(item.relation.last.type).to eq "instanceOf"
       expect(item.title.detect { |t| t.type == "title-part" }).to be_nil
-      expect(item.title.detect { |t| t.type == "main" }.to_s).to eq(
-        "Geographic information",
-      )
+      main = item.title.detect { |t| t.type == "main" }
+      main_str = main.to_s
+      expect(main_str).to eq("Geographic <em>information</em>")
       expect(item.abstract).to be_empty
       id_with_part = item.docidentifier.detect do |d|
         d.type != "Internet-Draft" && d.id =~ /-\d/
       end
       expect(id_with_part).to be_nil
-      expect(item.docidentifier.reject { |d| d.id =~ %r{(all parts)} }.size)
-        .to eq 1
+      expect(item.docidentifier.reject { |d| d.id =~ %r{(all parts)} }.size).to eq 1
       expect(item.docidentifier.detect { |d| d.id =~ /:[12]\d\d\d/ }).to be_nil
-      expect(item.structuredidentifier.detect { |d| !d.partnumber.nil? })
-        .to be_nil
-      expect(item.structuredidentifier.detect { |d| d.docnumber =~ /-\d/ })
-        .to be_nil
-      expect(
-        item.structuredidentifier.detect { |d| d.docnumber !~ %r{(all parts)} },
-      ).to be_nil
-      expect(
-        item.structuredidentifier.detect { |d| d.docnumber =~ /:[12]\d\d\d/ },
-      ).to be_nil
+      expect(item.structuredidentifier.detect { |d| !d.partnumber.nil? }).to be_nil
+      expect(item.structuredidentifier.detect { |d| d.docnumber =~ /-\d/ }).to be_nil
+      expect(item.structuredidentifier.detect { |d| d.docnumber !~ %r{(all parts)} }).to be_nil
+      expect(item.structuredidentifier.detect { |d| d.docnumber =~ /:[12]\d\d\d/ }).to be_nil
     end
 
     context "render XML" do

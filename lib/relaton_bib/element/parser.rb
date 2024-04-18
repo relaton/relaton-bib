@@ -88,13 +88,14 @@ module RelatonBib
         if %w[em strong sub sup tt underline strike smallcap br].include? node.name
           parse_node node
         else
-          text = node.to_xml(encoding: "UTF-8").strip
-          Text.new text unless text.empty?
+          text = node.to_xml(encoding: "UTF-8")
+          Text.new text unless text.strip.empty?
         end
       end
 
       def parse_em(node)
-        Em.new parse_children(node) { |n| parse_em_element n }
+        content = parse_children(node) { |n| parse_em_element n }
+        Em.new(content: content)
       end
 
       def parse_em_element(node)
@@ -138,7 +139,7 @@ module RelatonBib
       end
 
       def parse_strong(node)
-        Strong.new parse_children(node) { |n| parse_strong_element n }
+        Strong.new content: parse_children(node) { |n| parse_strong_element n }
       end
       alias_method :parse_strong_element, :parse_em_element
 
@@ -160,15 +161,16 @@ module RelatonBib
       end
 
       def parse_sub(node)
-        Sub.new parse_pure_text_elements(node)
+        Sub.new content: parse_pure_text_elements(node)
       end
 
       def parse_sup(node)
-        Sup.new parse_pure_text_elements(node)
+        Sup.new content: parse_pure_text_elements(node)
       end
 
       def parse_tt(node)
-        Tt.new(parse_children(node) { |n| parse_tt_element(n) })
+        content = parse_children(node) { |n| parse_tt_element(n) }
+        Tt.new content: content
       end
 
       def parse_tt_element(node)
@@ -184,7 +186,8 @@ module RelatonBib
       end
 
       def parse_keyword(node)
-        Keyword.new(parse_children(node) { |n| parse_keyword_element n })
+        content = parse_children(node) { |n| parse_keyword_element n }
+        Keyword.new content: content
       end
 
       def parse_keyword_element(node)
@@ -210,12 +213,13 @@ module RelatonBib
       end
 
       def parse_strike(node)
-        Strike.new parse_children(node) { |n| parse_strike_element n }
+        content = parse_children(node) { |n| parse_strike_element n }
+        Strike.new content: content
       end
       alias_method :parse_strike_element, :parse_keyword_element
 
       def parse_smallcap(node)
-        Smallcap.new parse_pure_text_elements(node)
+        Smallcap.new content: parse_pure_text_elements(node)
       end
 
       def parse_xref(node)

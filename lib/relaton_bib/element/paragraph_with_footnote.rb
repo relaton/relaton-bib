@@ -3,6 +3,7 @@ module RelatonBib
     class ParagraphWithFootnote
       include Alignments
       include Base
+      include ToString
 
       # @!attribute [r] content
       #   @return [Array<RelatonBib::Element::Text, RelatonBib::Element::Base, RelatonBib::Element::Fn>]
@@ -26,7 +27,7 @@ module RelatonBib
       #
       def initialize(content, id, align: nil, note: [])
         check_alignment align
-        super content
+        super content: content
         @id = id
         @align = align
         @note = note

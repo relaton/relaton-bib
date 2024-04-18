@@ -3,6 +3,7 @@ module RelatonBib
     module ParagraphType
       include Alignments
       include Base
+      include ToString
 
       # @return [String]
       attr_reader :id
@@ -23,7 +24,7 @@ module RelatonBib
       #
       def initialize(content, id, align: nil, note: [])
         check_alignment align
-        super content
+        super content: content
         @id = id
         @align = align
         @note = note

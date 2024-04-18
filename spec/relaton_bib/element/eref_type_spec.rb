@@ -16,7 +16,7 @@ describe RelatonBib::Element::ErefType do
 
   context "initialize" do
     it do
-      expect(subject.to_s).to eq "text"
+      expect(subject.content[0]).to be_instance_of RelatonBib::Element::Text
       expect(subject.citeas).to eq "citeas"
       expect(subject.type).to eq "external"
       expect(subject.citation_type).to eq citation_type

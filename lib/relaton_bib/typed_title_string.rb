@@ -88,8 +88,8 @@ module RelatonBib
   end
 
   class TypedTitleString
-    include RelatonBib::Element::Base
     include RelatonBib::LocalizedStringAttrs
+    include RelatonBib::Element::Base
 
     # @return [String, nil]
     attr_reader :type
@@ -108,8 +108,8 @@ module RelatonBib
       end
 
       @type = type
+      super
       @content = content.is_a?(String) ? Element.parse_text_elements(content) : content
-      super(**args)
     end
 
     #
@@ -164,7 +164,6 @@ module RelatonBib
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       builder.parent[:type] = type if type
-      Element::Base.instance_method(:to_xml).bind_call self, builder
       super
     end
 
@@ -182,9 +181,13 @@ module RelatonBib
       pref = prefix.empty? ? "title" : "#{prefix}.title"
       out = count > 1 ? "#{pref}::\n" : ""
       out += "#{pref}.type:: #{type}\n" if type
-      out += "#{pref}.content:: #{self}\n"
+      # out += "#{pref}.content:: #{self}\n"
       out += super(pref)
       out
+    end
+
+    def to_s
+      content.map(&:to_s).join
     end
   end
 end

@@ -9,7 +9,7 @@ describe RelatonBib::Element::ToString do
     end
   end
 
-  it "to_string" do
-    expect(subject.new.to_string).to eq "<br/>"
+  it "#to_s" do
+    expect(subject.new.to_s).to eq "<br/>"
   end
 end

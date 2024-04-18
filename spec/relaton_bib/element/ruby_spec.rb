@@ -16,6 +16,12 @@ describe RelatonBib::Element::Ruby do
       <ruby><annotation value="annotation" script="Latn" lang="en"/>content</ruby>
     XML
   end
+
+  it "to_s" do
+    expect(subject.to_s).to eq(
+      "<ruby><annotation value=\"annotation\" script=\"Latn\" lang=\"en\"/>content</ruby>"
+    )
+  end
 end
 
 describe RelatonBib::Element::Annotation do
@@ -33,6 +39,10 @@ describe RelatonBib::Element::Annotation do
       <annotation value="value" script="Latn" lang="en"/>
     XML
   end
+
+  it "to_s" do
+    expect(subject.to_s).to eq "<annotation value=\"value\" script=\"Latn\" lang=\"en\"/>"
+  end
 end
 
 describe RelatonBib::Element::Pronunciation do
@@ -43,5 +53,9 @@ describe RelatonBib::Element::Pronunciation do
     expect(doc.to_xml).to be_equivalent_to <<~XML
       <pronunciation value="value" script="Latn" lang="en"/>
     XML
+  end
+
+  it "to_s" do
+    expect(subject.to_s).to eq "<pronunciation value=\"value\" script=\"Latn\" lang=\"en\"/>"
   end
 end

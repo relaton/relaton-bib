@@ -35,6 +35,13 @@ describe RelatonBib::Element::Image do
     XML
   end
 
+  it "to_s" do
+    expect(subject.to_s).to eq(
+      "<image id=\"id\" src=\"src\" mimetype=\"mime type\" filename=\"file name\" width=\"60%\" " \
+      "height=\"40%\" alt=\"Alt\" title=\"Title\" longdesc=\"long description\"/>"
+    )
+  end
+
   it "to_hash" do
     expect(subject.to_hash).to eq(
       "image" => {

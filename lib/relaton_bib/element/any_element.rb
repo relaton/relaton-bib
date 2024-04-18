@@ -1,7 +1,7 @@
 module RelatonBib
   module Element
     class AnyElement
-      include RelatonBib::Element::ToString
+      include ToString
 
       # @return [String] node name
       attr_reader :name

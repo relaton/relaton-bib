@@ -4,7 +4,8 @@ module RelatonBib
     # Smallcap can contain PureText elements.
     #
     class Smallcap
-      include RelatonBib::Element::Base
+      include Base
+      include ToString
 
       # @param builder [Nokogiri::XML::Builder]
       def to_xml(builder)

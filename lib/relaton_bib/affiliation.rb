@@ -2,8 +2,8 @@ module RelatonBib
   # Affiliation.
   class Affiliation
     class Description
-      include RelatonBib::Element::Base
-      include RelatonBib::LocalizedStringAttrs
+      include Element::Base
+      include LocalizedStringAttrs
 
       def initialize(content:, **args)
         @content = content.is_a?(String) ? Element.parse_text_elements(content) : content

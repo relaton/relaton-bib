@@ -15,4 +15,8 @@ describe RelatonBib::Element::Xref do
       <xref target="id-1" type="anchor" alt="id-2">text</xref>
     XML
   end
+
+  it "to_s" do
+    expect(subject.to_s).to eq "<xref target=\"id-1\" type=\"anchor\" alt=\"id-2\">text</xref>"
+  end
 end
