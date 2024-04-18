@@ -30,7 +30,7 @@ module RelatonBib
       builder.parent[:locale] = locale if locale
     end
 
-    def to_hash
+    def to_h
       hash = {}
       hash["language"] = language if language.any?
       hash["script"] = script if script.any?

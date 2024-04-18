@@ -28,10 +28,10 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       hash = {}
       hash["url"] = uri.to_s if uri
-      hash["contact"] = contact.map(&:to_hash) if contact&.any?
+      hash["contact"] = contact.map(&:to_h) if contact&.any?
       hash
     end
 

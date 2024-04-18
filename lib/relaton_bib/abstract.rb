@@ -1,7 +1,7 @@
 module RelatonBib
   class Abstract
-    include Element::Base
     include LocalizedStringAttrs
+    include Element::Base
 
     #
     # Initialize abstract
@@ -13,26 +13,17 @@ module RelatonBib
     # @param [String, nil] :locale
     #
     def initialize(content:, **args)
+      super
       @content = content.is_a?(String) ? Element.parse_text_elements(content) : content
-      super(**args)
     end
 
     def to_xml(builder)
-      builder.abstract do |b|
-        Element::Base.instance_method(:to_xml).bind_call(self, b)
-        super b
-      end
-    end
-
-    def to_hash
-      hash = { "content" => to_s }
-      hash.merge super
+      builder.abstract { |b| super b }
     end
 
     def to_asciibib(prefix = "", count = 1)
       pref = prefix.empty? ? "abstract" : "#{prefix}.abstract"
       out = count > 1 ? "#{pref}::\n" : ""
-      out += "#{pref}.content:: #{self}\n"
       out += super(pref)
       out
     end

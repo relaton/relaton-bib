@@ -21,7 +21,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize
+    def to_h # rubocop:disable Metrics/AbcSize
       hash = { "id" => id }
       hash["type"] = type if type
       hash["scope"] = scope if scope

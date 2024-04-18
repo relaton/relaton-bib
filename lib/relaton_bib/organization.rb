@@ -32,7 +32,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       { "type" => type, "id" => value }
     end
 
@@ -107,12 +107,12 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-      hash = { "name" => name.map(&:to_hash) }
-      hash["abbreviation"] = abbreviation.to_hash if abbreviation
-      hash["identifier"] = identifier.map(&:to_hash) if identifier&.any?
-      hash["subdivision"] = subdivision.map(&:to_hash) if subdivision&.any?
-      hash["logo"] = logo.to_hash if logo
+    def to_h # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+      hash = { "name" => name.map(&:to_h) }
+      hash["abbreviation"] = abbreviation.to_h if abbreviation
+      hash["identifier"] = identifier.map(&:to_h) if identifier&.any?
+      hash["subdivision"] = subdivision.map(&:to_h) if subdivision&.any?
+      hash["logo"] = logo.to_h if logo
       { "organization" => hash.merge(super) }
     end
 

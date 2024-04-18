@@ -72,7 +72,7 @@ module RelatonBib
       end
 
       # @return [Hash, String]
-      def to_hash
+      def to_h
         hash = {}
         hash["description"] = description.map(&:to_h) if description&.any?
         hash["type"] = type if type
@@ -119,9 +119,9 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
-      hash = entity.to_hash
-      hash["role"] = role.map(&:to_hash) if role&.any?
+    def to_h
+      hash = entity.to_h
+      hash["role"] = role.map(&:to_h) if role&.any?
       hash
     end
 

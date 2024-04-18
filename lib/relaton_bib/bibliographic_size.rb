@@ -46,8 +46,8 @@ module RelatonBib
     #
     # @return [<Type>] <description>
     #
-    def to_hash
-      size.map &:to_hash
+    def to_h
+      size.map &:to_h
     end
 
     class Value
@@ -79,7 +79,7 @@ module RelatonBib
       #
       # @return [<Type>] <description>
       #
-      def to_hash
+      def to_h
         { type: type, value: value }
       end
 

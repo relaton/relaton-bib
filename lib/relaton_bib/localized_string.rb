@@ -92,7 +92,7 @@ module RelatonBib
     end
 
     # @return [Hash, Array<Hash>]
-    def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    def to_h # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       if content.nil? || content.is_a?(String)
         # return content unless language || script
 
@@ -101,7 +101,7 @@ module RelatonBib
         hash["language"] = language if language&.any?
         hash["script"] = script if script&.any?
         hash
-      else content&.map &:to_hash
+      else content&.map &:to_h
       end
     end
 

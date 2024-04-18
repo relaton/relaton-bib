@@ -17,7 +17,7 @@ module RelatonBib
         end
       end
 
-      def to_hash
+      def to_h
         hash = { "content" => to_s }
         hash.merge super
       end
@@ -85,10 +85,10 @@ module RelatonBib
     #
     # @return [Hash]
     #
-    def to_hash
-      hash = organization&.to_hash || {}
-      hash["name"] = name.to_hash if name
-      hash["description"] = description.map(&:to_hash) if description.any?
+    def to_h
+      hash = organization&.to_h || {}
+      hash["name"] = name.to_h if name
+      hash["description"] = description.map(&:to_h) if description.any?
       hash
     end
 

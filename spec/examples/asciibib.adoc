@@ -47,7 +47,8 @@ language:: fr
 script:: Latn
 version.revision_date:: 2019-04-01
 version.draft:: draft
-biblionote:: note
+biblionote::
+biblionote.content:: note
 biblionote::
 biblionote.type:: annote
 biblionote.content:: An note
@@ -250,8 +251,10 @@ relation.type:: updates
 relation.bibitem.formattedref:: ISO 19115:2003
 relation::
 relation.type:: obsoletes
-relation.desctiption.content:: supersedes
-relation.desctiption.format:: text/plain
+relation.description.content:: supersedes
+relation.description.language:: en
+relation.description.script:: Latn
+relation.description.locale:: en-US
 relation.bibitem.type:: standard
 relation.bibitem.formattedref:: ISO 19115:2003/Cor 1:2006
 relation::

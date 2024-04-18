@@ -87,7 +87,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       hash = super
       return hash unless format
 

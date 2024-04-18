@@ -33,7 +33,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       hash = { "content" => content.to_s }
       hash["type"] = type.to_s if type
       hash["language"] = language if language

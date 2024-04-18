@@ -35,7 +35,7 @@ module RelatonBib
     #
     # @return [Hash, String] forename hash or string representation
     #
-    def to_hash
+    def to_h
       ls = super
       hash = ls.is_a?(Hash) ? ls : { "content" => ls }
       hash["initial"] = initial if initial

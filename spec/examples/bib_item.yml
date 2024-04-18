@@ -260,8 +260,12 @@ relation:
           reference_from: "3"
   - type: obsoletes
     description:
-      format: text/plain
       content: supersedes
+      language:
+        - en
+      script:
+        - Latn
+      locale: en-US
     bibitem:
       type: standard
       formattedref: ISO 19115:2003/Cor 1:2006

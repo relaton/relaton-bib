@@ -380,47 +380,47 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash(embedded: false) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    def to_h(embedded: false) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       hash = {}
       hash["schema-version"] = schema unless embedded
       hash["id"] = id if id
-      hash["title"] = title.to_hash if title&.any?
-      hash["link"] = link.map(&:to_hash) if link&.any?
+      hash["title"] = title.to_h if title&.any?
+      hash["link"] = link.map(&:to_h) if link&.any?
       hash["type"] = type if type
-      hash["docid"] = docidentifier.map(&:to_hash) if docidentifier&.any?
+      hash["docid"] = docidentifier.map(&:to_h) if docidentifier&.any?
       hash["docnumber"] = docnumber if docnumber
-      hash["date"] = date.map(&:to_hash) if date&.any?
-      hash["contributor"] = contributor.map(&:to_hash) if contributor&.any?
-      hash["edition"] = edition.to_hash if edition
-      hash["version"] = version.map &:to_hash if version.any?
+      hash["date"] = date.map(&:to_h) if date&.any?
+      hash["contributor"] = contributor.map(&:to_h) if contributor&.any?
+      hash["edition"] = edition.to_h if edition
+      hash["version"] = version.map &:to_h if version.any?
       hash["revdate"] = revdate if revdate
-      hash["biblionote"] = biblionote.map(&:to_hash) if biblionote&.any?
+      hash["biblionote"] = biblionote.map(&:to_h) if biblionote&.any?
       hash["language"] = language if language&.any?
       hash["script"] = script if script&.any?
       hash["formattedref"] = formattedref.to_s if formattedref
-      hash["abstract"] = abstract.map(&:to_hash) if abstract&.any?
-      hash["docstatus"] = status.to_hash if status
-      hash["copyright"] = copyright.map(&:to_hash) if copyright&.any?
-      hash["relation"] = relation.map(&:to_hash) if relation&.any?
-      hash["series"] = series.map(&:to_hash) if series&.any?
-      hash["medium"] = medium.to_hash if medium
-      hash["place"] = place.map(&:to_hash) if place&.any?
-      hash["extent"] = extent.map(&:to_hash) if extent&.any?
-      hash["size"] = size.to_hash if size&.any?
+      hash["abstract"] = abstract.map(&:to_h) if abstract&.any?
+      hash["docstatus"] = status.to_h if status
+      hash["copyright"] = copyright.map(&:to_h) if copyright&.any?
+      hash["relation"] = relation.map(&:to_h) if relation&.any?
+      hash["series"] = series.map(&:to_h) if series&.any?
+      hash["medium"] = medium.to_h if medium
+      hash["place"] = place.map(&:to_h) if place&.any?
+      hash["extent"] = extent.map(&:to_h) if extent&.any?
+      hash["size"] = size.to_h if size&.any?
       hash["accesslocation"] = accesslocation if accesslocation&.any?
-      hash["classification"] = classification.map(&:to_hash) if classification&.any?
-      hash["validity"] = validity.to_hash if validity
+      hash["classification"] = classification.map(&:to_h) if classification&.any?
+      hash["validity"] = validity.to_h if validity
       hash["fetched"] = fetched.to_s if fetched
-      hash["keyword"] = keyword.map(&:to_hash) if keyword&.any?
+      hash["keyword"] = keyword.map(&:to_h) if keyword&.any?
       hash["license"] = license if license&.any?
-      hash["doctype"] = doctype.to_hash if doctype
+      hash["doctype"] = doctype.to_h if doctype
       hash["subdoctype"] = subdoctype if subdoctype
       if editorialgroup&.presence?
-        hash["editorialgroup"] = editorialgroup.to_hash
+        hash["editorialgroup"] = editorialgroup.to_h
       end
-      hash["ics"] = ics.map(&:to_hash) if ics.any?
+      hash["ics"] = ics.map(&:to_h) if ics.any?
       if structuredidentifier&.presence?
-        hash["structuredidentifier"] = structuredidentifier.to_hash
+        hash["structuredidentifier"] = structuredidentifier.to_h
       end
       hash["ext"] = { "schema-version" => ext_schema } if !embedded && respond_to?(:ext_schema) && ext_schema
       hash

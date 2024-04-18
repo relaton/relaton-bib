@@ -223,7 +223,7 @@ RelatonBib::BibXMLParser.parse bibxml
 
 [source,ruby]
 ----
-item.to_hash
+item.to_h
 => {"schema-version"=>"v1.2.1",
     "id"=>"ISOTC211",
     "title"=>

@@ -33,7 +33,7 @@ RSpec.describe RelatonBib::TypedTitleString do
     # end
 
     it "return hash when title is string" do
-      expect(subject.to_hash).to eq("type" => "main", "content" => "Title")
+      expect(subject.to_h).to eq("type" => "main", "content" => "Title")
     end
   end
 

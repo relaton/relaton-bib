@@ -123,7 +123,7 @@ RSpec.describe RelatonBib::BibtexParser do
       expect(note).to be_instance_of RelatonBib::BiblioNoteCollection
       expect(note[0]).to be_instance_of RelatonBib::BiblioNote
       expect(note[0].type).to eq "howpublished"
-      expect(note[0].content).to eq "How Published Note"
+      expect(note[0].to_s).to eq "How Published Note"
     end
 
     it "don't parse howpublished as note" do

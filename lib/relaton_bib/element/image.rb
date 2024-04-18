@@ -58,7 +58,7 @@ module RelatonBib
       #
       # @return [Hash] The hash representation of the Image object.
       #
-      def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
+      def to_h # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
         hash = { "image" => { "id" => id, "src" => src, "mimetype" => mimetype } }
         hash["image"]["filename"] = filename if filename
         hash["image"]["width"] = width if width

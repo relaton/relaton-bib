@@ -47,12 +47,12 @@ module RelatonBib
     #
     # @return [Hash]
     #
-    def to_hash
+    def to_h
       if name then name
       else
         hash = { "city" => city }
-        hash["region"] = region.map(&:to_hash) if region.any?
-        hash["country"] = country.map(&:to_hash) if country.any?
+        hash["region"] = region.map(&:to_h) if region.any?
+        hash["country"] = country.map(&:to_h) if country.any?
         hash
       end
     end
@@ -114,7 +114,7 @@ module RelatonBib
       #
       # @return [Hash] region type as Hash
       #
-      def to_hash
+      def to_h
         hash = { "name" => name }
         hash["iso"] = iso if iso
         hash["recommended"] = recommended unless recommended.nil?

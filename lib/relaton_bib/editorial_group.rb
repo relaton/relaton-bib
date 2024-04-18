@@ -18,8 +18,8 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
-      technical_committee.map(&:to_hash)
+    def to_h
+      technical_committee.map(&:to_h)
     end
 
     # @param prefix [String]

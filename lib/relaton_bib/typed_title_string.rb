@@ -62,8 +62,8 @@ module RelatonBib
       tl.each { |t| opts[:builder].title { |b| t.to_xml b } }
     end
 
-    def to_hash
-      @array.map(&:to_hash)
+    def to_h
+      @array.map(&:to_h)
     end
 
     #
@@ -168,7 +168,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       hash = { "content" => to_s }
       hash["type"] = type if type
       hash.merge super

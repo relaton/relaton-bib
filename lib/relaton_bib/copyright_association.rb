@@ -44,8 +44,8 @@ module RelatonBib
     # rubocop:enable Metrics/AbcSize
 
     # @return [Hash]
-    def to_hash
-      hash = { "owner" => owner.map(&:to_hash), "from" => from.year.to_s }
+    def to_h
+      hash = { "owner" => owner.map(&:to_h), "from" => from.year.to_s }
       hash["to"] = to.year.to_s if to
       hash["scope"] = scope if scope
       hash

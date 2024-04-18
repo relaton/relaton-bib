@@ -42,7 +42,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    def to_h # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       hash = { "address" => {} }
       if formatted_address
         hash["address"]["formatted_address"] = formatted_address

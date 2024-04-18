@@ -20,7 +20,9 @@ module RelatonBib
       end
 
       def to_h
-        { "content" => to_s }
+        hash = { "content" => to_s }
+        hash.merge!(super) if defined? super
+        hash
       end
 
       def to_s

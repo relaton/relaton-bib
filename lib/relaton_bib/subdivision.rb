@@ -27,8 +27,8 @@ module RelatonBib
       node[:type] = type if type
     end
 
-    def to_hash
-      hash = organization.to_hash
+    def to_h
+      hash = organization.to_h
       hash["type"] = type if type
       hash
     end

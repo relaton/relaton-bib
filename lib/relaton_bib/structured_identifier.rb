@@ -16,8 +16,8 @@ module RelatonBib
     end
 
     # @return [Array<Hash>]
-    def to_hash
-      @collection.map(&:to_hash)
+    def to_h
+      @collection.map(&:to_h)
     end
 
     # @param prefix [String]
@@ -113,7 +113,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       hash = { "docnumber" => docnumber }
       hash["type"] = type if type
       hash["agency"] = agency if agency&.any?

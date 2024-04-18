@@ -80,14 +80,14 @@ module RelatonBib
     # rubocop:enable Metrics/PerceivedComplexity
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    def to_h # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       hash = {}
       hash["type"] = type if type
       hash["formattedref"] = formattedref.to_s if formattedref
-      hash["title"] = title.to_hash
+      hash["title"] = title.to_h
       hash["place"] = place if place
       hash["organization"] = organization if organization
-      hash["abbreviation"] = abbreviation.to_hash if abbreviation
+      hash["abbreviation"] = abbreviation.to_h if abbreviation
       hash["from"] = from if from
       hash["to"] = to if to
       hash["number"] = number if number

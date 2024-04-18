@@ -350,7 +350,7 @@ module RelatonBib
       ret[:relation] = RelatonBib.array(ret[:relation])
       ret[:relation]&.each do |r|
         if r[:description]
-          r[:description] = FormattedString.new(**r[:description])
+          r[:description] = DocumentRelation::Description.new(**r[:description])
         end
         relation_bibitem_hash_to_bib(r)
         relation_locality_hash_to_bib(r)

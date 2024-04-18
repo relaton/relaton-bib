@@ -30,7 +30,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       hash = {}
       hash["begins"] = begins.strftime(FORMAT) if begins
       hash["ends"] = ends.strftime(FORMAT) if ends

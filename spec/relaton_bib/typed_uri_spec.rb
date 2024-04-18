@@ -28,8 +28,8 @@ RSpec.describe RelatonBib::TypedUri do
       OUTPUT
     end
 
-    it "#to_hash" do
-      expect(subject.to_hash).to eq(
+    it "#to_h" do
+      expect(subject.to_h).to eq(
         "content" => "http://example.com",
         "type" => "src",
         "language" => "en",

@@ -136,13 +136,8 @@ module RelatonBib
 
       def fetch_note(item)
         bnotes = item.xpath("./note").map do |n|
-          BiblioNote.new(
-            content: n.text,
-            type: n[:type],
-            format: n[:format],
-            language: n[:language],
-            script: n[:script],
-          )
+          attrs = n.to_h.transform_keys(&:to_sym)
+          BiblioNote.new(content: n.text, **attrs)
         end
         BiblioNoteCollection.new bnotes
       end
@@ -609,8 +604,8 @@ module RelatonBib
         d = rel.at "./description"
         return unless d
 
-        FormattedString.new(content: d.text, language: d[:language],
-                            script: d[:script], format: d[:format])
+        attrs = d.to_h.transform_keys(&:to_sym)
+        DocumentRelation::Description.new(content: d.text, **attrs)
       end
 
       #

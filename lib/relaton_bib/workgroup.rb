@@ -32,7 +32,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       hash = { "name" => name }
       hash["number"] = number if number
       hash["type"] = type if type

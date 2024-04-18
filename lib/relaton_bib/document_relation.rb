@@ -1,6 +1,20 @@
 module RelatonBib
   # Documett relation
   class DocumentRelation
+    class Description
+      include LocalizedStringAttrs
+      include Element::Base
+
+      def initialize(content:, **args)
+        super
+        @content = content.is_a?(String) ? Element.parse_text_elements(content) : content
+      end
+
+      def to_xml(builder)
+        builder.description { |b| super b }
+      end
+    end
+
     TYPES = %w[
       includes includedIn hasPart partOf merges mergedInto splits splitInto
       instanceOf hasInstance exemplarOf hasExemplar manifestationOf
@@ -17,7 +31,7 @@ module RelatonBib
     # @return [String]
     attr_accessor :type
 
-    # @return [RelatonBib::FormattedString, nil]
+    # @return [RelatonBib::DocumentRelation::Description, nil]
     attr_reader :description
 
     # @return [String]
@@ -34,7 +48,7 @@ module RelatonBib
     attr_reader :source_locality
 
     # @param type [String]
-    # @param description [RelatonBib::FormattedString, nil]
+    # @param description [RelatonBib::DocumentRelation::Description, nil]
     # @param bibitem [RelatonBib::BibliographicItem,
     #   RelatonIso::IsoBibliographicItem]
     # @param locality [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
@@ -60,7 +74,7 @@ module RelatonBib
       opts.delete :bibdata
       opts.delete :note
       builder.relation(type: type) do
-        builder.description { description.to_xml builder } if description
+        description&.to_xml builder
         bibitem.to_xml(**opts.merge(builder: builder, embedded: true))
         locality.each { |l| l.to_xml builder }
         source_locality.each { |l| l.to_xml builder }
@@ -69,11 +83,11 @@ module RelatonBib
     # rubocop:enable Metrics/AbcSize
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-      hash = { "type" => type, "bibitem" => bibitem.to_hash(embedded: true) }
-      hash["description"] = description.to_hash if description
-      hash["locality"] = locality.map(&:to_hash) if locality&.any?
-      hash["source_locality"] = source_locality.map(&:to_hash) if source_locality&.any?
+    def to_h # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+      hash = { "type" => type, "bibitem" => bibitem.to_h(embedded: true) }
+      hash["description"] = description.to_h if description
+      hash["locality"] = locality.map(&:to_h) if locality&.any?
+      hash["source_locality"] = source_locality.map(&:to_h) if source_locality&.any?
       hash
     end
 
@@ -82,7 +96,7 @@ module RelatonBib
     def to_asciibib(prefix = "")
       pref = prefix.empty? ? prefix : "#{prefix}."
       out = "#{prefix}.type:: #{type}\n"
-      out += description.to_asciibib "#{pref}desctiption" if description
+      out += description.to_asciibib "#{pref}description" if description
       out += bibitem.to_asciibib "#{pref}bibitem" if bibitem
       out
     end

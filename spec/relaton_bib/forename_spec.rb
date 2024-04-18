@@ -22,8 +22,8 @@ describe RelatonBib::Forename do
       XML
     end
 
-    it "#to_hash" do
-      expect(subject.to_hash).to eq(
+    it "#to_h" do
+      expect(subject.to_h).to eq(
         { "content" => "John", "language" => ["en"], "script" => ["Latn"],
           "initial" => "J" },
       )

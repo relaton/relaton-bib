@@ -167,7 +167,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
     context "converts item to hash" do
       it do
-        hash = subject.to_hash
+        hash = subject.to_h
         file = "spec/examples/hash.yml"
         File.write file, hash.to_yaml unless File.exist? file
         expect(hash).to eq YAML.load_file(file)
@@ -177,7 +177,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       it "with ext schema-version" do
         expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
         expect(subject).to receive(:ext_schema).and_return("v1.0.0").twice
-        hash = subject.to_hash
+        hash = subject.to_h
         expect(hash["ext"]).to eq "schema-version" => "v1.0.0"
       end
     end

@@ -293,7 +293,11 @@ relation:
     formattedref: ISO 19115:2003/Cor 1:2006
   description:
     content: supersedes
-    format: text/plain
+    language:
+      - en
+    script:
+      - Latn
+    locale: en-US
 - type: partOf
   bibitem:
     title:

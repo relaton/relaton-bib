@@ -42,8 +42,8 @@ describe RelatonBib::Element::Image do
     )
   end
 
-  it "to_hash" do
-    expect(subject.to_hash).to eq(
+  it "to_h" do
+    expect(subject.to_h).to eq(
       "image" => {
         "id" => "id",
         "src" => "src",

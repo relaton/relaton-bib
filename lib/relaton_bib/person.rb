@@ -45,7 +45,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       { "type" => type, "id" => value }
     end
 
@@ -104,11 +104,11 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize
-      hash = { "name" => name.to_hash }
+    def to_h # rubocop:disable Metrics/AbcSize
+      hash = { "name" => name.to_h }
       hash["credential"] = credential if credential.any?
-      hash["affiliation"] = affiliation.map &:to_hash if affiliation.any?
-      hash["identifier"] = identifier.map &:to_hash if identifier.any?
+      hash["affiliation"] = affiliation.map &:to_h if affiliation.any?
+      hash["identifier"] = identifier.map &:to_h if identifier.any?
       { "person" => hash.merge(super) }
     end
 

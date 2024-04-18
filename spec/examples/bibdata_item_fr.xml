@@ -192,7 +192,7 @@
     </sourceLocalityStack>
   </relation>
   <relation type="obsoletes">
-    <description format="text/plain">supersedes</description>
+    <description language="en" script="Latn" locale="en-US">supersedes</description>
     <bibitem type="standard">
       <formattedref>ISO 19115:2003/Cor 1:2006</formattedref>
     </bibitem>

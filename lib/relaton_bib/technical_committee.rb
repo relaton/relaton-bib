@@ -16,8 +16,8 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
-      workgroup.to_hash
+    def to_h
+      workgroup.to_h
     end
 
     # @param prefix [String]

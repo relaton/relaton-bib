@@ -21,7 +21,7 @@ module RelatonBib
       end
 
       # @return [Hash]
-      def to_hash
+      def to_h
         hash = {}
         hash["revision_date"] = revision_date if revision_date
         hash["draft"] = draft if draft

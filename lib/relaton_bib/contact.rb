@@ -27,7 +27,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       hash = { type => value }
       hash["type"] = subtype if subtype
       hash

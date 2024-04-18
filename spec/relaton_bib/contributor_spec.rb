@@ -13,7 +13,7 @@ describe RelatonBib::Address do
     end
 
     it "as Hash" do
-      hash = contrib.to_hash
+      hash = contrib.to_h
       expect(hash["address"]["formatted_address"]).to eq "formatted address"
     end
 
@@ -48,7 +48,7 @@ describe RelatonBib::Affiliation do
       end
 
       it "as Hash" do
-        hash = subject.to_hash
+        hash = subject.to_h
         expect(hash["organization"]["name"][0]["content"]).to eq "Org"
         expect(hash["name"]["content"]).to eq "Name"
         expect(hash["name"]["language"]).to eq ["en"]
@@ -81,7 +81,7 @@ describe RelatonBib::Affiliation do
       end
 
       it "as Hash" do
-        hash = subject.to_hash
+        hash = subject.to_h
         expect(hash).not_to have_key "organization"
       end
 
@@ -106,7 +106,7 @@ describe RelatonBib::Affiliation do
       end
 
       it "as Hash" do
-        hash = subject.to_hash
+        hash = subject.to_h
         expect(hash).not_to have_key "name"
       end
 
@@ -131,7 +131,7 @@ describe RelatonBib::Affiliation do
       end
 
       it "as Hash" do
-        expect(subject.to_hash).not_to have_key "description"
+        expect(subject.to_h).not_to have_key "description"
       end
 
       it "as AsciiBib" do
@@ -145,7 +145,7 @@ describe RelatonBib::Affiliation do
     end
   end
 
-  context "desctiption" do
+  context "description" do
     it "returns all descriptions if language is not specified" do
       expect(subject.description).to eq [desc]
     end
