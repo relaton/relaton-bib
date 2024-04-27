@@ -22,7 +22,7 @@ module RelatonBib
       # @param [String, nil] align left, right, center, or justify
       # @param [Array<RelatonBib::Element::Note>] note
       #
-      def initialize(content, id, align: nil, note: [])
+      def initialize(content:, id:, align: nil, note: [])
         check_alignment align
         super content: content
         @id = id

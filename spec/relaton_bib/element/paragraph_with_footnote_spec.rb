@@ -2,12 +2,12 @@ describe RelatonBib::Element::ParagraphWithFootnote do
   let(:content) { RelatonBib::Element::Text.new("text") }
   let(:note) do
     c = RelatonBib::Element::Text.new("Note")
-    p = RelatonBib::Element::Paragraph.new([c], "id-2")
-    RelatonBib::Element::Note.new([p], "id-3")
+    p = RelatonBib::Element::Paragraph.new(content: [c], id: "id-2")
+    RelatonBib::Element::Note.new(content: [p], id: "id-3")
   end
 
   subject do
-    described_class.new([content], "id-1", align: "left", note: [note])
+    described_class.new(content: [content], id: "id-1", align: "left", note: [note])
   end
 
   it "initialize paragraph with footnote" do

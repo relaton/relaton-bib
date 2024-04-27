@@ -121,7 +121,7 @@ module RelatonBib
       # Render address
       #
       # @param [Nokogiri::XML::Builder] builder xml builder
-      # @param [RelatonBib::ContributionInfo] contrib contributor
+      # @param [RelatonBib::Contributor] contrib contributor
       #
       def render_address(builder, contrib) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         address, contact = address_contact contrib.entity.contact

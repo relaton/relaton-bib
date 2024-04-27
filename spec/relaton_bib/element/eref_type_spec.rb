@@ -10,7 +10,7 @@ describe RelatonBib::Element::ErefType do
 
   subject do
     described_class.new(
-      [content], citeas: citeas, type: type, citation_type: citation_type, **args,
+      content: [content], citeas: citeas, type: type, citation_type: citation_type, **args,
     )
   end
 

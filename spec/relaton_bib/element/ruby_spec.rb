@@ -1,7 +1,7 @@
 describe RelatonBib::Element::Ruby do
   let(:content) { RelatonBib::Element::Text.new "content" }
   let(:annotation) do
-    RelatonBib::Element::Annotation.new "annotation", script: "Latn", lang: "en"
+    RelatonBib::Element::Ruby::Annotation.new "annotation", script: "Latn", lang: "en"
   end
   subject { described_class.new content, annotation }
 
@@ -24,7 +24,7 @@ describe RelatonBib::Element::Ruby do
   end
 end
 
-describe RelatonBib::Element::Annotation do
+describe RelatonBib::Element::Ruby::Annotation do
   subject { described_class.new "value", script: "Latn", lang: "en" }
 
   it "initialize annotation" do
@@ -45,7 +45,7 @@ describe RelatonBib::Element::Annotation do
   end
 end
 
-describe RelatonBib::Element::Pronunciation do
+describe RelatonBib::Element::Ruby::Pronunciation do
   subject { described_class.new "value", script: "Latn", lang: "en" }
 
   it "to_xml" do

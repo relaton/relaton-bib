@@ -49,7 +49,7 @@ module RelatonBib
   end
 
   # Organization.
-  class OrganizationType < Contributor
+  class OrganizationType < ContributorBase
     # @return [Array<RelatonBib::LocalizedString>]
     attr_reader :name
 

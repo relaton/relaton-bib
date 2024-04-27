@@ -23,7 +23,7 @@ module RelatonBib
       # @param args [Hash]
       # @option args [String, nil] :normative
       # @option args [String, nil] :alt
-      def initialize(content, citeas:, type:, citation_type:, **args)
+      def initialize(content:, citeas:, type:, citation_type:, **args)
         check_type type
         super content: content
         @citeas = citeas

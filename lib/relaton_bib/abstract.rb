@@ -1,7 +1,10 @@
 module RelatonBib
   class Abstract
     include LocalizedStringAttrs
-    include Element::Base
+    include RelatonBib::Element::Base
+
+    # @!attribute [r] content BasicBlock, TextElement
+    #   @return [Array<RelatonBib::Element::Base>]
 
     #
     # Initialize abstract
@@ -14,7 +17,12 @@ module RelatonBib
     #
     def initialize(content:, **args)
       super
-      @content = content.is_a?(String) ? Element.parse_text_elements(content) : content
+      if content.is_a?(String)
+        @content = Element.parse_basic_block_elements(content)
+        @content = Element.parse_text_elements(content) if @content.empty?
+      else
+        @content = content
+      end
     end
 
     def to_xml(builder)

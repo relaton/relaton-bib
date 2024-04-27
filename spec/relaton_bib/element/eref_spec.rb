@@ -6,7 +6,7 @@ describe RelatonBib::Element::Eref do
   end
   subject do
     RelatonBib::Element::Eref.new(
-      [content], citeas: "citeas", type: "type", citation_type: citation_type
+      content: [content], citeas: "citeas", type: "type", citation_type: citation_type
     )
   end
 

@@ -13,7 +13,7 @@ module RelatonBib
       # @param content [Array<RelatonBib::Element::Paragraph>]
       # @param id [String] ID
       #
-      def initialize(content, id)
+      def initialize(content:, id:)
         super content: content
         @id = id
       end

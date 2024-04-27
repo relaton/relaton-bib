@@ -8,7 +8,7 @@ module RelatonBib
       # @!attribute [r] content
       #   @return [Array<RelatonBib::Element::Text, RelatonBib::Element::Base, RelatonBib::Element::Fn>]
 
-      # @return [String]
+      # @return [String, nil]
       attr_reader :id
 
       # @return [String, nil] alignment left, right, center, or justify
@@ -21,11 +21,11 @@ module RelatonBib
       # Initialize paragraph with footnote
       #
       # @param content [Array<RelatonBib::Element::Text, RelatonBib::Element::Base, RelatonBib::Element::Fn>]
-      # @param id [String] ID
+      # @param id [String, nil] ID
       # @param align [String, nil] alignment left, right, center, or justify
       # @param note [Array<RelatonBib::Element::Note>]
       #
-      def initialize(content, id, align: nil, note: [])
+      def initialize(content:, id: nil, align: nil, note: [])
         check_alignment align
         super content: content
         @id = id
@@ -35,10 +35,11 @@ module RelatonBib
 
       # @param builder [Nokogiri::XML::Builder]
       def to_xml(builder)
-        node = builder.p(id: id) do |b|
+        node = builder.p do |b|
           super b
           note.each { |n| n.to_xml b }
         end
+        node[:id] = id if id
         node[:align] = align if align
       end
     end

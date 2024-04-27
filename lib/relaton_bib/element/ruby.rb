@@ -6,7 +6,7 @@ module RelatonBib
     class Ruby
       include ToString
 
-      # @return [RelatonBib::Element::Pronunciation, RelatonBib::Element::Annotation]
+      # @return [RelatonBib::Element::Ruby::Pronunciation, RelatonBib::Element::Ruby::Annotation]
       attr_reader :annotation
 
       # @return [RelatonBib::Element::Text, RelatonBib::Element::Ruby]
@@ -16,7 +16,8 @@ module RelatonBib
       # Initialize Ruby element
       #
       # @param [RelatonBib::Element::Text, RelatonBib::Element::Ruby] content
-      # @param [RelatonBib::Element::Pronunciation, RelatonBib::Element::Annotation] annotation annotation or pronunciation
+      # @param [RelatonBib::Element::Ruby::Pronunciation,
+      #         RelatonBib::Element::Ruby::Annotation] annotation annotation or pronunciation
       #
       def initialize(content, annotation)
         @annotation = annotation
@@ -30,40 +31,40 @@ module RelatonBib
           content.to_xml b
         end
       end
-    end
 
-    class Annotation
-      include ToString
+      class Annotation
+        include ToString
 
-      # @return [String]
-      attr_reader :value
+        # @return [String]
+        attr_reader :value
 
-      # @return [String, nil]
-      attr_reader :script, :lang
+        # @return [String, nil]
+        attr_reader :script, :lang
 
-      #
-      # Initialize Annotation element
-      #
-      # @param [String] value
-      # @param [String, nil] script
-      # @param [String, nil] lang
-      #
-      def initialize(value, script: nil, lang: nil)
-        @value = value
-        @script = script
-        @lang = lang
+        #
+        # Initialize Annotation element
+        #
+        # @param [String] value
+        # @param [String, nil] script
+        # @param [String, nil] lang
+        #
+        def initialize(value, script: nil, lang: nil)
+          @value = value
+          @script = script
+          @lang = lang
+        end
+
+        # @param builder [Nokogiri::XML::Builder]
+        def to_xml(builder)
+          builder.annotation value: value, script: script, lang: lang
+        end
       end
 
-      # @param builder [Nokogiri::XML::Builder]
-      def to_xml(builder)
-        builder.annotation value: value, script: script, lang: lang
-      end
-    end
-
-    class Pronunciation < RelatonBib::Element::Annotation
-      # @param builder [Nokogiri::XML::Builder]
-      def to_xml(builder)
-        builder.pronunciation value: value, script: script, lang: lang
+      class Pronunciation < RelatonBib::Element::Ruby::Annotation
+        # @param builder [Nokogiri::XML::Builder]
+        def to_xml(builder)
+          builder.pronunciation value: value, script: script, lang: lang
+        end
       end
     end
   end

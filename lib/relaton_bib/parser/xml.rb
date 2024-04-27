@@ -335,7 +335,7 @@ module RelatonBib
         )
       end
 
-      # @param node [Nokogiri::XML::Elemen]
+      # @param node [Nokogiri::XML::Element]
       # @return [RelatonBib::DocumentStatus::Stage]
       def stage(elm)
         return unless elm
@@ -343,7 +343,7 @@ module RelatonBib
         DocumentStatus::Stage.new(value: elm.text, abbreviation: elm[:abbreviation])
       end
 
-      # @param node [Nokogiri::XML::Elemen]
+      # @param node [Nokogiri::XML::Element]
       # @return [Array<RelatonBib::BibliographicDate>]
       def fetch_dates(item) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
         item.xpath("./date").each_with_object([]) do |d, a|
@@ -531,23 +531,23 @@ module RelatonBib
       end
 
       # @param item [Nokogiri::XML::Element]
-      # @return [Array<RelatonBib::ContributionInfo>]
+      # @return [Array<RelatonBib::Contributor>]
       def fetch_contributors(item)
-        item.xpath("./contributor").map { |c| fetch_contribution_info c }
+        item.xpath("./contributor").map { |c| fetch_contributor c }
       end
 
-      def fetch_contribution_info(contrib)
+      def fetch_contributor(contrib)
         entity = get_org(contrib.at("./organization")) || get_person(contrib.at("./person"))
         role = contrib.xpath("./role").map do |r|
           { type: r[:type], description: fetch_contrib_role_desc(r) }
         end
-        ContributionInfo.new entity: entity, role: role
+        Contributor.new entity: entity, role: role
       end
 
       def fetch_contrib_role_desc(role)
         role.xpath("./description").map do |d|
           attrs = d.to_h.transform_keys(&:to_sym)
-          ContributionInfo::Role::Description.new(content: d.text, **attrs)
+          Contributor::Role::Description.new(content: d.text, **attrs)
         end
       end
 
@@ -555,9 +555,11 @@ module RelatonBib
       # @return [Array<RelatonBib::FormattedString>]
       def fetch_abstract(item) # rubocop:disable Metrics/AbcSize
         item.xpath("./abstract").map do |a|
-          c = a.children.map { |ch| ch.name == "text" ? ch.text : ch.to_xml(encoding: "UTf-8") }.join
-          args = a.attributes.each_with_object({}) { |(k, v), h| h[k.to_sym] = v.to_s }
-          Abstract.new(content: c, **args)
+          # c = a.children.map { |ch| ch.name == "text" ? ch.text : ch.to_xml(encoding: "UTf-8") }.join
+          content = Element.parse_basic_block_elements a
+          content = Element.parse_text_elements(a) if content.empty?
+          args = a.attributes.transform_keys(&:to_sym)
+          Abstract.new(content: content, **args)
         end
       end
 
@@ -565,7 +567,7 @@ module RelatonBib
       # @return [Array<RelatonBib::CopyrightAssociation>]
       def fetch_copyright(item)
         item.xpath("./copyright").map do |cp|
-          owner = cp.xpath("owner").map { |o| fetch_contribution_info o }
+          owner = cp.xpath("owner").map { |o| fetch_contributor o }
           from = cp.at("from")&.text
           to   = cp.at("to")&.text
           scope = cp.at("scope")&.text
@@ -574,11 +576,11 @@ module RelatonBib
       end
 
       # @param item [Nokogiri::XML::Element]
-      # @return [Arra<RelatonBib::TypedUri>]
+      # @return [Arra<RelatonBib::Source>]
       def fetch_link(item)
         item.xpath("./uri").map do |l|
-          TypedUri.new(type: l[:type], content: l.text, language: l[:language],
-                       script: l[:script])
+          args = l.to_h.transform_keys(&:to_sym)
+          Source.new(content: l.text, **args)
         end
       end
 

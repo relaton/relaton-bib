@@ -110,7 +110,7 @@ module RelatonBib
 
         role = { type: type }
         if desc
-          d = ContributionInfo::Role::Description.new(content: desc)
+          d = Contributor::Role::Description.new(content: desc)
           role[:description] = [d]
         end
         yield entity: Organization.new(name: org.to_s), role: [role]
@@ -210,12 +210,12 @@ module RelatonBib
       end
 
       # @param bibtex [BibTeX::Entry]
-      # @return [Array<RelatonBib::TypedUri>]
+      # @return [Array<RelatonBib::Source>]
       def fetch_link(bibtex) # rubocop:disable Metrics/AbcSize
         link = []
-        link << TypedUri.new(type: "src", content: bibtex.url.to_s) if bibtex["url"]
-        link << TypedUri.new(type: "doi", content: bibtex.doi.to_s) if bibtex["doi"]
-        link << TypedUri.new(type: "file", content: bibtex.file2.to_s) if bibtex["file2"]
+        link << Source.new(type: "src", content: bibtex.url.to_s) if bibtex["url"]
+        link << Source.new(type: "doi", content: bibtex.doi.to_s) if bibtex["doi"]
+        link << Source.new(type: "file", content: bibtex.file2.to_s) if bibtex["file2"]
         link
       end
 

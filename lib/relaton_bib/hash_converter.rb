@@ -211,14 +211,14 @@ module RelatonBib
       if role.is_a? Hash
         description = RelatonBib.array(role[:description]).map do |d|
           desc = d.is_a?(String) ? { content: d } : d
-          ContributionInfo::Role::Description.new(**desc)
+          Contributor::Role::Description.new(**desc)
         end
         { type: role[:type], description: description }
       else { type: role }
       end
     end
 
-    def org_hash_to_bib(org) # rubocop:disable Metrics/AbcSize
+    def org_hash_to_bib(org) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       return nil if org.nil?
 
       org[:identifier] = RelatonBib.array(org[:identifier])&.map do |a|

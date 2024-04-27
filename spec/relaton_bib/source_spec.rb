@@ -1,6 +1,6 @@
-RSpec.describe RelatonBib::TypedUri do
+RSpec.describe RelatonBib::Source do
   it "set content" do
-    uri = RelatonBib::TypedUri.new type: "src", content: nil
+    uri = described_class.new type: "src", content: nil
     uri.content = "http://example.com"
     expect(uri.content).to be_instance_of Addressable::URI
     expect(uri.content.to_s).to eq "http://example.com"

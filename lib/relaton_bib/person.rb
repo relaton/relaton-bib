@@ -62,7 +62,7 @@ module RelatonBib
   end
 
   # Person class.
-  class Person < Contributor
+  class Person < ContributorBase
     # @return [RelatonBib::FullName]
     attr_accessor :name
 

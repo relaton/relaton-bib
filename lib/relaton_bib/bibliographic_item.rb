@@ -1,22 +1,19 @@
 # frozen_string_literal: true
 
-require "relaton_bib/typed_uri"
+require "relaton_bib/source"
 require "relaton_bib/localized_string_attrs"
 require "relaton_bib/localized_string"
-require "relaton_bib/abstract"
 require "relaton_bib/forename"
 require "relaton_bib/full_name"
 require "relaton_bib/address"
 require "relaton_bib/contact"
-require "relaton_bib/affiliation"
-require "relaton_bib/contributor"
+require "relaton_bib/contributor_base"
 require "relaton_bib/document_type"
 require "relaton_bib/document_identifier_base"
 require "relaton_bib/document_identifier"
 require "relaton_bib/document_identifier_urn"
 require "relaton_bib/copyright_association"
 require "relaton_bib/formatted_string"
-require "relaton_bib/contribution_info"
 require "relaton_bib/bibliographic_date"
 require "relaton_bib/series"
 require "relaton_bib/document_status"
@@ -66,7 +63,7 @@ module RelatonBib
     # @!attribute [r] title
     # @return [RelatonBib::TypedTitleStringCollection]
 
-    # @return [Array<RelatonBib::TypedUri>]
+    # @return [Array<RelatonBib::Source>]
     attr_reader :link
 
     # @return [Array<RelatonBib::DocumentIdentifier>]
@@ -75,7 +72,7 @@ module RelatonBib
     # @return [Array<RelatonBib::BibliographicDate>]
     attr_accessor :date
 
-    # @return [Array<RelatonBib::ContributionInfo>]
+    # @return [Array<RelatonBib::Contributor>]
     attr_reader :contributor
 
     # @return [Array<RelatonBib::BibliographicItem::Version>]
@@ -174,7 +171,7 @@ module RelatonBib
     # @param size [RelatonBib::BibliographicSize, nil]
     #
     # @param copyright [Array<Hash, RelatonBib::CopyrightAssociation>]
-    # @option copyright [Array<Hash, RelatonBib::ContributionInfo>] :owner
+    # @option copyright [Array<Hash, RelatonBib::Contributor>] :owner
     # @option copyright [String] :from
     # @option copyright [String, nil] :to
     # @option copyright [String, nil] :scope
@@ -185,7 +182,7 @@ module RelatonBib
     # @option date [String, nil] :to
     # @option date [String, nil] :on required if :from is nil
     #
-    # @param contributor [Array<Hash, RelatonBib::ContributionInfo>]
+    # @param contributor [Array<Hash, RelatonBib::Contributor>]
     # @option contributor [RealtonBib::Organization, RelatonBib::Person] :entity
     # @option contributor [String] :type
     # @option contributor [String] :from
@@ -203,7 +200,7 @@ module RelatonBib
     # @option relation [Array<RelatonBib::SourceLocality,
     #                   RelatonBib::SourceLocalityStack>] :source_locality
     #
-    # @param link [Array<Hash, RelatonBib::TypedUri>]
+    # @param link [Array<Hash, RelatonBib::Source>]
     # @option link [String] :type
     # @option link [String] :content
     def initialize(**args)
@@ -224,7 +221,7 @@ module RelatonBib
       @contributor = (args[:contributor] || []).map do |c|
         if c.is_a? Hash
           e = c[:entity].is_a?(Hash) ? Organization.new(**c[:entity]) : c[:entity]
-          ContributionInfo.new(entity: e, role: c[:role])
+          Contributor.new(entity: e, role: c[:role])
         else c
         end
       end
@@ -254,8 +251,8 @@ module RelatonBib
       @relation       = DocRelationCollection.new(args[:relation] || [])
       @link           = args.fetch(:link, []).map do |s|
         case s
-        when Hash then TypedUri.new(**s)
-        when String then TypedUri.new(content: s)
+        when Hash then Source.new(**s)
+        when String then Source.new(content: s)
         else s
         end
       end

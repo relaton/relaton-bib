@@ -2,7 +2,7 @@ module RelatonBib
   # Affiliation.
   class Affiliation
     class Description
-      include Element::Base
+      include RelatonBib::Element::Base
       include LocalizedStringAttrs
 
       def initialize(content:, **args)
