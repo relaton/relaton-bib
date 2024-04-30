@@ -11,6 +11,7 @@ module RelatonBib
       def initialize(content:, **args)
         @content = content
         super(**args) if defined? super
+      rescue ArgumentError
       end
 
       # @param builder [Nokogiri::XML::Builder]

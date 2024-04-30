@@ -34,22 +34,22 @@ module RelatonBib
         @id = id
         @stem = stem
         @note = note
-        @unnubered = args[:unnumbered]
+        @unnumbered = args[:unnumbered]
         @subsequence = args[:subsequence]
         @inequality = args[:inequality]
         @dl = args[:dl]
       end
-    end
 
-    def to_xml(builder) # rubocop:disable Metrics/AbcSize
-      node = builder.formula id: id do |b|
-        stem.to_xml b
-        dl&.to_xml b
-        note.each { |n| n.to_xml b }
+      def to_xml(builder) # rubocop:disable Metrics/AbcSize
+        node = builder.formula id: id do |b|
+          stem.to_xml b
+          dl&.to_xml b
+          note.each { |n| n.to_xml b }
+        end
+        node[:unnumbered] = unnumbered unless unnumbered.nil?
+        node[:subsequence] = subsequence if subsequence
+        node[:inequality] = inequality unless inequality.nil?
       end
-      node[:unnumbered] = "true" if unnumbered
-      node[:subsequence] = subsequence if subsequence
-      node[:inequality] = inequality unless inequality.nil?
     end
   end
 end

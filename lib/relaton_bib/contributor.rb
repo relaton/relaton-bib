@@ -108,14 +108,17 @@ module RelatonBib
         role << { type: entity.is_a?(Person) ? "author" : "publisher" }
       end
       @entity = entity
-      @role   = role.map { |r| Role.new(**r) }
+      @role   = role.map { |r| r.is_a?(Hash) ? Role.new(**r) : r }
     end
 
     # @param opts [Hash]
     # @option opts [Nokogiri::XML::Builder] :builder XML builder
     # @option opts [String, Symbol] :lang language
     def to_xml(**opts)
-      entity.to_xml(**opts)
+      opts[:builder].contributor do |builder|
+        role.each { |r| r.to_xml(**opts) }
+        entity.to_xml(**opts)
+      end
     end
 
     # @return [Hash]
@@ -129,9 +132,9 @@ module RelatonBib
     # @param count [Integer] number of contributors
     # @return [String]
     def to_asciibib(prefix = "", count = 1)
-      pref = prefix.split(".").first
+      pref = prefix.empty? ? "contributor" : "#{prefix}.contributor"
       out = count > 1 ? "#{pref}::\n" : ""
-      out += entity.to_asciibib prefix
+      out += entity.to_asciibib pref
       role.each { |r| out += r.to_asciibib pref, role.size }
       out
     end

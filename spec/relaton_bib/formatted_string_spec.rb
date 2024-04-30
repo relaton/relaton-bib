@@ -102,5 +102,21 @@ describe RelatonBib::FormattedString do
         Italic.
       XML
     end
+
+    it "to_h" do
+      expect(subject.to_h).to eq(
+        "content" => "prefix<p>content<p>< & > characters</p> to escape</p><p>Text ± 10-4 K</p> suffix",
+        "language" => ["en"], "script" => ["Latn"], "format" => "text/html",
+      )
+    end
+
+    it "to_asciibib" do
+      expect(subject.to_asciibib).to eq <<~ASCIIBIB
+        content:: prefix<p>content<p>< & > characters</p> to escape</p><p>Text ± 10-4 K</p> suffix
+        language:: en
+        script:: Latn
+        format:: text/html
+      ASCIIBIB
+    end
   end
 end

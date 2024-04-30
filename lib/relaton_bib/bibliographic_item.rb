@@ -171,7 +171,7 @@ module RelatonBib
     # @param size [RelatonBib::BibliographicSize, nil]
     #
     # @param copyright [Array<Hash, RelatonBib::CopyrightAssociation>]
-    # @option copyright [Array<Hash, RelatonBib::Contributor>] :owner
+    # @option copyright [Array<Hash, RelatonBib::Person, RelatonBib::Organization>] :owner
     # @option copyright [String] :from
     # @option copyright [String, nil] :to
     # @option copyright [String, nil] :scope
@@ -561,7 +561,7 @@ module RelatonBib
       end
       out += validity.to_asciibib prefix if validity
       contributor.each do |c|
-        out += c.to_asciibib "contributor", contributor.size
+        out += c.to_asciibib "", contributor.size
       end
       out += relation.to_asciibib prefix if relation
       series.each { |s| out += s.to_asciibib prefix, series.size }
@@ -593,10 +593,10 @@ module RelatonBib
         builder.docnumber docnumber if docnumber
         date.each { |d| d.to_xml builder, **opts }
         contributor.each do |c|
-          builder.contributor do
-            c.role.each { |r| r.to_xml(**opts) }
+          # builder.contributor do
+          #   c.role.each { |r| r.to_xml(**opts) }
             c.to_xml(**opts)
-          end
+          # end
         end
         edition&.to_xml builder
         version.each { |v| v.to_xml builder }

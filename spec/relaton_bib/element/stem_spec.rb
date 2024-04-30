@@ -1,6 +1,6 @@
 describe RelatonBib::Element::Stem do
   let(:content) { RelatonBib::Element::Text.new "content" }
-  subject { RelatonBib::Element::Stem.new [content], "MathML" }
+  subject { RelatonBib::Element::Stem.new content: [content], type: "MathML" }
 
   it "returns content" do
     expect(subject.content).to eq [content]

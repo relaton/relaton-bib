@@ -19,11 +19,11 @@ module RelatonBib
         @id = id
         @content = content
       end
-    end
 
-    def to_xml(builder)
-      builder.annotation id: id do |b|
-        content.to_xml b
+      def to_xml(builder)
+        builder.annotation id: id do |b|
+          content.to_xml b
+        end
       end
     end
   end

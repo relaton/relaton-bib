@@ -12,11 +12,14 @@ module RelatonBib
       # @return [String]
       attr_reader :id, :type
 
-      # @return [String, nil] alignment left, right, center, or justify
-      attr_reader :align
+      # @return [String, nil]
+      attr_reader :klass, :url
 
       # @return [Array<RelatonBib::Element::Note>]
       attr_reader :note
+
+      # @return [RelatonBib::Element::Tname, nil]
+      attr_reader :tname
 
       #
       # Initialize paragraph with footnote
@@ -25,7 +28,7 @@ module RelatonBib
       # @param id [String] ID
       # @param type [String] admonition type
       # @param note [Array<RelatonBib::Element::Note>]
-      # @param klass [String, nil]
+      # @param class [String, nil]
       # @param url [String, nil]
       # @param tname [RelatonBib::Element::Tname, nil]
       #
@@ -37,7 +40,7 @@ module RelatonBib
         @id = id
         @type = type
         @note = note
-        @klass = args[:klass]
+        @klass = args[:class]
         @url = args[:url]
         @tname = args[:tname]
       end

@@ -112,7 +112,7 @@ module RelatonBib
         description&.to_xml builder
         newcontent&.to_xml builder
         classification.each { |c| c.to_xml builder }
-        contributor.each { |c| c.to_xml builder }
+        contributor.each { |c| c.to_xml builder: builder }
       end
     end
 

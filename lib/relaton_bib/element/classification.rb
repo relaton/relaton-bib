@@ -17,6 +17,7 @@ module RelatonBib
       attr_reader :tag
 
       # @return [RelatonBib::Element::Classification::Value]
+      attr_reader :value
 
       #
       # Initializes classification element.

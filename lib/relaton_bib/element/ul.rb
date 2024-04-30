@@ -27,8 +27,8 @@ module RelatonBib
 
       def to_xml(builder)
           builder.parent[:id] = id
-          super b
-          note.each { |n| n.to_xml b }
+          super builder
+          note.each { |n| n.to_xml builder }
       end
     end
 

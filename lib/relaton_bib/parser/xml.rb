@@ -567,7 +567,9 @@ module RelatonBib
       # @return [Array<RelatonBib::CopyrightAssociation>]
       def fetch_copyright(item)
         item.xpath("./copyright").map do |cp|
-          owner = cp.xpath("owner").map { |o| fetch_contributor o }
+          owner = cp.xpath("owner").map do |o|
+            get_person(o.at("./person")) || get_org(o.at("./organization"))
+          end.compact
           from = cp.at("from")&.text
           to   = cp.at("to")&.text
           scope = cp.at("scope")&.text

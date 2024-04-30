@@ -42,7 +42,7 @@ module RelatonBib
         @subsequence = args[:subsequence]
         @lang = args[:lang]
         @tname = args[:tname]
-        super content
+        super content: content
         @annotation = annotation
         @note = note
       end

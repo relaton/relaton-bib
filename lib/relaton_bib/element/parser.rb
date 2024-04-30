@@ -34,8 +34,7 @@ require "relaton_bib/element/thead"
 require "relaton_bib/element/tbody"
 require "relaton_bib/element/tfoot"
 require "relaton_bib/element/tr"
-require "relaton_bib/element/th"
-require "relaton_bib/element/td"
+require "relaton_bib/element/table_cell"
 require "relaton_bib/element/dl"
 require "relaton_bib/element/dt"
 require "relaton_bib/element/dd"
@@ -49,9 +48,6 @@ require "relaton_bib/element/source"
 require "relaton_bib/element/fn"
 require "relaton_bib/element/media"
 require "relaton_bib/element/altsource"
-require "relaton_bib/element/image"
-require "relaton_bib/element/video"
-require "relaton_bib/element/audio"
 require "relaton_bib/element/pre"
 require "relaton_bib/element/quote"
 require "relaton_bib/element/callout"
@@ -194,7 +190,7 @@ module RelatonBib
 
       def parse_stem(node)
         content = parse_any_elements node
-        Stem.new content, node[:type]
+        Stem.new content: content, type: node[:type]
       end
 
       def parse_any_elements(node)

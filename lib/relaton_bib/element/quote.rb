@@ -61,7 +61,6 @@ module RelatonBib
           source&.to_xml b
           author&.to_xml b
           note.each { |n| n.to_xml b }
-          nodte.each { |n| n.to_xml b }
         end
         node[:alignment] = alignment if alignment
       end

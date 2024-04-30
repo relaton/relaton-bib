@@ -29,9 +29,9 @@ module RelatonBib
 
       def to_xml(builder)
         builder.ol do |b|
-          b.start start if start
+          b.parent[:start] = start if start
           super b
-          b.paretn[:type] = type
+          b.parent[:type] = type
         end
       end
     end

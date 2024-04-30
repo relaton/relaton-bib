@@ -18,7 +18,7 @@ module RelatonBib
       # @param [Array<RelatonBib::Element::Base, RelatonBib::Element::Text>] content AnyElement or Text
       # @param [String] type MathML, AsciiMath
       #
-      def initialize(content, type)
+      def initialize(content:, type:)
         Util.warn "invalid stem type: `#{type}`" unless TYPES.include? type
 
         super content: content
