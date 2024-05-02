@@ -5,12 +5,12 @@ describe RelatonBib::Element::Pre do
     tname = RelatonBib::Element::Tname.new(content: [text])
     paragraph = RelatonBib::Element::Paragraph.new(content: [text], id: "id")
     note = RelatonBib::Element::Note.new(content: [paragraph], id: "id")
-    described_class.new(id: "id", content: [text, note], alt: "alt", tname: tname)
+    described_class.new(id: "id", content: text, note: [note], alt: "alt", tname: tname)
   end
 
   it "initialize pre element" do
-    expect(subject.content[0]).to be_instance_of RelatonBib::Element::Text
-    expect(subject.content[1]).to be_instance_of RelatonBib::Element::Note
+    expect(subject.content).to be_instance_of RelatonBib::Element::Text
+    expect(subject.note[0]).to be_instance_of RelatonBib::Element::Note
     expect(subject.id).to eq "id"
     expect(subject.alt).to eq "alt"
     expect(subject.tname).to be_instance_of RelatonBib::Element::Tname

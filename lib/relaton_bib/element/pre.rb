@@ -1,14 +1,10 @@
 module RelatonBib
   module Element
-    class Pre
-      include Base
+    class Pre < Text
       include ToString
 
       # @return [String]
       attr_reader :id
-
-      # @!attribute [r] content
-      #   @return [Array<RelatonBib::Element::Text, RelatonBib::Element::Note>]
 
       # @return [String, nil]
       attr_reader :alt
@@ -16,19 +12,24 @@ module RelatonBib
       # @return [RelatonBib::Element::Tname, nil]
       attr_reader :tname
 
+      # @return [Array<RelatonBib::Element::Note>]
+      attr_reader :note
+
       #
       # Initialize pre element.
       #
       # @param [String] id
-      # @param [Array<RelatonBib::Element::Text, RelatonBib::Element::Note>] content
+      # @param [RelatonBib::Element::Text] content
+      # @param [Array<RelatonBib::Element::Note>] note
       # @param [String, nil] alt
       # @param [RelatonBib::Element::Tname, nil] tname
       #
-      def initialize(id:, content:, **args)
-        @content = content
+      def initialize(id:, content:, note: [], **args)
+        super content
         @id = id
         @alt = args[:alt]
         @tname = args[:tname]
+        @note = note
       end
 
       # @param builder [Nokogiri::XML::Builder]
@@ -36,6 +37,7 @@ module RelatonBib
         node = builder.pre(id: id) do |b|
           tname&.to_xml b
           super b
+          note.each { |n| n.to_xml b }
         end
         node[:alt] = alt if alt
       end

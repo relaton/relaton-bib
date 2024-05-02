@@ -24,8 +24,6 @@ module RelatonBib
         end
       end
 
-      private
-
       #
       # Parse bibitem data
       #

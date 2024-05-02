@@ -13,7 +13,7 @@ module RelatonBib
       attr_reader :id, :type
 
       # @return [String, nil]
-      attr_reader :klass, :url
+      attr_reader :klass, :uri
 
       # @return [Array<RelatonBib::Element::Note>]
       attr_reader :note
@@ -29,7 +29,7 @@ module RelatonBib
       # @param type [String] admonition type
       # @param note [Array<RelatonBib::Element::Note>]
       # @param class [String, nil]
-      # @param url [String, nil]
+      # @param uri [String, nil]
       # @param tname [RelatonBib::Element::Tname, nil]
       #
       def initialize(content:, id:, type:, note: [], **args)
@@ -41,19 +41,20 @@ module RelatonBib
         @type = type
         @note = note
         @klass = args[:class]
-        @url = args[:url]
+        @uri = args[:uri]
         @tname = args[:tname]
       end
 
       # @param builder [Nokogiri::XML::Builder]
       def to_xml(builder) # rubocop:disable Metrics/AbcSize
-        node = builder.p(id: id, type: type) do |b|
+        builder.p(type: type) do |b|
+          b.parent[:class] = klass if klass
+          b.parent[:id] = id
+          b.parent[:uri] = uri if uri
           tname&.to_xml b
           super b
           note.each { |n| n.to_xml b }
         end
-        node[:class] = klass if klass
-        node[:url] = url if url
       end
     end
   end

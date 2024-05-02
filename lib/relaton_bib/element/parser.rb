@@ -320,9 +320,10 @@ module RelatonBib
       def parse_paragraph(node)
         return unless node
 
-        attrs = node.attributes.transform_keys(&:to_sym)
-        content = parse_text_elements(node)
-        Paragraph.new(content: content, note: parse_notes(node), **attrs)
+        attrs = node.to_h.transform_keys(&:to_sym)
+        note = parse_notes(node)
+        content = nodes_before_note(node, note).map { |n| parse_text_element(n) }
+        Paragraph.new(content: content, note: note, **attrs)
       end
 
       def parse_notes(node)
@@ -335,40 +336,49 @@ module RelatonBib
       end
 
       def parse_table(node) # rubocop:disable Metrics/AbcSize
-        attrs = node.attributes.transform_keys(&:to_sym)
-        tname = parse_tname(node.at("./tname"))
+        attrs = node.to_h.transform_keys(&:to_sym)
+        attrs[:unnumbered] &&= string_to_bool(attrs[:unnumbered])
+        tname = parse_tname(node.at("./name"))
         thead = parse_thead(node.at("./thead"))
         tfoot = parse_tfoot(node.at("./tfoot"))
         tbody = parse_tbody(node.at("./tbody"))
         note = node.xpath("./note").map { |n| parse_table_note n }
-        Table.new(**attrs, tname: tname, thead: thead, tfoot: tfoot, tbody: tbody, note: note)
+        dl = parse_dl(node.at("./dl"))
+        Table.new(**attrs, tname: tname, thead: thead, tfoot: tfoot, tbody: tbody, note: note, dl: dl)
+      end
+
+      def string_to_bool(str)
+        return true if str.downcase == "true"
+        return false if str.downcase == "false"
+
+        nil
       end
 
       def parse_tname(node)
         return unless node
 
-        content = parse_children(node) { |n| parse_tname_element n }
+        content = parse_children(node) { |n| parse_tname_element n }.compact
         Tname.new content: content
       end
 
       def parse_tname_element(node)
-        if %w[eref xref hyperlink index index-xref].include? node.name
+        if %w[eref stem keyword xref link index index-xref].include? node.name
           parse_node node
         else
-          parse_pure_text_elements(node)
+          parse_pure_text_element(node)
         end
       end
 
       def parse_thead(node)
         return unless node
 
-        Thead.new content: parse_tr(node.at("./tr"))
+        Thead.new parse_tr(node.at("./tr"))
       end
 
       def parse_tfoot(node)
         return unless node
 
-        Tfoot.new content: parse_tr(node.at("./tr"))
+        Tfoot.new parse_tr(node.at("./tr"))
       end
 
       def parse_tbody(node)
@@ -393,31 +403,31 @@ module RelatonBib
 
       def parse_th(node)
         content = parse_children(node) { |n| parse_th_element n }
-        attrs = node.attributes.transform_keys(&:to_sym)
+        attrs = node.to_h.transform_keys(&:to_sym)
         Th.new(content: content, **attrs)
       end
 
       def parse_th_element(node)
-        node.name == "p" ?  parse_paragraph_with_footnote(node) : parse_pure_text_elements(node)
+        node.name == "p" ?  parse_p(node) : parse_pure_text_element(node)
       end
 
       def parse_td(node)
         content = parse_children(node) { |n| parse_td_element n }
-        attrs = node.attributes.transform_keys(&:to_sym)
+        attrs = node.to_h.transform_keys(&:to_sym)
         Td.new(content: content, **attrs)
       end
       alias_method :parse_td_element, :parse_th_element
 
       def parse_dl(node)
+        return unless node
+
         content = node.xpath("./dt|./dd").map { |n| parse_dt_dd n }
         Dl.new content: content, id: node[:id], note: parse_notes(node)
       end
 
       def parse_dt_dd(node)
         if node.name == "dd"
-          content = parse_children(node) do |n|
-            parse_paragraph_with_footnote(n)
-          end
+          content = parse_children(node) { |n| parse_p(n) }
           Dd.new content: content
         else
           Dt.new content: parse_text_elements(node)
@@ -432,11 +442,17 @@ module RelatonBib
       # @return [RelatonBib::Element::ParagraphWithFootnote]
       #
       def parse_p(node)
-        attrs = node.attributes.transform_keys(&:to_sym)
-        content = parse_children(node) do |n|
-          parse_paragraph_with_footnote_element n
+        attrs = node.to_h.transform_keys(&:to_sym)
+        note = parse_notes(node)
+        content = nodes_before_note(node, note).map { |n| parse_paragraph_with_footnote_element n }
+        ParagraphWithFootnote.new(content: content, note: note, **attrs)
+      end
+
+      def nodes_before_note(node, note)
+        if note.any?
+          node.xpath("./note/preceding-sibling::text()|./note/preceding-sibling::*")
+        else node.xpath("./text()|*")
         end
-        ParagraphWithFootnote.new(content: content, note: parse_notes(node), **attrs)
       end
 
       def parse_paragraph_with_footnote_element(node)
@@ -445,15 +461,18 @@ module RelatonBib
 
       def parse_formula(node)
         stem = parse_stem(node.at("./stem"))
+        dl = parse_dl(node.at("./dl"))
         note = node.xpath("./note").map { |n| parse_note n }
-        attrs = node.attributes.transform_keys(&:to_sym)
-        Formula.new id: node[:id], stem: stem, note: note, **attrs
+        attrs = node.to_h.transform_keys(&:to_sym)
+        attrs[:unnumbered] &&= string_to_bool(attrs[:unnumbered])
+        attrs[:inequality] &&= string_to_bool(attrs[:inequality])
+        Formula.new id: node[:id], stem: stem, note: note, dl: dl, **attrs
       end
 
       def parse_admonition(node)
-        attrs = node.attributes.transform_keys(&:to_sym)
-        content = parse_children(node) { |n| parse_admonition_element n }
-        tname = parse_tname(node.at("./tname"))
+        attrs = node.to_h.transform_keys(&:to_sym)
+        content = node.xpath("./p").map { |n| parse_p n }
+        tname = parse_tname(node.at("./name"))
         note = parse_notes(node)
         Admonition.new(content: content, note: note, tname: tname, **attrs)
       end
@@ -465,7 +484,7 @@ module RelatonBib
       end
 
       def parse_li(node)
-        content = parse_children(node) { |n| parse_paragraph_with_footnote n }
+        content = parse_children(node) { |n| parse_p n }
         Li.new content: content, id: node[:id]
       end
 
@@ -477,9 +496,10 @@ module RelatonBib
 
       def parse_figure(node) # rubocop:disable Metrics/AbcSize
         attrs = node.to_h.transform_keys(&:to_sym)
-        content = parse_figure_content n
+        attrs[:unnumbered] &&= string_to_bool(attrs[:unnumbered])
+        content = parse_figure_content node
         source = parse_source(node.at("./source"))
-        tname = parse_tname(node.at("./tname"))
+        tname = parse_tname(node.at("./name"))
         fn = node.xpath("./fn").map { |n| parse_fn n }
         dl = parse_dl(node.at("./dl"))
         note = parse_notes(node)
@@ -487,12 +507,12 @@ module RelatonBib
       end
 
       def parse_figure_content(node) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
-        if (node = node.at("./image")) then parse_image node
-        elsif (node = node.at("./video")) then parse_video node
-        elsif (node = node.at("./audio")) then parse_audio node
-        elsif (node = node.at("./pre")) then parse_pre node
+        if (n = node.at("./image")) then parse_image n
+        elsif (n = node.at("./video")) then parse_video n
+        elsif (n = node.at("./audio")) then parse_audio n
+        elsif (n = node.at("./pre")) then parse_pre n
         elsif (nodes = node.xpath("./p")).any?
-          nodes.map { |n| parse_paragraph_with_footnote n }
+          nodes.map { |n| parse_p n }
         elsif (nodes = node.xpath("./figure")).any?
           nodes.map { |n| parse_figure n }
         end
@@ -522,21 +542,22 @@ module RelatonBib
         Audio.new(content: content, **attrs)
       end
 
-      def parse_alitsource(node)
+      def parse_altsource(node)
         attrs = node.to_h.transform_keys(&:to_sym)
         Altsource.new(**attrs)
       end
 
       def parse_pre(node)
-        content = node.xpath("./note").map { |n| parse_note n }
-        content = Text.new node.text if content.empty?
-        tname = parse_tname(node.at("./tname"))
-        Pre.new id: node[:id], content: content, alt: node[:alt], tname: tname
+        attrs = node.to_h.transform_keys(&:to_sym)
+        note = parse_notes(node)
+        content = Text.new node.text
+        tname = parse_tname(node.at("./name"))
+        Pre.new content: content, tname: tname, note: note, **attrs
       end
 
       def parse_quote(node)
-        attrs = node.attributes.transform_keys(&:to_sym)
-        content = parse_children(node) { |n| parse_quote_element n }
+        attrs = node.to_h.transform_keys(&:to_sym)
+        content = node.xpath("./p").map { |n| parse_p n }
         source = parse_quote_source(node.at("./source"))
         author = parse_quote_author(node.at("./author"))
         note = parse_notes(node)
@@ -546,21 +567,22 @@ module RelatonBib
       def parse_quote_source(node)
         return unless node
 
-        Source.new(**parse_eref_type(node))
+        Quote::Source.new(**parse_eref_type(node))
       end
 
       def parse_quote_author(node)
         return unless node
 
-        Author.new Texn.new(node.text)
+        Quote::Author.new Text.new(node.text)
       end
 
       def parse_sourcecode(node) # rubocop:disable Metrics/AbcSize
         content = parse_children(node) { |n| parse_sourcecode_element n }
         annotation = node.xpath("./annotation").map { |n| parse_annotation n }
-        note = node.xpath("./note").map { |n| parse_note n }
-        attrs = node.attributes.transform_keys(&:to_sym)
-        tname = parse_tname(node.at("./tname"))
+        note = parse_notes(node)
+        attrs = node.to_h.transform_keys(&:to_sym)
+        attrs[:unnumbered] &&= string_to_bool(attrs[:unnumbered])
+        tname = parse_tname(node.at("./name"))
         Sourcecode.new(content: content, annotation: annotation, note: note, tname: tname, **attrs)
       end
 
@@ -568,13 +590,14 @@ module RelatonBib
         if node.name == "callout"
           parse_callout node
         elsif node.name == "text"
-          Text.new node.text
+          text = node.text.strip
+          Text.new text unless text.empty?
         end
       end
 
       def parse_callout(node)
         content = Text.new node.text
-        Callout.new content: content, id: node[:id]
+        Callout.new content: content, target: node[:target]
       end
 
       def parse_annotation(node)
@@ -583,9 +606,10 @@ module RelatonBib
       end
 
       def parse_example(node)
-        attrs = node.attributes.transform_keys(&:to_sym)
+        attrs = node.to_h.transform_keys(&:to_sym)
+        attrs[:unnumbered] &&= string_to_bool(attrs[:unnumbered])
         content = parse_children(node) { |n| parse_example_element n }
-        tname = parse_tname(node.at("./tname"))
+        tname = parse_tname(node.at("./name"))
         note = parse_notes(node)
         Example.new(content: content, tname: tname, note: note, **attrs)
       end
@@ -597,15 +621,15 @@ module RelatonBib
       end
 
       def parse_review(node)
-        attrs = node.attributes.transform_keys(&:to_sym)
+        attrs = node.to_h.transform_keys(&:to_sym)
         content = node.xpath("./p").map { |n| parse_paragraph n }
         Review.new(content: content, **attrs)
       end
 
       def parse_amend(node)
-        attrs = node.attributes.transform_keys(&:to_sym)
+        attrs = node.to_h.transform_keys(&:to_sym)
         classification = node.xpath("./classification").map { |n| parse_classification n }
-        contributor = Parser::XML.parse_contributors(node)
+        contributor = RelatonBib::Parser::XML.fetch_contributors(node)
         location = parse_amend_location(node.at("./location"))
         description = parse_amend_description(node.at("./description"))
         newcontent = parse_amend_newcontent(node.at("./newcontent"))
@@ -614,22 +638,22 @@ module RelatonBib
       end
 
       def parse_classification(node)
-        tag = parse_tag(node.at("./tag"))
-        value = parse_value(node.at("./value"))
+        tag = Classification::Tag.new(node.at("./tag").text)
+        value = Classification::Value.new(node.at("./value").text)
         Element::Classification.new(tag: tag, value: value)
       end
 
       def parse_amend_location(node)
         return unless node
 
-        localities(node)
+        AmendType::Location.new content: localities(node)
       end
 
       def parse_amend_description(node)
         return unless node
 
         content = parse_basic_block_elements(node)
-        Element::AmeT::Description.new content: content
+        Element::AmendType::Description.new content: content
       end
 
       def parse_amend_newcontent(node)

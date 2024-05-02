@@ -7,7 +7,7 @@ describe RelatonBib::Element::Admonition do
     note = RelatonBib::Element::Note.new(content: [note_content], id: "ID")
     tname = RelatonBib::Element::Tname.new(content: [RelatonBib::Element::Text.new("tname")])
     described_class.new(
-      id: "ID", type: type, content: [content], note: [note], class: "class", url: "url", tname: tname
+      id: "ID", type: type, content: [content], note: [note], class: "class", uri: "uri", tname: tname
     )
   end
 
@@ -17,7 +17,7 @@ describe RelatonBib::Element::Admonition do
     expect(subject.type).to eq "tip"
     expect(subject.note[0]).to be_instance_of RelatonBib::Element::Note
     expect(subject.klass).to eq "class"
-    expect(subject.url).to eq "url"
+    expect(subject.uri).to eq "uri"
     expect(subject.tname).to be_instance_of RelatonBib::Element::Tname
   end
 
@@ -34,7 +34,7 @@ describe RelatonBib::Element::Admonition do
   it "to_xml" do
     doc = Nokogiri::XML::Builder.new { |b| subject.to_xml b }.doc.root
     expect(doc.to_xml).to be_equivalent_to <<~XML
-      <p id="ID" type="tip" class="class" url="url">
+      <p type="tip" class="class" id="ID" uri="uri">
         <name>tname</name><p>content</p>
         <note id="ID"><p id="pID">Note</p></note>
       </p>
