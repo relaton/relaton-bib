@@ -16,13 +16,20 @@ describe RelatonBib::Element::Quote do
     )
   end
 
-  it "initialize" do
-    expect(subject.id).to eq "ID"
-    expect(subject.alignment).to eq "left"
-    expect(subject.source).to be_instance_of RelatonBib::Element::Quote::Source
-    expect(subject.author).to be_instance_of RelatonBib::Element::Quote::Author
-    expect(subject.content[0]).to be_instance_of RelatonBib::Element::ParagraphWithFootnote
-    expect(subject.note[0]).to be_instance_of RelatonBib::Element::Note
+  context "initialize" do
+    it do
+      expect(subject.id).to eq "ID"
+      expect(subject.alignment).to eq "left"
+      expect(subject.source).to be_instance_of RelatonBib::Element::Quote::Source
+      expect(subject.author).to be_instance_of RelatonBib::Element::Quote::Author
+      expect(subject.content[0]).to be_instance_of RelatonBib::Element::ParagraphWithFootnote
+      expect(subject.note[0]).to be_instance_of RelatonBib::Element::Note
+    end
+
+    it "warn invalid alignment" do
+      expect { described_class.new id: "ID", content: [], alignment: "invalid" }
+        .to output(/Invalid alignment: `invalid`/).to_stderr_from_any_process
+    end
   end
 
   it "to_xml" do

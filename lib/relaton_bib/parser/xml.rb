@@ -310,7 +310,7 @@ module RelatonBib
 
       # @param title [Nokogiri::XML::Element]
       # @return [Array<RelatonBib::LocalizedString>]
-      def variants(elm)
+      def fetch_localized_string_variants(elm)
         elm.xpath("variant").map { |v| localized_string v }
       end
 
@@ -454,7 +454,9 @@ module RelatonBib
       def localized_string(elm)
         return unless elm
 
-        LocalizedString.new(elm.text, elm[:language], elm[:script])
+        variants = fetch_localized_string_variants(elm)
+        content = variants.empty? ? elm.text : variants
+        LocalizedString.new(content, elm[:language], elm[:script])
       end
 
       #

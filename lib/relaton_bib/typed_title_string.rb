@@ -103,10 +103,6 @@ module RelatonBib
     # @param script [String, nil]
     # @param locale [String, nil]
     def initialize(content:, type: nil, **args)
-      unless content
-        raise ArgumentError, %{Keyword "content" should be passed.}
-      end
-
       @type = type
       super
       @content = content.is_a?(String) ? Element.parse_text_elements(content) : content

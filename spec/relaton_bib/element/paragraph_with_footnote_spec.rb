@@ -10,11 +10,19 @@ describe RelatonBib::Element::ParagraphWithFootnote do
     described_class.new(content: [content], id: "id-1", align: "left", note: [note])
   end
 
-  it "initialize paragraph with footnote" do
-    expect(subject.content).to eq [content]
-    expect(subject.id).to eq "id-1"
-    expect(subject.align).to eq "left"
-    expect(subject.note).to eq [note]
+  context "initialize paragraph with footnote" do
+    it do
+      expect(subject.content).to eq [content]
+      expect(subject.id).to eq "id-1"
+      expect(subject.align).to eq "left"
+      expect(subject.note).to eq [note]
+    end
+
+    it "warn if invalid alignment" do
+      expect do
+        described_class.new(content: [content], align: "invalid")
+      end.to output(/Invalid alignment: `invalid`/).to_stderr_from_any_process
+    end
   end
 
   it "to_xml" do

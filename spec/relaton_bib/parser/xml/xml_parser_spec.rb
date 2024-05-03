@@ -114,4 +114,31 @@ RSpec.describe RelatonBib::Parser::XML do
     ).to_stderr_from_any_process
     expect(item).to be_nil
   end
+
+  context "parse localized string" do
+    it "without variants" do
+      elm = Nokogiri::XML(<<~XML).at "name"
+        <name language="en">Name</name>
+      XML
+      name = RelatonBib::Parser::XML.localized_string elm
+      expect(name.content).to eq "Name"
+      expect(name.language).to eq ["en"]
+    end
+
+    it "with variants" do
+      elm = Nokogiri::XML(<<~XML).at "name"
+        <name>
+          <variant language="en">Name</variant>
+          <variant language="fr">Nom</variant>
+        </name>
+      XML
+      name = RelatonBib::Parser::XML.localized_string elm
+      expect(name.content).to be_instance_of Array
+      expect(name.content.size).to eq 2
+      expect(name.content[0].content).to eq "Name"
+      expect(name.content[0].language).to eq ["en"]
+      expect(name.content[1].content).to eq "Nom"
+      expect(name.content[1].language).to eq ["fr"]
+    end
+  end
 end

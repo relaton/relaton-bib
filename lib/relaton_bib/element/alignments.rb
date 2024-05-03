@@ -5,7 +5,7 @@ module RelatonBib
 
       def check_alignment(align)
         if align && !ALIGNMENTS.include?(align)
-          Util.warn "Invalid alignment: #{align}"
+          Util.warn "Invalid alignment: `#{align}`"
         end
       end
     end
@@ -15,7 +15,7 @@ module RelatonBib
 
       def check_valignment(align)
         if align && !VALIGNMENTS.include?(align)
-          Util.warn "Invalid alignment: #{align}"
+          Util.warn "Invalid alignment: `#{align}`"
         end
       end
     end

@@ -35,6 +35,20 @@ RSpec.describe RelatonBib::TypedTitleString do
     it "return hash when title is string" do
       expect(subject.to_h).to eq("type" => "main", "content" => "Title")
     end
+
+    context "set content" do
+      it "with string" do
+        subject.content = "New title"
+        expect(subject.content[0]).to be_instance_of RelatonBib::Element::Text
+        expect(subject.to_s).to eq "New title"
+      end
+
+      it "with elemets" do
+        subject.content = RelatonBib::Element.parse_text_elements("New title")
+        expect(subject.content[0]).to be_instance_of RelatonBib::Element::Text
+        expect(subject.to_s).to eq "New title"
+      end
+    end
   end
 
   context "create title-intro, title-main, title-part from string" do

@@ -6,12 +6,24 @@ describe RelatonBib::Element::Th do
     )
   end
 
-  it "initialize th element" do
-    expect(subject.content[0]).to be_instance_of RelatonBib::Element::Text
-    expect(subject.colspan).to eq "2"
-    expect(subject.rowspan).to eq "3"
-    expect(subject.align).to eq "center"
-    expect(subject.valign).to eq "top"
+  context "initialize th element" do
+    it do
+      expect(subject.content[0]).to be_instance_of RelatonBib::Element::Text
+      expect(subject.colspan).to eq "2"
+      expect(subject.rowspan).to eq "3"
+      expect(subject.align).to eq "center"
+      expect(subject.valign).to eq "top"
+    end
+
+    it "warn invalid alignment" do
+      expect { described_class.new content: [], align: "invalid" }
+        .to output(/Invalid alignment: `invalid`/).to_stderr_from_any_process
+    end
+
+    it "warn invalid valignment" do
+      expect { described_class.new content: [], valign: "invalid" }
+        .to output(/Invalid alignment: `invalid`/).to_stderr_from_any_process
+    end
   end
 
   it "to_xml" do

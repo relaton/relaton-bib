@@ -82,7 +82,7 @@ module RelatonBib
     end
 
     def content_to_node(content)
-      content.is_a?(Nokogiri::XML::Element) ? content : Nokogiri::XML.fragment(content)
+      content.is_a?(String) ? Nokogiri::XML.fragment(content) : content
     end
 
     module Parser
@@ -112,7 +112,7 @@ module RelatonBib
       end
 
       def parse_text_element(node)
-        if %w[eref stem keyword ruby xref hyperlink hr pagebreak bookmark imaage
+        if %w[eref stem keyword ruby xref link hr pagebreak bookmark image
               index index-xref].include? node.name
           parse_node node
         else
@@ -144,7 +144,7 @@ module RelatonBib
       end
 
       def parse_em_element(node)
-        if %w(stem eref xref hyperlink index index-xref).include? node.name
+        if %w(stem eref xref link index index-xref).include? node.name
           parse_node(node)
         else
           parse_pure_text_element node
@@ -219,7 +219,7 @@ module RelatonBib
       end
 
       def parse_tt_element(node)
-        if %w[eref xref hyperlink index index-xref].include? node.name
+        if %w[eref xref link index index-xref].include? node.name
           parse_node node
         else
           parse_pure_text_element(node)
@@ -345,13 +345,6 @@ module RelatonBib
         note = node.xpath("./note").map { |n| parse_table_note n }
         dl = parse_dl(node.at("./dl"))
         Table.new(**attrs, tname: tname, thead: thead, tfoot: tfoot, tbody: tbody, note: note, dl: dl)
-      end
-
-      def string_to_bool(str)
-        return true if str.downcase == "true"
-        return false if str.downcase == "false"
-
-        nil
       end
 
       def parse_tname(node)
@@ -661,6 +654,20 @@ module RelatonBib
 
         content = parse_basic_block_elements(node)
         Element::AmendType::Newcontent.new content: content, id: node[:id]
+      end
+
+      #
+      # Convert string to boolean.
+      #
+      # @param [String] str "true" or "false
+      #
+      # @return [Boolean, nil]
+      #
+      def string_to_bool(str)
+        return true if str.downcase == "true"
+        return false if str.downcase == "false"
+
+        nil
       end
     end
   end
