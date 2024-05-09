@@ -1,9 +1,9 @@
 module RelatonBib
   module Parser
     module XML
+      include Parser::XML::Locality
+      include Factory
       extend self
-      extend Parser::XML::Locality
-      extend Factory
 
       #
       # Parse XML bibdata
@@ -303,7 +303,7 @@ module RelatonBib
       def ttitle(title)
         return unless title
 
-        content = Element.parse_text_elements title
+        content = Element::TextElement.parse title
         attrs = title.to_h.transform_keys(&:to_sym)
         TypedTitleString.new(content: content, **attrs)
       end
@@ -555,9 +555,8 @@ module RelatonBib
       # @return [Array<RelatonBib::FormattedString>]
       def fetch_abstract(item) # rubocop:disable Metrics/AbcSize
         item.xpath("./abstract").map do |a|
-          # c = a.children.map { |ch| ch.name == "text" ? ch.text : ch.to_xml(encoding: "UTf-8") }.join
-          content = Element.parse_basic_block_elements a
-          content = Element.parse_text_elements(a) if content.empty?
+          content = Element::BasicBlock.parse a
+          content = Element::TextElement.parse(a) if content.empty?
           args = a.attributes.transform_keys(&:to_sym)
           Abstract.new(content: content, **args)
         end
@@ -565,7 +564,7 @@ module RelatonBib
 
       # @param item [Nokogiri::XML::Element]
       # @return [Array<RelatonBib::CopyrightAssociation>]
-      def fetch_copyright(item)
+      def fetch_copyright(item) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
         item.xpath("./copyright").map do |cp|
           owner = cp.xpath("owner").map do |o|
             get_person(o.at("./person")) || get_org(o.at("./organization"))
@@ -629,7 +628,7 @@ module RelatonBib
         ident = item&.at("./formattedref")
         return unless ident
 
-        FormattedRef.new Element::parse_text_elements(ident)
+        FormattedRef.new Element::TextElement.parse(ident)
       end
 
       # @param ext [Nokogiri::XML::Element]

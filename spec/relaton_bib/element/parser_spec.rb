@@ -1,55 +1,25 @@
 describe RelatonBib::Element::Parser do
-  context do
-    before do
-      expect(RelatonBib::Element).to receive(:content_to_node).with("text").and_return(:node)
-    end
-
-    it ".parse_text_elements" do
-      expect(described_class).to receive(:parse_text_elements).with(:node).and_return(:elements)
-      text_elements = RelatonBib::Element.parse_text_elements("text")
-      expect(text_elements).to be :elements
-    end
-
-    it ".parse_pure_text_elements" do
-      expect(described_class).to receive(:parse_pure_text_elements).with(:node).and_return(:elements)
-      text_elements = RelatonBib::Element.parse_pure_text_elements("text")
-      expect(text_elements).to be :elements
-    end
-
-    it ".parse_basic_block_elements" do
-      expect(described_class).to receive(:parse_basic_block_elements).with(:node).and_return(:elements)
-      block_elements = RelatonBib::Element.parse_basic_block_elements("text")
-      expect(block_elements).to be :elements
-    end
-  end
-
-  context ".content_to_node" do
+  context "::content_to_node" do
     it "with text" do
-      node = RelatonBib::Element.content_to_node("text")
+      node = RelatonBib::Element::Parser.content_to_node("text")
       expect(node).to be_instance_of Nokogiri::XML::DocumentFragment
     end
 
     it "with nokogiri node" do
       node = Nokogiri::XML.fragment("<a>text</a>").children.first
-      expect(RelatonBib::Element.content_to_node(node)).to be node
+      expect(RelatonBib::Element::Parser.content_to_node(node)).to be node
     end
   end
 
-  it "#parse_children" do
+  it "::parse_children" do
     node = Nokogiri::XML.fragment("<p>text<a>ref</a></p>").children.first
     expect(described_class.parse_children(node, &:to_xml)).to eq ["text", "<a>ref</a>"]
   end
 
-  it "#parse_node" do
+  it "::parse_node" do
     node = Nokogiri::XML.fragment("<p>text</p>").children.first
     expect(described_class).to receive(:parse_p).with(node).and_return(:p)
     expect(described_class.parse_node(node)).to eq :p
-  end
-
-  it "#parse_text_elements" do
-    expect(described_class).to receive(:parse_children).with(:node).and_yield(:text).and_return([:element])
-    expect(described_class).to receive(:parse_text_element).with(:text)
-    expect(described_class.parse_text_elements(:node)).to eq [:element]
   end
 
   shared_examples "elements collection" do |xml, klass|
@@ -60,91 +30,7 @@ describe RelatonBib::Element::Parser do
     end
   end
 
-  context "#parse_text_element" do
-    let(:collection_method) { :parse_text_element }
-    it_behaves_like "elements collection", "Text", RelatonBib::Element::Text
-    it_behaves_like "elements collection", "<em>Text</em>", RelatonBib::Element::Em
-    it_behaves_like "elements collection", <<~XML, RelatonBib::Element::Eref
-      <eref citeas="SiteAs" type="inline" bibitemid="123">Eref</eref>
-    XML
-    it_behaves_like "elements collection", "<strong>Text</strong>", RelatonBib::Element::Strong
-    it_behaves_like "elements collection", "<stem type='MathML'>Text</stem>", RelatonBib::Element::Stem
-    it_behaves_like "elements collection", "<sub>Text</sub>", RelatonBib::Element::Sub
-    it_behaves_like "elements collection", "<sup>Text</sup>", RelatonBib::Element::Sup
-    it_behaves_like "elements collection", "<tt>Text</tt>", RelatonBib::Element::Tt
-    it_behaves_like "elements collection", "<underline style='solid'>Text</underline>", RelatonBib::Element::Underline
-    it_behaves_like "elements collection", "<keyword>Text</keyword>", RelatonBib::Element::Keyword
-    it_behaves_like "elements collection", <<~XML, RelatonBib::Element::Ruby
-      <ruby pronunciation="prn" script="Latn" lang="en">Text</ruby>
-    XML
-    it_behaves_like "elements collection", "<strike>Text</strike>", RelatonBib::Element::Strike
-    it_behaves_like "elements collection", "<smallcap>Text</smallcap>", RelatonBib::Element::Smallcap
-    it_behaves_like "elements collection", <<~XML, RelatonBib::Element::Xref
-      <xref target="ISO 123" type="inline" alt="Alt">Text</xref>
-    XML
-    it_behaves_like "elements collection", "<br>", RelatonBib::Element::Br
-    it_behaves_like "elements collection", <<~XML, RelatonBib::Element::Hyperlink
-      <link target="http://example.com" type="inline" alt="Alt">Text</link>
-    XML
-    it_behaves_like "elements collection", "<hr>", RelatonBib::Element::Hr
-    it_behaves_like "elements collection", "<pagebreak>", RelatonBib::Element::PageBreak
-    it_behaves_like "elements collection", "<bookmark id='1'>", RelatonBib::Element::Bookmark
-    it_behaves_like "elements collection", <<~XML, RelatonBib::Element::Image
-      <image id="ID" src="/image.png" mimetype="image/png" filename="image.png" width="4" height="5" alt="Alt" title="Title">
-    XML
-    it_behaves_like "elements collection", <<~XML, RelatonBib::Element::Index
-      <index><primary>Primary</primary></index>
-    XML
-    it_behaves_like "elements collection", <<~XML, RelatonBib::Element::IndexXref
-      <index-xref also="also"><primary>Primary</primary><target>Target</target></index-xref>
-    XML
-  end
-
-  context "#parse_pure_text_element" do
-    let(:collection_method) { :parse_pure_text_element }
-    it_behaves_like "elements collection", "Text", RelatonBib::Element::Text
-    it_behaves_like "elements collection", "<em>Text</em>", RelatonBib::Element::Em
-    it_behaves_like "elements collection", "<strong>Text</strong>", RelatonBib::Element::Strong
-    it_behaves_like "elements collection", "<sub>Text</sub>", RelatonBib::Element::Sub
-    it_behaves_like "elements collection", "<sup>Text</sup>", RelatonBib::Element::Sup
-    it_behaves_like "elements collection", "<tt>Text</tt>", RelatonBib::Element::Tt
-    it_behaves_like "elements collection", "<underline style='solid'>Text</underline>", RelatonBib::Element::Underline
-    it_behaves_like "elements collection", "<strike>Text</strike>", RelatonBib::Element::Strike
-    it_behaves_like "elements collection", "<smallcap>Text</smallcap>", RelatonBib::Element::Smallcap
-    it_behaves_like "elements collection", "<br>", RelatonBib::Element::Br
-  end
-
-  context "#parse_basic_block_element" do
-    let(:collection_method) { :parse_basic_block_element }
-    it_behaves_like "elements collection", "<p>Text</p>", RelatonBib::Element::ParagraphWithFootnote
-    it_behaves_like "elements collection", <<~XML, RelatonBib::Element::Table
-      <table id="ID"><tbody><tr><td>cell</td></tr></tbody></table>
-    XML
-    it_behaves_like "elements collection", <<~XML, RelatonBib::Element::Formula
-      <formula id="ID"><stem type="MathML">Stem</stem></formula>
-    XML
-    it_behaves_like "elements collection", <<~XML, RelatonBib::Element::Admonition
-      <admonition id="ID" type="note"><p>Text</p></admonition>
-    XML
-    it_behaves_like "elements collection", "<ol><li>Item</li></ol>", RelatonBib::Element::Ol
-    it_behaves_like "elements collection", "<ul><li>Item</li></ul>", RelatonBib::Element::Ul
-    it_behaves_like "elements collection", "<dl><dt>Term</dt><dd>Definition</dd></dl>", RelatonBib::Element::Dl
-    it_behaves_like "elements collection", "<figure id='ID'><p>Text</p></figure>", RelatonBib::Element::Figure
-    it_behaves_like "elements collection", "<quote id='ID'><p>Text</p></quote>", RelatonBib::Element::Quote
-    it_behaves_like "elements collection", "<sourcecode id='ID'>code</sourcecode>", RelatonBib::Element::Sourcecode
-    it_behaves_like "elements collection", "<example id='ID'><p>Text</p></example>", RelatonBib::Element::Example
-    it_behaves_like "elements collection", <<~XML, RelatonBib::Element::Review
-      <review id="ID" reviewer="Reviewer"><p id="pID">Text</p></review>
-    XML
-    it_behaves_like "elements collection", "<pre id='ID'>Text</pre>", RelatonBib::Element::Pre
-    it_behaves_like "elements collection", "<note id='ID'><p id='pID'>Text</p></note>", RelatonBib::Element::Note
-    it_behaves_like "elements collection", "<pagebreak/>", RelatonBib::Element::PageBreak
-    it_behaves_like "elements collection", "<hr/>", RelatonBib::Element::Hr
-    it_behaves_like "elements collection", "<bookmark id='ID'/>", RelatonBib::Element::Bookmark
-    it_behaves_like "elements collection", "<amend change='add'/>", RelatonBib::Element::Amend
-  end
-
-  it "#parse_em" do
+  it "::parse_em" do
     node = Nokogiri::XML.fragment("<em>Text</em>").children.first
     em = described_class.parse_em(node)
     expect(em).to be_instance_of RelatonBib::Element::Em
@@ -153,7 +39,7 @@ describe RelatonBib::Element::Parser do
     expect(em.content[0].content).to eq "Text"
   end
 
-  context "#parse_em_element" do
+  context "::parse_em_element" do
     let(:collection_method) { :parse_em_element }
     it_behaves_like "elements collection", "Text", RelatonBib::Element::Text
     it_behaves_like "elements collection", "<stem type='MathML'>Text</stem>", RelatonBib::Element::Stem
@@ -170,7 +56,7 @@ describe RelatonBib::Element::Parser do
     XML
   end
 
-  it "#parse_eref" do
+  it "::parse_eref" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <eref normative="true" citeas="cite" type="inline" alt="Alt" bibitemid="ID">
         <locality type="section">
@@ -202,7 +88,7 @@ describe RelatonBib::Element::Parser do
     expect(eref.content[0].content).to eq "text"
   end
 
-  it "#parse_strong" do
+  it "::parse_strong" do
     node = Nokogiri::XML.fragment("<strong>Text</strong>").children.first
     strong = described_class.parse_strong(node)
     expect(strong).to be_instance_of RelatonBib::Element::Strong
@@ -211,7 +97,7 @@ describe RelatonBib::Element::Parser do
     expect(strong.content[0].content).to eq "Text"
   end
 
-  it "#parse_stem" do
+  it "::parse_stem" do
     node = Nokogiri::XML.fragment("<stem type='MathML'>Text</stem>").children.first
     stem = described_class.parse_stem(node)
     expect(stem).to be_instance_of RelatonBib::Element::Stem
@@ -221,7 +107,7 @@ describe RelatonBib::Element::Parser do
     expect(stem.type).to eq "MathML"
   end
 
-  it "#parse_any_elements" do
+  it "::parse_any_elements" do
     node = Nokogiri::XML.fragment("<p id='1'><a href='/path'>text</a></p>").children.first
     elms = described_class.parse_any_elements(node)
     expect(elms).to be_instance_of Array
@@ -235,7 +121,7 @@ describe RelatonBib::Element::Parser do
     expect(elms[0].content[0].content).to eq "text"
   end
 
-  it "#parse_sub" do
+  it "::parse_sub" do
     node = Nokogiri::XML.fragment("<sub>Text</sub>").children.first
     sub = described_class.parse_sub(node)
     expect(sub).to be_instance_of RelatonBib::Element::Sub
@@ -244,7 +130,7 @@ describe RelatonBib::Element::Parser do
     expect(sub.content[0].content).to eq "Text"
   end
 
-  it "#parse_sup" do
+  it "::parse_sup" do
     node = Nokogiri::XML.fragment("<sup>Text</sup>").children.first
     sup = described_class.parse_sup(node)
     expect(sup).to be_instance_of RelatonBib::Element::Sup
@@ -253,7 +139,7 @@ describe RelatonBib::Element::Parser do
     expect(sup.content[0].content).to eq "Text"
   end
 
-  it "#parse_tt" do
+  it "::parse_tt" do
     node = Nokogiri::XML.fragment("<tt>Text</tt>").children.first
     tt = described_class.parse_tt(node)
     expect(tt).to be_instance_of RelatonBib::Element::Tt
@@ -262,7 +148,7 @@ describe RelatonBib::Element::Parser do
     expect(tt.content[0].content).to eq "Text"
   end
 
-  context "#parse_tt_element" do
+  context "::parse_tt_element" do
     let(:collection_method) { :parse_tt_element }
     it_behaves_like "elements collection", "Text", RelatonBib::Element::Text
     it_behaves_like "elements collection", <<~XML, RelatonBib::Element::Eref
@@ -278,7 +164,7 @@ describe RelatonBib::Element::Parser do
     XML
   end
 
-  it "#parse_underline" do
+  it "::parse_underline" do
     node = Nokogiri::XML.fragment("<underline style='solid'>Text</underline>").children.first
     underline = described_class.parse_underline(node)
     expect(underline).to be_instance_of RelatonBib::Element::Underline
@@ -288,7 +174,7 @@ describe RelatonBib::Element::Parser do
     expect(underline.style).to eq "solid"
   end
 
-  it "#parse_keyword" do
+  it "::parse_keyword" do
     node = Nokogiri::XML.fragment("<keyword>Text</keyword>").children.first
     keyword = described_class.parse_keyword(node)
     expect(keyword).to be_instance_of RelatonBib::Element::Keyword
@@ -296,7 +182,7 @@ describe RelatonBib::Element::Parser do
     expect(keyword.content[0]).to be_instance_of RelatonBib::Element::Text
   end
 
-  context "#parse_keyword_element" do
+  context "::parse_keyword_element" do
     let(:collection_method) { :parse_keyword_element }
     it_behaves_like "elements collection", "Text", RelatonBib::Element::Text
     it_behaves_like "elements collection", "<index><primary>Primary</primary></index>", RelatonBib::Element::Index
@@ -305,7 +191,7 @@ describe RelatonBib::Element::Parser do
     XML
   end
 
-  context "#parse_ruby" do
+  context "::parse_ruby" do
     it "with text & pronunciation" do
       node = Nokogiri::XML.fragment(<<~XML).children.first
         <ruby pronunciation="prn" script="Latn" lang="en">Text</ruby>
@@ -327,19 +213,19 @@ describe RelatonBib::Element::Parser do
     end
   end
 
-  it "#parse_strike" do
+  it "::parse_strike" do
     node = Nokogiri::XML.fragment("<strike>Text</strike>").children.first
     strike = described_class.parse_strike(node)
     expect(strike).to be_instance_of RelatonBib::Element::Strike
   end
 
-  it "#parse_smallcap" do
+  it "::parse_smallcap" do
     node = Nokogiri::XML.fragment("<smallcap>Text</smallcap>").children.first
     smallcap = described_class.parse_smallcap(node)
     expect(smallcap).to be_instance_of RelatonBib::Element::Smallcap
   end
 
-  it "#parse_xref" do
+  it "::parse_xref" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <xref target="ISO 123" type="inline" alt="Alt">Text</xref>
     XML
@@ -352,13 +238,13 @@ describe RelatonBib::Element::Parser do
     expect(xref.alt).to eq "Alt"
   end
 
-  it "#parse_br" do
+  it "::parse_br" do
     node = Nokogiri::XML.fragment("<br>").children.first
     br = described_class.parse_br(node)
     expect(br).to be_instance_of RelatonBib::Element::Br
   end
 
-  it "#parse_link" do
+  it "::parse_link" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <link target="http://example.com" type="inline" alt="Alt">Text</link>
     XML
@@ -371,26 +257,26 @@ describe RelatonBib::Element::Parser do
     expect(link.alt).to eq "Alt"
   end
 
-  it "#parse_hr" do
+  it "::parse_hr" do
     node = Nokogiri::XML.fragment("<hr>").children.first
     hr = described_class.parse_hr(node)
     expect(hr).to be_instance_of RelatonBib::Element::Hr
   end
 
-  it "#parse_pagebreak" do
+  it "::parse_pagebreak" do
     node = Nokogiri::XML.fragment("<pagebreak>").children.first
     pagebreak = described_class.parse_pagebreak(node)
     expect(pagebreak).to be_instance_of RelatonBib::Element::PageBreak
   end
 
-  it "#parse_bookmark" do
+  it "::parse_bookmark" do
     node = Nokogiri::XML.fragment("<bookmark id='1'>").children.first
     bookmark = described_class.parse_bookmark(node)
     expect(bookmark).to be_instance_of RelatonBib::Element::Bookmark
     expect(bookmark.id).to eq "1"
   end
 
-  it "#parse_image" do
+  it "::parse_image" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <image id="ID" src="/image.png" mimetype="image/png" filename="image.png" width="4" height="5" alt="Alt" title="Title">
     XML
@@ -405,7 +291,7 @@ describe RelatonBib::Element::Parser do
     expect(image.title).to eq "Title"
   end
 
-  it "#parse_index" do
+  it "::parse_index" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <index to="to">
         <primary>Primary</primary>
@@ -424,7 +310,7 @@ describe RelatonBib::Element::Parser do
     expect(index.to).to eq "to"
   end
 
-  it "#parse_index_xref" do
+  it "::parse_index_xref" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <index-xref also="also">
         <primary>Primary</primary>
@@ -450,7 +336,7 @@ describe RelatonBib::Element::Parser do
     expect(index_xref.also).to eq "also"
   end
 
-  it "#parse_paragraph" do
+  it "::parse_paragraph" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <p id="ID" align="left">text<note id="nID"><p id="pID">note</p></note></p>
     XML
@@ -465,7 +351,7 @@ describe RelatonBib::Element::Parser do
     expect(paragraph.note[0]).to be_instance_of RelatonBib::Element::Note
   end
 
-  it "#parse_notes" do
+  it "::parse_notes" do
     node = Nokogiri::XML.fragment "<note id='ID'><p id='pID'>text</p></note>"
     notes = described_class.parse_notes node
     expect(notes).to be_instance_of Array
@@ -477,7 +363,7 @@ describe RelatonBib::Element::Parser do
     expect(notes[0].content[0].content[0].content).to eq "text"
   end
 
-  it "#parse_table" do
+  it "::parse_table" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <table id="ID" unnumbered="false" subsequence="SubSec" alt="Alt" summary="Summary" uri="URI">
         <name>Tname</name>
@@ -509,7 +395,7 @@ describe RelatonBib::Element::Parser do
     expect(table.dl).to be_instance_of RelatonBib::Element::Dl
   end
 
-  it "#parse_tname" do
+  it "::parse_tname" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <name>Tname<eref citeas="SiteAs" type="inline" bibitemid="123">Eref</eref>
       <stem type="MathML">Stem</stem><keyword>Keyword</keyword>
@@ -532,7 +418,7 @@ describe RelatonBib::Element::Parser do
     expect(tname.content[7]).to be_instance_of RelatonBib::Element::IndexXref
   end
 
-  it "#parse_tr" do
+  it "::parse_tr" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <tr><th>head</th><td>cell</td></tr>
     XML
@@ -543,7 +429,7 @@ describe RelatonBib::Element::Parser do
     expect(tr.content[1]).to be_instance_of RelatonBib::Element::Td
   end
 
-  context "#parse_th" do
+  context "::parse_th" do
     it "with text" do
       node = Nokogiri::XML.fragment(<<~XML).children.first
         <th colspan="3" rowspan="2" align="center" valign="top">head</th>
@@ -569,7 +455,7 @@ describe RelatonBib::Element::Parser do
     end
   end
 
-  it "#parse_td" do
+  it "::parse_td" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <td colspan="3" rowspan="2" align="center" valign="top">cell</td>
     XML
@@ -583,7 +469,7 @@ describe RelatonBib::Element::Parser do
     expect(td.content[0]).to be_instance_of RelatonBib::Element::Text
   end
 
-  it "#parse_dl" do
+  it "::parse_dl" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <dl><dt>dt</dt><dd><p>dd</p></dd></dl>
     XML
@@ -595,7 +481,7 @@ describe RelatonBib::Element::Parser do
     expect(dl.content[1].content[0]).to be_instance_of RelatonBib::Element::ParagraphWithFootnote
   end
 
-  it "#parse_p" do
+  it "::parse_p" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <p id="ID" align="left">text<fn reference="ref"><p id="pID">FN</p></fn><note id="nID">note</note></p>
     XML
@@ -609,7 +495,7 @@ describe RelatonBib::Element::Parser do
     expect(p.note[0]).to be_instance_of RelatonBib::Element::Note
   end
 
-  it "#parse_formula" do
+  it "::parse_formula" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <formula id="ID" unnumbered="false" subsequence="SubSec" inequality="true">
         <stem type="MathML">Stem</stem>
@@ -629,7 +515,7 @@ describe RelatonBib::Element::Parser do
     expect(formula.note[0]).to be_instance_of RelatonBib::Element::Note
   end
 
-  it "#parse_admonition" do
+  it "::parse_admonition" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <admonition type="tip" class="Cls" id="ID" uri="URI">
         <name>Tname</name>
@@ -650,7 +536,7 @@ describe RelatonBib::Element::Parser do
     expect(admonition.note[0]).to be_instance_of RelatonBib::Element::Note
   end
 
-  it "#parse_ol" do
+  it "::parse_ol" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <ol id="ID" type="roman" start="1">
         <li><p>item</p></li>
@@ -668,7 +554,7 @@ describe RelatonBib::Element::Parser do
     expect(ol.note[0]).to be_instance_of RelatonBib::Element::Note
   end
 
-  it "#parse_li" do
+  it "::parse_li" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <li id="ID"><p>item</p></li>
     XML
@@ -678,7 +564,7 @@ describe RelatonBib::Element::Parser do
     expect(li.content[0]).to be_instance_of RelatonBib::Element::ParagraphWithFootnote
   end
 
-  it "#parse_ul" do
+  it "::parse_ul" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <ul id="ID">
         <li><p>item</p></li>
@@ -694,7 +580,7 @@ describe RelatonBib::Element::Parser do
     expect(ul.note[0]).to be_instance_of RelatonBib::Element::Note
   end
 
-  context "#parse_figure" do
+  context "::parse_figure" do
     it "with paragraph" do
       node = Nokogiri::XML.fragment(<<~XML).children.first
         <figure id="ID" unnumbered="false" subsequence="SubSec" class="Cls">
@@ -766,7 +652,7 @@ describe RelatonBib::Element::Parser do
     end
   end
 
-  it "#parse_source" do
+  it "::parse_source" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <source type="src" language="en" locale="en-US" script="Lant">http://example.com</source>
     XML
@@ -779,7 +665,7 @@ describe RelatonBib::Element::Parser do
     expect(source.content.to_s).to eq "http://example.com"
   end
 
-  it "#parse_fn" do
+  it "::parse_fn" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <fn reference="ref"><p id="pID">text</p></fn>
     XML
@@ -790,7 +676,7 @@ describe RelatonBib::Element::Parser do
     expect(fn.content[0]).to be_instance_of RelatonBib::Element::Paragraph
   end
 
-  it "#parse_video" do
+  it "::parse_video" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <video id="ID" src="/video.mp4" mimetype="video/mp4" filename="video.mp4" width="4" height="auto" alt="Alt" title="Title" longdesc="anyURI">
         <altsource src="/video.mp4" mimetype="video/mp4"/>
@@ -810,7 +696,7 @@ describe RelatonBib::Element::Parser do
     expect(video.content[0]).to be_instance_of RelatonBib::Element::Altsource
   end
 
-  it "#parse_audio" do
+  it "::parse_audio" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <audio id="ID" src="/audio.mp3" mimetype="audio/mp3" filename="audio.mp3" alt="Alt" title="Title" longdesc="anyURI">
         <altsource src="/audio.mp3" mimetype="audio/mp3"/>
@@ -828,7 +714,7 @@ describe RelatonBib::Element::Parser do
     expect(audio.content[0]).to be_instance_of RelatonBib::Element::Altsource
   end
 
-  it "#parse_altsource" do
+  it "::parse_altsource" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <altsource src="/audio.mp3" mimetype="audio/mp3" filename="audio.mp3"/>
     XML
@@ -839,7 +725,7 @@ describe RelatonBib::Element::Parser do
     expect(altsource.filename).to eq "audio.mp3"
   end
 
-  it "#parse_pre" do
+  it "::parse_pre" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <pre id="ID" alt="Alt"><name>Tname</name>code<note id="nID"><p id="pID">Note</p></note></pre>
     XML
@@ -853,7 +739,7 @@ describe RelatonBib::Element::Parser do
     expect(pre.note[0]).to be_instance_of RelatonBib::Element::Note
   end
 
-  it "#parse_quote" do
+  it "::parse_quote" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <quote id="ID" alignment="left">
         <source citeas="ref" type="inline" bibitemid="IDREF">Source</source>
@@ -874,7 +760,7 @@ describe RelatonBib::Element::Parser do
     expect(quote.note[0]).to be_instance_of RelatonBib::Element::Note
   end
 
-  it "#parse_sourcecode" do
+  it "::parse_sourcecode" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <sourcecode id="ID" unnumbered="false" subsequence="SubSec" lang="en">
         <name>Tname</name>code<callout target="IDREF">Callout</callout>
@@ -898,7 +784,7 @@ describe RelatonBib::Element::Parser do
     expect(sourcecode.note[0]).to be_instance_of RelatonBib::Element::Note
   end
 
-  it "#parse_example" do
+  it "::parse_example" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <example id="ID" unnumbered="false" subsequence="SubSec">
         <name>Tname</name>
@@ -930,7 +816,7 @@ describe RelatonBib::Element::Parser do
     expect(example.note[0]).to be_instance_of RelatonBib::Element::Note
   end
 
-  it "#parse_review" do
+  it "::parse_review" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <review id="ID" reviewer="Reviewer" type="Type" date="2001-02-01T12:00:00" from="IDREF" to="IDREF">
         <p id="pID">text</p>
@@ -948,7 +834,7 @@ describe RelatonBib::Element::Parser do
     expect(review.content[0]).to be_instance_of RelatonBib::Element::Paragraph
   end
 
-  it "#parse_amend" do
+  it "::parse_amend" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <amend id="ID" change="add" path="Path" path_end="Path End" title="Title">
         <location><locality type="clause"/></location>
@@ -976,7 +862,7 @@ describe RelatonBib::Element::Parser do
     expect(amend.contributor[0]).to be_instance_of RelatonBib::Contributor
   end
 
-  it "#parse_classification" do
+  it "::parse_classification" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <classification><tag>Tag</tag><value>Value</value></classification>
     XML
@@ -988,7 +874,7 @@ describe RelatonBib::Element::Parser do
     expect(classification.value.content).to eq "Value"
   end
 
-  it "#parse_amend_location" do
+  it "::parse_amend_location" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <location><locality type="clause"/></location>
     XML
@@ -998,7 +884,7 @@ describe RelatonBib::Element::Parser do
     expect(location.content[0]).to be_instance_of RelatonBib::Locality
   end
 
-  it "#parse_amend_description" do
+  it "::parse_amend_description" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <description><p>text</p></description>
     XML
@@ -1008,7 +894,7 @@ describe RelatonBib::Element::Parser do
     expect(description.content[0]).to be_instance_of RelatonBib::Element::ParagraphWithFootnote
   end
 
-  it "#parse_amend_newcontent" do
+  it "::parse_amend_newcontent" do
     node = Nokogiri::XML.fragment(<<~XML).children.first
       <newcontent id="ID"><p>new content</p></newcontent>
     XML
@@ -1019,7 +905,7 @@ describe RelatonBib::Element::Parser do
     expect(newcontent.content[0]).to be_instance_of RelatonBib::Element::ParagraphWithFootnote
   end
 
-  context "#string_to_bool" do
+  context "::string_to_bool" do
     it "true" do
       expect(described_class.string_to_bool("true")).to be true
     end

@@ -1,11 +1,11 @@
 module RelatonBib
   module HashConverter
+    include Factory
     extend self
-    extend Factory
 
     # @param args [Hash]
     # @return [Hash]
-    def hash_to_bib(args)
+    def hash_to_bib(args) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       return nil unless args.is_a?(Hash)
 
       ret = Marshal.load(Marshal.dump(symbolize(args))) # deep copy

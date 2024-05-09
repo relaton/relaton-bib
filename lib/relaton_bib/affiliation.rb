@@ -6,7 +6,7 @@ module RelatonBib
       include LocalizedStringAttrs
 
       def initialize(content:, **args)
-        @content = content.is_a?(String) ? Element.parse_text_elements(content) : content
+        @content = content.is_a?(String) ? Element::TextElement.parse(content) : content
         super(**args)
       end
 

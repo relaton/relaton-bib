@@ -62,80 +62,28 @@ module RelatonBib
   module Element
     extend self
 
-    #
-    # Parse elements of TexElement from Sring or Nokogiri::XML::Element.
-    #
-    # @param [String, Nokogiri::XML::Element] content
-    #
-    # @return [Array<RelatonBib::Element::Base>] elements of TextElement
-    #
-    def parse_text_elements(content)
-      Parser.parse_text_elements content_to_node(content)
-    end
-
-    def parse_pure_text_elements(content)
-      Parser.parse_pure_text_elements content_to_node(content)
-    end
-
-    def parse_basic_block_elements(content)
-      Parser.parse_basic_block_elements content_to_node(content)
-    end
-
-    def content_to_node(content)
-      content.is_a?(String) ? Nokogiri::XML.fragment(content) : content
-    end
-
     module Parser
       extend self
       extend RelatonBib::Parser::XML::Locality
+
+      def content_to_node(content)
+        content.is_a?(String) ? Nokogiri::XML.fragment(content) : content
+      end
 
       def parse_children(node, &block)
         node.xpath("text()|*").map(&block).compact
       end
 
       def parse_node(node)
-        send "parse_#{node.name.tr('-', '_')}", node
+        mathod = "parse_#{node.name.tr('-', '_')}"
+        return unless respond_to? mathod, true
+
+        send mathod, node
       end
 
-      def parse_text_elements(node)
-        parse_children(node) { |n| parse_text_element n }
-      end
-
-      def parse_pure_text_elements(node)
-        return [] if node.nil?
-
-        parse_children(node) { |n| parse_pure_text_element n }
-      end
-
-      def parse_basic_block_elements(node)
-        parse_children(node) { |n| parse_basic_block_element n }
-      end
-
-      def parse_text_element(node)
-        if %w[eref stem keyword ruby xref link hr pagebreak bookmark image
-              index index-xref].include? node.name
-          parse_node node
-        else
-          parse_pure_text_element node
-        end
-      end
-
-      def parse_pure_text_element(node)
-        if %w[em strong sub sup tt underline strike smallcap br].include? node.name
-          parse_node node
-        else
-          text = node.to_xml(encoding: "UTF-8")
-          Text.new text unless text.strip.empty?
-        end
-      end
-
-      def parse_basic_block_element(node)
-        if %w[p table formula admonition ol ul dl figure quote
-              sourcecode example review pre note pagebreak hr bookmark amend].include? node.name
-          parse_node node
-        else
-          parse_pure_text_element node
-        end
+      def parse_text(node)
+        text = node.to_xml(encoding: "UTF-8")
+        Text.new text unless text.strip.empty?
       end
 
       def parse_em(node)
@@ -147,7 +95,7 @@ module RelatonBib
         if %w(stem eref xref link index index-xref).include? node.name
           parse_node(node)
         else
-          parse_pure_text_element node
+          PureTextElement.parse_element node
         end
       end
 
@@ -176,7 +124,7 @@ module RelatonBib
             citation_type_args[:locality] << locality_stack(n)
           when "date" then citation_type_args[:date] = n.text
           else
-            element = parse_pure_text_element(n)
+            element = PureTextElement.parse_element(n)
             content << element if element
           end
         end
@@ -206,11 +154,11 @@ module RelatonBib
       end
 
       def parse_sub(node)
-        Sub.new content: parse_pure_text_elements(node)
+        Sub.new content: PureTextElement.parse(node)
       end
 
       def parse_sup(node)
-        Sup.new content: parse_pure_text_elements(node)
+        Sup.new content: PureTextElement.parse(node)
       end
 
       def parse_tt(node)
@@ -222,12 +170,12 @@ module RelatonBib
         if %w[eref xref link index index-xref].include? node.name
           parse_node node
         else
-          parse_pure_text_element(node)
+          PureTextElement.parse_element(node)
         end
       end
 
       def parse_underline(node)
-        Underline.new(parse_pure_text_elements(node), node[:style])
+        Underline.new(PureTextElement.parse(node), node[:style])
       end
 
       def parse_keyword(node)
@@ -239,7 +187,7 @@ module RelatonBib
         if %w[index index-xref].include? node.name
           parse_node node
         else
-          parse_pure_text_element(node)
+          PureTextElement.parse_element(node)
         end
       end
 
@@ -264,7 +212,7 @@ module RelatonBib
       alias_method :parse_strike_element, :parse_keyword_element
 
       def parse_smallcap(node)
-        Smallcap.new content: parse_pure_text_elements(node)
+        Smallcap.new content: PureTextElement.parse(node)
       end
 
       def parse_xref(node)
@@ -272,7 +220,7 @@ module RelatonBib
       end
 
       def parse_xref_element(node)
-        content = parse_pure_text_elements(node)
+        content = PureTextElement.parse(node)
         [content, node[:target], node[:type], node[:alt]]
       end
 
@@ -280,7 +228,7 @@ module RelatonBib
         Br.new
       end
 
-      # Hyperlink
+      # parse Hyperlink
       def parse_link(node)
         Hyperlink.new(*parse_hyperlink_element(node))
       end
@@ -303,17 +251,17 @@ module RelatonBib
       end
 
       def parse_index(node)
-        primary = parse_pure_text_elements(node.at("./primary"))
-        secondary = parse_pure_text_elements(node.at("./secondary"))
-        tertiary = parse_pure_text_elements(node.at("./tertiary"))
+        primary = PureTextElement.parse(node.at("./primary"))
+        secondary = PureTextElement.parse(node.at("./secondary"))
+        tertiary = PureTextElement.parse(node.at("./tertiary"))
         Index.new primary, secondary: secondary, tertiary: tertiary, to: node[:to]
       end
 
       def parse_index_xref(node)
-        primary = parse_pure_text_elements(node.at("./primary"))
-        secondary = parse_pure_text_elements(node.at("./secondary"))
-        tertiary = parse_pure_text_elements(node.at("./tertiary"))
-        target = parse_pure_text_elements(node.at("./target"))
+        primary = PureTextElement.parse(node.at("./primary"))
+        secondary = PureTextElement.parse(node.at("./secondary"))
+        tertiary = PureTextElement.parse(node.at("./tertiary"))
+        target = PureTextElement.parse(node.at("./target"))
         IndexXref.new primary, secondary: secondary, tertiary: tertiary, target: target, also: node[:also]
       end
 
@@ -322,7 +270,7 @@ module RelatonBib
 
         attrs = node.to_h.transform_keys(&:to_sym)
         note = parse_notes(node)
-        content = nodes_before_note(node, note).map { |n| parse_text_element(n) }
+        content = nodes_before_note(node, note).map { |n| TextElement.parse_element(n) }
         Paragraph.new(content: content, note: note, **attrs)
       end
 
@@ -358,7 +306,7 @@ module RelatonBib
         if %w[eref stem keyword xref link index index-xref].include? node.name
           parse_node node
         else
-          parse_pure_text_element(node)
+          PureTextElement.parse_element(node)
         end
       end
 
@@ -391,7 +339,7 @@ module RelatonBib
       end
 
       def parse_tr_element(node)
-        %w[th td].include?(node.name) ?  parse_node(node) : parse_pure_text_elements(node)
+        %w[th td].include?(node.name) ?  parse_node(node) : PureTextElement.parse(node)
       end
 
       def parse_th(node)
@@ -401,7 +349,7 @@ module RelatonBib
       end
 
       def parse_th_element(node)
-        node.name == "p" ?  parse_p(node) : parse_pure_text_element(node)
+        node.name == "p" ? parse_p(node) : PureTextElement.parse_element(node)
       end
 
       def parse_td(node)
@@ -423,7 +371,7 @@ module RelatonBib
           content = parse_children(node) { |n| parse_p(n) }
           Dd.new content: content
         else
-          Dt.new content: parse_text_elements(node)
+          Dt.new content: TextElement.parse(node)
         end
       end
 
@@ -449,10 +397,10 @@ module RelatonBib
       end
 
       def parse_paragraph_with_footnote_element(node)
-        node.name == "fn" ? parse_fn(node) : parse_text_element(node)
+        node.name == "fn" ? parse_fn(node) : TextElement.parse_element(node)
       end
 
-      def parse_formula(node)
+      def parse_formula(node) # rubocop:disable Metrics/AbcSize
         stem = parse_stem(node.at("./stem"))
         dl = parse_dl(node.at("./dl"))
         note = node.xpath("./note").map { |n| parse_note n }
@@ -500,10 +448,10 @@ module RelatonBib
       end
 
       def parse_figure_content(node) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
-        if (n = node.at("./image")) then parse_image n
-        elsif (n = node.at("./video")) then parse_video n
-        elsif (n = node.at("./audio")) then parse_audio n
-        elsif (n = node.at("./pre")) then parse_pre n
+        if (nd = node.at("./image")) then parse_image nd
+        elsif (nd = node.at("./video")) then parse_video nd
+        elsif (nd = node.at("./audio")) then parse_audio nd
+        elsif (nd = node.at("./pre")) then parse_pre nd
         elsif (nodes = node.xpath("./p")).any?
           nodes.map { |n| parse_p n }
         elsif (nodes = node.xpath("./figure")).any?
@@ -645,14 +593,14 @@ module RelatonBib
       def parse_amend_description(node)
         return unless node
 
-        content = parse_basic_block_elements(node)
+        content = BasicBlock.parse(node)
         Element::AmendType::Description.new content: content
       end
 
       def parse_amend_newcontent(node)
         return unless node
 
-        content = parse_basic_block_elements(node)
+        content = BasicBlock.parse(node)
         Element::AmendType::Newcontent.new content: content, id: node[:id]
       end
 

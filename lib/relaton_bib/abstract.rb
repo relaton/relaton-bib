@@ -18,8 +18,8 @@ module RelatonBib
     def initialize(content:, **args)
       super
       if content.is_a?(String)
-        @content = Element.parse_basic_block_elements(content)
-        @content = Element.parse_text_elements(content) if @content.empty?
+        @content = Element::BasicBlock.parse(content)
+        @content = Element::TextElement.parse(content) if @content.empty?
       else
         @content = content
       end

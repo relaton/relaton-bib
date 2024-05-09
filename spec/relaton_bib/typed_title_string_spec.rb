@@ -13,7 +13,7 @@ RSpec.describe RelatonBib::TypedTitleString do
     subject do
       RelatonBib::TypedTitleString.new(
         type: "main",
-        content: RelatonBib::Element.parse_text_elements("Title"),
+        content: RelatonBib::Element::TextElement.parse("Title"),
       )
     end
 
@@ -44,7 +44,7 @@ RSpec.describe RelatonBib::TypedTitleString do
       end
 
       it "with elemets" do
-        subject.content = RelatonBib::Element.parse_text_elements("New title")
+        subject.content = RelatonBib::Element::TextElement.parse("New title")
         expect(subject.content[0]).to be_instance_of RelatonBib::Element::Text
         expect(subject.to_s).to eq "New title"
       end

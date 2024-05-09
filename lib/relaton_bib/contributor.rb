@@ -14,7 +14,7 @@ module RelatonBib
 
         def initialize(content:, **args)
           super
-          @content = content.is_a?(String) ? Element.parse_pure_text_elements(content) : content
+          @content = content.is_a?(String) ? Element::PureTextElement.parse(content) : content
         end
 
         def to_xml(builder)

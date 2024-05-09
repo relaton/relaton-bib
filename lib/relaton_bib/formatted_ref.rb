@@ -10,7 +10,7 @@ module RelatonBib
     # @param [String, Array<RelatonBib::Element::Base, RelatonBib::Element::Text>] content
     #
     def initialize(content)
-      @content = content.is_a?(String) ? Element.parse_text_elements(content) : content
+      @content = content.is_a?(String) ? Element::TextElement.parse(content) : content
     end
 
     # @param [Nokogiri::XML::Builder]

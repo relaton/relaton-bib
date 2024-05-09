@@ -546,9 +546,7 @@ module RelatonBib
       biblionote&.each { |b| out += b.to_asciibib prefix, biblionote.size }
       out += status.to_asciibib prefix if status
       date.each { |d| out += d.to_asciibib prefix, date.size }
-      abstract.each do |a|
-        out += a.to_asciibib pref, abstract.size
-      end
+      abstract.each { |a| out += a.to_asciibib pref, abstract.size }
       copyright.each { |c| out += c.to_asciibib prefix, copyright.size }
       link.each { |l| out += l.to_asciibib prefix, link.size }
       out += medium.to_asciibib prefix if medium
@@ -592,18 +590,11 @@ module RelatonBib
         docidentifier.each { |di| di.to_xml(**opts) }
         builder.docnumber docnumber if docnumber
         date.each { |d| d.to_xml builder, **opts }
-        contributor.each do |c|
-          # builder.contributor do
-          #   c.role.each { |r| r.to_xml(**opts) }
-            c.to_xml(**opts)
-          # end
-        end
+        contributor.each { |c| c.to_xml(**opts) }
         edition&.to_xml builder
         version.each { |v| v.to_xml builder }
         biblionote.to_xml(**opts)
-        opts[:note]&.each do |n|
-          builder.note(n[:text], format: "text/plain", type: n[:type])
-        end
+        opts[:note]&.each { |n| builder.note(n[:text], type: n[:type]) }
         language.each { |l| builder.language l }
         script.each { |s| builder.script s }
         abstract(opts[:lang]).each { |a| a.to_xml(builder) }

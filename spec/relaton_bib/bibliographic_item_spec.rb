@@ -115,7 +115,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         expect(subject_xml).to be_equivalent_to xml
         schema = Jing.new "grammars/biblio-compile.rng"
         errors = schema.validate file
-        # expect(errors).to eq []
+        expect(errors).to eq []
       end
 
       it "returns bibdata xml string" do
@@ -128,7 +128,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         expect(subject_xml).to be_equivalent_to xml
         schema = Jing.new "grammars/biblio-compile.rng"
         errors = schema.validate file
-        # expect(errors).to eq []
+        expect(errors).to eq []
       end
 
       it "render only French laguage tagged string" do
@@ -147,8 +147,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
       it "add note to xml" do
         xml = subject.to_xml note: [{ text: "Note", type: "note" }]
-        expect(xml).to include "<note format=\"text/plain\" type=\"note\">" \
-                               "Note</note>"
+        expect(xml).to include "<note type=\"note\">Note</note>"
       end
 
       it "render ext schema-verson" do

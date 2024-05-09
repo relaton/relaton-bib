@@ -178,6 +178,21 @@ RSpec.describe "BibXML parser" do
     expect(rfc.contributor).to be_empty
   end
 
+  it "parse abstract" do
+    bibxml = <<~END_XML
+      <reference anchor="RFC0001" target="https://www.rfc-editor.org/info/rfc1">
+        <front>
+          <title>Host Software</title>
+          <abstract>
+            <t>Host software is software that runs on a host computer.</t>
+          </abstract>
+        </front>
+      </reference>
+    END_XML
+    rfc = RelatonBib::BibXMLParser.parse bibxml
+    expect(rfc.abstract[0].to_s).to eq "<p>Host software is software that runs on a host computer.</p>"
+  end
+
   # it "parse organization as fullname" do
   #   bibxml = <<~END_XML
   #     <reference anchor="RFC0001" target="https://www.rfc-editor.org/info/rfc1">

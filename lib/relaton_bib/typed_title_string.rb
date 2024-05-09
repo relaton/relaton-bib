@@ -105,7 +105,7 @@ module RelatonBib
     def initialize(content:, type: nil, **args)
       @type = type
       super
-      @content = content.is_a?(String) ? Element.parse_text_elements(content) : content
+      @content = content.is_a?(String) ? Element::TextElement.parse(content) : content
     end
 
     #
@@ -154,7 +154,7 @@ module RelatonBib
     end
 
     def content=(content)
-      @content = content.is_a?(String) ? Element.parse_text_elements(content) : content
+      @content = content.is_a?(String) ? Element::TextElement.parse(content) : content
     end
 
     # @param builder [Nokogiri::XML::Builder]

@@ -41,7 +41,7 @@ module RelatonBib
     def initialize(content:, type: nil, language: [], script: [], locale: nil)
       @type = type
       super
-      @content = Element.parse_text_elements(content) if content.is_a? String
+      @content = Element::TextElement.parse(content) if content.is_a? String
     end
 
     # @param builder [Nokogiri::XML::Builder]

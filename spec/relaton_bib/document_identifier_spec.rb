@@ -1,4 +1,12 @@
 RSpec.describe RelatonBib::DocumentIdentifier do
+  context "instance methods" do
+    subject { RelatonBib::DocumentIdentifier.new(id: "ISO 123") }
+    it "#id=" do
+      subject.id = "ISO 456"
+      expect(subject.id.to_s).to eq "ISO 456"
+    end
+  end
+
   context "ISO" do
     subject do
       RelatonBib::DocumentIdentifier.new(id: "1111-2:2014", type: "ISO")

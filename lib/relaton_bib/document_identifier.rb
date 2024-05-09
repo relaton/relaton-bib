@@ -14,8 +14,9 @@ module RelatonBib
     # @param language [String, nil]
     def initialize(**args)
       super
-      @id = Element.parse_text_elements(@id) if @id.is_a?(String)
+      @id = Element::TextElement.parse(@id) if @id.is_a?(String)
     end
+
     #
     # Identifier as string.
     #
@@ -25,23 +26,34 @@ module RelatonBib
       @id.map(&:to_s).join
     end
 
+    #
+    # Set identifier.
+    #
+    # @param [String] id
+    #
+    # @return [void]
+    #
+    def id=(id)
+      @id = Element::TextElement.parse(id)
+    end
+
     # in docid manipulations, assume ISO as the default: id-part:year
     def remove_part
       case @type
-      when "Chinese Standard" then @id = Element.parse_text_elements(id.sub(/\.\d+/, ""))
-      else @id = Element.parse_text_elements(id.sub(/-[^:]+/, ""))
+      when "Chinese Standard" then @id = Element::TextElement.parse(id.sub(/\.\d+/, ""))
+      else @id = Element::TextElement.parse(id.sub(/-[^:]+/, ""))
       end
     end
 
     def remove_date
       case @type
-      when "Chinese Standard" then @id = Element.parse_text_elements(id.sub(/-[12]\d\d\d/, ""))
-      else @id = Element.parse_text_elements(id.sub(/:[12]\d\d\d/, ""))
+      when "Chinese Standard" then @id = Element::TextElement.parse(id.sub(/-[12]\d\d\d/, ""))
+      else @id = Element::TextElement.parse(id.sub(/:[12]\d\d\d/, ""))
       end
     end
 
     def all_parts
-      @id = Element.parse_text_elements("#{id} (all parts)")
+      @id = Element::TextElement.parse("#{id} (all parts)")
     end
   end
 end
