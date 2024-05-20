@@ -64,7 +64,7 @@ module RelatonBib
     attr_reader :docidentifier
 
     # @return [Array<RelatonBib::BibliographicDate>]
-    attr_accessor :date
+    attr_writer :date
 
     # @return [Array<RelatonBib::ContributionInfo>]
     attr_reader :contributor
@@ -312,6 +312,15 @@ module RelatonBib
     def self.from_hash(hash)
       item_hash = Object.const_get(name.split("::")[0])::HashConverter.hash_to_bib(hash)
       new(**item_hash)
+    end
+
+    #
+    # @param [String, nil] type if nil return all dates else return dates with type
+    #
+    # @return [Array<RelatonBib::BibliographicDate>]
+    #
+    def date(type: nil)
+      type ? @date.select { |d| d.type == type } : @date
     end
 
     # @param lang [String] language code Iso639
