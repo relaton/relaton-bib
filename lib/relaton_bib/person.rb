@@ -53,7 +53,7 @@ module RelatonBib
     # @param count [Integer] number of ids
     # @return [String]
     def to_asciibib(prefix = "", count = 1)
-      pref = prefix.empty? ? prefix : prefix + "."
+      pref = prefix.empty? ? prefix : "#{prefix}."
       out = count > 1 ? "#{prefix}::\n" : ""
       out += "#{pref}type:: #{type}\n"
       out += "#{pref}value:: #{value}\n"
