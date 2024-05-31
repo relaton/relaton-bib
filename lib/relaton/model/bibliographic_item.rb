@@ -1,0 +1,32 @@
+require "shale"
+require "shale/adapter/nokogiri"
+require_relative "bsource"
+require_relative "bdate"
+require_relative "text_element"
+require_relative "pure_text_element"
+require_relative "em"
+require_relative "formattedref"
+
+Shale.xml_adapter = Shale::Adapter::Nokogiri
+
+module Relaton
+  module Model
+    module BibliographicItem
+      def self.included(base) # rubocop:disable Metrics/MethodLength
+        base.class_eval do
+          attribute :type, Shale::Type::String
+          attribute :schema_version, Shale::Type::String
+          attribute :fetched, Shale::Type::Date
+          attribute :formattedref, Formattedref
+
+          xml do
+            map_attribute "type", to: :type
+            map_attribute "schema-version", to: :schema_version
+            map_attribute "fetched", to: :fetched
+            map_element "formattedref", to: :formattedref
+          end
+        end
+      end
+    end
+  end
+end
