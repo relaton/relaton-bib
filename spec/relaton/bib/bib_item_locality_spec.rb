@@ -1,4 +1,4 @@
-describe Relaton::Bib::BibItemLocality do
+describe Relaton::Bib::Locality do
   it "warn if locality type is invalid" do
     expect do
       described_class.new "type", "from"
