@@ -1,10 +1,10 @@
 module Relaton
   module Bib
     class Locality < BibItemLocality
-      # @param builder [Nokogiri::XML::Builder]
-      # def to_xml(builder)
-      #   builder.locality { |b| super(b) }
-      # end
+      # @return [String]
+      def to_xml
+        Model::Locality.to_xml self
+      end
 
       #
       # Render locality as hash.

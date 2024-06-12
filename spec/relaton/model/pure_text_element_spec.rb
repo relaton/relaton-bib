@@ -1,35 +1,28 @@
 describe Relaton::Model::PureTextElement do
-  let(:dummy_class) do
-    Class.new(Shale::Mapper) do
-      include Relaton::Model::PureTextElement
-      attribute :content, Relaton::Model::PureTextElement::Content
+  let(:doc) { Shale::Adapter::Nokogiri::Document.new }
+  let(:parent) { Nokogiri::XML::Node.new "parent", doc.doc }
 
-      xml do
-        map_content to: :content, using: { from: :content_from_xml, to: :content_to_xml }
-      end
-
-      def content_from_xml(model, node)
-        model.content = Relaton::Model::PureTextElement::Content.of_xml node.instance_variable_get(:@node)
-      end
-
-      def content_to_xml(model, parent, doc)
-        model.content.to_xml parent, doc
-      end
-    end
+  it "text" do
+    node = Nokogiri::XML::DocumentFragment.parse "<text>Text</text>"
+    element = described_class.of_xml node.first_element_child
+    expect(element.content).to be_instance_of Relaton::Model::PureTextElement::Content
+    element.content.to_xml(parent, doc)
+    expect(parent.to_xml).to be_equivalent_to "<parent>Text</parent>"
   end
 
-  let(:xml) do
-    <<~XML
-      <content>
-        Text
-        <em>Em</em>
-      </content>
-    XML
+  it "em" do
+    node = Nokogiri::XML::DocumentFragment.parse "<em>Em</em>"
+    element = described_class.of_xml node.first_element_child
+    expect(element.content).to be_instance_of Relaton::Model::PureTextElement::Content
+    element.content.to_xml(parent, doc)
+    expect(parent.to_xml).to be_equivalent_to "<parent><em>Em</em></parent>"
   end
 
-  it "from XML" do
-    dummy = dummy_class.from_xml xml
-    expect(dummy.content).to be_instance_of Relaton::Model::PureTextElement::Content
-    expect(dummy.to_xml).to be_equivalent_to xml
+  it "strong" do
+    node = Nokogiri::XML::DocumentFragment.parse "<strong>Strong</strong>"
+    element = described_class.of_xml node.first_element_child
+    expect(element.content).to be_instance_of Relaton::Model::PureTextElement::Content
+    element.content.to_xml(parent, doc)
+    expect(parent.to_xml).to be_equivalent_to "<parent><strong>Strong</strong></parent>"
   end
 end

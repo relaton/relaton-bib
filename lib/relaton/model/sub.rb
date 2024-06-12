@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class PureTextElement < Shale::Mapper
+    class Sub < Shale::Mapper
       class Content
         def initialize(element)
           @element = element
@@ -29,18 +29,18 @@ module Relaton
         end
       end
 
-      attribute :content, Content
+      attribute :content, PureTextElement, collection: true
 
       xml do
         map_content to: :content, using: { from: :content_from_xml, to: :content_to_xml }
       end
 
       def content_from_xml(model, node)
-        model.content = Content.of_xml node.instance_variable_get(:@node) || node
+        model.content << PureTextElement.of_xml(node.instance_variable_get(:@node) || node)
       end
 
       def content_to_xml(model, parent, doc)
-        model.content.to_xml parent, doc
+        model.content.each { |e| e.to_xml parent, doc }
       end
     end
   end
