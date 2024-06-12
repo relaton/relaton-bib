@@ -14,12 +14,10 @@ module Relaton
       #   @locality = locality
       # end
 
-      # @param builder [Nokogiri::XML::Builder]
-      # def to_xml(builder)
-      #   builder.localityStack do |b|
-      #     locality.each { |l| l.to_xml(b) }
-      #   end
-      # end
+      # @return [String]
+      def to_xml
+        Model::LocalityStack.to_xml self
+      end
 
       # @returnt [Hash]
       # def to_hash

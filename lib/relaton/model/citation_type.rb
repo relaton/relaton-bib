@@ -15,6 +15,7 @@ module Relaton
             case n.name
             when "locality" then Locality.of_xml n
             when "localityStack" then LocalityStack.of_xml n
+            when "date" then Date.of_xml n
             end
           end.compact
           new elms
@@ -22,7 +23,7 @@ module Relaton
 
         def to_xml(parent, _doc)
           @elements.each do |element|
-            parent << element
+            parent << element.to_xml
           end
         end
       end

@@ -1,6 +1,7 @@
 require "shale"
 require "shale/adapter/nokogiri"
 require_relative "any_element"
+require_relative "date"
 require_relative "bib_item_locality"
 require_relative "locality"
 require_relative "locality_stack"
@@ -13,6 +14,8 @@ require_relative "text_element"
 require_relative "pure_text_element"
 require_relative "stem"
 require_relative "em"
+require_relative "strong"
+require_relative "sub"
 require_relative "formattedref"
 
 Shale.xml_adapter = Shale::Adapter::Nokogiri

@@ -2,8 +2,6 @@ module Relaton
   module Model
     class Em < Shale::Mapper
       class Content
-        include Model::PureTextElement
-
         def initialize(elements = [])
           @elements = elements
         end
@@ -15,9 +13,8 @@ module Relaton
         def self.of_xml(node)
           elms = node.children.each do |n|
             case n.name
-            when "text" then n.text
             when "stem" then Stem.of_xml n
-            else n.to_xml
+            else PureTextElement::Content.of_xml n
             end
           end
           new elms
@@ -28,7 +25,7 @@ module Relaton
             if e.is_a? String
               doc.add_text(parent, e)
             else
-              doc.add_element parent, e.instance_variable_get(:@node) || e
+              parent << e.to_xml
             end
           end
         end
