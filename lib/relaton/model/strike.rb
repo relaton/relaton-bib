@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Strong < Shale::Mapper
+    class Strike < Shale::Mapper
       class Content
         def initialize(elements = [])
           @elements = elements
@@ -11,39 +11,34 @@ module Relaton
         end
 
         def self.of_xml(node)
-          elms = node.children.each do |n|
+          elms = node.children.map do |n|
             case n.name
-            when "stem" then Stem.of_xml n
+            when "index" then Index.of_xml n
+            when "index-xref" then IndexXref.of_xml n
             else PureTextElement.of_xml n
             end
           end
           new elms
         end
 
-        def to_xml(parent, doc)
-          @elements.map do |e|
-            if e.is_a? String
-              doc.add_text(parent, e)
-            else
-              parent << e.to_xml
-            end
-          end
+        def add_to_xml(parent, doc)
+          @elements.each { |e| e.add_to_xml parent, doc }
         end
       end
 
-      attribute :content, Content
+      attribute :content, Content, collection: true
 
       xml do
-        root "strong"
+        root "strike"
         map_content to: :content, using: { from: :content_from_xml, to: :content_to_xml }
       end
 
       def content_from_xml(model, node)
-        model.content = Content.of_xml node.instance_variable_get(:@node) || node
+        model.content << Content.of_xml(node.instance_variable_get(:@node) || node)
       end
 
       def content_to_xml(model, parent, doc)
-        model.content.to_xml parent, doc
+        model.content.each { |e| e.add_to_xml parent, doc }
       end
     end
   end

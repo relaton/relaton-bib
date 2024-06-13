@@ -1,10 +1,10 @@
 module Relaton
   module Model
-    class Sub < Shale::Mapper
+    class Sup < Shale::Mapper
       include PureTextElement::Mapper
 
       @xml_mapping.instance_eval do
-        root "sub"
+        root "sup"
       end
     end
   end
