@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Strong < Shale::Mapper
+    class Tt < Shale::Mapper
       class Content
         def initialize(elements = [])
           @elements = elements
@@ -11,22 +11,20 @@ module Relaton
         end
 
         def self.of_xml(node)
-          elms = node.children.each do |n|
+          elms = node.children.map do |n|
+            next if n.text? && n.text.strip.empty?
+
             case n.name
-            when "stem" then Stem.of_xml n
+            when "eref" then Eref.of_xml n
             else PureTextElement.of_xml n
             end
-          end
+          end.compact
           new elms
         end
 
         def to_xml(parent, doc)
-          @elements.map do |e|
-            if e.is_a? String
-              doc.add_text(parent, e)
-            else
-              parent << e.to_xml
-            end
+          @elements.each do |element|
+            element.add_to_xml parent, doc
           end
         end
       end
@@ -34,7 +32,7 @@ module Relaton
       attribute :content, Content
 
       xml do
-        root "strong"
+        root "tt"
         map_content to: :content, using: { from: :content_from_xml, to: :content_to_xml }
       end
 

@@ -14,7 +14,7 @@ module Relaton
           elms = node.children.each do |n|
             case n.name
             when "stem" then Stem.of_xml n
-            else PureTextElement::Content.of_xml n
+            else PureTextElement.of_xml n
             end
           end
           new elms

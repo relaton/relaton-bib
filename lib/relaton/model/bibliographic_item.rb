@@ -16,6 +16,10 @@ require_relative "stem"
 require_relative "em"
 require_relative "strong"
 require_relative "sub"
+require_relative "sup"
+require_relative "tt"
+require_relative "underline"
+require_relative "strike"
 require_relative "formattedref"
 
 Shale.xml_adapter = Shale::Adapter::Nokogiri
