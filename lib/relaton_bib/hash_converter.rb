@@ -1,11 +1,11 @@
 module RelatonBib
   module HashConverter
+    include Factory
     extend self
-    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
 
     # @param args [Hash]
     # @return [Hash]
-    def hash_to_bib(args)
+    def hash_to_bib(args) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       return nil unless args.is_a?(Hash)
 
       ret = Marshal.load(Marshal.dump(symbolize(args))) # deep copy
@@ -40,7 +40,6 @@ module RelatonBib
       doctype_hash_to_bib ret
       ret
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def keyword_hash_to_bib(ret)
       ret[:keyword] = RelatonBib.array(ret[:keyword]).map do |keyword|
@@ -105,7 +104,7 @@ module RelatonBib
       return unless ret[:abstract]
 
       ret[:abstract] = RelatonBib.array(ret[:abstract]).map do |a|
-        a.is_a?(String) ? FormattedString.new(content: a) : a
+        Abstract.new(**a)
       end
     end
 
@@ -151,10 +150,6 @@ module RelatonBib
       end
     end
 
-    def create_docid(**args)
-      DocumentIdentifier.new(**args)
-    end
-
     def version_hash_to_bib(ret)
       return unless ret[:version]
 
@@ -168,7 +163,7 @@ module RelatonBib
 
       ret[:biblionote] = RelatonBib.array(ret[:biblionote])
         .reduce(BiblioNoteCollection.new([])) do |mem, n|
-        mem << if n.is_a?(String) then BiblioNote.new content: n
+        mem <<  if n.is_a?(String) then BiblioNote.new content: n
                 else BiblioNote.new(**n)
                 end
       end
@@ -202,41 +197,45 @@ module RelatonBib
       ret[:contributor] = RelatonBib.array(ret[:contributor])
       ret[:contributor]&.each_with_index do |c, i|
         roles = RelatonBib.array(ret[:contributor][i][:role]).map do |r|
-          if r.is_a? Hash
-            desc = RelatonBib.array(r[:description]).map { |d| d.is_a?(String) ? d : d[:content] }
-            { type: r[:type], description: desc }
-          # elsif r.is_a? Array
-          #   { type: r[0], description: r.fetch(1) }
-          else
-            { type: r }
-          end
+          create_contibutor_role(r)
         end
         ret[:contributor][i][:role] = roles
-        ret[:contributor][i][:entity] = if c[:person]
-                                          person_hash_to_bib(c[:person])
-                                        else
-                                          org_hash_to_bib(c[:organization])
-                                        end
+        entity = person_hash_to_bib(c[:person]) || org_hash_to_bib(c[:organization])
+        ret[:contributor][i][:entity] = entity
         ret[:contributor][i].delete(:person)
         ret[:contributor][i].delete(:organization)
       end
     end
 
-    def org_hash_to_bib(org) # rubocop:disable Metrics/AbcSize
+    def create_contibutor_role(role)
+      if role.is_a? Hash
+        description = RelatonBib.array(role[:description]).map do |d|
+          desc = d.is_a?(String) ? { content: d } : d
+          Contributor::Role::Description.new(**desc)
+        end
+        { type: role[:type], description: description }
+      else { type: role }
+      end
+    end
+
+    def org_hash_to_bib(org) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       return nil if org.nil?
 
       org[:identifier] = RelatonBib.array(org[:identifier])&.map do |a|
         OrgIdentifier.new(a[:type], a[:id])
       end
       org[:subdivision] = RelatonBib.array(org[:subdivision]).map do |sd|
-        LocalizedString.new sd
+        sd[:organization] = OrganizationType.new(**org_hash_to_bib(sd[:organization]))
+        Subdivision.new(**sd)
       end
       org[:contact] = contacts_hash_to_bib(org)
-      org[:logo] = Image.new(**org[:logo][:image]) if org[:logo]
+      org[:logo] = Element::Image.new(**org[:logo][:image]) if org[:logo]
       org
     end
 
     def person_hash_to_bib(person)
+      return if person.nil?
+
       Person.new(
         name: fullname_hash_to_bib(person),
         credential: RelatonBib.array(person[:credential]),
@@ -284,17 +283,13 @@ module RelatonBib
       return [] unless person[:affiliation]
 
       RelatonBib.array(person[:affiliation]).map do |a|
-        a[:description] = RelatonBib.array(a[:description]).map do |d|
-          cnt = if d.is_a?(Hash)
-                  { content: d[:content], language: d[:language],
-                    script: d[:script], format: d[:format] }
-                else { content: d }
-                end
-          FormattedString.new(**cnt)
+        description = RelatonBib.array(a[:description]).map do |d|
+          cnt = d.is_a?(Hash) ? d : { content: d }
+          Affiliation::Description.new(**cnt)
         end
         Affiliation.new(
           organization: Organization.new(**org_hash_to_bib(a[:organization])),
-          description: a[:description], name: localizedstring(a[:name])
+          description: description, name: localizedstring(a[:name])
         )
       end
     end
@@ -331,10 +326,20 @@ module RelatonBib
       return unless ret[:copyright]
 
       ret[:copyright] = RelatonBib.array(ret[:copyright]).map do |c|
-        c[:owner] = RelatonBib.array(c[:owner]).map do |o|
-          org_hash_to_bib(o)
+        owner = owners_hash_to_bib(c[:owner])
+        CopyrightAssociation.new(owner: owner, from: c[:from], to: c[:to], scope: c[:scope])
+      end
+    end
+
+    def owners_hash_to_bib(owners)
+      RelatonBib.array(owners).map do |o|
+        if o[:person]
+          person_hash_to_bib(o[:person])
+        elsif o[:organization]
+          Organization.new(**org_hash_to_bib(o[:organization]))
+        else
+          Organization.new(**org_hash_to_bib(o))
         end
-        c
       end
     end
 
@@ -345,7 +350,7 @@ module RelatonBib
       ret[:relation] = RelatonBib.array(ret[:relation])
       ret[:relation]&.each do |r|
         if r[:description]
-          r[:description] = FormattedString.new(**r[:description])
+          r[:description] = DocumentRelation::Description.new(**r[:description])
         end
         relation_bibitem_hash_to_bib(r)
         relation_locality_hash_to_bib(r)
@@ -520,9 +525,9 @@ module RelatonBib
     # @return [RelatonBib::FormattedRef]
     def formattedref(frf)
       if frf.is_a?(Hash)
-        RelatonBib::FormattedRef.new(**frf)
+        FormattedRef.new(frf[:content])
       else
-        RelatonBib::FormattedRef.new(content: frf)
+        FormattedRef.new(frf)
       end
     end
 

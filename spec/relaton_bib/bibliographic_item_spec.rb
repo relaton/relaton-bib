@@ -50,11 +50,9 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     end
 
     it "has array of titiles" do
-      expect(subject.title).to be_instance_of(
-        RelatonBib::TypedTitleStringCollection,
-      )
-      expect(subject.title(lang: "fr")[0].title.content).to eq(
-        "Information g\u00E9ographique",
+      expect(subject.title).to be_instance_of RelatonBib::TypedTitleStringCollection
+      expect(subject.title(lang: "fr")[0].to_s).to eq(
+        "Information géographique",
       )
     end
 
@@ -63,14 +61,19 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(subject.url(:rss)).to eq "https://www.iso.org/contents/data/"\
                                       "standard/05/37/53798.detail.rss"
     end
+
     it "returns shortref" do
       expect(subject.shortref(subject.docidentifier.first)).to eq "ISOTC211:2014"
     end
 
-    it "returns abstract with en language" do
-      expect(subject.abstract(lang: "en")).to be_instance_of(
-        RelatonBib::FormattedString,
-      )
+    it "returns abstracts with en language" do
+      abstract = subject.abstract("en")
+      expect(abstract).to be_instance_of Array
+      expect(abstract.size).to eq 1
+      expect(abstract[0]).to be_instance_of RelatonBib::Abstract
+      expect(abstract[0].to_s).to eq "<p>ISO 19115-1:2014 defines the schema required for...</p>"
+      expect(abstract[0].language).to eq ["en"]
+      expect(abstract[0].script).to eq ["Latn"]
     end
 
     it "to most recent reference" do
@@ -85,27 +88,20 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(item.all_parts).to be true
       expect(item.relation.last.type).to eq "instanceOf"
       expect(item.title.detect { |t| t.type == "title-part" }).to be_nil
-      expect(item.title.detect { |t| t.type == "main" }.title.content).to eq(
-        "Geographic information",
-      )
+      main = item.title.detect { |t| t.type == "main" }
+      main_str = main.to_s
+      expect(main_str).to eq("Geographic <em>information</em>")
       expect(item.abstract).to be_empty
       id_with_part = item.docidentifier.detect do |d|
         d.type != "Internet-Draft" && d.id =~ /-\d/
       end
       expect(id_with_part).to be_nil
-      expect(item.docidentifier.reject { |d| d.id =~ %r{(all parts)} }.size)
-        .to eq 1
+      expect(item.docidentifier.reject { |d| d.id =~ %r{(all parts)} }.size).to eq 1
       expect(item.docidentifier.detect { |d| d.id =~ /:[12]\d\d\d/ }).to be_nil
-      expect(item.structuredidentifier.detect { |d| !d.partnumber.nil? })
-        .to be_nil
-      expect(item.structuredidentifier.detect { |d| d.docnumber =~ /-\d/ })
-        .to be_nil
-      expect(
-        item.structuredidentifier.detect { |d| d.docnumber !~ %r{(all parts)} },
-      ).to be_nil
-      expect(
-        item.structuredidentifier.detect { |d| d.docnumber =~ /:[12]\d\d\d/ },
-      ).to be_nil
+      expect(item.structuredidentifier.detect { |d| !d.partnumber.nil? }).to be_nil
+      expect(item.structuredidentifier.detect { |d| d.docnumber =~ /-\d/ }).to be_nil
+      expect(item.structuredidentifier.detect { |d| d.docnumber !~ %r{(all parts)} }).to be_nil
+      expect(item.structuredidentifier.detect { |d| d.docnumber =~ /:[12]\d\d\d/ }).to be_nil
     end
 
     context "render XML" do
@@ -151,8 +147,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
       it "add note to xml" do
         xml = subject.to_xml note: [{ text: "Note", type: "note" }]
-        expect(xml).to include "<note format=\"text/plain\" type=\"note\">" \
-                               "Note</note>"
+        expect(xml).to include "<note type=\"note\">Note</note>"
       end
 
       it "render ext schema-verson" do
@@ -171,7 +166,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
     context "converts item to hash" do
       it do
-        hash = subject.to_hash
+        hash = subject.to_h
         file = "spec/examples/hash.yml"
         File.write file, hash.to_yaml unless File.exist? file
         expect(hash).to eq YAML.load_file(file)
@@ -181,7 +176,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       it "with ext schema-version" do
         expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
         expect(subject).to receive(:ext_schema).and_return("v1.0.0").twice
-        hash = subject.to_hash
+        hash = subject.to_h
         expect(hash["ext"]).to eq "schema-version" => "v1.0.0"
       end
     end
@@ -277,7 +272,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         fname = RelatonBib::Forename.new content: "James", initial: "J"
         name = RelatonBib::FullName.new surname: sname, forename: [fname]
         entity = RelatonBib::Person.new name: name
-        contrib = RelatonBib::ContributionInfo.new entity: entity
+        contrib = RelatonBib::Contributor.new entity: entity
         bibitem = RelatonBib::BibliographicItem.new docid: [docid], contributor: [contrib]
         expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
           <reference anchor="ID">
@@ -294,7 +289,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         docid = RelatonBib::DocumentIdentifier.new type: "IETF", id: "ID"
         entity = RelatonBib::Organization.new name: "org"
         role = [{ type: "author", description: ["BibXML author"] }]
-        contrib = RelatonBib::ContributionInfo.new entity: entity, role: role
+        contrib = RelatonBib::Contributor.new entity: entity, role: role
         bibitem = RelatonBib::BibliographicItem.new docid: [docid], contributor: [contrib]
         expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
           <reference anchor="ID">
@@ -323,21 +318,21 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     org = RelatonBib::Organization.new(
       name: "Test Org", abbreviation: "TO", url: "test.org",
     )
-    owner = [RelatonBib::ContributionInfo.new(entity: org)]
+    owner = [RelatonBib::Contributor.new(entity: org)]
     copyright = RelatonBib::CopyrightAssociation.new(owner: owner, from: "2018")
     bibitem = RelatonBib::BibliographicItem.new(
-      formattedref: RelatonBib::FormattedRef.new(content: "ISO123"),
+      formattedref: RelatonBib::FormattedRef.new("ISO123"),
       copyright: [copyright],
     )
     expect(bibitem.to_xml).to include(
-      "<formattedref format=\"text/plain\">ISO123</formattedref>",
+      "<formattedref>ISO123</formattedref>",
     )
   end
 
   it "warn invalid type argument error" do
     expect { RelatonBib::BibliographicItem.new type: "type" }.to output(
       /\[relaton-bib\] WARNING: type `type` is invalid./,
-    ).to_stderr
+    ).to_stderr_from_any_process
   end
 
   context RelatonBib::CopyrightAssociation do
@@ -345,7 +340,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       org = RelatonBib::Organization.new(
         name: "Test Org", abbreviation: "TO", url: "test.org",
       )
-      owner = [RelatonBib::ContributionInfo.new(entity: org)]
+      owner = [RelatonBib::Contributor.new(entity: org)]
       copy = RelatonBib::CopyrightAssociation.new owner: owner, from: "2019"
       expect(copy.owner).to eq owner
     end
@@ -353,7 +348,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
 
   it "initialize with string link" do
     bibitem = RelatonBib::BibliographicItem.new link: ["http://example.com"]
-    expect(bibitem.link[0]).to be_instance_of RelatonBib::TypedUri
+    expect(bibitem.link[0]).to be_instance_of RelatonBib::Source
     expect(bibitem.link[0].content).to be_instance_of Addressable::URI
     expect(bibitem.link[0].content.to_s).to eq "http://example.com"
   end

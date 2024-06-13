@@ -83,8 +83,8 @@ RSpec.describe RelatonBib::BibtexParser do
         }
       BIBTEX
       title = described_class.send :fetch_title, bibtex["mrx05"]
-      expect(title[0].title.content).to eq "Something Great"
-      expect(title[1].title.content).to eq "Sub title"
+      expect(title[0].to_s).to eq "Something Great"
+      expect(title[1].to_s).to eq "Sub title"
     end
 
     it "with double curly braces" do
@@ -94,7 +94,7 @@ RSpec.describe RelatonBib::BibtexParser do
         }
       BIBTEX
       title = described_class.send :fetch_title, bibtex["mrx05"]
-      expect(title[0].title.content).to eq "Something Great"
+      expect(title[0].to_s).to eq "Something Great"
     end
   end
 
@@ -123,7 +123,7 @@ RSpec.describe RelatonBib::BibtexParser do
       expect(note).to be_instance_of RelatonBib::BiblioNoteCollection
       expect(note[0]).to be_instance_of RelatonBib::BiblioNote
       expect(note[0].type).to eq "howpublished"
-      expect(note[0].content).to eq "How Published Note"
+      expect(note[0].to_s).to eq "How Published Note"
     end
 
     it "don't parse howpublished as note" do

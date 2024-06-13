@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "relaton_bib/subdivision"
 require "relaton_bib/contributor"
 
 module RelatonBib
@@ -31,7 +32,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       { "type" => type, "id" => value }
     end
 
@@ -48,7 +49,7 @@ module RelatonBib
   end
 
   # Organization.
-  class Organization < Contributor
+  class OrganizationType < ContributorBase
     # @return [Array<RelatonBib::LocalizedString>]
     attr_reader :name
 
@@ -66,7 +67,7 @@ module RelatonBib
 
     # @param name [String, Hash, Array<String, Hash>]
     # @param abbreviation [RelatoBib::LocalizedString, String]
-    # @param subdivision [Array<RelatoBib::LocalizedString>]
+    # @param subdivision [Array<RelatoBib::Subdivision>]
     # @param url [String]
     # @param identifier [Array<RelatonBib::OrgIdentifier>]
     # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
@@ -83,9 +84,7 @@ module RelatonBib
               end
 
       @abbreviation = localized_string args[:abbreviation]
-      @subdivision  = (args[:subdivision] || []).map do |sd|
-        localized_string sd
-      end
+      @subdivision  = args[:subdivision] || []
       @identifier = args.fetch(:identifier, [])
       @logo = args[:logo]
     end
@@ -94,44 +93,39 @@ module RelatonBib
     # @option opts [Nokogiri::XML::Builder] :builder XML builder
     # @option opts [String] :lang language
     def to_xml(**opts) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength
-      opts[:builder].organization do |builder|
-        nm = name.select { |n| n.language&.include? opts[:lang] }
-        nm = name unless nm.any?
-        nm.each { |n| builder.name { |b| n.to_xml b } }
-        sbdv = subdivision.select { |sd| sd.language&.include? opts[:lang] }
-        sbdv = subdivision unless sbdv.any?
-        sbdv.each { |sd| builder.subdivision { sd.to_xml builder } }
-        builder.abbreviation { |a| abbreviation.to_xml a } if abbreviation
-        builder.uri url if uri
-        identifier.each { |identifier| identifier.to_xml builder }
-        super builder
-        builder.logo { |b| logo.to_xml b } if logo
-      end
+      nm = name.select { |n| n.language&.include? opts[:lang] }
+      nm = name unless nm.any?
+      nm.each { |n| opts[:builder].name { |b| n.to_xml b } }
+      # sbdv = subdivision.select { |sd| sd.language&.include? opts[:lang] }
+      # sbdv = subdivision unless sbdv.any?
+      subdivision.each { |sd| sd.to_xml(**opts) }
+      opts[:builder].abbreviation { |a| abbreviation.to_xml a } if abbreviation
+      opts[:builder].uri url if uri
+      identifier.each { |identifier| identifier.to_xml opts[:builder] }
+      super opts[:builder]
+      opts[:builder].logo { |b| logo.to_xml b } if logo
     end
 
     # @return [Hash]
-    def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
-      hash = { "name" => single_element_array(name) }
-      hash["abbreviation"] = abbreviation.to_hash if abbreviation
-      hash["identifier"] = single_element_array(identifier) if identifier&.any?
-      if subdivision&.any?
-        hash["subdivision"] = single_element_array(subdivision)
-      end
-      hash["logo"] = logo.to_hash if logo
+    def to_h # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+      hash = { "name" => name.map(&:to_h) }
+      hash["abbreviation"] = abbreviation.to_h if abbreviation
+      hash["identifier"] = identifier.map(&:to_h) if identifier&.any?
+      hash["subdivision"] = subdivision.map(&:to_h) if subdivision&.any?
+      hash["logo"] = logo.to_h if logo
       { "organization" => hash.merge(super) }
     end
 
     # @param prefix [String]
     # @param count [Integer]
     # @return [String]
-    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
+    def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
       pref = prefix.sub(/\*$/, "organization")
       out = count > 1 ? "#{pref}::\n" : ""
       name.each { |n| out += n.to_asciibib "#{pref}.name", name.size }
       out += abbreviation.to_asciibib "#{pref}.abbreviation" if abbreviation
       subdivision.each do |sd|
-        out += "#{pref}.subdivision::" if subdivision.size > 1
-        out += sd.to_asciibib "#{pref}.subdivision"
+        out += sd.to_asciibib pref, subdivision.size
       end
       identifier.each { |n| out += n.to_asciibib pref, identifier.size }
       out += super pref
@@ -150,6 +144,19 @@ module RelatonBib
         LocalizedString.new(arg[:content], arg[:language], arg[:script])
       when LocalizedString then arg
       end
+    end
+  end
+
+  class Organization < OrganizationType
+    def to_xml(**opts)
+      opts[:builder].organization do
+        super
+      end
+    end
+
+    def to_asciibib(prefix = "", count = 1)
+      pref = prefix.empty? ? "organization" : "#{prefix}.organization"
+      super pref, count
     end
   end
 end

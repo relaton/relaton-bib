@@ -1,6 +1,6 @@
-<bibdata type="standard" schema-version="v1.2.8">
+<bibdata type="standard" schema-version="v1.3.1">
   <fetched>2024-01-10</fetched>
-  <title format="text/plain" language="fr" script="Latn">Information géographique</title>
+  <title language="fr" script="Latn">Information géographique</title>
   <uri type="src" language="en" script="Latn">https://www.iso.org/standard/53798.html</uri>
   <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
   <uri type="rss">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
@@ -30,7 +30,9 @@
     </role>
     <organization>
       <name>International Organization for Standardization</name>
-      <subdivision>division</subdivision>
+      <subdivision type="division">
+        <name>ISO</name>
+      </subdivision>
       <abbreviation>ISO</abbreviation>
       <uri>www.iso.org</uri>
       <logo>
@@ -145,7 +147,7 @@
   <language>en</language>
   <language>fr</language>
   <script>Latn</script>
-  <abstract format="text/plain" language="fr" script="Latn">L'ISO 19115-1:2014 définit le schéma requis pour...</abstract>
+  <abstract language="fr" script="Latn">L'ISO 19115-1:2014 définit le schéma requis pour...</abstract>
   <status>
     <stage abbreviation="CD">30</stage>
     <substage>substage</substage>
@@ -165,7 +167,7 @@
   </copyright>
   <relation type="updates">
     <bibitem>
-      <formattedref format="text/plain">ISO 19115:2003</formattedref>
+      <formattedref>ISO 19115:2003</formattedref>
     </bibitem>
     <localityStack>
       <locality type="section">
@@ -190,23 +192,23 @@
     </sourceLocalityStack>
   </relation>
   <relation type="obsoletes">
-    <description format="text/plain">supersedes</description>
+    <description language="en" script="Latn" locale="en-US">supersedes</description>
     <bibitem type="standard">
-      <formattedref format="text/plain">ISO 19115:2003/Cor 1:2006</formattedref>
+      <formattedref>ISO 19115:2003/Cor 1:2006</formattedref>
     </bibitem>
   </relation>
   <relation type="partOf">
     <bibitem>
-      <title type="main" format="text/plain">Book title</title>
+      <title type="main">Book title</title>
     </bibitem>
   </relation>
   <series type="Internet-Draft">
-    <title format="text/plain">Internet-Draft</title>
+    <title>Internet-Draft</title>
     <number>draft-ietf-somewg-someprotocol-07</number>
     <run>seriesrun</run>
   </series>
   <series type="main">
-    <title type="original" format="text/plain" language="en" script="Latn">ISO/IEC FDIS 10118-3</title>
+    <title type="original" language="en" script="Latn">ISO/IEC FDIS 10118-3</title>
     <place>Serie's place</place>
     <organization>Serie's organization</organization>
     <abbreviation>ABVR</abbreviation>
@@ -216,21 +218,18 @@
     <partnumber>part5678</partnumber>
   </series>
   <series type="alt">
-    <formattedref format="text/plain" language="en" script="Latn">serieref</formattedref>
-    <title format="text/plain">Formattedref</title>
+    <formattedref>serieref</formattedref>
+    <title>Formattedref</title>
   </series>
   <series type="journal">
-    <title format="text/plain">Journal</title>
+    <title>Journal</title>
     <number>7</number>
   </series>
   <series>
-    <title format="text/plain">
-      <variant language="en" script="Latn">Series</variant>
-      <variant language="fr" script="Latn">Séries</variant>
-    </title>
+    <title language="en" script="Latn">Series</title>
   </series>
   <series>
-    <title format="text/plain">RFC</title>
+    <title>RFC</title>
     <number>4</number>
   </series>
   <medium>

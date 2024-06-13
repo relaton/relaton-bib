@@ -192,7 +192,7 @@ module RelatonBib
     def formattedref(reference)
       return if reference.at "./front/title"
 
-      cont = (reference[:anchor] || reference[:docName] || reference[:number])
+      cont = reference[:anchor] || reference[:docName] || reference[:number]
       if cont
         FormattedRef.new(
           content: cont, language: language(reference), script: "Latn",
@@ -204,10 +204,10 @@ module RelatonBib
     # @return [Array<RelatonBib::FormattedString>]
     def abstracts(ref)
       ref.xpath("./front/abstract").map do |a|
-        c = a.inner_html.gsub(/\s*(<\/?)t(>)\s*/, '\1p\2')
-          .gsub(/[\t\n]/, " ").squeeze " "
-        FormattedString.new(content: c, language: language(ref), script: "Latn",
-                            format: "text/html")
+        c = a.inner_html.gsub(/\s*(<\/?)t(>)\s*/, '\1p\2').gsub(/[\t\n]/, " ").squeeze " "
+        content = Element::BasicBlock.parse c
+        content = Element.parse_text_elements(a) if content.empty?
+        Abstract.new(content: content, language: language(ref), script: "Latn")
       end
     end
 

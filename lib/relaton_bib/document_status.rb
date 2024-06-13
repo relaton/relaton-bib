@@ -32,9 +32,9 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
-      hash = { "stage" => stage.to_hash }
-      hash["substage"] = substage.to_hash if substage
+    def to_h
+      hash = { "stage" => stage.to_h }
+      hash["substage"] = substage.to_h if substage
       hash["iteration"] = iteration if iteration
       hash
     end
@@ -82,7 +82,7 @@ module RelatonBib
       end
 
       # @return [Hash]
-      def to_hash
+      def to_h
         hash = { "value" => value }
         hash["abbreviation"] = abbreviation if abbreviation
         hash

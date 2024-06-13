@@ -22,7 +22,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       hash = { "code" => code }
       hash["text"] = text if text
       hash

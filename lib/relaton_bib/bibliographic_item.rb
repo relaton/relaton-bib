@@ -1,10 +1,19 @@
 # frozen_string_literal: true
 
-require "relaton_bib/typed_uri"
+require "relaton_bib/source"
+require "relaton_bib/localized_string_attrs"
+require "relaton_bib/localized_string"
+require "relaton_bib/forename"
+require "relaton_bib/full_name"
+require "relaton_bib/address"
+require "relaton_bib/contact"
+require "relaton_bib/contributor_base"
+require "relaton_bib/document_type"
+require "relaton_bib/document_identifier_base"
 require "relaton_bib/document_identifier"
+require "relaton_bib/document_identifier_urn"
 require "relaton_bib/copyright_association"
 require "relaton_bib/formatted_string"
-require "relaton_bib/contribution_info"
 require "relaton_bib/bibliographic_date"
 require "relaton_bib/series"
 require "relaton_bib/document_status"
@@ -17,7 +26,6 @@ require "relaton_bib/classification"
 require "relaton_bib/validity"
 require "relaton_bib/document_relation"
 require "relaton_bib/bib_item_locality"
-require "relaton_bib/xml_parser"
 require "relaton_bib/bibtex_parser"
 require "relaton_bib/biblio_note"
 require "relaton_bib/biblio_version"
@@ -33,8 +41,6 @@ require "relaton_bib/edition"
 module RelatonBib
   # Bibliographic item
   class BibliographicItem
-    include RelatonBib
-
     TYPES = %W[article book booklet manual proceedings presentation
                thesis techreport standard unpublished map electronic\sresource
                audiovisual film video broadcast software graphic_work music
@@ -57,7 +63,7 @@ module RelatonBib
     # @!attribute [r] title
     # @return [RelatonBib::TypedTitleStringCollection]
 
-    # @return [Array<RelatonBib::TypedUri>]
+    # @return [Array<RelatonBib::Source>]
     attr_reader :link
 
     # @return [Array<RelatonBib::DocumentIdentifier>]
@@ -66,7 +72,7 @@ module RelatonBib
     # @return [Array<RelatonBib::BibliographicDate>]
     attr_writer :date
 
-    # @return [Array<RelatonBib::ContributionInfo>]
+    # @return [Array<RelatonBib::Contributor>]
     attr_reader :contributor
 
     # @return [Array<RelatonBib::BibliographicItem::Version>]
@@ -83,9 +89,6 @@ module RelatonBib
 
     # @return [RelatonBib::FormattedRef, nil]
     attr_reader :formattedref
-
-    # @!attribute [r] abstract
-    #   @return [Array<RelatonBib::FormattedString>]
 
     # @return [RelatonBib::DocumentStatus, nil]
     attr_reader :status
@@ -108,7 +111,7 @@ module RelatonBib
     # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
     attr_reader :extent
 
-    # @return [Array<Strig>]
+    # @return [Array<String>]
     attr_reader :accesslocation, :license
 
     # @return [Array<Relaton::Classification>]
@@ -168,7 +171,7 @@ module RelatonBib
     # @param size [RelatonBib::BibliographicSize, nil]
     #
     # @param copyright [Array<Hash, RelatonBib::CopyrightAssociation>]
-    # @option copyright [Array<Hash, RelatonBib::ContributionInfo>] :owner
+    # @option copyright [Array<Hash, RelatonBib::Person, RelatonBib::Organization>] :owner
     # @option copyright [String] :from
     # @option copyright [String, nil] :to
     # @option copyright [String, nil] :scope
@@ -179,7 +182,7 @@ module RelatonBib
     # @option date [String, nil] :to
     # @option date [String, nil] :on required if :from is nil
     #
-    # @param contributor [Array<Hash, RelatonBib::ContributionInfo>]
+    # @param contributor [Array<Hash, RelatonBib::Contributor>]
     # @option contributor [RealtonBib::Organization, RelatonBib::Person] :entity
     # @option contributor [String] :type
     # @option contributor [String] :from
@@ -187,12 +190,7 @@ module RelatonBib
     # @option contributor [String] :abbreviation
     # @option contributor [Array<Array<String,Array<String>>>] :role
     #
-    # @param abstract [Array<Hash, RelatonBib::FormattedString>]
-    # @option abstract [String] :content
-    # @option abstract [String] :language
-    # @option abstract [String] :script
-    # @option abstract [String] :format
-    #
+    # @param abstract [Array<RelatonBib::Abstract>]
     # @param relation [Array<Hash>]
     # @option relation [String] :type
     # @option relation [RelatonBib::BibliographicItem,
@@ -202,7 +200,7 @@ module RelatonBib
     # @option relation [Array<RelatonBib::SourceLocality,
     #                   RelatonBib::SourceLocalityStack>] :source_locality
     #
-    # @param link [Array<Hash, RelatonBib::TypedUri>]
+    # @param link [Array<Hash, RelatonBib::Source>]
     # @option link [String] :type
     # @option link [String] :content
     def initialize(**args)
@@ -223,14 +221,12 @@ module RelatonBib
       @contributor = (args[:contributor] || []).map do |c|
         if c.is_a? Hash
           e = c[:entity].is_a?(Hash) ? Organization.new(**c[:entity]) : c[:entity]
-          ContributionInfo.new(entity: e, role: c[:role])
+          Contributor.new(entity: e, role: c[:role])
         else c
         end
       end
 
-      @abstract = (args[:abstract] || []).map do |a|
-        a.is_a?(Hash) ? FormattedString.new(**a) : a
-      end
+      @abstract = args[:abstract] || []
 
       @copyright = args.fetch(:copyright, []).map do |c|
         c.is_a?(Hash) ? CopyrightAssociation.new(**c) : c
@@ -255,8 +251,8 @@ module RelatonBib
       @relation       = DocRelationCollection.new(args[:relation] || [])
       @link           = args.fetch(:link, []).map do |s|
         case s
-        when Hash then TypedUri.new(**s)
-        when String then TypedUri.new(content: s)
+        when Hash then Source.new(**s)
+        when String then Source.new(content: s)
         else s
         end
       end
@@ -324,10 +320,10 @@ module RelatonBib
     end
 
     # @param lang [String] language code Iso639
-    # @return [RelatonBib::FormattedString, Array<RelatonBib::FormattedString>]
-    def abstract(lang: nil)
+    # @return [Array<RelatonBib::Abstract>]
+    def abstract(lang = nil)
       if lang
-        @abstract.detect { |a| a.language&.include? lang }
+        @abstract.select { |a| a.language&.include? lang }
       else
         @abstract
       end
@@ -390,53 +386,47 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash(embedded: false) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    def to_h(embedded: false) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       hash = {}
       hash["schema-version"] = schema unless embedded
       hash["id"] = id if id
-      hash["title"] = title.to_hash if title&.any?
-      hash["link"] = single_element_array(link) if link&.any?
+      hash["title"] = title.to_h if title&.any?
+      hash["link"] = link.map(&:to_h) if link&.any?
       hash["type"] = type if type
-      hash["docid"] = single_element_array(docidentifier) if docidentifier&.any?
+      hash["docid"] = docidentifier.map(&:to_h) if docidentifier&.any?
       hash["docnumber"] = docnumber if docnumber
-      hash["date"] = single_element_array(date) if date&.any?
-      if contributor&.any?
-        hash["contributor"] = single_element_array(contributor)
-      end
-      hash["edition"] = edition.to_hash if edition
-      hash["version"] = version.map &:to_hash if version.any?
+      hash["date"] = date.map(&:to_h) if date&.any?
+      hash["contributor"] = contributor.map(&:to_h) if contributor&.any?
+      hash["edition"] = edition.to_h if edition
+      hash["version"] = version.map &:to_h if version.any?
       hash["revdate"] = revdate if revdate
-      hash["biblionote"] = single_element_array(biblionote) if biblionote&.any?
-      hash["language"] = single_element_array(language) if language&.any?
-      hash["script"] = single_element_array(script) if script&.any?
-      hash["formattedref"] = formattedref.to_hash if formattedref
-      hash["abstract"] = single_element_array(abstract) if abstract&.any?
-      hash["docstatus"] = status.to_hash if status
-      hash["copyright"] = single_element_array(copyright) if copyright&.any?
-      hash["relation"] = single_element_array(relation) if relation&.any?
-      hash["series"] = single_element_array(series) if series&.any?
-      hash["medium"] = medium.to_hash if medium
-      hash["place"] = single_element_array(place) if place&.any?
-      hash["extent"] = single_element_array(extent) if extent&.any?
-      hash["size"] = size.to_hash if size&.any?
-      if accesslocation&.any?
-        hash["accesslocation"] = single_element_array(accesslocation)
-      end
-      if classification&.any?
-        hash["classification"] = single_element_array(classification)
-      end
-      hash["validity"] = validity.to_hash if validity
+      hash["biblionote"] = biblionote.map(&:to_h) if biblionote&.any?
+      hash["language"] = language if language&.any?
+      hash["script"] = script if script&.any?
+      hash["formattedref"] = formattedref.to_s if formattedref
+      hash["abstract"] = abstract.map(&:to_h) if abstract&.any?
+      hash["docstatus"] = status.to_h if status
+      hash["copyright"] = copyright.map(&:to_h) if copyright&.any?
+      hash["relation"] = relation.map(&:to_h) if relation&.any?
+      hash["series"] = series.map(&:to_h) if series&.any?
+      hash["medium"] = medium.to_h if medium
+      hash["place"] = place.map(&:to_h) if place&.any?
+      hash["extent"] = extent.map(&:to_h) if extent&.any?
+      hash["size"] = size.to_h if size&.any?
+      hash["accesslocation"] = accesslocation if accesslocation&.any?
+      hash["classification"] = classification.map(&:to_h) if classification&.any?
+      hash["validity"] = validity.to_h if validity
       hash["fetched"] = fetched.to_s if fetched
-      hash["keyword"] = single_element_array(keyword) if keyword&.any?
-      hash["license"] = single_element_array(license) if license&.any?
-      hash["doctype"] = doctype.to_hash if doctype
+      hash["keyword"] = keyword.map(&:to_h) if keyword&.any?
+      hash["license"] = license if license&.any?
+      hash["doctype"] = doctype.to_h if doctype
       hash["subdoctype"] = subdoctype if subdoctype
       if editorialgroup&.presence?
-        hash["editorialgroup"] = editorialgroup.to_hash
+        hash["editorialgroup"] = editorialgroup.to_h
       end
-      hash["ics"] = single_element_array ics if ics.any?
+      hash["ics"] = ics.map(&:to_h) if ics.any?
       if structuredidentifier&.presence?
-        hash["structuredidentifier"] = structuredidentifier.to_hash
+        hash["structuredidentifier"] = structuredidentifier.to_h
       end
       hash["ext"] = { "schema-version" => ext_schema } if !embedded && respond_to?(:ext_schema) && ext_schema
       hash
@@ -496,17 +486,17 @@ module RelatonBib
       me = deep_clone
       me.disable_id_attribute
       me.relation << DocumentRelation.new(type: "instanceOf", bibitem: self)
+      me.title.delete_title_part!
       me.language.each do |l|
-        me.title.delete_title_part!
         ttl = me.title.select do |t|
-          t.type != "main" && t.title.language&.include?(l)
+          t.type != "main" && t.language&.include?(l)
         end
         next if ttl.empty?
 
-        tm_en = ttl.map { |t| t.title.content }.join " – "
+        tm_en = ttl.map(&:to_s).join " – "
         me.title.detect do |t|
-          t.type == "main" && t.title.language&.include?(l)
-        end&.title&.content = tm_en
+          t.type == "main" && t.language&.include?(l)
+        end&.content = tm_en
       end
       me.abstract = []
       me.docidentifier.each(&:remove_part)
@@ -565,9 +555,7 @@ module RelatonBib
       biblionote&.each { |b| out += b.to_asciibib prefix, biblionote.size }
       out += status.to_asciibib prefix if status
       date.each { |d| out += d.to_asciibib prefix, date.size }
-      abstract.each do |a|
-        out += a.to_asciibib "#{pref}abstract", abstract.size
-      end
+      abstract.each { |a| out += a.to_asciibib pref, abstract.size }
       copyright.each { |c| out += c.to_asciibib prefix, copyright.size }
       link.each { |l| out += l.to_asciibib prefix, link.size }
       out += medium.to_asciibib prefix if medium
@@ -580,7 +568,7 @@ module RelatonBib
       end
       out += validity.to_asciibib prefix if validity
       contributor.each do |c|
-        out += c.to_asciibib "contributor.*", contributor.size
+        out += c.to_asciibib "", contributor.size
       end
       out += relation.to_asciibib prefix if relation
       series.each { |s| out += s.to_asciibib prefix, series.size }
@@ -611,23 +599,14 @@ module RelatonBib
         docidentifier.each { |di| di.to_xml(**opts) }
         builder.docnumber docnumber if docnumber
         date.each { |d| d.to_xml builder, **opts }
-        contributor.each do |c|
-          builder.contributor do
-            c.role.each { |r| r.to_xml(**opts) }
-            c.to_xml(**opts)
-          end
-        end
+        contributor.each { |c| c.to_xml(**opts) }
         edition&.to_xml builder
         version.each { |v| v.to_xml builder }
         biblionote.to_xml(**opts)
-        opts[:note]&.each do |n|
-          builder.note(n[:text], format: "text/plain", type: n[:type])
-        end
+        opts[:note]&.each { |n| builder.note(n[:text], type: n[:type]) }
         language.each { |l| builder.language l }
         script.each { |s| builder.script s }
-        abstr = abstract.select { |ab| ab.language&.include? opts[:lang] }
-        abstr = abstract unless abstr.any?
-        abstr.each { |a| builder.abstract { a.to_xml(builder) } }
+        abstract(opts[:lang]).each { |a| a.to_xml(builder) }
         status&.to_xml builder
         copyright&.each { |c| c.to_xml(**opts) }
         relation.each { |r| r.to_xml builder, **opts }

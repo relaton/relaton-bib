@@ -32,7 +32,7 @@ module RelatonBib
     #
     # @return [Hash] edition as hash.
     #
-    def to_hash
+    def to_h
       hash = { "content" => content }
       hash["number"] = number if number
       hash

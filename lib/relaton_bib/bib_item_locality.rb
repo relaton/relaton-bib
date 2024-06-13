@@ -34,7 +34,7 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       hash = { "type" => type, "reference_from" => reference_from }
       hash["reference_to"] = reference_to if reference_to
       hash
@@ -73,7 +73,8 @@ module RelatonBib
   class Locality < BibItemLocality
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
-      builder.locality { |b| super(b) }
+      super_to_xml = method(:to_xml).super_method
+      builder.locality { |b| super_to_xml.call(b) }
     end
 
     #
@@ -81,7 +82,7 @@ module RelatonBib
     #
     # @return [Hash] locality as hash.
     #
-    def to_hash
+    def to_h
       { "locality" => super }
     end
 
@@ -100,8 +101,6 @@ module RelatonBib
   end
 
   class LocalityStack
-    include RelatonBib
-
     # @return [Array<RelatonBib::Locality>]
     attr_reader :locality
 
@@ -118,8 +117,8 @@ module RelatonBib
     end
 
     # @returnt [Hash]
-    def to_hash
-      { "locality_stack" => single_element_array(locality) }
+    def to_h
+      { "locality_stack" => locality.map(&:to_h) }
     end
 
     #
@@ -163,8 +162,8 @@ module RelatonBib
     end
 
     # @returnt [Hash]
-    def to_hash
-      { "source_locality_stack" => single_element_array(locality) }
+    def to_h
+      { "source_locality_stack" => locality.map(&:to_h) }
     end
   end
 end

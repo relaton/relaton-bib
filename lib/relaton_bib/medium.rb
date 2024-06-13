@@ -43,7 +43,7 @@ module RelatonBib
     #
     # @return [Hash]
     #
-    def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+    def to_h # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
       hash = {}
       hash["content"] = content if content
       hash["genre"] = genre if genre

@@ -2,8 +2,6 @@ module RelatonBib
   # Version
   class BibliographicItem
     class Version
-      include RelatonBib
-
       # @return [String, nil]
       attr_reader :revision_date, :draft
 
@@ -23,7 +21,7 @@ module RelatonBib
       end
 
       # @return [Hash]
-      def to_hash
+      def to_h
         hash = {}
         hash["revision_date"] = revision_date if revision_date
         hash["draft"] = draft if draft

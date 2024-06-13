@@ -15,7 +15,7 @@ describe RelatonBib::Renderer::BibtexBuilder do
   end
 
   it "render article" do
-    bibitem = RelatonBib::XMLParser.from_xml File.read("spec/examples/bibtex_article.xml")
+    bibitem = RelatonBib::Parser::XML.from_xml File.read("spec/examples/bibtex_article.xml")
     expect(bibitem.to_bibtex).to eq <<~"OUTPUT"
       @article{DOC123,
         title = {Miscellaneous},
@@ -30,7 +30,7 @@ describe RelatonBib::Renderer::BibtexBuilder do
   end
 
   it "render book, rpoceedings" do
-    bibitem = RelatonBib::XMLParser.from_xml File.read("spec/examples/bibtex_book.xml")
+    bibitem = RelatonBib::Parser::XML.from_xml File.read("spec/examples/bibtex_book.xml")
     expect(bibitem.to_bibtex).to eq <<~"OUTPUT"
       @book{DOC123,
         title = {Title},
@@ -47,7 +47,7 @@ describe RelatonBib::Renderer::BibtexBuilder do
   end
 
   it "render inbook, incollection" do
-    bibitem = RelatonBib::XMLParser.from_xml File.read("spec/examples/bibtex_inbook.xml")
+    bibitem = RelatonBib::Parser::XML.from_xml File.read("spec/examples/bibtex_inbook.xml")
     expect(bibitem.to_bibtex).to eq <<~"OUTPUT"
       @inbook{DOC123,
         title = {Title},
@@ -67,7 +67,7 @@ describe RelatonBib::Renderer::BibtexBuilder do
   end
 
   it "render inproceedings" do
-    bibitem = RelatonBib::XMLParser.from_xml File.read("spec/examples/bibtex_inproceedings.xml")
+    bibitem = RelatonBib::Parser::XML.from_xml File.read("spec/examples/bibtex_inproceedings.xml")
     expect(bibitem.to_bibtex).to eq <<~"OUTPUT"
       @inproceedings{DOC123,
         title = {Title},
@@ -85,7 +85,7 @@ describe RelatonBib::Renderer::BibtexBuilder do
   end
 
   it "render phdthesis" do
-    bibitem = RelatonBib::XMLParser.from_xml File.read("spec/examples/bibtex_phdthesis.xml")
+    bibitem = RelatonBib::Parser::XML.from_xml File.read("spec/examples/bibtex_phdthesis.xml")
     expect(bibitem.to_bibtex).to eq <<~"OUTPUT"
       @phdthesis{DOC123,
         title = {Title},
@@ -98,7 +98,7 @@ describe RelatonBib::Renderer::BibtexBuilder do
   end
 
   it "render techreport" do
-    bibitem = RelatonBib::XMLParser.from_xml File.read("spec/examples/bibtex_techreport.xml")
+    bibitem = RelatonBib::Parser::XML.from_xml File.read("spec/examples/bibtex_techreport.xml")
     expect(bibitem.to_bibtex).to eq <<~"OUTPUT"
       @techreport{DOC123,
         title = {Title},

@@ -98,7 +98,7 @@ module RelatonBib
         included_in = @bib.relation.detect { |r| r.type == "includedIn" }
         return unless included_in
 
-        @item.booktitle = included_in.bibitem.title.first.title
+        @item.booktitle = included_in.bibitem.title.first.to_s
       end
 
       #
@@ -154,9 +154,9 @@ module RelatonBib
         @bib.series.each do |s|
           case s.type
           when "journal"
-            @item.journal = s.title.title
+            @item.journal = s.title.content
             @item.number = s.number if s.number
-          when nil then @item.series = s.title.title
+          when nil then @item.series = s.title.content
           end
         end
       end
@@ -245,7 +245,7 @@ module RelatonBib
         rel = @bib.relation.detect { |r| r.type == "partOf" }
         if rel
           title_main = rel.bibitem.title.detect { |t| t.type == "main" }
-          @item.booktitle = title_main.title.content
+          @item.booktitle = title_main.content
         end
       end
 

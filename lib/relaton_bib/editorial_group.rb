@@ -2,8 +2,6 @@ require "relaton_bib/technical_committee"
 
 module RelatonBib
   class EditorialGroup
-    include RelatonBib
-
     # @return [Array<RelatonBib::TechnicalCommittee>]
     attr_accessor :technical_committee
 
@@ -20,8 +18,8 @@ module RelatonBib
     end
 
     # @return [Hash]
-    def to_hash
-      single_element_array technical_committee
+    def to_h
+      technical_committee.map(&:to_h)
     end
 
     # @param prefix [String]

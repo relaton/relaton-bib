@@ -28,7 +28,7 @@ module RelatonBib
     #
     # @return [Hash]
     #
-    def to_hash
+    def to_h
       hash = { "type" => @type }
       hash["abbreviation"] = @abbreviation if @abbreviation
       hash

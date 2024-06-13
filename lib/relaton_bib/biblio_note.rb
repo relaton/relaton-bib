@@ -26,33 +26,36 @@ module RelatonBib
     end
   end
 
-  class BiblioNote < FormattedString
+  class BiblioNote
+    include LocalizedStringAttrs
+    include Element::Base
+
     # @return [String, nil]
     attr_reader :type
 
-    # @param content [String]
+    # @param content [String, Array<RelatonBib::Element::Text, RelatonBib::Element::Base>]
     # @param type [String, nil]
-    # @param language [String, nil] language code Iso639
-    # @param script [String, nil] script code Iso15924
-    # @param format [String, nil] the content format
-    def initialize(content:, type: nil, language: nil, script: nil, format: nil)
+    # @param language [Array<String>] language code Iso639
+    # @param script [Array<String>] script code Iso15924
+    # @param locale [String, nil] locale code
+    def initialize(content:, type: nil, language: [], script: [], locale: nil)
       @type = type
-      super content: content, language: language, script: script, format: format
+      super
+      @content = Element::TextElement.parse(content) if content.is_a? String
     end
 
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       xml = builder.note { super }
       xml[:type] = type if type
-      xml
     end
 
     # @return [Hash]
-    def to_hash
+    def to_h
       hash = super
       return hash unless type
 
-      hash = { "content" => hash } if hash.is_a? String
+      # hash = { "content" => hash } if hash.is_a? String
       hash["type"] = type
       hash
     end
@@ -61,11 +64,11 @@ module RelatonBib
     # @param count [Integer] number of notes
     # @return [String]
     def to_asciibib(prefix = "", count = 1)
-      pref = prefix.empty? ? prefix : prefix + "."
-      has_attrs = !(type.nil? || type.empty?)
-      out = count > 1 && has_attrs ? "#{pref}biblionote::\n" : ""
-      out += "#{pref}biblionote.type:: #{type}\n" if type
-      out += super "#{pref}biblionote", 1, has_attrs
+      pref = prefix.empty? ? "biblionote" : "#{prefix}.biblionote"
+      # has_attrs = !(type.nil? || type.empty? || language.empty? || script.empty?)
+      out = count > 1 ? "#{pref}::\n" : ""
+      out += "#{pref}.type:: #{type}\n" if type
+      out += super "#{pref}" # , 1, has_attrs
       out
     end
   end
