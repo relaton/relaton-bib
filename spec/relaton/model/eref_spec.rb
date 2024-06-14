@@ -17,7 +17,7 @@ describe Relaton::Model::Eref do
       expect(eref.type).to eq "inline"
       expect(eref.alt).to eq "alt"
       expect(eref.bibitemid).to eq "ISO712"
-      expect(eref.content).to be_instance_of Relaton::Model::CitationType::Content
+      expect(eref.content).to be_instance_of Relaton::Model::ErefType::Content
       expect(eref.to_xml).to be_equivalent_to xml
     end
   end
@@ -43,7 +43,7 @@ describe Relaton::Model::Eref do
       expect(eref.type).to eq "inline"
       expect(eref.alt).to eq "alt"
       expect(eref.bibitemid).to eq "ISO712"
-      expect(eref.content).to be_instance_of Relaton::Model::CitationType::Content
+      expect(eref.content).to be_instance_of Relaton::Model::ErefType::Content
       expect(eref.to_xml).to be_equivalent_to xml
     end
   end

@@ -1,9 +1,7 @@
 describe Relaton::Model::CitationType do
   let(:dummy_class) do
     Class.new(Shale::Mapper) do
-      prepend Relaton::Model::CitationType
-
-      attribute :content, Relaton::Model::CitationType::Content
+      include Relaton::Model::CitationType
 
       @xml_mapping.instance_eval do
         root "dummy-element"
@@ -24,7 +22,10 @@ describe Relaton::Model::CitationType do
     it "from_xml" do
       item = dummy_class.from_xml xml
       expect(item.bibitemid).to eq "ISO712"
-      expect(item.content).to be_instance_of Relaton::Model::CitationType::Content
+      expect(item.locality).to be_instance_of Array
+      expect(item.locality.size).to eq 1
+      expect(item.locality.first).to be_instance_of Relaton::Bib::Locality
+      expect(item.date).to eq "2001-01"
       expect(item.to_xml).to be_equivalent_to xml
     end
   end
@@ -45,7 +46,10 @@ describe Relaton::Model::CitationType do
     it "from_xml" do
       item = dummy_class.from_xml xml
       expect(item.bibitemid).to eq "ISO712"
-      expect(item.content).to be_instance_of Relaton::Model::CitationType::Content
+      expect(item.locality_stack).to be_instance_of Array
+      expect(item.locality_stack.size).to eq 1
+      expect(item.locality_stack.first).to be_instance_of Relaton::Bib::LocalityStack
+      expect(item.date).to eq "2001-01"
       expect(item.to_xml).to be_equivalent_to xml
     end
   end

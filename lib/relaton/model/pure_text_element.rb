@@ -9,7 +9,7 @@ module Relaton
         value
       end
 
-      def self.of_xml(node) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/MethodLength
+      def self.of_xml(node, **_args) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/MethodLength
         case node.name
         when "text"
           text = node.text.strip
@@ -21,6 +21,8 @@ module Relaton
         when "tt" then new Tt.of_xml(node)
         when "underline" then new Underline.of_xml(node)
         when "strike" then new Strike.of_xml(node)
+        when "smallcap" then new Smallcap.of_xml(node)
+        when "br" then new Br.of_xml(node)
         end
       end
 
@@ -28,7 +30,7 @@ module Relaton
         if @element.is_a? String
           doc.add_text(parent, @element)
         else
-          parent << @element.to_xml
+          @element.add_to_xml parent, doc
         end
       end
 
@@ -55,6 +57,10 @@ module Relaton
           model.content.each do |e|
             e.add_to_xml parent, doc
           end
+        end
+
+        def add_to_xml(parent, doc)
+          @content.each { |e| e.add_to_xml parent, doc }
         end
       end
     end

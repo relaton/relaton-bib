@@ -1,7 +1,7 @@
 module Relaton
   module Model
     class Formattedref < Shale::Mapper
-      include TextElement
+      include TextElement::Mapper
 
       @xml_mapping.instance_eval do
         root "formattedref"

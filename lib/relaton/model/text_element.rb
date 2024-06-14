@@ -1,52 +1,73 @@
 module Relaton
   module Model
-    module TextElement
-      def self.included(base) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-        base.class_eval do # rubocop:disable Metrics/BlockLength
-          attribute :em, Em
-          # attribute :eref, Eref
-          # attribute :strong, Strong
-          # attribute :stem, Stem
-          # attribute :sub, Sub
-          # attribute :sup, Sup
-          # attribute :tt, Tt
-          # attribute :underline, Underline
-          # attribute :keyword, Keyword
-          # attribute :ruby, Ruby
-          # attribute :strike, Strike
-          # attribute :smallcap, Smallcap
-          # attribute :xref, Xref
-          # attribute :br, Br
-          # attribute :hyperlink, Hyperlink
-          # attribute :hr, Hr
-          # attribute :pagebreak, Pagebreak
-          # attribute :bookmark, Bookmark
-          # attribute :image, Image
-          # attribute :index, Index
-          # attribute :index_xref, IndexXref
+    class TextElement
+      def initialize(element)
+        @element = element
+      end
 
-          xml do
-            map_element "em", to: :em
-            # map_element "eref", to: :eref
-            # map_element "strong", to: :strong
-            # map_element "stem", to: :stem
-            # map_element "sub", to: :sub
-            # map_element "sup", to: :sup
-            # map_element "tt", to: :tt
-            # map_element "underline", to: :underline
-            # map_element "keyword", to: :keyword
-            # map_element "ruby", to: :ruby
-            # map_element "strike", to: :strike
-            # map_element "smallcap", to: :smallcap
-            # map_element "xref", to: :xref
-            # map_element "br", to: :br
-            # map_element "hyperlink", to: :hyperlink
-            # map_element "hr", to: :hr
-            # map_element "pagebreak", to: :pagebreak
-            # map_element "bookmark", to: :bookmark
-            # map_element "image", to: :image
-            # map_element "index", to: :index
-            # map_element "index-xref", to: :index_xref
+      def self.cast(value)
+        value
+      end
+
+      def self.of_xml(node) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/MethodLength
+        case node.name
+        when "text"
+          text = node.text.strip
+          text.empty? ? nil : new(text)
+        when "em" then new Em.of_xml(node)
+        when "eref" then new Eref.of_xml(node)
+        when "strong" then new Strong.of_xml(node)
+        when "stem" then new Stem.of_xml(node)
+        when "sub" then new Sub.of_xml(node)
+        when "sup" then new Sup.of_xml(node)
+        when "tt" then new Tt.of_xml(node)
+        when "underline" then new Underline.of_xml(node)
+        when "keyword" then new Keyword.of_xml(node)
+        when "ruby" then new Ruby.of_xml(node)
+        when "strike" then new Strike.of_xml(node)
+        when "smallcap" then new Smallcap.of_xml(node)
+        when "xref" then new Xref.of_xml(node)
+        when "br" then new Br.of_xml(node)
+        when "hyperlink" then new Hyperlink.of_xml(node)
+        when "hr" then new Hr.of_xml(node)
+        when "pagebreak" then new Pagebreak.of_xml(node)
+        when "bookmark" then new Bookmark.of_xml(node)
+        when "image" then new Image.of_xml(node)
+        when "index" then new Index.of_xml(node)
+        when "index-xref" then new IndexXref.of_xml(node)
+        end
+      end
+
+      def add_to_xml(parent, doc)
+        if @element.is_a? String
+          doc.add_text(parent, @element)
+        else
+          parent << @element.to_xml
+        end
+      end
+
+      module Mapper
+        def self.included(base)
+          base.class_eval do
+            attribute :content, TextElement, collection: true
+
+            xml do
+              map_content to: :content, using: { from: :content_from_xml, to: :content_to_xml }
+            end
+          end
+        end
+
+        def content_from_xml(model, node)
+          (node.instance_variable_get(:@node) || node).children.each do |n|
+            next if n.text? && n.text.strip.empty?
+
+            model.content << TextElement.of_xml(n)
+          end
+        end
+
+        def content_to_xml(model, parent, doc)
+          model.content.each do |e|
+            e.add_to_xml parent, doc
           end
         end
       end

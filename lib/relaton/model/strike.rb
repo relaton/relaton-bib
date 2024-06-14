@@ -17,7 +17,7 @@ module Relaton
             when "index-xref" then IndexXref.of_xml n
             else PureTextElement.of_xml n
             end
-          end
+          end.compact
           new elms
         end
 
@@ -26,7 +26,7 @@ module Relaton
         end
       end
 
-      attribute :content, Content, collection: true
+      attribute :content, Content
 
       xml do
         root "strike"
@@ -34,11 +34,11 @@ module Relaton
       end
 
       def content_from_xml(model, node)
-        model.content << Content.of_xml(node.instance_variable_get(:@node) || node)
+        model.content = Content.of_xml(node.instance_variable_get(:@node) || node)
       end
 
       def content_to_xml(model, parent, doc)
-        model.content.each { |e| e.add_to_xml parent, doc }
+        model.content.add_to_xml parent, doc
       end
     end
   end
