@@ -11,19 +11,20 @@ module Relaton
         end
 
         def self.of_xml(node)
-          new node.children
+          elms = node.children.map { |n| PureTextElement.of_xml n }.compact
+          new elms
         end
 
         def to_xml(parent, _doc)
-          @element.each do |element|
-            parent << element
+          @elements.each do |element|
+            element.add_to_xml parent, _doc
           end
         end
       end
 
       def self.included(base) # rubocop:disable Metrics/MethodLength
         base.class_eval do
-          prepend CitationType
+          include CitationType
 
           attribute :normative, Shale::Type::Boolean
           attribute :citeas, Shale::Type::String
@@ -42,8 +43,8 @@ module Relaton
       end
 
       def content_from_xml(model, node)
-        super
-        model.content = Content.of_xml node.instance_variable_get(:@node)
+        super if defined? super
+        model.content = Content.of_xml node.instance_variable_get(:@node) || node
       end
 
       def content_to_xml(model, parent, doc)

@@ -11,21 +11,21 @@ module Relaton
         end
 
         def self.of_xml(node)
-          elms = node.children.each do |n|
+          elms = node.children.map do |n|
             case n.name
             when "stem" then Stem.of_xml n
             else PureTextElement.of_xml n
             end
-          end
+          end.compact
           new elms
         end
 
-        def to_xml(parent, doc)
+        def add_to_xml(parent, doc)
           @elements.map do |e|
             if e.is_a? String
               doc.add_text(parent, e)
             else
-              parent << e.to_xml
+              e.add_to_xml parent, doc
             end
           end
         end
@@ -50,7 +50,11 @@ module Relaton
       # @param [Shale::Adapter::Nokogiri::Document] doc
       #
       def content_to_xml(model, parent, doc)
-        model.content.to_xml parent, doc
+        model.content.add_to_xml parent, doc
+      end
+
+      def add_to_xml(parent, _doc)
+        parent << to_xml
       end
     end
   end

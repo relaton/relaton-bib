@@ -17,6 +17,10 @@ module Relaton
       def content_to_xml(model, parent, doc)
         model.content.to_xml parent
       end
+
+      def add_to_xml(parent, _doc)
+        parent << to_xml
+      end
     end
   end
 end
