@@ -7,7 +7,7 @@ describe Relaton::Model::PureTextElement do
       node = Nokogiri::XML::DocumentFragment.parse content
       element = described_class.of_xml node.children.first
       expect(element).to be_instance_of Relaton::Model::PureTextElement
-      element.add_to_xml(parent, doc)
+      element.add_to_xml(parent)
       expect(parent.to_xml).to be_equivalent_to "<parent>#{content}</parent>"
     end
   end

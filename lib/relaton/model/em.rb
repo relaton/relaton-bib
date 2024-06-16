@@ -10,22 +10,28 @@ module Relaton
           value
         end
 
-        def self.of_xml(node)
+        def self.of_xml(node) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/AbcSize
           elms = node.children.map do |n|
+            shale_node = Shale::Adapter::Nokogiri::Node.new n
             case n.name
-            when "stem" then Stem.of_xml n
+            when "stem" then Stem.of_xml shale_node
+            when "eref" then Eref.of_xml shale_node
+            when "xref" then Xref.of_xml shale_node
+            when "link" then Hyperlink.of_xml shale_node
+            when "index" then Index.of_xml shale_node
+            when "index-xref" then IndexXref.of_xml shale_node
             else PureTextElement.of_xml n
             end
           end.compact
           new elms
         end
 
-        def add_to_xml(parent, doc)
+        def add_to_xml(parent)
           @elements.map do |e|
             if e.is_a? String
-              doc.add_text(parent, e)
+              parent << e
             else
-              e.add_to_xml parent, doc
+              e.add_to_xml parent
             end
           end
         end
@@ -49,12 +55,8 @@ module Relaton
       # @param [Nokogiri::XML::Element] parent
       # @param [Shale::Adapter::Nokogiri::Document] doc
       #
-      def content_to_xml(model, parent, doc)
-        model.content.add_to_xml parent, doc
-      end
-
-      def add_to_xml(parent, _doc)
-        parent << to_xml
+      def content_to_xml(model, parent, _doc)
+        model.content.add_to_xml parent
       end
     end
   end

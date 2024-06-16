@@ -15,10 +15,8 @@ module Relaton
           new elms
         end
 
-        def to_xml(parent, _doc)
-          @elements.each do |element|
-            element.add_to_xml parent, _doc
-          end
+        def add_to_xml(parent)
+          @elements.each { |element| element.add_to_xml parent }
         end
       end
 
@@ -47,8 +45,12 @@ module Relaton
         model.content = Content.of_xml node.instance_variable_get(:@node) || node
       end
 
-      def content_to_xml(model, parent, doc)
-        model.content.to_xml parent, doc
+      def content_to_xml(model, parent, _doc)
+        model.content.add_to_xml parent
+      end
+
+      def add_to_xml(parent)
+        parent << to_xml
       end
     end
   end

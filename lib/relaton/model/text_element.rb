@@ -10,40 +10,37 @@ module Relaton
       end
 
       def self.of_xml(node) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/MethodLength
+        shale_node = Shale::Adapter::Nokogiri::Node.new node
         case node.name
         when "text"
           text = node.text.strip
           text.empty? ? nil : new(text)
-        when "em" then new Em.of_xml(node)
-        when "eref" then new Eref.of_xml(node)
-        when "strong" then new Strong.of_xml(node)
-        when "stem" then new Stem.of_xml(node)
-        when "sub" then new Sub.of_xml(node)
-        when "sup" then new Sup.of_xml(node)
-        when "tt" then new Tt.of_xml(node)
-        when "underline" then new Underline.of_xml(node)
-        when "keyword" then new Keyword.of_xml(node)
-        when "ruby" then new Ruby.of_xml(node)
-        when "strike" then new Strike.of_xml(node)
-        when "smallcap" then new Smallcap.of_xml(node)
-        when "xref" then new Xref.of_xml(node)
-        when "br" then new Br.of_xml(node)
-        when "hyperlink" then new Hyperlink.of_xml(node)
-        when "hr" then new Hr.of_xml(node)
-        when "pagebreak" then new Pagebreak.of_xml(node)
-        when "bookmark" then new Bookmark.of_xml(node)
-        when "image" then new Image.of_xml(node)
-        when "index" then new Index.of_xml(node)
-        when "index-xref" then new IndexXref.of_xml(node)
+        when "em" then new Em.of_xml(shale_node)
+        when "eref" then new Eref.of_xml(shale_node)
+        when "strong" then new Strong.of_xml(shale_node)
+        when "stem" then new Stem.of_xml(shale_node)
+        when "sub" then new Sub.of_xml(shale_node)
+        when "sup" then new Sup.of_xml(shale_node)
+        when "tt" then new Tt.of_xml(shale_node)
+        when "underline" then new Underline.of_xml(shale_node)
+        when "keyword" then new Keyword.of_xml(shale_node)
+        when "ruby" then new Ruby.of_xml(shale_node)
+        when "strike" then new Strike.of_xml(shale_node)
+        when "smallcap" then new Smallcap.of_xml(shale_node)
+        when "xref" then new Xref.of_xml(shale_node)
+        when "br" then new Br.of_xml(shale_node)
+        when "link" then new Hyperlink.of_xml(shale_node)
+        when "hr" then new Hr.of_xml(shale_node)
+        when "pagebreak" then new Pagebreak.of_xml(shale_node)
+        when "bookmark" then new Bookmark.of_xml(shale_node)
+        when "image" then new Image.of_xml(shale_node)
+        when "index" then new Index.of_xml(shale_node)
+        when "index-xref" then new IndexXref.of_xml(shale_node)
         end
       end
 
-      def add_to_xml(parent, doc)
-        if @element.is_a? String
-          doc.add_text(parent, @element)
-        else
-          parent << @element.to_xml
-        end
+      def add_to_xml(parent)
+        parent << (@element.is_a?(String) ? @element : @element.to_xml)
       end
 
       module Mapper
@@ -66,9 +63,7 @@ module Relaton
         end
 
         def content_to_xml(model, parent, doc)
-          model.content.each do |e|
-            e.add_to_xml parent, doc
-          end
+          model.content.each { |e| e.add_to_xml parent, doc }
         end
       end
     end

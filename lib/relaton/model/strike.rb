@@ -12,17 +12,18 @@ module Relaton
 
         def self.of_xml(node)
           elms = node.children.map do |n|
+            shale_node = Shale::Adapter::Nokogiri::Node.new n
             case n.name
-            when "index" then Index.of_xml n
-            when "index-xref" then IndexXref.of_xml n
+            when "index" then Index.of_xml shale_node
+            when "index-xref" then IndexXref.of_xml shale_node
             else PureTextElement.of_xml n
             end
           end.compact
           new elms
         end
 
-        def add_to_xml(parent, doc)
-          @elements.each { |e| e.add_to_xml parent, doc }
+        def add_to_xml(parent)
+          @elements.each { |e| e.add_to_xml parent }
         end
       end
 
@@ -37,8 +38,8 @@ module Relaton
         model.content = Content.of_xml(node.instance_variable_get(:@node) || node)
       end
 
-      def content_to_xml(model, parent, doc)
-        model.content.add_to_xml parent, doc
+      def content_to_xml(model, parent, _doc)
+        model.content.add_to_xml parent
       end
     end
   end
