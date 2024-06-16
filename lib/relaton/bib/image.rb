@@ -2,7 +2,7 @@ module Relaton
   module Bib
     class Image
       # @return [String]
-      attr_reader :id, :src, :mimetype, :filename, :width, :height, :alt, :title, :longdesc
+      attr_accessor :id, :src, :mimetype, :filename, :width, :height, :alt, :title, :longdesc
 
       #
       # Initializes a new Image object.
@@ -18,17 +18,17 @@ module Relaton
       # @option args [String] :title the title of the image
       # @option args [String] :longdesc the long description of the image
       #
-      def initialize(id:, src:, mimetype:, **args)
-        @id = id
-        @src = src
-        @mimetype = mimetype
-        @filename = args[:filename]
-        @width = args[:width]
-        @height = args[:height]
-        @alt = args[:alt]
-        @title = args[:title]
-        @longdesc = args[:longdesc]
-      end
+      # def initialize(id:, src:, mimetype:, **args)
+      #   @id = id
+      #   @src = src
+      #   @mimetype = mimetype
+      #   @filename = args[:filename]
+      #   @width = args[:width]
+      #   @height = args[:height]
+      #   @alt = args[:alt]
+      #   @title = args[:title]
+      #   @longdesc = args[:longdesc]
+      # end
 
       #
       # Converts the image object to XML format.
@@ -37,18 +37,22 @@ module Relaton
       #
       # @return [void]
       #
-      def to_xml(builder) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
-        builder.image do
-          builder.parent[:id] = id
-          builder.parent[:src] = src
-          builder.parent[:mimetype] = mimetype
-          builder.parent[:filename] = filename if filename
-          builder.parent[:width] = width if width
-          builder.parent[:height] = height if height
-          builder.parent[:alt] = alt if alt
-          builder.parent[:title] = title if title
-          builder.parent[:longdesc] = longdesc if longdesc
-        end
+      # def to_xml(builder) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
+      #   builder.image do
+      #     builder.parent[:id] = id
+      #     builder.parent[:src] = src
+      #     builder.parent[:mimetype] = mimetype
+      #     builder.parent[:filename] = filename if filename
+      #     builder.parent[:width] = width if width
+      #     builder.parent[:height] = height if height
+      #     builder.parent[:alt] = alt if alt
+      #     builder.parent[:title] = title if title
+      #     builder.parent[:longdesc] = longdesc if longdesc
+      #   end
+      # end
+
+      def to_xml
+        Model::Image.to_xml(self)
       end
 
       #
@@ -56,16 +60,16 @@ module Relaton
       #
       # @return [Hash] The hash representation of the Image object.
       #
-      def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
-        hash = { "image" => { "id" => id, "src" => src, "mimetype" => mimetype } }
-        hash["image"]["filename"] = filename if filename
-        hash["image"]["width"] = width if width
-        hash["image"]["height"] = height if height
-        hash["image"]["alt"] = alt if alt
-        hash["image"]["title"] = title if title
-        hash["image"]["longdesc"] = longdesc if longdesc
-        hash
-      end
+      # def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
+      #   hash = { "image" => { "id" => id, "src" => src, "mimetype" => mimetype } }
+      #   hash["image"]["filename"] = filename if filename
+      #   hash["image"]["width"] = width if width
+      #   hash["image"]["height"] = height if height
+      #   hash["image"]["alt"] = alt if alt
+      #   hash["image"]["title"] = title if title
+      #   hash["image"]["longdesc"] = longdesc if longdesc
+      #   hash
+      # end
 
       #
       # Converts the image object to AsciiBib format.

@@ -4,6 +4,11 @@ describe Relaton::Model::Em do
       <em>
         Text
         <stem type="MathML">Stem</stem>
+        <eref citeas="ISO 712" type="inline" bibitemid="ISO712">Text</eref>
+        <xref target="ISO 712" type="inline">Text</xref>
+        <link target="ISO 712" type="inline">Text</link>
+        <index><primary>Primary</primary></index>
+        <index-xref also="false"><primary>Primary</primary><target>Target</target></index-xref>
       </em>
     XML
   end

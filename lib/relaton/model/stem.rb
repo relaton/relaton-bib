@@ -14,11 +14,11 @@ module Relaton
         model.content = AnyElement.of_xml node.instance_variable_get(:@node) || node
       end
 
-      def content_to_xml(model, parent, doc)
+      def content_to_xml(model, parent, _doc)
         model.content.to_xml parent
       end
 
-      def add_to_xml(parent, _doc)
+      def add_to_xml(parent)
         parent << to_xml
       end
     end

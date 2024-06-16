@@ -12,21 +12,22 @@ module Relaton
 
         def self.of_xml(node)
           elms = node.children.map do |n|
+            shale_node = Shale::Adapter::Nokogiri::Node.new n
             case n.name
-            when "index" then Index.of_xml n
-            when "index-xref" then IndexXref.of_xml n
+            when "index" then Index.of_xml shale_node
+            when "index-xref" then IndexXref.of_xml shale_node
             else PureTextElement.of_xml n
             end
           end.compact
           new elms
         end
 
-        def to_xml(parent, doc)
+        def to_xml(parent)
           @elements.map do |e|
             if e.is_a? String
-              doc.add_text(parent, e)
+              parent << e
             else
-              e.add_to_xml parent, doc
+              e.add_to_xml parent
             end
           end
         end
@@ -35,7 +36,7 @@ module Relaton
       attribute :content, Content
 
       xml do
-        root "em"
+        root "keyword"
         map_content to: :content, using: { from: :content_from_xml, to: :content_to_xml }
       end
 
@@ -50,8 +51,8 @@ module Relaton
       # @param [Nokogiri::XML::Element] parent
       # @param [Shale::Adapter::Nokogiri::Document] doc
       #
-      def content_to_xml(model, parent, doc)
-        model.content.to_xml parent, doc
+      def content_to_xml(model, parent, _doc)
+        model.content.to_xml parent
       end
     end
   end

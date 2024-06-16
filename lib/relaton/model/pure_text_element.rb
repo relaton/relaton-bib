@@ -10,28 +10,25 @@ module Relaton
       end
 
       def self.of_xml(node, **_args) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/MethodLength
+        shale_node = Shale::Adapter::Nokogiri::Node.new node
         case node.name
         when "text"
           text = node.text.strip
           text.empty? ? nil : new(text)
-        when "em" then new Em.of_xml(node)
-        when "strong" then new Strong.of_xml(node)
-        when "sub" then new Sub.of_xml(node)
-        when "sup" then new Sup.of_xml(node)
-        when "tt" then new Tt.of_xml(node)
-        when "underline" then new Underline.of_xml(node)
-        when "strike" then new Strike.of_xml(node)
-        when "smallcap" then new Smallcap.of_xml(node)
-        when "br" then new Br.of_xml(node)
+        when "em" then new Em.of_xml(shale_node)
+        when "strong" then new Strong.of_xml(shale_node)
+        when "sub" then new Sub.of_xml(shale_node)
+        when "sup" then new Sup.of_xml(shale_node)
+        when "tt" then new Tt.of_xml(shale_node)
+        when "underline" then new Underline.of_xml(shale_node)
+        when "strike" then new Strike.of_xml(shale_node)
+        when "smallcap" then new Smallcap.of_xml(shale_node)
+        when "br" then new Br.of_xml(shale_node)
         end
       end
 
-      def add_to_xml(parent, doc)
-        if @element.is_a? String
-          doc.add_text(parent, @element)
-        else
-          @element.add_to_xml parent, doc
-        end
+      def add_to_xml(parent)
+        parent << (@element.is_a?(String) ? @element : @element.to_xml)
       end
 
       module Mapper
@@ -53,14 +50,12 @@ module Relaton
           end
         end
 
-        def content_to_xml(model, parent, doc)
-          model.content.each do |e|
-            e.add_to_xml parent, doc
-          end
+        def content_to_xml(model, parent, _doc)
+          model.content.each { |e| e.add_to_xml parent }
         end
 
-        def add_to_xml(parent, doc)
-          @content.each { |e| e.add_to_xml parent, doc }
+        def add_to_xml(parent)
+          parent << to_xml
         end
       end
     end
