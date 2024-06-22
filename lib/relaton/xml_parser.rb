@@ -301,20 +301,20 @@ module Relaton
       end
 
       # @param item [Nokogiri::XML::Element]
-      # @return [Relaton::Bib::TypedTitleStringCollection]
+      # @return [Relaton::Bib::TitleStringCollection]
       def fetch_titles(item)
         ttl = item.xpath("./title").map { |t| ttitle t }
-        TypedTitleStringCollection.new ttl
+        TitleStringCollection.new ttl
       end
 
       # @param title [Nokogiri::XML::Element]
-      # @return [Relaton::Bib::TypedTitleString]
+      # @return [Relaton::Bib::Title]
       def ttitle(title)
         return unless title
 
         content = variants(title)
         content = title.text unless content.any?
-        TypedTitleString.new(
+        Title.new(
           type: title[:type], content: content, language: title[:language],
           script: title[:script], format: title[:format]
         )
@@ -655,12 +655,12 @@ module Relaton
       end
 
       # @param item [Nokogiri::XML::Element]
-      # @return [Relaton::Bib::FormattedRef, nil]
+      # @return [Relaton::Bib::Formattedref, nil]
       def fref(item)
         ident = item&.at("./formattedref")
         return unless ident
 
-        FormattedRef.new(
+        Formattedref.new(
           content: ident.children.to_s, format: ident[:format],
           language: ident[:language], script: ident[:script]
         )

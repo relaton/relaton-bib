@@ -63,23 +63,23 @@ item = Relaton::Bib::Item.from_hash(hash)
 [source,ruby]
 ----
 item.title
-=> #<Relaton::Bib::TypedTitleStringCollection:0x00007fea821ec6b0
+=> #<Relaton::Bib::TitleStringCollection:0x00007fea821ec6b0
  @array=
-  [#<Relaton::Bib::TypedTitleString:0x00007fea821ecb60
+  [#<Relaton::Bib::Title:0x00007fea821ecb60
     @title=#<Relaton::Bib::FormattedString:0x00007fea821eca70 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
     @type="title-main">,
-   #<Relaton::Bib::TypedTitleString:0x00007fea821ec8b8
+   #<Relaton::Bib::Title:0x00007fea821ec8b8
     @title=#<Relaton::Bib::FormattedString:0x00007fea821ec818 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
     @type="main">,
-   #<Relaton::Bib::TypedTitleString:0x00007fea821ec610
+   #<Relaton::Bib::Title:0x00007fea821ec610
     @title=
      #<Relaton::Bib::FormattedString:0x00007fea821ec570 @content="Information géographique", @format="text/plain", @language=["fr"], @script=["Latn"]>,
     @type=nil>]>
 
 item.title lang: "fr"
-=> #<Relaton::Bib::TypedTitleStringCollection:0x00007fea8222d908
+=> #<Relaton::Bib::TitleStringCollection:0x00007fea8222d908
  @array=
-  [#<Relaton::Bib::TypedTitleString:0x00007fea821ec610
+  [#<Relaton::Bib::Title:0x00007fea821ec610
     @title=#<Relaton::Bib::FormattedString:0x00007fea821ec570 @content="Information géographique", @format="text/plain", @language=["fr"], @script=["Latn"]>,
     @type=nil>]>
 ----

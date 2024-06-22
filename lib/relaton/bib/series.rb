@@ -11,10 +11,10 @@ module Relaton
       # @return [String, nil] allowed values: "main" or "alt"
       attr_reader :type
 
-      # @return [Relaton::Bib::FormattedRef, nil]
+      # @return [Relaton::Bib::Formattedref, nil]
       attr_reader :formattedref
 
-      # @return [Relaton::Bib::TypedTitleString] title
+      # @return [Relaton::Bib::Title] title
       attr_reader :title
 
       # @return [String, nil]
@@ -26,8 +26,8 @@ module Relaton
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 
       # @param type [String, nil]
-      # @param formattedref [Relaton::Bib::FormattedRef, nil]
-      # @param title [Relaton::Bib::TypedTitleString] title
+      # @param formattedref [Relaton::Bib::Formattedref, nil]
+      # @param title [Relaton::Bib::Title] title
       # @param place [String, nil]
       # @param orgaization [String, nil]
       # @param abbreviation [Relaton::Bib::LocalizedString, nil]
@@ -37,7 +37,7 @@ module Relaton
       # @param partnumber [String, nil]
       # @param run [String, nil]
       def initialize(**args)
-        unless args[:title].is_a?(Relaton::Bib::TypedTitleString)
+        unless args[:title].is_a?(Relaton::Bib::Title)
           raise ArgumentError, "argument `title` should present in series"
         end
 

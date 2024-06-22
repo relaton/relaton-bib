@@ -7,7 +7,7 @@ describe Relaton::Bib::Series do
 
   # it "raises invalid type atgument error" do
   #   expect do
-  #     title = Relaton::Bib::TypedTitleString.new(content: "title")
+  #     title = Relaton::Bib::Title.new(content: "title")
   #     described_class.new title: title, type: "type"
   #   end.to output(/Series type is invalid: type/).to_stderr
   # end

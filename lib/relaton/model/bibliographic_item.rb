@@ -32,6 +32,10 @@ require_relative "hr"
 require_relative "pagebreak"
 require_relative "bookmark"
 require_relative "image"
+require_relative "localized_string_attrs"
+require_relative "localized_market_up_string"
+require_relative "typed_title_string"
+require_relative "title"
 require_relative "formattedref"
 
 Shale.xml_adapter = Shale::Adapter::Nokogiri

@@ -16,8 +16,9 @@ require_relative "series"
 require_relative "document_status"
 require_relative "organization"
 require_relative "document_relation_collection"
-require_relative "typed_title_string"
-require_relative "formatted_ref"
+require_relative "title"
+require_relative "title_collection"
+require_relative "formattedref"
 require_relative "medium"
 require_relative "classification"
 require_relative "validity"
@@ -59,7 +60,7 @@ module Relaton
       # @return [Relaton::Bib::Edition, nil] edition
       attr_reader :edition
 
-      # @return [Relaton::Bib::TypedTitleStringCollection]
+      # @return [Relaton::Bib::TitleStringCollection]
       attr_reader :title
 
       # @return [Array<Relaton::Bib::Bsource>]
@@ -86,8 +87,8 @@ module Relaton
       # @return [Array<String>] script Iso15924 code
       attr_reader :script
 
-      # @return [Relaton::Bib::FormattedRef, nil]
-      attr_reader :formattedref
+      # @return [Relaton::Bib::Formattedref, nil]
+      attr_accessor :formattedref
 
       # @return [Array<Relaton::Bib::FormattedString>]
       attr_writer :abstract
@@ -144,8 +145,8 @@ module Relaton
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       # @param id [String, nil]
-      # @param title [Relaton::Bib::TypedTitleStringCollection]
-      # @param formattedref [Relaton::Bib::FormattedRef, nil]
+      # @param title [Relaton::Bib::TitleStringCollection]
+      # @param formattedref [Relaton::Bib::Formattedref, nil]
       # @param type [String, nil]
       # @param docid [Array<Relaton::Bib::DocumentIdentifier>]
       # @param docnumber [String, nil]

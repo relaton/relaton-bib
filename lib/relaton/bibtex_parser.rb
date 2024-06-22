@@ -68,12 +68,12 @@ module Relaton
       end
 
       # @param bibtex [BibTeX::Entry]
-      # @return [Relaton::Bib::TypedTitleStringCollection]
+      # @return [Relaton::Bib::TitleStringCollection]
       def fetch_title(bibtex)
         title = []
         title << { type: "main", content: bibtex.convert(:latex).title.to_s } if bibtex["title"]
         title << { type: "main", content: bibtex.convert(:latex).subtitle.to_s } if bibtex["subtitle"]
-        TypedTitleStringCollection.new title
+        TitleStringCollection.new title
       end
 
       # @param bibtex [BibTeX::Entry]
@@ -163,8 +163,8 @@ module Relaton
       def fetch_relation(bibtex)
         return [] unless bibtex["booktitle"]
 
-        ttl = TypedTitleString.new(type: "main", content: bibtex.booktitle.to_s)
-        title = TypedTitleStringCollection.new [ttl]
+        ttl = Title.new(type: "main", content: bibtex.booktitle.to_s)
+        title = TitleStringCollection.new [ttl]
         [{ type: "partOf", bibitem: Item.new(title: title) }]
       end
 
@@ -193,13 +193,13 @@ module Relaton
         if bibtex["journal"]
           series << Series.new(
             type: "journal",
-            title: TypedTitleString.new(content: bibtex.journal.to_s),
+            title: Title.new(content: bibtex.journal.to_s),
             number: bibtex["number"]&.to_s,
           )
         end
 
         if bibtex["series"]
-          title = TypedTitleString.new content: bibtex.series.to_s
+          title = Title.new content: bibtex.series.to_s
           series << Series.new(title: title)
         end
         series

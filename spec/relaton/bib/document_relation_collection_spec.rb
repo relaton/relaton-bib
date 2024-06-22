@@ -6,7 +6,7 @@ describe Relaton::Bib::DocRelationCollection do
           Relaton::Bib::DocumentRelation.new(
             type: "replace",
             bibitem: Relaton::Bib::Item.new(
-              formattedref: Relaton::Bib::FormattedRef.new(content: "realtion1"),
+              formattedref: Relaton::Bib::Formattedref.new(content: "realtion1"),
             ),
           ),
           Relaton::Bib::DocumentRelation.new(
