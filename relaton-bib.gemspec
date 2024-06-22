@@ -27,5 +27,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "bibtex-ruby"
   spec.add_dependency "htmlentities"
   spec.add_dependency "iso639"
-  spec.add_dependency "nokogiri", "~> 1.15.0"
+  spec.add_dependency "nokogiri", "~> 1.16"
 end
