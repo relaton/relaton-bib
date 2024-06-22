@@ -6,8 +6,8 @@ describe Relaton::Bib::Item do
   before(:each) { Relaton::Bib.instance_variable_set :@configuration, nil }
 
   subject do
-    title = Relaton::Bib::TypedTitleStringCollection.new
-    title << Relaton::Bib::TypedTitleString.new(content: "Geographic information")
+    title = Relaton::Bib::TitleStringCollection.new
+    title << Relaton::Bib::Title.new(content: "Geographic information")
     docid = Relaton::Bib::DocumentIdentifier.new type: "ISO", id: "211"
     uri = Relaton::Bib::Bsource.new content: "https://www.iso.org/standard/53798.html"
     abstract = Relaton::Bib::FormattedString.new content: "This is abstract.", language: "en"
@@ -58,7 +58,7 @@ describe Relaton::Bib::Item do
     end
 
     it "has array of titiles" do
-      expect(subject.title).to be_instance_of Relaton::Bib::TypedTitleStringCollection
+      expect(subject.title).to be_instance_of Relaton::Bib::TitleStringCollection
     end
 
     it "has urls" do
@@ -319,7 +319,7 @@ describe Relaton::Bib::Item do
     owner = [Relaton::Bib::ContributionInfo.new(entity: org)]
     copyright = Relaton::Bib::CopyrightAssociation.new(owner: owner, from: "2018")
     bibitem = Relaton::Bib::Item.new(
-      formattedref: Relaton::Bib::FormattedRef.new(content: "ISO123"),
+      formattedref: Relaton::Bib::Formattedref.new(content: "ISO123"),
       copyright: [copyright],
     )
     expect(bibitem.to_xml).to include(

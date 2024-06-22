@@ -188,13 +188,13 @@ module Relaton
     end
 
     # @param reference [Nokogiri::XML::Element]
-    # @return [Relaton::Bib::FormattedRef, nil]
+    # @return [Relaton::Bib::Formattedref, nil]
     def formattedref(reference)
       return if reference.at "./front/title"
 
       cont = reference[:anchor] || reference[:docName] || reference[:number]
       if cont
-        FormattedRef.new(
+        Formattedref.new(
           content: cont, language: language(reference), script: "Latn",
         )
       end
@@ -399,7 +399,7 @@ module Relaton
       reference.xpath("./seriesInfo", "./front/seriesInfo").map do |si|
         next if SERIESINFONAMES.include?(si[:name]) || si[:stream] || si[:status]
 
-        t = TypedTitleString.new(
+        t = Title.new(
           content: si[:name], language: language(reference), script: "Latn",
         )
         Series.new(title: t, number: si[:value], type: "main")

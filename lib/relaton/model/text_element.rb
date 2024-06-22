@@ -43,6 +43,16 @@ module Relaton
         parent << (@element.is_a?(String) ? @element : @element.to_xml)
       end
 
+      # @param xml [String] XML content
+      # @return [Array<Relaton::Model::TextElement>]
+      def self.from_xml(xml)
+        Nokogiri::XML::DocumentFragment.parse(xml).children.map do |node|
+          next if node.text? && node.text.strip.empty?
+
+          of_xml node
+        end.compact
+      end
+
       module Mapper
         def self.included(base)
           base.class_eval do
@@ -62,8 +72,8 @@ module Relaton
           end
         end
 
-        def content_to_xml(model, parent, doc)
-          model.content.each { |e| e.add_to_xml parent, doc }
+        def content_to_xml(model, parent, _doc)
+          model.content.each { |e| e.add_to_xml parent }
         end
       end
     end

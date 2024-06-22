@@ -81,10 +81,10 @@ module Relaton
       return unless ret[:title]
 
       ret[:title] = Relaton.array(ret[:title])
-        .reduce(TypedTitleStringCollection.new) do |m, t|
-        if t.is_a?(Hash) then m << TypedTitleString.new(**t)
+        .reduce(TitleStringCollection.new) do |m, t|
+        if t.is_a?(Hash) then m << Title.new(**t)
         else
-          m + TypedTitleString.from_string(t)
+          m + Title.from_string(t)
         end
       end
     end
@@ -420,9 +420,9 @@ module Relaton
     end
 
     # @param title [Hash]
-    # @return [Relaton::Bib::TypedTitleString]
+    # @return [Relaton::Bib::Title]
     def typed_title_strig(title)
-      TypedTitleString.new(**title)
+      Title.new(**title)
     end
 
     # @param ret [Hash]
@@ -517,12 +517,12 @@ module Relaton
     end
 
     # @param frf [Hash, String]
-    # @return [Relaton::Bib::FormattedRef]
+    # @return [Relaton::Bib::Formattedref]
     def formattedref(frf)
       if frf.is_a?(Hash)
-        Relaton::Bib::FormattedRef.new(**frf)
+        Relaton::Bib::Formattedref.new(**frf)
       else
-        Relaton::Bib::FormattedRef.new(content: frf)
+        Relaton::Bib::Formattedref.new(content: frf)
       end
     end
 

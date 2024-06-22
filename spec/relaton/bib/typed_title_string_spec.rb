@@ -1,4 +1,4 @@
-describe Relaton::Bib::TypedTitleString do
+describe Relaton::Bib::Title do
   # it "raises invalid type argument error" do
   #   expect do
   #     described_class.new type: "type", content: "title"
@@ -16,7 +16,7 @@ describe Relaton::Bib::TypedTitleString do
     end
 
     it "create instance without exeption" do
-      expect(subject).to be_instance_of Relaton::Bib::TypedTitleString
+      expect(subject).to be_instance_of Relaton::Bib::Title
     end
 
     it "create instance with title as hash" do
