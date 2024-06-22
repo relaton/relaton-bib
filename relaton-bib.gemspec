@@ -1,15 +1,15 @@
 lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "relaton_bib/version"
+require "relaton/bib/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "relaton-bib"
-  spec.version       = RelatonBib::VERSION
+  spec.version       = Relaton::Bib::VERSION
   spec.authors       = ["Ribose Inc."]
   spec.email         = ["open.source@ribose.com"]
 
-  spec.summary       = "RelatonBib: Ruby XMLDOC impementation."
-  spec.description   = "RelatonBib: Ruby XMLDOC impementation."
+  spec.summary       = "Relaton::Bib: Ruby XMLDOC impementation."
+  spec.description   = "Relaton::Bib: Ruby XMLDOC impementation."
   spec.homepage      = "https://github.com/relaton/relaton-bib"
   spec.license       = "BSD-2-Clause"
 
@@ -27,5 +27,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "bibtex-ruby"
   spec.add_dependency "htmlentities"
   spec.add_dependency "iso639"
-  spec.add_dependency "nokogiri", "~> 1.15.0"
+  spec.add_dependency "nokogiri", "~> 1.16.0"
+  spec.add_dependency "shale", "~> 1.1.0"
 end
