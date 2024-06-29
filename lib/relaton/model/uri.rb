@@ -2,7 +2,7 @@ require_relative "typed_uri"
 
 module Relaton
   module Model
-    class Bsource < Shale::Mapper
+    class Uri < Shale::Mapper
       model Bib::Bsource
 
       include TypedUri

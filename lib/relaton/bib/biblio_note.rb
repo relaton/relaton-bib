@@ -27,36 +27,46 @@ module Relaton
       end
     end
 
-    class BiblioNote < FormattedString
+    class BiblioNote # < FormattedString
       # @return [String, nil]
-      attr_reader :type
+      attr_accessor :type, :language, :script, :locale
 
-      # @param content [String]
+      # @return [Relaton::Model::LocalizedMarkedUpString]
+      attr_reader :content
+
+      # @param content [String, Relaton::Model::LocalizedStringCollection, nil]
       # @param type [String, nil]
       # @param language [String, nil] language code Iso639
       # @param script [String, nil] script code Iso15924
-      # @param format [String, nil] the content format
-      def initialize(content:, type: nil, language: nil, script: nil, format: nil)
-        @type = type
-        super content: content, language: language, script: script, format: format
+      # @param locale [String, nil] the content format
+      def initialize(**args)
+        self.content = args[:content]
+        @type = args[:type]
+        @language = args[:language]
+        @script = args[:script]
+        @locale = args[:locale]
+      end
+
+      def content=(content)
+        @content = content.is_a?(String) ? Relaton::Model::LocalizedString.from_xml(content) : content
       end
 
       # @param builder [Nokogiri::XML::Builder]
-      def to_xml(builder)
-        xml = builder.note { super }
-        xml[:type] = type if type
-        xml
-      end
+      # def to_xml(builder)
+      #   xml = builder.note { super }
+      #   xml[:type] = type if type
+      #   xml
+      # end
 
       # @return [Hash]
-      def to_hash
-        hash = super
-        return hash unless type
+      # def to_hash
+      #   hash = super
+      #   return hash unless type
 
-        hash = { "content" => hash } if hash.is_a? String
-        hash["type"] = type
-        hash
-      end
+      #   hash = { "content" => hash } if hash.is_a? String
+      #   hash["type"] = type
+      #   hash
+      # end
 
       # @param prefix [String]
       # @param count [Integer] number of notes

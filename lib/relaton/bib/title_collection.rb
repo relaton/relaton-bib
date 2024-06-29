@@ -3,14 +3,22 @@ module Relaton
     class TitleCollection
       extend Forwardable
 
-      def_delegators :@array, :[], :first, :last, :empty?, :any?, :size,
+      # @return [Array<Relaton::Bib::Title>]
+      attr_accessor :titles
+
+      def_delegators :@titles, :[], :first, :last, :empty?, :any?, :size,
                      :each, :detect, :map, :reduce, :length
 
       # @param title [Array<Relaton::Bib::Title, Hash>]
-      def initialize(title = [])
-        @array = (title || []).map do |t|
-          t.is_a?(Hash) ? Title.new(**t) : t
-        end
+      def initialize
+        @titles = []
+      #   @titles = (title || []).map do |t|
+      #     t.is_a?(Hash) ? Title.new(**t) : t
+      #   end
+      end
+
+      def self.cast(value)
+        value
       end
 
       # @param lang [String, nil] language code Iso639
@@ -34,7 +42,7 @@ module Relaton
       # @param init [Array, Hash]
       # @return [Relaton::Bib::TitleCollection]
       # def reduce(init)
-      #   self.class.new @array.reduce(init) { |m, t| yield m, t }
+      #   self.class.new @titles.reduce(init) { |m, t| yield m, t }
       # end
 
       # @param title [Relaton::Bib::Title]
@@ -50,21 +58,18 @@ module Relaton
         TitleCollection.new titles + tcoll.titles
       end
 
-      def titles
-        @array
-      end
-
       # @param opts [Hash]
       # @option opts [Nokogiri::XML::Builder] XML builder
       # @option opts [String, Symbol] :lang language
       def to_xml(**opts)
         tl = select_lang(opts[:lang])
         tl = titles unless tl.any?
-        tl.each { |t| opts[:builder].title { t.to_xml opts[:builder] } }
+        # tl.each { |t| opts[:builder].title { t.to_xml opts[:builder] } }
+        tl.map { |t| t.to_xml }.join
       end
 
       def to_hash
-        @array.map(&:to_hash)
+        @titles.map(&:to_hash)
       end
 
       #
@@ -84,7 +89,9 @@ module Relaton
       # @param lang [String]
       # @return [Array<Relaton::Bib::Title]
       def select_lang(lang)
-        titles.select { |t| t.title.language&.include? lang }
+        return [] unless lang
+
+        titles.select { |t| t.language&.include? lang }
       end
     end
   end

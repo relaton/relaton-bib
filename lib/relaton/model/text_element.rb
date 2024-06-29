@@ -40,7 +40,7 @@ module Relaton
       end
 
       def add_to_xml(parent)
-        parent << (@element.is_a?(String) ? @element : @element.to_xml)
+        parent << to_xml
       end
 
       # @param xml [String] XML content
@@ -51,6 +51,10 @@ module Relaton
 
           of_xml node
         end.compact
+      end
+
+      def to_xml
+        @element.is_a?(String) ? @element : @element.to_xml
       end
 
       module Mapper

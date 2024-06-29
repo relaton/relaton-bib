@@ -5,7 +5,7 @@ describe Relaton::Model::Title do
         <title type="main" language="en" script="Latn" locale="en-US"><em>Main</em> Title</title>
       XML
       title = described_class.from_xml xml
-      expect(title.content).to be_instance_of Relaton::Model::LocalizedMarketUpString::Content
+      expect(title.content).to be_instance_of Relaton::Model::LocalizedMarkedUpString::Content
       expect(title.type).to eq "main"
       expect(title.language).to eq "en"
       expect(title.script).to eq "Latn"
@@ -22,7 +22,7 @@ describe Relaton::Model::Title do
         </title>
       XML
       title = described_class.from_xml xml
-      expect(title.content).to be_instance_of Relaton::Model::LocalizedMarketUpString::Variants
+      expect(title.content).to be_instance_of Relaton::Model::LocalizedMarkedUpString::Variants
       expect(described_class.to_xml(title)).to be_equivalent_to xml
     end
   end

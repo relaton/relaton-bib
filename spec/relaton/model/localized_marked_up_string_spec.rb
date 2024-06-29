@@ -1,7 +1,7 @@
-describe Relaton::Model::LocalizedMarketUpString do
+describe Relaton::Model::LocalizedMarkedUpString do
   let(:fake_class) do
     Class.new(Shale::Mapper) do
-      include Relaton::Model::LocalizedMarketUpString
+      include Relaton::Model::LocalizedMarkedUpString
 
       @xml_mapping.instance_eval do
         root "item"
@@ -15,7 +15,7 @@ describe Relaton::Model::LocalizedMarketUpString do
         <item language="en" script="Latn" locale="US"><strong>Strong</strong>Text</item>
       XML
       item = fake_class.from_xml xml
-      expect(item.content).to be_instance_of Relaton::Model::LocalizedMarketUpString::Content
+      expect(item.content).to be_instance_of Relaton::Model::LocalizedMarkedUpString::Content
       expect(item.language).to eq "en"
       expect(item.script).to eq "Latn"
       expect(item.locale).to eq "US"
@@ -31,7 +31,7 @@ describe Relaton::Model::LocalizedMarketUpString do
         </item>
       XML
       item = fake_class.from_xml xml
-      expect(item.content).to be_instance_of Relaton::Model::LocalizedMarketUpString::Variants
+      expect(item.content).to be_instance_of Relaton::Model::LocalizedMarkedUpString::Variants
       expect(item.to_xml).to be_equivalent_to xml
     end
   end

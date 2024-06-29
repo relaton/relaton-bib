@@ -1,15 +1,15 @@
 module Relaton
   module Bib
     # Document identifier.
-    class DocumentIdentifier
-      # @return [String]
-      attr_reader :id
+    class Docidentifier
+      # @return [Relaton::Model::LocalizedMarkedUpString::Content]
+      attr_accessor :content
 
       # @return [String, nil]
-      attr_reader :type, :scope, :language, :script
+      attr_accessor :type, :scope, :language, :script, :locale
 
       # @param type [Boolean, nil]
-      attr_reader :primary
+      attr_accessor :primary
 
       # @param id [String]
       # @param type [String, nil]
@@ -17,12 +17,21 @@ module Relaton
       # @param primary [Bolean, nil]
       # @param language [String, nil]
       def initialize(**args)
-        @id       = args[:id]
+        self.id   = args[:id]
         @type     = args[:type]
         @scope    = args[:scope]
         @primary  = args[:primary]
         @language = args[:language]
         @script   = args[:script]
+        @locale   = args[:locale]
+      end
+
+      def id
+        content.to_s
+      end
+
+      def id=(val)
+        @content = Model::LocalizedMarkedUpString.from_xml val
       end
 
       # in docid manipulations, assume ISO as the default: id-part:year
@@ -57,29 +66,29 @@ module Relaton
       # @param opts [Hash]
       # @option opts [Nokogiri::XML::Builder] :builder XML builder
       # @option opts [String] :lang language
-      def to_xml(**opts) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-        lid = if type == "URN" && opts[:lang]
-                id.sub %r{(?<=:)(?:\w{2},)*?(#{opts[:lang]})(?:,\w{2})*}, '\1'
-              else id
-              end
-        element = opts[:builder].docidentifier { |b| b.parent.inner_html = lid }
-        element[:type] = type if type
-        element[:scope] = scope if scope
-        element[:primary] = primary if primary
-        element[:language] = language if language
-        element[:script] = script if script
-      end
+      # def to_xml(**opts) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      #   lid = if type == "URN" && opts[:lang]
+      #           id.sub %r{(?<=:)(?:\w{2},)*?(#{opts[:lang]})(?:,\w{2})*}, '\1'
+      #         else id
+      #         end
+      #   element = opts[:builder].docidentifier { |b| b.parent.inner_html = lid }
+      #   element[:type] = type if type
+      #   element[:scope] = scope if scope
+      #   element[:primary] = primary if primary
+      #   element[:language] = language if language
+      #   element[:script] = script if script
+      # end
 
       # @return [Hash]
-      def to_hash # rubocop:disable Metrics/AbcSize
-        hash = { "id" => id }
-        hash["type"] = type if type
-        hash["scope"] = scope if scope
-        hash["primary"] = primary if primary
-        hash["language"] = language if language
-        hash["script"] = script if script
-        hash
-      end
+      # def to_hash # rubocop:disable Metrics/AbcSize
+      #   hash = { "id" => id }
+      #   hash["type"] = type if type
+      #   hash["scope"] = scope if scope
+      #   hash["primary"] = primary if primary
+      #   hash["language"] = language if language
+      #   hash["script"] = script if script
+      #   hash
+      # end
 
       # @param prefix [String]
       # @param count [Integer] number of docids

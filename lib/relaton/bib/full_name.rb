@@ -8,34 +8,44 @@ module Relaton
       attr_accessor :forename
 
       # @return [Array<Relaton::Bib::LocalizedString>]
-      attr_accessor :initials, :addition, :prefix
+      attr_accessor :initials, :addition, :prefix, :formatted_initials
 
       # @return [Relaton::Bib::LocalizedString, nil]
       attr_accessor :surname, :abbreviation, :completename
 
+      # @return [Array<Relaton::Bib::BiblioNote>]
+      attr_accessor :note
+
+      # @return [Array<Relaton::Bib::FullName>]
+      attr_accessor :variant
+
       #
       # Initialize FullName instance
       #
-      # @param surname [Relaton::Bib::LocalizedString, nil] surname or completename should be present
       # @param abbreviation [Relaton::Bib::LocalizedString, nil] abbreviation
-      # @param forename [Array<Relaton::Bib::Forename>] forename
-      # @param initials [Relaton::Bib::LocalizedString, String, nil] string of initials
-      # @param addition [Array<Relaton::Bib::LocalizedString>] array of additions
       # @param prefix [Array<Relaton::Bib::LocalizedString>] array of prefixes
+      # @param forename [Array<Relaton::Bib::Forename>] forename
+      # @param formatted_initials [Relaton::Bib::LocalizedString, String, nil] string of initials
+      # @param surname [Relaton::Bib::LocalizedString, nil] surname or completename should be present
+      # @param addition [Array<Relaton::Bib::LocalizedString>] array of additions
       # @param completename [Relaton::Bib::LocalizedString, nil] completename or surname should be present
+      # @param note [Array<Relaton::Bib::BiblioNote>] array of notes
+      # @param variant [Arra<Relaton::Bib::FullName>]
       #
       def initialize(**args) # rubocop:disable Metrics/AbcSize
-        unless args[:surname] || args[:completename]
-          raise ArgumentError, "Should be given :surname or :completename"
-        end
+        # unless args[:surname] || args[:completename]
+        #   raise ArgumentError, "Should be given :surname or :completename"
+        # end
 
-        @surname      = args[:surname]
         @abbreviation = args[:abbreviation]
-        @forename     = args.fetch :forename, []
-        @initials     = args[:initials].is_a?(String) ? LocalizedString.new(args[:initials]) : args[:initials]
-        @addition     = args.fetch :addition, []
         @prefix       = args.fetch :prefix, []
+        @forename     = args.fetch :forename, []
+        @formatted_initials = args[:formatted_initials]
+        @surname      = args[:surname]
+        @addition     = args.fetch :addition, []
         @completename = args[:completename]
+        @note        = args.fetch :note, []
+        @variant     = args.fetch :variant, []
       end
 
       # @param opts [Hash]

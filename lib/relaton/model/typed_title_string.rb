@@ -3,7 +3,7 @@ module Relaton
     module TypedTitleString
       def self.included(base)
         base.class_eval do
-          include Relaton::Model::LocalizedMarketUpString
+          include Relaton::Model::LocalizedMarkedUpString
 
           attribute :type, Shale::Type::String
 

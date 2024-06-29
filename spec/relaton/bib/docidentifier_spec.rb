@@ -1,4 +1,4 @@
-describe Relaton::Bib::DocumentIdentifier do
+describe Relaton::Bib::Docidentifier do
   context "ISO" do
     subject do
       described_class.new(id: "1111-2:2014", type: "ISO")

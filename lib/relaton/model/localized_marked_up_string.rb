@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    module LocalizedMarketUpString
+    module LocalizedMarkedUpString
       class Variants
         def initialize(elements = [])
           @elements = elements
@@ -43,6 +43,10 @@ module Relaton
         def add_to_xml(parent)
           @elements.map { |e| e.add_to_xml parent }
         end
+
+        def to_s
+          @elements.map(&:to_xml).join
+        end
       end
 
       def self.included(base)
@@ -65,8 +69,12 @@ module Relaton
         model.content.add_to_xml parent
       end
 
+      def self.from_xml(xml)
+        Content.of_xml Nokogiri::XML::DocumentFragment.parse(xml)
+      end
+
       class Variant < Shale::Mapper
-        include Relaton::Model::LocalizedMarketUpString
+        include Relaton::Model::LocalizedMarkedUpString
 
         @xml_mapping.instance_eval do
           root "variant"

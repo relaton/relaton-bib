@@ -35,12 +35,12 @@ module Relaton
       private
 
       # @param bibtex [BibTeX::Entry]
-      # @return [Array<Relaton::Bib::DocumentIdentifier>]
+      # @return [Array<Relaton::Bib::Docidentifier>]
       def fetch_docid(bibtex) # rubocop:disable Metrics/AbcSize
         docid = []
-        docid << DocumentIdentifier.new(id: bibtex.isbn.to_s, type: "isbn") if bibtex["isbn"]
-        docid << DocumentIdentifier.new(id: bibtex.lccn.to_s, type: "lccn") if bibtex["lccn"]
-        docid << DocumentIdentifier.new(id: bibtex.issn.to_s, type: "issn") if bibtex["issn"]
+        docid << Docidentifier.new(id: bibtex.isbn.to_s, type: "isbn") if bibtex["isbn"]
+        docid << Docidentifier.new(id: bibtex.lccn.to_s, type: "lccn") if bibtex["lccn"]
+        docid << Docidentifier.new(id: bibtex.issn.to_s, type: "issn") if bibtex["issn"]
         docid
       end
 
@@ -68,12 +68,12 @@ module Relaton
       end
 
       # @param bibtex [BibTeX::Entry]
-      # @return [Relaton::Bib::TitleStringCollection]
+      # @return [Relaton::Bib::TitleCollection]
       def fetch_title(bibtex)
         title = []
         title << { type: "main", content: bibtex.convert(:latex).title.to_s } if bibtex["title"]
         title << { type: "main", content: bibtex.convert(:latex).subtitle.to_s } if bibtex["subtitle"]
-        TitleStringCollection.new title
+        TitleCollection.new title
       end
 
       # @param bibtex [BibTeX::Entry]
@@ -164,7 +164,7 @@ module Relaton
         return [] unless bibtex["booktitle"]
 
         ttl = Title.new(type: "main", content: bibtex.booktitle.to_s)
-        title = TitleStringCollection.new [ttl]
+        title = TitleCollection.new [ttl]
         [{ type: "partOf", bibitem: Item.new(title: title) }]
       end
 

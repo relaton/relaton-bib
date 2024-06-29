@@ -6,9 +6,9 @@ describe Relaton::Bib::Item do
   before(:each) { Relaton::Bib.instance_variable_set :@configuration, nil }
 
   subject do
-    title = Relaton::Bib::TitleStringCollection.new
+    title = Relaton::Bib::TitleCollection.new
     title << Relaton::Bib::Title.new(content: "Geographic information")
-    docid = Relaton::Bib::DocumentIdentifier.new type: "ISO", id: "211"
+    docid = Relaton::Bib::Docidentifier.new type: "ISO", id: "211"
     uri = Relaton::Bib::Bsource.new content: "https://www.iso.org/standard/53798.html"
     abstract = Relaton::Bib::FormattedString.new content: "This is abstract.", language: "en"
     described_class.new(
@@ -29,7 +29,7 @@ describe Relaton::Bib::Item do
 
     it do
       expect(subject).to be_instance_of Relaton::Bib::Item
-      expect(subject.docidentifier.first).to be_instance_of Relaton::Bib::DocumentIdentifier
+      expect(subject.docidentifier.first).to be_instance_of Relaton::Bib::Docidentifier
       expect(subject.docidentifier.first.id).to eq "211"
       expect(subject.docidentifier.first.type).to eq "ISO"
     end
@@ -42,7 +42,7 @@ describe Relaton::Bib::Item do
       end
 
       it "with argument" do
-        docid = Relaton::Bib::DocumentIdentifier.new type: "ISO", id: "ISO 123 (E)"
+        docid = Relaton::Bib::Docidentifier.new type: "ISO", id: "ISO 123 (E)"
         expect(subject.makeid(docid, false)).to eq "ISO123E"
       end
     end
@@ -58,7 +58,7 @@ describe Relaton::Bib::Item do
     end
 
     it "has array of titiles" do
-      expect(subject.title).to be_instance_of Relaton::Bib::TitleStringCollection
+      expect(subject.title).to be_instance_of Relaton::Bib::TitleCollection
     end
 
     it "has urls" do
@@ -253,7 +253,7 @@ describe Relaton::Bib::Item do
       end
 
       it "render keywords" do
-        docid = Relaton::Bib::DocumentIdentifier.new type: "IETF", id: "ID"
+        docid = Relaton::Bib::Docidentifier.new type: "IETF", id: "ID"
         bibitem = Relaton::Bib::Item.new keyword: ["kw"], docid: [docid]
         expect(bibitem.to_bibxml(include_keywords: true)).to be_equivalent_to <<~XML
           <reference anchor="ID">
@@ -265,7 +265,7 @@ describe Relaton::Bib::Item do
       end
 
       it "render person's forename" do
-        docid = Relaton::Bib::DocumentIdentifier.new type: "IETF", id: "ID"
+        docid = Relaton::Bib::Docidentifier.new type: "IETF", id: "ID"
         sname = Relaton::Bib::LocalizedString.new "Cook"
         fname = Relaton::Bib::Forename.new content: "James", initial: "J"
         name = Relaton::Bib::FullName.new surname: sname, forename: [fname]
@@ -284,7 +284,7 @@ describe Relaton::Bib::Item do
       end
 
       it "render organization as author name" do
-        docid = Relaton::Bib::DocumentIdentifier.new type: "IETF", id: "ID"
+        docid = Relaton::Bib::Docidentifier.new type: "IETF", id: "ID"
         entity = Relaton::Bib::Organization.new name: "org"
         role = [{ type: "author", description: ["BibXML author"] }]
         contrib = Relaton::Bib::ContributionInfo.new entity: entity, role: role
