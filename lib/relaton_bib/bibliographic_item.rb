@@ -207,7 +207,7 @@ module RelatonBib
     # @option link [String] :content
     def initialize(**args)
       if args[:type] && !TYPES.include?(args[:type])
-        Util.warn %{WARNING: type `#{args[:type]}` is invalid.}
+        Util.warn %{Type `#{args[:type]}` is invalid.}
       end
 
       @title = if args[:title].is_a?(TypedTitleStringCollection)

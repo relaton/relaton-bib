@@ -1,3 +1,4 @@
+require "relaton/logger"
 require "forwardable"
 require "yaml"
 require "htmlentities"
