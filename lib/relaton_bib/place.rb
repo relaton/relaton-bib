@@ -1,5 +1,6 @@
 module RelatonBib
   class Place
+
     # @return [String, nil]
     attr_reader :name, :city
 
@@ -76,24 +77,85 @@ module RelatonBib
     end
 
     class RegionType
+      STATES = {
+        "AK" =>	"Alaska",
+        "AL" =>	"Alabama",
+        "AR" =>	"Arkansas",
+        "AZ" =>	"Arizona",
+        "CA" =>	"California",
+        "CO" =>	"Colorado",
+        "CT" =>	"Connecticut",
+        "DC" =>	"District Of Columbia",
+        "DE" =>	"Delaware",
+        "FL" =>	"Florida",
+        "GA" =>	"Georgia",
+        "GU" =>	"Guam",
+        "HI" =>	"Hawaii",
+        "IA" =>	"Iowa",
+        "ID" =>	"Idaho",
+        "IL" =>	"Illinois",
+        "IN" =>	"Indiana",
+        "KS" =>	"Kansas",
+        "KY" =>	"Kentucky",
+        "LA" =>	"Louisiana",
+        "MA" =>	"Massachusetts",
+        "MD" =>	"Maryland",
+        "ME" =>	"Maine",
+        "MI" =>	"Michigan",
+        "MN" =>	"Minnesota",
+        "MO" =>	"Missouri",
+        "MS" =>	"Mississippi",
+        "MT" =>	"Montana",
+        "NC" =>	"North Carolina",
+        "ND" =>	"North Dakota",
+        "NE" =>	"Nebraska",
+        "NH" =>	"New Hampshire",
+        "NJ" =>	"New Jersey",
+        "NM" =>	"New Mexico",
+        "NV" =>	"Nevada",
+        "NY" =>	"New York",
+        "OH" =>	"Ohio",
+        "OK" =>	"Oklahoma",
+        "OR" =>	"Oregon",
+        "PA" =>	"Pennsylvania",
+        "PR" =>	"Puerto Rico",
+        "RI" =>	"Rhode Island",
+        "SC" =>	"South Carolina",
+        "SD" =>	"South Dakota",
+        "TN" =>	"Tennessee",
+        "TX" =>	"Texas",
+        "UT" =>	"Utah",
+        "VA" =>	"Virginia",
+        "VI" =>	"Virgin Islands",
+        "VT" =>	"Vermont",
+        "WA" =>	"Washington",
+        "WI" =>	"Wisconsin",
+        "WV" =>	"West Virginia",
+        "WY" =>	"Wyoming",
+      }.freeze
+
       # @return [Strign] name of region
       attr_reader :name
 
       # @return [Strign, nil] ISO code of region
       attr_reader :iso
 
-      # @return [Boolean, nil] <description>
+      # @return [Boolean, nil]
       attr_reader :recommended
 
       #
-      # Initialize region type.
+      # Initialize region type. Name or valid US state ISO code should be provided.
       #
-      # @param [String] name name of region
+      # @param [String, nil] name name of region
       # @param [String, nil] iso ISO code of region
       # @param [Boolean, nil] recommended recommended region
       #
-      def initialize(name:, iso: nil, recommended: nil)
-        @name = name
+      def initialize(name: nil, iso: nil, recommended: nil)
+        unless name || STATES.key?(iso&.upcase)
+          raise ArgumentError, "`name` or valid US state ISO code should be provided"
+        end
+
+        @name = name || STATES[iso&.upcase]
         @iso  = iso
         @recommended = recommended
       end
