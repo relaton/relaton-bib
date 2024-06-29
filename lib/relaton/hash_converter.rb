@@ -81,7 +81,7 @@ module Relaton
       return unless ret[:title]
 
       ret[:title] = Relaton.array(ret[:title])
-        .reduce(TitleStringCollection.new) do |m, t|
+        .reduce(TitleCollection.new) do |m, t|
         if t.is_a?(Hash) then m << Title.new(**t)
         else
           m + Title.from_string(t)
@@ -152,7 +152,7 @@ module Relaton
     end
 
     def create_docid(**args)
-      DocumentIdentifier.new(**args)
+      Docidentifier.new(**args)
     end
 
     def version_hash_to_bib(ret)

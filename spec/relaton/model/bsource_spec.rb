@@ -1,4 +1,4 @@
-describe Relaton::Model::Bsource do
+describe Relaton::Model::Uri do
   it "parse XML" do
     xml = <<~XML
       <uri type="src" language="en" locale="EN-us" script="Latn">http://example.com</uri>
@@ -8,7 +8,8 @@ describe Relaton::Model::Bsource do
     expect(doc.language).to eq "en"
     expect(doc.locale).to eq "EN-us"
     expect(doc.script).to eq "Latn"
-    expect(doc.content).to eq "http://example.com"
+    expect(doc.content).to be_instance_of Addressable::URI
+    expect(doc.content.to_s).to eq "http://example.com"
   end
 
   it "to XML" do
@@ -18,7 +19,7 @@ describe Relaton::Model::Bsource do
     bsource.locale = "EN-us"
     bsource.script = "Latn"
     bsource.content = "http://example.com"
-    expect(Relaton::Model::Bsource.to_xml(bsource)).to be_equivalent_to <<~XML
+    expect(Relaton::Model::Uri.to_xml(bsource)).to be_equivalent_to <<~XML
       <uri type="src" language="en" locale="EN-us" script="Latn">http://example.com</uri>
     XML
   end

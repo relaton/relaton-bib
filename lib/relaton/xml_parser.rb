@@ -286,21 +286,21 @@ module Relaton
       end
 
       # @param item [Nokogiri::XML::Element]
-      # @return [Array<Relaton::Bib::DocumentIdentifier>]
+      # @return [Array<Relaton::Bib::Docidentifier>]
       def fetch_docid(item)
         item.xpath("./docidentifier").map do |id|
           did = id.to_h.transform_keys(&:to_sym)
           did[:id] = id.text
           did[:primary] = id[:primary] == "true" ? true : nil
-          DocumentIdentifier.new(**did)
+          Docidentifier.new(**did)
         end
       end
 
       # @param item [Nokogiri::XML::Element]
-      # @return [Relaton::Bib::TitleStringCollection]
+      # @return [Relaton::Bib::TitleCollection]
       def fetch_titles(item)
         ttl = item.xpath("./title").map { |t| ttitle t }
-        TitleStringCollection.new ttl
+        TitleCollection.new ttl
       end
 
       # @param title [Nokogiri::XML::Element]

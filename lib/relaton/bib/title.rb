@@ -6,16 +6,21 @@ module Relaton
       # @return [String]
       attr_accessor :type, :language, :script, :locale
 
-      # @param type [Relaton::Model::LocalizedMarketUpString::Content, Relaton::Model::LocalizedMarketUpString::Variants]
-      attr_accessor :content
+      # @param type [Relaton::Model::LocalizedMarkedUpString::Content]
+      attr_reader :content
 
       # @param type [String]
-      # @param title [Relaton::Bib::FormattedString, Hash]
       # @param content [String]
       # @param language [String]
       # @param script [String]
-      # @param format [String]
-      # def initialize(**args) # rubocop:disable Metrics/MethodLength
+      # @param locale [String]
+      def initialize(**args) # rubocop:disable Metrics/MethodLength
+        @type = args[:type]
+        self.content = args[:content]
+        @language = args[:language]
+        @script = args[:script]
+        @locale = args[:locale]
+
       #   unless args[:title] || args[:content]
       #     raise ArgumentError, %{Keyword "title" or "content" should be passed.}
       #   end
@@ -29,7 +34,11 @@ module Relaton
       #     fsargs = args.select { |k, _v| ARGS.include? k }
       #     @title = FormattedString.new(**fsargs)
       #   end
-      # end
+      end
+
+      def content=(content)
+        @content = content.is_a?(String) ? Model::LocalizedMarkedUpString.from_xml(content) : content
+      end
 
       #
       # Create TitleCollection from string
@@ -77,10 +86,11 @@ module Relaton
       end
 
       # @param builder [Nokogiri::XML::Builder]
-      # def to_xml(builder)
+      def to_xml
       #   builder.parent[:type] = type if type
       #   title.to_xml builder
-      # end
+        Model::Title.to_xml self
+      end
 
       # @return [Hash]
       # def to_hash

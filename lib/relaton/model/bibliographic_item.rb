@@ -9,8 +9,7 @@ require_relative "locality_stack"
 require_relative "citation_type"
 require_relative "eref_type"
 require_relative "eref"
-require_relative "bsource"
-require_relative "bdate"
+require_relative "uri"
 require_relative "text_element"
 require_relative "pure_text_element"
 require_relative "stem"
@@ -33,10 +32,19 @@ require_relative "pagebreak"
 require_relative "bookmark"
 require_relative "image"
 require_relative "localized_string_attrs"
-require_relative "localized_market_up_string"
+require_relative "localized_string"
+require_relative "localized_marked_up_string"
 require_relative "typed_title_string"
 require_relative "title"
 require_relative "formattedref"
+require_relative "docidentifier"
+require_relative "biblionote"
+require_relative "full_name_type"
+require_relative "fullname"
+require_relative "person"
+require_relative "contribution_info"
+require_relative "role"
+require_relative "contributor"
 
 Shale.xml_adapter = Shale::Adapter::Nokogiri
 
@@ -49,14 +57,32 @@ module Relaton
           attribute :schema_version, Shale::Type::String
           attribute :fetched, Shale::Type::Date
           attribute :formattedref, Formattedref
+          attribute :title, Bib::TitleCollection
+          attribute :source, Uri, collection: true
+          attribute :docidentifier, DocIdentifier, collection: true
+          attribute :docnumber, Shale::Type::String
+          attribute :date, Date, collection: true
 
           xml do
             map_attribute "type", to: :type
             map_attribute "schema-version", to: :schema_version
             map_attribute "fetched", to: :fetched
             map_element "formattedref", to: :formattedref
+            map_element "title", to: :title, using: { from: :title_from_xml, to: :title_to_xml }
+            map_element "uri", to: :source
+            map_element "docidentifier", to: :docidentifier
+            map_element "docnumber", to: :docnumber
+            map_element "date", to: :date
           end
         end
+      end
+
+      def title_from_xml(model, node)
+        model.title << Title.of_xml(node)
+      end
+
+      def title_to_xml(model, parent, _doc)
+        parent << model.title.to_xml
       end
     end
   end

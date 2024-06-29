@@ -7,23 +7,25 @@ module Relaton
       attr_accessor :type, :language, :script, :locale
 
       # @return [Addressable::URI]
-      attr_accessor :content
+      attr_reader :content
 
       # @param content [String] URL
       # @param type [String, nil] src/obp/rss
       # @param language [String, nil] language code Iso639 (optional) (default: nil)
       # @param script [String, nil] script code Iso15924 (optional) (default: nil)
-      # def initialize(content:, type: nil, language: nil, script: nil)
-      #   @type     = type
-      #   @language = language
-      #   @script   = script
-      #   @content  = Addressable::URI.parse content if content
-      # end
+      # @param locale [String, nil] locale code (optional) (default: nil)
+      def initialize(**args)
+        self.content = args[:content]
+        @type     = args[:type]
+        @language = args[:language]
+        @script   = args[:script]
+        @locale   = args[:locale]
+      end
 
       # @param url [String]
-      # def content=(url)
-      #   @content = Addressable::URI.parse url
-      # end
+      def content=(url)
+        @content = Addressable::URI.parse url
+      end
 
       # @param builder [Nokogiri::XML::Builder]
       # def to_xml(builder)

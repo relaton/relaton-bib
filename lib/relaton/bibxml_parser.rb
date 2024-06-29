@@ -82,7 +82,7 @@ module Relaton
     # @param reference [Nokogiri::XML::Element]
     # @param ver [String, nil] Internet Draft version
     #
-    # @return [Array<Relaton::Bib::DocumentIdentifier>]
+    # @return [Array<Relaton::Bib::Docidentifier>]
     #
     def docids(reference, ver) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/AbcSize
       ret = []
@@ -91,7 +91,7 @@ module Relaton
       if si
         id = si[:value]
         id.sub!(/(?<=-)\d{2}$/, ver) if ver
-        ret << DocumentIdentifier.new(type: "Internet-Draft", id: id, primary: true)
+        ret << Docidentifier.new(type: "Internet-Draft", id: id, primary: true)
       else
         id = reference[:anchor] || reference[:docName] || reference[:number]
         ret << create_docid(id, ver) if id
@@ -106,7 +106,7 @@ module Relaton
                     reference[atr]
                   end
           type = pubid_type id
-          ret << DocumentIdentifier.new(id: atrid, type: type, scope: atr)
+          ret << Docidentifier.new(id: atrid, type: type, scope: atr)
         end
       end
 
@@ -115,7 +115,7 @@ module Relaton
 
         id = si[:value]
         # id.sub!(/(?<=-)\d{2}$/, ver) if ver && si[:name] == "Internet-Draft"
-        DocumentIdentifier.new(id: id, type: si[:name])
+        Docidentifier.new(id: id, type: si[:name])
       end.compact
     end
 
@@ -132,7 +132,7 @@ module Relaton
         pid = pref ? "#{pref} #{num}" : id
         type = pubid_type id
       end
-      DocumentIdentifier.new(type: type, id: pid, primary: true)
+      Docidentifier.new(type: type, id: pid, primary: true)
     end
 
     def id_to_pref_num(id)

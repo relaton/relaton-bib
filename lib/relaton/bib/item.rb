@@ -7,7 +7,7 @@ require_relative "localized_string"
 require_relative "forename"
 require_relative "full_name"
 require_relative "bsource"
-require_relative "document_identifier"
+require_relative "docidentifier"
 require_relative "copyright_association"
 require_relative "formatted_string"
 require_relative "contribution_info"
@@ -60,14 +60,14 @@ module Relaton
       # @return [Relaton::Bib::Edition, nil] edition
       attr_reader :edition
 
-      # @return [Relaton::Bib::TitleStringCollection]
-      attr_reader :title
+      # @return [Relaton::Bib::TitleCollection]
+      attr_accessor :title
 
       # @return [Array<Relaton::Bib::Bsource>]
-      attr_reader :uri
+      attr_accessor :source
 
-      # @return [Array<Relaton::Bib::DocumentIdentifier>]
-      attr_reader :docidentifier
+      # @return [Array<Relaton::Bib::Docidentifier>]
+      attr_accessor :docidentifier
 
       # @return [Array<Relaton::Bib::Bdate>]
       attr_writer :date
@@ -141,14 +141,11 @@ module Relaton
       # @return [Relaton::Bib::BibliographicSize, nil]
       attr_reader :size
 
-      # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-
       # @param id [String, nil]
-      # @param title [Relaton::Bib::TitleStringCollection]
+      # @param title [Relaton::Bib::TitleCollection]
       # @param formattedref [Relaton::Bib::Formattedref, nil]
       # @param type [String, nil]
-      # @param docid [Array<Relaton::Bib::DocumentIdentifier>]
+      # @param docid [Array<Relaton::Bib::Docidentifier>]
       # @param docnumber [String, nil]
       # @param language [Arra<String>]
       # @param script [Array<String>]
@@ -203,8 +200,16 @@ module Relaton
       # @option relation [Array<Relaton::Bib::SourceLocality,
       #                   Relaton::Bib::SourceLocalityStack>] :source_locality
       #
-      # @param uri [Array<Relaton::Bib::Bsource>]
-      # def initialize(**args)
+      # @param source [Array<Relaton::Bib::Bsource>]
+      def initialize(**args)
+        @id = args[:id]
+        @type = args[:type]
+        @schema_version = args[:schema_version]
+        @title = args[:title] || TitleCollection.new
+        @source = args[:source] || []
+        @docidentifier = args[:docidentifier] || []
+        @docnumber = args[:docnumber]
+        @date = args[:date] || []
       #   if args[:type] && !TYPES.include?(args[:type])
       #     Util.warn %{WARNING: type `#{args[:type]}` is invalid.}
       #   end
@@ -246,7 +251,7 @@ module Relaton
       #   @script         = args.fetch :script, []
       #   @status         = args[:docstatus]
       #   @relation       = DocRelationCollection.new(args[:relation] || [])
-      #   @uri            = args.fetch(:uri, [])
+      #   @source            = args.fetch(:source, [])
       #   @series         = args.fetch :series, []
       #   @medium         = args[:medium]
       #   @place          = args.fetch(:place, []).map do |pl|
@@ -272,9 +277,7 @@ module Relaton
       #   @editorialgroup = args[:editorialgroup]
       #   @ics            = args.fetch :ics, []
       #   @structuredidentifier = args[:structuredidentifier]
-      # end
-      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
-      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      end
 
       #
       # Fetch schema version
@@ -320,7 +323,7 @@ module Relaton
         end
       end
 
-      # @param identifier [Relaton::Bib::DocumentIdentifier, nil]
+      # @param identifier [Relaton::Bib::Docidentifier, nil]
       # @param attribute [Boolean, nil]
       # @return [String]
       def makeid(identifier, attribute)
@@ -333,7 +336,7 @@ module Relaton
         idstr.strip
       end
 
-      # @param identifier [Relaton::Bib::DocumentIdentifier]
+      # @param identifier [Relaton::Bib::Docidentifier]
       # @param options [Hash]
       # @option options [boolean, nil] :no_year
       # @option options [boolean, nil] :all_parts
@@ -382,7 +385,7 @@ module Relaton
       #   hash["schema-version"] = schema unless embedded
       #   hash["id"] = id if id
       #   hash["title"] = title.to_hash if title&.any?
-      #   hash["uri"] = single_element_array(uri) if uri&.any?
+      #   hash["source"] = single_element_array(source) if source&.any?
       #   hash["type"] = type if type
       #   hash["docid"] = single_element_array(docidentifier) if docidentifier&.any?
       #   hash["docnumber"] = docnumber if docnumber
@@ -456,7 +459,7 @@ module Relaton
       # @param type [Symbol] type of url, can be :src/:obp/:rss
       # @return [String, nil]
       def url(type = :src)
-        @uri.detect { |s| s.type == type.to_s }&.content&.to_s
+        @source.detect { |s| s.type == type.to_s }&.content&.to_s
       end
 
       def deep_clone
@@ -546,7 +549,7 @@ module Relaton
           out += a.to_asciibib "#{pref}abstract", abstract.size
         end
         copyright.each { |c| out += c.to_asciibib prefix, copyright.size }
-        uri.each { |l| out += l.to_asciibib prefix, uri.size }
+        source.each { |l| out += l.to_asciibib prefix, source.size }
         out += medium.to_asciibib prefix if medium
         place.each { |pl| out += pl.to_asciibib prefix, place.size }
         extent.each { |ex| out += ex.to_asciibib "#{pref}extent", extent.size }
@@ -584,7 +587,7 @@ module Relaton
       #     builder.fetched fetched if fetched
       #     title.to_xml(**opts)
       #     formattedref&.to_xml builder
-      #     uri.each { |s| s.to_xml builder }
+      #     source.each { |s| s.to_xml builder }
       #     docidentifier.each { |di| di.to_xml(**opts) }
       #     builder.docnumber docnumber if docnumber
       #     date.each { |d| d.to_xml builder, **opts }

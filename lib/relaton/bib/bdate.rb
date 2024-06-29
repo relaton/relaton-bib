@@ -19,7 +19,12 @@ module Relaton
       # @param on [String]
       # @param from [String]
       # @param to [String]
-      # def initialize(type:, on: nil, from: nil, to: nil)
+      def initialize(**args)
+        @type = args[:type]
+        @on = Relaton.parse_date args[:on]
+        @from = Relaton.parse_date args[:from]
+        @to = Relaton.parse_date args[:to]
+
       #   raise ArgumentError, "expected :on or :from argument" unless on || from
 
       #   # raise ArgumentError, "invalid type: #{type}" unless TYPES.include? type
@@ -28,7 +33,7 @@ module Relaton
       #   @on   = Relaton.parse_date on
       #   @from = Relaton.parse_date from
       #   @to   = Relaton.parse_date to
-      # end
+      end
 
       # @param part [Symbol] :year, :month, :day, :date
       # @return [String, Date, nil]

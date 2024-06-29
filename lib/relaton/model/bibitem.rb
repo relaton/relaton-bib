@@ -3,10 +3,10 @@ require_relative "bibliographic_item"
 module Relaton
   module Model
     class Bibitem < Shale::Mapper
+      include BibliographicItem
+
       model Relaton::Bib::Item
       attribute :id, Shale::Type::String
-
-      include BibliographicItem
 
       @xml_mapping.instance_eval do
         root "bibitem"

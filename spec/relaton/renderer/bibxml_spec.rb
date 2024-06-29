@@ -2,7 +2,7 @@ describe Relaton::Renderer::BibXML do
   context "instance methods" do
     context "ref_attrs" do
       it "upcase anchor for IANA" do
-        docid = Relaton::Bib::DocumentIdentifier.new id: "IANA dns-parameters", type: "IANA"
+        docid = Relaton::Bib::Docidentifier.new id: "IANA dns-parameters", type: "IANA"
         bib = Relaton::Bib::Item.new(docid: [docid])
         renderer = Relaton::Renderer::BibXML.new bib
         ref_attrs = renderer.ref_attrs
@@ -14,8 +14,8 @@ describe Relaton::Renderer::BibXML do
     context "render_seriesinfo" do
       it "do not render trademark" do
         docid = [
-          Relaton::Bib::DocumentIdentifier.new(id: "IEEE 123", type: "IEEE"),
-          Relaton::Bib::DocumentIdentifier.new(id: "IEEE 123", type: "IEEE", scope: "trademark"),
+          Relaton::Bib::Docidentifier.new(id: "IEEE 123", type: "IEEE"),
+          Relaton::Bib::Docidentifier.new(id: "IEEE 123", type: "IEEE", scope: "trademark"),
         ]
         bib = Relaton::Bib::Item.new docid: docid
         renderer = Relaton::Bib::Renderer::BibXML.new bib

@@ -61,10 +61,10 @@ describe Relaton::BibXMLParser do
       ref = doc.at "/reference"
       id = described_class.docids ref, nil
       expect(id).to be_a Array
-      expect(id.first).to be_a Relaton::Bib::DocumentIdentifier
+      expect(id.first).to be_a Relaton::Bib::Docidentifier
       expect(id.first.type).to eq "Internet-Draft"
       expect(id.first.id).to eq "draft-3k1n-6tisch-alice0"
-      expect(id[1]).to be_a Relaton::Bib::DocumentIdentifier
+      expect(id[1]).to be_a Relaton::Bib::Docidentifier
       expect(id[1].type).to eq "I-D"
       expect(id[1].id).to eq "I-D.3k1n-6tisch-alice0"
       expect(id[1].scope).to eq "anchor"
@@ -79,7 +79,7 @@ describe Relaton::BibXMLParser do
       ref = doc.at "/reference"
       id = described_class.docids ref, nil
       expect(id).to be_a Array
-      expect(id.first).to be_a Relaton::Bib::DocumentIdentifier
+      expect(id.first).to be_a Relaton::Bib::Docidentifier
       expect(id.first.type).to eq "Internet-Draft"
       expect(id.first.id).to eq "draft-3k1n-6tisch-alice0-01"
     end
@@ -91,7 +91,7 @@ describe Relaton::BibXMLParser do
       END_XML
       ref = doc.at "/reference"
       id = described_class.docids ref, nil
-      expect(id[0]).to be_a Relaton::Bib::DocumentIdentifier
+      expect(id[0]).to be_a Relaton::Bib::Docidentifier
       expect(id[0].type).to eq "Internet-Draft"
       expect(id[0].id).to eq "draft-ietf-acvp-subsha-1.0"
       expect(id[1].scope).to eq "docName"
@@ -105,7 +105,7 @@ describe Relaton::BibXMLParser do
       ref = doc.at "/reference"
       id = described_class.docids ref, "02"
       expect(id).to be_a Array
-      expect(id.first).to be_a Relaton::Bib::DocumentIdentifier
+      expect(id.first).to be_a Relaton::Bib::Docidentifier
       expect(id.first.type).to eq "Internet-Draft"
       expect(id.first.id).to eq "draft-3k1n-6tisch-alice0-02"
     end
