@@ -1,6 +1,4 @@
 RSpec.describe RelatonBib::XMLParser do
-  before(:each) { RelatonBib.instance_variable_set :@configuration, nil }
-
   it "creates item from xml" do
     xml = File.read "spec/examples/bib_item.xml", encoding: "UTF-8"
     item = RelatonBib::XMLParser.from_xml xml
@@ -110,8 +108,8 @@ RSpec.describe RelatonBib::XMLParser do
   it "warn if XML doesn't have bibitem or bibdata element" do
     item = ""
     expect { item = RelatonBib::XMLParser.from_xml "" }.to output(
-      /can't find bibitem/,
-    ).to_stderr
+      /Can't find bibitem/,
+    ).to_stderr_from_any_process
     expect(item).to be_nil
   end
 end
