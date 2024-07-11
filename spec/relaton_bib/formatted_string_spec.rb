@@ -7,6 +7,18 @@ describe RelatonBib::FormattedString do
       XML
     end
 
+    context "==" do
+      it "same content" do
+        other = RelatonBib::FormattedString.new content: subject.content, language: "en", script: "Latn", format: "text/html"
+        expect(subject).to eq other
+      end
+
+      it "different content" do
+        other = RelatonBib::FormattedString.new content: "other", language: "en", script: "Latn", format: "text/html"
+        expect(subject).not_to eq other
+      end
+    end
+
     context "escape" do
       it "&" do
         xml = Nokogiri::XML::Builder.new do |b|

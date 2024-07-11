@@ -29,6 +29,12 @@ module RelatonBib
       @longdesc = args[:longdesc]
     end
 
+    def ==(other)
+      other.is_a?(Image) && id == other.id && src == other.src && mimetype == other.mimetype &&
+        filename == other.filename && width == other.width && height == other.height &&
+        alt == other.alt && title == other.title && longdesc == other.longdesc
+    end
+
     #
     # Converts the image object to XML format.
     #

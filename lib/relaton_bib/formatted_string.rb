@@ -25,6 +25,10 @@ module RelatonBib
       super(content, language, script)
     end
 
+    def ==(other)
+      super && format == other.format
+    end
+
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       builder.parent["format"] = format if format

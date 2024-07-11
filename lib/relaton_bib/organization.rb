@@ -25,6 +25,10 @@ module RelatonBib
       @value = value
     end
 
+    def ==(other)
+      type == other.type && value == other.value
+    end
+
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
       builder.identifier(value, type: type)
@@ -88,6 +92,12 @@ module RelatonBib
       end
       @identifier = args.fetch(:identifier, [])
       @logo = args[:logo]
+    end
+
+    def ==(other)
+      name == other.name && abbreviation == other.abbreviation &&
+        subdivision == other.subdivision && identifier == other.identifier &&
+        logo == other.logo && super
     end
 
     # @param opts [Hash]

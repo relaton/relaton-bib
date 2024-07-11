@@ -30,6 +30,12 @@ module RelatonBib
       @formatted_address = args[:formatted_address] unless args[:city] && args[:country]
     end
 
+    def ==(other)
+      street == other.street && city == other.city && state == other.state &&
+        country == other.country && postcode == other.postcode &&
+        formatted_address == other.formatted_address
+    end
+
     # @param doc [Nokogiri::XML::Document]
     def to_xml(doc) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       doc.address do
@@ -100,6 +106,10 @@ module RelatonBib
       @value    = value
     end
 
+    def ==(other)
+      type == other.type && subtype == other.subtype && value == other.value
+    end
+
     # @param builder [Nokogiri::XML::Document]
     def to_xml(builder)
       node = builder.send type, value
@@ -142,6 +152,10 @@ module RelatonBib
       @name = name
       @organization = organization
       @description  = description
+    end
+
+    def ==(other)
+      name == other.name && organization == other.organization && description == other.description
     end
 
     # @param opts [Hash]
@@ -222,6 +236,10 @@ module RelatonBib
     def initialize(url: nil, contact: [])
       @uri = URI url if url
       @contact = contact
+    end
+
+    def ==(other)
+      uri == other.uri && contact == other.contact
     end
 
     # Returns url.

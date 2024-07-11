@@ -16,6 +16,10 @@ module RelatonBib
       super content, language, script
     end
 
+    def ==(other)
+      super && initial == other.initial
+    end
+
     def to_s
       content.nil? ? initial : super
     end

@@ -37,6 +37,12 @@ module RelatonBib
                  end
     end
 
+    def ==(other)
+      return false unless other.is_a? LocalizedString
+
+      content == other.content && language == other.language && script == other.script
+    end
+
     #
     # String representation.
     #

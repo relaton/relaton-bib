@@ -37,6 +37,11 @@ module RelatonBib
       @completename = args[:completename]
     end
 
+    def ==(other)
+      surname == other.surname && abbreviation == other.abbreviation && completename == other.completename &&
+        forename == other.forename && initials == other.initials && addition == other.addition && prefix == other.prefix
+    end
+
     # @param opts [Hash]
     # @option opts [Nokogiri::XML::Builder] :builder XML builder
     # @option opts [String] :lang language
