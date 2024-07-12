@@ -352,7 +352,7 @@ module RelatonBib
     # @option options [boolean, nil] :all_parts
     # @return [String]
     def shortref(identifier, **opts) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/PerceivedComplexity
-      pubdate = date.select { |d| d.type == "published" }
+      pubdate = date.select { |d| d.type == "published" || d.type == "issued" }
       year = if opts[:no_year] || pubdate.empty? then ""
              else ":#{pubdate&.first&.on(:year)}"
              end
