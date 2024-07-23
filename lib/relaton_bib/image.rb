@@ -1,32 +1,29 @@
 module RelatonBib
   class Image
     # @return [String]
-    attr_reader :id, :src, :mimetype, :filename, :width, :height, :alt, :title, :longdesc
+    attr_accessor :src, :mimetype
+
+    # @return [String, nil]
+    attr_accessor :id, :filename, :width, :height, :alt, :title, :longdesc
 
     #
     # Initializes a new Image object.
     #
-    # @param id [String] the ID of the image
     # @param src [String] the source URL of the image
     # @param mimetype [String] the MIME type of the image
     # @param args [Hash] additional arguments
-    # @option args [String] :filename the filename of the image
-    # @option args [String] :width the width of the image
-    # @option args [String] :height the height of the image
-    # @option args [String] :alt the alternative text for the image
-    # @option args [String] :title the title of the image
-    # @option args [String] :longdesc the long description of the image
+    # @option id [String, nil] the ID of the image
+    # @option args [String, nil] :filename the filename of the image
+    # @option args [String, nil] :width the width of the image
+    # @option args [String, nil] :height the height of the image
+    # @option args [String, nil] :alt the alternative text for the image
+    # @option args [String, nil] :title the title of the image
+    # @option args [String, nil] :longdesc the long description of the image
     #
-    def initialize(id:, src:, mimetype:, **args)
-      @id = id
+    def initialize(src:, mimetype:, **args)
       @src = src
       @mimetype = mimetype
-      @filename = args[:filename]
-      @width = args[:width]
-      @height = args[:height]
-      @alt = args[:alt]
-      @title = args[:title]
-      @longdesc = args[:longdesc]
+      args.each { |k, v| send "#{k}=", v }
     end
 
     def ==(other)
@@ -44,7 +41,7 @@ module RelatonBib
     #
     def to_xml(builder) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
       builder.image do
-        builder.parent[:id] = id
+        builder.parent[:id] = id if id
         builder.parent[:src] = src
         builder.parent[:mimetype] = mimetype
         builder.parent[:filename] = filename if filename
@@ -62,7 +59,8 @@ module RelatonBib
     # @return [Hash] The hash representation of the Image object.
     #
     def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
-      hash = { "image" => { "id" => id, "src" => src, "mimetype" => mimetype } }
+      hash = { "image" => { "src" => src, "mimetype" => mimetype } }
+      hash["image"]["id"] = id if id
       hash["image"]["filename"] = filename if filename
       hash["image"]["width"] = width if width
       hash["image"]["height"] = height if height
@@ -81,7 +79,8 @@ module RelatonBib
     #
     def to_asciibib(prefix = "") # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength
       pref = prefix.empty? ? "image." : "#{prefix}.image."
-      out = "#{pref}id:: #{id}\n"
+      out = ""
+      out += "#{pref}id:: #{id}\n" if id
       out += "#{pref}src:: #{src}\n"
       out += "#{pref}mimetype:: #{mimetype}\n"
       out += "#{pref}filename:: #{filename}\n" if filename
