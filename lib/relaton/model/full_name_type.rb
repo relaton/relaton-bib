@@ -1,7 +1,7 @@
 module Relaton
   module Model
     module FullNameType
-      class Abbreviation < Shale::Mapper
+      class Abbreviation < Lutaml::Model::Serializable
         include LocalizedString
 
         @xml_mapping.instance_eval do
@@ -9,7 +9,7 @@ module Relaton
         end
       end
 
-      class Prefix < Shale::Mapper
+      class Prefix < Lutaml::Model::Serializable
         include LocalizedString
 
         @xml_mapping.instance_eval do
@@ -17,7 +17,7 @@ module Relaton
         end
       end
 
-      class Completename < Shale::Mapper
+      class Completename < Lutaml::Model::Serializable
         include LocalizedString
 
         @xml_mapping.instance_eval do
@@ -25,10 +25,10 @@ module Relaton
         end
       end
 
-      class Forename < Shale::Mapper
+      class Forename < Lutaml::Model::Serializable
         include LocalizedString
 
-        attribute :initial, Shale::Type::String
+        attribute :initial, Lutaml::Model::Type::String
 
         @xml_mapping.instance_eval do
           root "forename"
@@ -36,7 +36,7 @@ module Relaton
         end
       end
 
-      class FormattedInitials < Shale::Mapper
+      class FormattedInitials < Lutaml::Model::Serializable
         include LocalizedString
 
         @xml_mapping.instance_eval do
@@ -44,7 +44,7 @@ module Relaton
         end
       end
 
-      class Surname < Shale::Mapper
+      class Surname < Lutaml::Model::Serializable
         include LocalizedString
 
         @xml_mapping.instance_eval do
@@ -52,7 +52,7 @@ module Relaton
         end
       end
 
-      class Addition < Shale::Mapper
+      class Addition < Lutaml::Model::Serializable
         include LocalizedString
 
         @xml_mapping.instance_eval do
@@ -96,10 +96,10 @@ module Relaton
     end
 
     module FullNameType
-      class Variant < Shale::Mapper
+      class Variant < Lutaml::Model::Serializable
         include FullNameType
 
-        attribute :type, Shale::Type::String
+        attribute :type, Lutaml::Model::Type::String
 
         @xml_mapping.instance_eval do
           root "variant"

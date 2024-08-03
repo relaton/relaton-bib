@@ -73,7 +73,7 @@ module Relaton
         Content.of_xml Nokogiri::XML::DocumentFragment.parse(xml)
       end
 
-      class Variant < Shale::Mapper
+      class Variant < Lutaml::Model::Serializable
         include Relaton::Model::LocalizedMarkedUpString
 
         @xml_mapping.instance_eval do

@@ -3,9 +3,9 @@ module Relaton
     module LocalizedStringAttrs
       def self.included(base)
         base.class_eval do
-          attribute :language, Shale::Type::String
-          attribute :locale, Shale::Type::String
-          attribute :script, Shale::Type::String
+          attribute :language, Lutaml::Model::Type::String
+          attribute :locale, Lutaml::Model::Type::String
+          attribute :script, Lutaml::Model::Type::String
 
           xml do
             map_attribute "language", to: :language

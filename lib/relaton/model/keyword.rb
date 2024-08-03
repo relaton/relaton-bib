@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Keyword < Shale::Mapper
+    class Keyword < Lutaml::Model::Serializable
       class Content
         def initialize(elements = [])
           @elements = elements

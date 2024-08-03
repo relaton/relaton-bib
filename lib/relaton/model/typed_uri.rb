@@ -3,11 +3,11 @@ module Relaton
     module TypedUri
       def self.included(base) # rubocop:disable Metrics/MethodLength
         base.class_eval do
-          attribute :type, Shale::Type::String
-          attribute :language, Shale::Type::String
-          attribute :locale, Shale::Type::String
-          attribute :script, Shale::Type::String
-          attribute :content, Shale::Type::String
+          attribute :type, Lutaml::Model::Type::String
+          attribute :language, Lutaml::Model::Type::String
+          attribute :locale, Lutaml::Model::Type::String
+          attribute :script, Lutaml::Model::Type::String
+          attribute :content, Lutaml::Model::Type::String
 
           xml do
             map_attribute "type", to: :type

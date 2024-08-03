@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Hr < Shale::Mapper
+    class Hr < Lutaml::Model::Serializable
       xml do
         root "hr"
       end

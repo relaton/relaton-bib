@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Tt < Shale::Mapper
+    class Tt < Lutaml::Model::Serializable
       class Content
         def initialize(elements = [])
           @elements = elements

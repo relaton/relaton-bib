@@ -2,11 +2,11 @@ require_relative "bibliographic_item"
 
 module Relaton
   module Model
-    class Bibitem < Shale::Mapper
+    class Bibitem < Lutaml::Model::Serializable
       include BibliographicItem
 
       model Relaton::Bib::Item
-      attribute :id, Shale::Type::String
+      attribute :id, Lutaml::Model::Type::String
 
       @xml_mapping.instance_eval do
         root "bibitem"

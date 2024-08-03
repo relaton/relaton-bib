@@ -1,6 +1,6 @@
 describe Relaton::Model::CitationType do
   let(:dummy_class) do
-    Class.new(Shale::Mapper) do
+    Class.new(Lutaml::Model::Serializable) do
       include Relaton::Model::CitationType
 
       @xml_mapping.instance_eval do

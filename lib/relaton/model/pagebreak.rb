@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Pagebreak < Shale::Mapper
+    class Pagebreak < Lutaml::Model::Serializable
       xml do
         root "pagebreak"
       end

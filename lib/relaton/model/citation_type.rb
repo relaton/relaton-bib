@@ -5,10 +5,10 @@ module Relaton
         return unless base.is_a? Class
 
         base.class_eval do
-          attribute :bibitemid, Shale::Type::String
+          attribute :bibitemid, Lutaml::Model::Type::String
           attribute :locality, Locality, collection: true
           attribute :locality_stack, LocalityStack, collection: true
-          attribute :date, Shale::Type::String
+          attribute :date, Lutaml::Model::Type::String
 
           xml do
             map_attribute "bibitemid", to: :bibitemid

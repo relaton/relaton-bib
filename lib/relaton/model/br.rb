@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Br < Shale::Mapper
+    class Br < Lutaml::Model::Serializable
       xml do
         root "br"
       end

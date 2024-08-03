@@ -2,7 +2,7 @@ require_relative "typed_uri"
 
 module Relaton
   module Model
-    class Uri < Shale::Mapper
+    class Uri < Lutaml::Model::Serializable
       model Bib::Bsource
 
       include TypedUri

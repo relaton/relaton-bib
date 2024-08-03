@@ -1,6 +1,6 @@
 describe Relaton::Model::LocalizedMarkedUpString do
   let(:fake_class) do
-    Class.new(Shale::Mapper) do
+    Class.new(Lutaml::Model::Serializable) do
       include Relaton::Model::LocalizedMarkedUpString
 
       @xml_mapping.instance_eval do

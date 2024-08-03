@@ -1,8 +1,8 @@
 module Relaton
   module Model
-    class Person < Shale::Mapper
-      # class Name < Shale::Mapper
-      #   attribute :content, Shale::Type::String
+    class Person < Lutaml::Model::Serializable
+      # class Name < Lutaml::Model::Serializable
+      #   attribute :content, Lutaml::Model::Type::String
 
       #   xml do
       #     root "name"
@@ -10,8 +10,8 @@ module Relaton
       #   end
       # end
 
-      class Credential < Shale::Mapper
-        attribute :content, Shale::Type::String
+      class Credential < Lutaml::Model::Serializable
+        attribute :content, Lutaml::Model::Type::String
 
         xml do
           root "credential"
@@ -19,9 +19,9 @@ module Relaton
         end
       end
 
-      class Identifier < Shale::Mapper
-        attribute :type, Shale::Type::String
-        attribute :content, Shale::Type::String
+      class Identifier < Lutaml::Model::Serializable
+        attribute :type, Lutaml::Model::Type::String
+        attribute :content, Lutaml::Model::Type::String
 
         xml do
           root "identifier"

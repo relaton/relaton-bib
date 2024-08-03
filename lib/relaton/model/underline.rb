@@ -1,9 +1,9 @@
 module Relaton
   module Model
-    class Underline < Shale::Mapper
+    class Underline < Lutaml::Model::Serializable
       include PureTextElement::Mapper
 
-      attribute :style, Shale::Type::String
+      attribute :style, Lutaml::Model::Type::String
 
       @xml_mapping.instance_eval do
         root "underline"

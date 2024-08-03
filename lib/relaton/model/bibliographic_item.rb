@@ -1,5 +1,5 @@
-require "shale"
-require "shale/adapter/nokogiri"
+require "lutaml/model"
+# require "shale/adapter/nokogiri"
 require_relative "any_element"
 require_relative "br"
 require_relative "date"
@@ -53,14 +53,14 @@ module Relaton
     module BibliographicItem
       def self.included(base) # rubocop:disable Metrics/MethodLength
         base.class_eval do
-          attribute :type, Shale::Type::String
-          attribute :schema_version, Shale::Type::String
-          attribute :fetched, Shale::Type::Date
+          attribute :type, Lutaml::Model::Type::String
+          attribute :schema_version, Lutaml::Model::Type::String
+          attribute :fetched, Lutaml::Model::Type::Date
           attribute :formattedref, Formattedref
           attribute :title, Bib::TitleCollection
           attribute :source, Uri, collection: true
           attribute :docidentifier, DocIdentifier, collection: true
-          attribute :docnumber, Shale::Type::String
+          attribute :docnumber, Lutaml::Model::Type::String
           attribute :date, Date, collection: true
 
           xml do

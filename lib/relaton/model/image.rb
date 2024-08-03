@@ -1,17 +1,17 @@
 module Relaton
   module Model
-    class Image < Shale::Mapper
+    class Image < Lutaml::Model::Serializable
       model Relaton::Bib::Image
 
-      attribute :id, Shale::Type::String
-      attribute :src, Shale::Type::String # anyURI
-      attribute :mimetype, Shale::Type::String
-      attribute :filename, Shale::Type::String
-      attribute :width, Shale::Type::String
-      attribute :height, Shale::Type::String
-      attribute :alt, Shale::Type::String
-      attribute :title, Shale::Type::String
-      attribute :longdesc, Shale::Type::String # anyURI
+      attribute :id, Lutaml::Model::Type::String
+      attribute :src, Lutaml::Model::Type::String # anyURI
+      attribute :mimetype, Lutaml::Model::Type::String
+      attribute :filename, Lutaml::Model::Type::String
+      attribute :width, Lutaml::Model::Type::String
+      attribute :height, Lutaml::Model::Type::String
+      attribute :alt, Lutaml::Model::Type::String
+      attribute :title, Lutaml::Model::Type::String
+      attribute :longdesc, Lutaml::Model::Type::String # anyURI
 
       xml do
         root "image"

@@ -2,7 +2,7 @@ describe Relaton::Model::ErefType do
   let(:doc) { Shale::Adapter::Nokogiri::Document.new }
 
   let(:dummy_class) do
-    Class.new(Shale::Mapper) do
+    Class.new(Lutaml::Model::Serializable) do
       include Relaton::Model::ErefType
 
       @xml_mapping.instance_eval do

@@ -1,6 +1,6 @@
 describe Relaton::Model::LocalizedString do
   let(:fake_class) do
-    Class.new(Shale::Mapper) do
+    Class.new(Lutaml::Model::Serializable) do
       include Relaton::Model::LocalizedString
 
       @xml_mapping.instance_eval do

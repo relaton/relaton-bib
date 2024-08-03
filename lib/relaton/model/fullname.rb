@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class FullName < Shale::Mapper
+    class FullName < Lutaml::Model::Serializable
       include Relaton::Model::FullNameType
 
       model Bib::FullName

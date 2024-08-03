@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Smallcap < Shale::Mapper
+    class Smallcap < Lutaml::Model::Serializable
       include Relaton::Model::PureTextElement::Mapper
 
       @xml_mapping.instance_eval do

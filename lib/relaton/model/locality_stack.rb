@@ -1,9 +1,9 @@
 module Relaton
   module Model
-    class LocalityStack < Shale::Mapper
-      model Relaton::Bib::LocalityStack
+    class LocalityStack < Lutaml::Model::Serializable
+      # model Relaton::Bib::LocalityStack
 
-      attribute :connective, Shale::Type::String
+      attribute :connective, Lutaml::Model::Type::String
       attribute :locality, Locality, collection: true
 
       xml do

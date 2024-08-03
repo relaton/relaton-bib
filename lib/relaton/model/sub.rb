@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Sub < Shale::Mapper
+    class Sub < Lutaml::Model::Serializable
       include PureTextElement::Mapper
 
       @xml_mapping.instance_eval do

@@ -1,7 +1,7 @@
 module Relaton
   module Model
     module IndexMapper
-      class Content < Shale::Mapper
+      class Content < Lutaml::Model::Serializable
         include Relaton::Model::PureTextElement::Mapper
       end
 
@@ -24,10 +24,10 @@ module Relaton
       end
     end
 
-    class Index < Shale::Mapper
+    class Index < Lutaml::Model::Serializable
       include IndexMapper
 
-      attribute :to, Shale::Type::String
+      attribute :to, Lutaml::Model::Type::String
 
       @xml_mapping.instance_eval do
         root "index"

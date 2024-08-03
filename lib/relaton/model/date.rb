@@ -1,13 +1,13 @@
 module Relaton
   module Model
-    class Date < Shale::Mapper
-      model Bib::Bdate
+    class Date < Lutaml::Model::Serializable
+      # model Bib::Bdate
 
-      attribute :type, Shale::Type::String
-      attribute :text, Shale::Type::String
-      attribute :from, Shale::Type::String
-      attribute :to, Shale::Type::String
-      attribute :on, Shale::Type::String
+      attribute :type, Lutaml::Model::Type::String
+      attribute :text, Lutaml::Model::Type::String
+      attribute :from, Lutaml::Model::Type::String
+      attribute :to, Lutaml::Model::Type::String
+      attribute :on, Lutaml::Model::Type::String
 
       xml do
         root "date"

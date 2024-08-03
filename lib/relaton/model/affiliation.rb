@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Affiliation < Shale::Mapper
+    class Affiliation < Lutaml::Model::Serializable
       attribute :name, AffiliationName
       attribute :description, AffiliationDescription
       attribute :organization, Organization

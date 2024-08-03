@@ -1,7 +1,7 @@
 module Relaton
   module Model
-    class Role < Shale::Mapper
-      class Description < Shale::Mapper
+    class Role < Lutaml::Model::Serializable
+      class Description < Lutaml::Model::Serializable
         include LocalizedMarkedUpString
 
         @xml_mapping.instance_eval do
@@ -9,7 +9,7 @@ module Relaton
         end
       end
 
-      attribute :type, Shale::Type::String
+      attribute :type, Lutaml::Model::Type::String
       attribute :description, Description, collection: true
 
       xml do

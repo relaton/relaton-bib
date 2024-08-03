@@ -1,12 +1,12 @@
 module Relaton
   module Model
-    class Ruby < Shale::Mapper
+    class Ruby < Lutaml::Model::Serializable
       module Mapper
         def self.included(base)
           base.class_eval do
-            attribute :value, Shale::Type::String
-            attribute :script, Shale::Type::String
-            attribute :lang, Shale::Type::String
+            attribute :value, Lutaml::Model::Type::String
+            attribute :script, Lutaml::Model::Type::String
+            attribute :lang, Lutaml::Model::Type::String
 
             xml do
               map_attribute "value", to: :value
@@ -17,7 +17,7 @@ module Relaton
         end
       end
 
-      class Pronunciation < Shale::Mapper
+      class Pronunciation < Lutaml::Model::Serializable
         include Mapper
 
         @xml_mapping.instance_eval do
@@ -25,7 +25,7 @@ module Relaton
         end
       end
 
-      class Annotation < Shale::Mapper
+      class Annotation < Lutaml::Model::Serializable
         include Mapper
 
         @xml_mapping.instance_eval do
@@ -35,7 +35,7 @@ module Relaton
 
       attribute :pronunciation, Pronunciation
       attribute :annotation, Annotation
-      attribute :content, Shale::Type::String
+      attribute :content, Lutaml::Model::Type::String
       attribute :ruby, Ruby
 
       xml do

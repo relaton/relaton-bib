@@ -1,8 +1,8 @@
 module Relaton
   module Model
     module OrganizationType
-      class Name < Shale::Mapper
-        class Primary < Shale::Mapper
+      class Name < Lutaml::Model::Serializable
+        class Primary < Lutaml::Model::Serializable
           include Model::LocalizedString
 
           @xml_mapping.instance_eval do
@@ -38,9 +38,9 @@ module Relaton
         end
       end
 
-      class Identifier < Shale::Mapper
-        attribute :type, Shale::Type::String
-        attribute :content, Shale::Type::String
+      class Identifier < Lutaml::Model::Serializable
+        attribute :type, Lutaml::Model::Type::String
+        attribute :content, Lutaml::Model::Type::String
 
         xml do
           root "identifier"

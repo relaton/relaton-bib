@@ -1,7 +1,7 @@
 module Relaton
   module Model
-    class ReferenceFrom < Shale::Mapper
-      attribute :content, Shale::Type::String
+    class ReferenceFrom < Lutaml::Model::Serializable
+      attribute :content, Lutaml::Model::Type::String
 
       xml do
         root "referenceFrom"
@@ -9,8 +9,8 @@ module Relaton
       end
     end
 
-    class ReferenceTo < Shale::Mapper
-      attribute :content, Shale::Type::String
+    class ReferenceTo < Lutaml::Model::Serializable
+      attribute :content, Lutaml::Model::Type::String
 
       xml do
         root "referenceTo"
@@ -21,7 +21,7 @@ module Relaton
     module BibItemLocality
       def self.included(base)
         base.class_eval do
-          attribute :type, Shale::Type::String
+          attribute :type, Lutaml::Model::Type::String
           attribute :reference_from, ReferenceFrom
           attribute :reference_to, ReferenceTo
 

@@ -1,7 +1,7 @@
 module Relaton
   module Model
-    class Bookmark < Shale::Mapper
-      attribute :id, Shale::Type::String
+    class Bookmark < Lutaml::Model::Serializable
+      attribute :id, Lutaml::Model::Type::String
 
       xml do
         root "bookmark"

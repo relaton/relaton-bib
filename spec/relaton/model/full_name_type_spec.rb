@@ -1,6 +1,6 @@
 describe Relaton::Model::FullNameType do
   let(:fake_class) do
-    Class.new(Shale::Mapper) do
+    Class.new(Lutaml::Model::Serializable) do
       include Relaton::Model::FullNameType
 
       @xml_mapping.instance_eval do

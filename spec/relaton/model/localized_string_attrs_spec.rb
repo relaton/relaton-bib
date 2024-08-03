@@ -1,9 +1,9 @@
 describe Relaton::Model::LocalizedStringAttrs do
   let(:fake_class) do
-    Class.new(Shale::Mapper) do
+    Class.new(Lutaml::Model::Serializable) do
       include Relaton::Model::LocalizedStringAttrs
 
-      attribute :content, Shale::Type::String
+      attribute :content, Lutaml::Model::Type::String
 
       @xml_mapping.instance_eval do
         root "content"

@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Em < Shale::Mapper
+    class Em < Lutaml::Model::Serializable
       class Content
         def initialize(elements = [])
           @elements = elements

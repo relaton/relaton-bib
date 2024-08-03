@@ -24,19 +24,19 @@ module Relaton
         base.class_eval do
           include CitationType
 
-          attribute :normative, Shale::Type::Boolean
-          attribute :citeas, Shale::Type::String
-          attribute :type, Shale::Type::String
-          attribute :alt, Shale::Type::String
+          attribute :normative, Lutaml::Model::Type::Boolean
+          attribute :citeas, Lutaml::Model::Type::String
+          attribute :type, Lutaml::Model::Type::String
+          attribute :alt, Lutaml::Model::Type::String
           attribute :content, Content
 
-          @xml_mapping.instance_eval do
-            map_attribute "normative", to: :normative
-            map_attribute "citeas", to: :citeas
-            map_attribute "type", to: :type
-            map_attribute "alt", to: :alt
-            map_content to: :content, using: { from: :content_from_xml, to: :content_to_xml }
-          end
+          # @xml_mapping.instance_eval do
+          #   map_attribute "normative", to: :normative
+          #   map_attribute "citeas", to: :citeas
+          #   map_attribute "type", to: :type
+          #   map_attribute "alt", to: :alt
+          #   map_content to: :content, using: { from: :content_from_xml, to: :content_to_xml }
+          # end
         end
       end
 

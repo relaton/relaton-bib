@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Strike < Shale::Mapper
+    class Strike < Lutaml::Model::Serializable
       class Content
         def initialize(elements = [])
           @elements = elements

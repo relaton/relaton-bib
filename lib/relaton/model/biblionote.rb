@@ -1,11 +1,11 @@
 module Relaton
   module Model
-    class Biblionote < Shale::Mapper
+    class Biblionote < Lutaml::Model::Serializable
       include Relaton::Model::LocalizedMarkedUpString
 
       model Bib::BiblioNote
 
-      attribute :type, Shale::Type::String
+      attribute :type, Lutaml::Model::Type::String
 
       @xml_mapping.instance_eval do
         root "note"

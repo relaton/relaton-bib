@@ -1,11 +1,11 @@
 module Relaton
   module Model
-    class Hyperlink < Shale::Mapper
+    class Hyperlink < Lutaml::Model::Serializable
       include PureTextElement::Mapper
 
-      attribute :target, Shale::Type::String
-      attribute :type, Shale::Type::String
-      attribute :alt, Shale::Type::String
+      attribute :target, Lutaml::Model::Type::String
+      attribute :type, Lutaml::Model::Type::String
+      attribute :alt, Lutaml::Model::Type::String
 
       @xml_mapping.instance_eval do
         root "link"

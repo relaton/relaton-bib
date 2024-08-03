@@ -1,9 +1,9 @@
 module Relaton
   module Model
-    class IndexXref < Shale::Mapper
+    class IndexXref < Lutaml::Model::Serializable
       include IndexMapper
 
-      attribute :also, Shale::Type::Boolean
+      attribute :also, Lutaml::Model::Type::Boolean
       attribute :target, IndexMapper::Content
 
       @xml_mapping.instance_eval do

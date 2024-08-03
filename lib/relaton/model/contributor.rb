@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Contributor < Shale::Mapper
+    class Contributor < Lutaml::Model::Serializable
       attribute :role, Role, collection: true
       attribute :content, ContributionInfo
 

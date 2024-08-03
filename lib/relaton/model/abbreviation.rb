@@ -1,6 +1,6 @@
 module Relaton
   module Module
-    class Abbreviation < Shale::Mapper
+    class Abbreviation < Lutaml::Model::Serializable
       include LocalizedString
 
       @xml_mapping.instance_eval do

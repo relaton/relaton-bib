@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Eref < Shale::Mapper
+    class Eref < Lutaml::Model::Serializable
       include ErefType
 
       @xml_mapping.instance_eval do

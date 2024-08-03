@@ -1,7 +1,7 @@
 module Relaton
   module Model
-    class Stem < Shale::Mapper
-      attribute :type, Shale::Type::String
+    class Stem < Lutaml::Model::Serializable
+      attribute :type, Lutaml::Model::Type::String
       attribute :content, AnyElement
 
       xml do

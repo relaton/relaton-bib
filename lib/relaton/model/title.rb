@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Title < Shale::Mapper
+    class Title < Lutaml::Model::Serializable
       include Relaton::Model::TypedTitleString
 
       model Bib::Title

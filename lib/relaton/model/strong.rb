@@ -1,6 +1,6 @@
 module Relaton
   module Model
-    class Strong < Shale::Mapper
+    class Strong < Lutaml::Model::Serializable
       class Content
         def initialize(elements = [])
           @elements = elements
