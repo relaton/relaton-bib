@@ -81,7 +81,7 @@ module RelatonBib
     #
     # @return [String] encoded content
     #
-    def encode(cnt) # rubocop:disable Metrics/MethodLength
+    def encode(cnt)
       escp cnt
     end
 

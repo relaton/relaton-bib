@@ -43,5 +43,17 @@ RSpec.describe RelatonBib::LocalizedString do
         <localized_string language="en" script="Latn">Content &amp;</localized_string>
       XML
     end
+
+    it "escape String content only" do
+      ls = described_class.new [described_class.new("Content <p>Text</p>", "en", "Latn")]
+      xml = Nokogiri::XML::Builder.new do |b|
+        b.localized_string { ls.to_xml(b) }
+      end
+      expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
+        <localized_string>
+          <variant language="en" script="Latn">Content &lt;p&gt;Text&lt;/p&gt;</variant>
+        </localized_string>
+      XML
+    end
   end
 end
