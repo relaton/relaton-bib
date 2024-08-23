@@ -289,11 +289,15 @@ module RelatonBib
       # @return [Array<RelatonBib::DocumentIdentifier>]
       def fetch_docid(item)
         item.xpath("./docidentifier").map do |id|
-          did = id.to_h.transform_keys(&:to_sym)
-          did[:id] = id.text
-          did[:primary] = id[:primary] == "true" ? true : nil
-          DocumentIdentifier.new(**did)
+          args = id.to_h.transform_keys(&:to_sym)
+          args[:id] = id.text
+          args[:primary] = id[:primary] == "true" ? true : nil
+          create_docid(**args)
         end
+      end
+
+      def create_docid(**args)
+        DocumentIdentifier.new(**args)
       end
 
       # @param item [Nokogiri::XML::Element]
