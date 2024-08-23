@@ -5,7 +5,7 @@ module Relaton
         class Primary < Lutaml::Model::Serializable
           include Model::LocalizedString
 
-          @xml_mapping.instance_eval do
+          mappings[:xml].instance_eval do
             root "primary"
           end
         end
@@ -16,7 +16,7 @@ module Relaton
               attribute :primary, Primary
             end
 
-            @xml_mapping.instance_eval do
+            mappings[:xml].instance_eval do
               map_content to: :primary, using: { from: :primary_from_xml, to: :primary_to_xml }
             end
           end
@@ -33,7 +33,7 @@ module Relaton
         include Model::LocalizedString
         include Variant
 
-        @xml_mapping.instance_eval do
+        mappings[:xml].instance_eval do
           root "name"
         end
       end

@@ -55,7 +55,7 @@ module Relaton
 
           attribute :content, Content
 
-          @xml_mapping.instance_eval do
+          mappings[:xml].instance_eval do
             map_content to: :content, using: { from: :content_from_xml, to: :content_to_xml }
           end
         end
@@ -76,7 +76,7 @@ module Relaton
       class Variant < Lutaml::Model::Serializable
         include Relaton::Model::LocalizedMarkedUpString
 
-        @xml_mapping.instance_eval do
+        mappings[:xml].instance_eval do
           root "variant"
         end
 

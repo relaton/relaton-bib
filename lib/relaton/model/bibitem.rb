@@ -8,7 +8,7 @@ module Relaton
       model Relaton::Bib::Item
       attribute :id, Lutaml::Model::Type::String
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "bibitem"
         map_attribute "id", to: :id
       end

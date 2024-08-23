@@ -7,7 +7,7 @@ module Relaton
 
       include TypedUri
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "uri"
       end
     end

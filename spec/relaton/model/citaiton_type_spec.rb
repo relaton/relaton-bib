@@ -3,7 +3,7 @@ describe Relaton::Model::CitationType do
     Class.new(Lutaml::Model::Serializable) do
       include Relaton::Model::CitationType
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "dummy-element"
       end
     end

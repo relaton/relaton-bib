@@ -3,7 +3,7 @@ module Relaton
     class Eref < Lutaml::Model::Serializable
       include ErefType
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "eref"
       end
     end

@@ -20,7 +20,7 @@ module Relaton
       class Pronunciation < Lutaml::Model::Serializable
         include Mapper
 
-        @xml_mapping.instance_eval do
+        mappings[:xml].instance_eval do
           root "pronunciation"
         end
       end
@@ -28,7 +28,7 @@ module Relaton
       class Annotation < Lutaml::Model::Serializable
         include Mapper
 
-        @xml_mapping.instance_eval do
+        mappings[:xml].instance_eval do
           root "annotation"
         end
       end

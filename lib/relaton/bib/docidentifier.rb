@@ -1,62 +1,50 @@
 module Relaton
   module Bib
     # Document identifier.
-    class Docidentifier
-      # @return [Relaton::Model::LocalizedMarkedUpString::Content]
-      attr_accessor :content
-
+    class Docidentifier < Relaton::Bib::LocalizedString
       # @return [String, nil]
-      attr_accessor :type, :scope, :language, :script, :locale
+      attr_accessor :type, :scope, :sup
 
       # @param type [Boolean, nil]
       attr_accessor :primary
 
-      # @param id [String]
+      # @param content [Relaton::Bib::LoclizedString]
       # @param type [String, nil]
       # @param scope [String, nil]
       # @param primary [Bolean, nil]
       # @param language [String, nil]
+      # @param script [String, nil]
+      # @param locale [String, nil]
       def initialize(**args)
-        self.id   = args[:id]
+        super
         @type     = args[:type]
         @scope    = args[:scope]
         @primary  = args[:primary]
-        @language = args[:language]
-        @script   = args[:script]
-        @locale   = args[:locale]
-      end
-
-      def id
-        content.to_s
-      end
-
-      def id=(val)
-        @content = Model::LocalizedMarkedUpString.from_xml val
       end
 
       # in docid manipulations, assume ISO as the default: id-part:year
       def remove_part
         case @type
-        when "Chinese Standard" then @id.sub!(/\.\d+/, "")
+        when "Chinese Standard" then content.sub!(/\.\d+/, "")
         when "URN" then remove_urn_part
-        else @id.sub!(/-[^:]+/, "")
+        else content.sub!(/-[^:]+/, "")
         end
       end
 
       def remove_date
-        case @type
-        when "Chinese Standard" then @id.sub!(/-[12]\d\d\d/, "")
+        case type
+        when "Chinese Standard" then content.sub!(/-[12]\d\d\d/, "")
         when "URN"
-          @id.sub!(/^(urn:iec:std:[^:]+:[^:]+:)[^:]*/, '\1')
-        else @id.sub!(/:[12]\d\d\d/, "")
+          content.sub!(/^(urn:iec:std:[^:]+:[^:]+:)[^:]*/, '\1')
+        else content.sub!(/:[12]\d\d\d/, "")
         end
       end
 
       def all_parts
         if type == "URN"
-          @id.sub!(%r{^(urn:iec:std(?::[^:]*){4}).*}, '\1:ser')
+          content.sub!(%r{^(urn:iec:std(?::[^:]*){4}).*}, '\1:ser')
         else
-          @id += " (all parts)"
+          content += " (all parts)"
         end
       end
 
@@ -95,7 +83,7 @@ module Relaton
       # @return [String]
       def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
         pref = prefix.empty? ? prefix : "#{prefix}."
-        return "#{pref}docid:: #{id}\n" unless type || scope
+        return "#{pref}docid:: #{content}\n" unless type || scope
 
         out = count > 1 ? "#{pref}docid::\n" : ""
         out += "#{pref}docid.type:: #{type}\n" if type
@@ -103,13 +91,13 @@ module Relaton
         out += "#{pref}docid.primary:: #{primary}\n" if primary
         out += "#{pref}docid.language:: #{language}\n" if language
         out += "#{pref}docid.script:: #{script}\n" if script
-        out + "#{pref}docid.id:: #{id}\n"
+        out + "#{pref}docid.id:: #{content}\n"
       end
 
       private
 
       def remove_urn_part # rubocop:disable Metrics/MethodLength
-        @id.sub!(%r{^
+        content.sub!(%r{^
           (urn:iso:std:[^:]+ # ISO prefix and originator
             (?::(?:data|guide|isp|iwa|pas|r|tr|ts|tta)) # type
             ?:\d+) # docnumber
@@ -118,7 +106,7 @@ module Relaton
           (?::ed-\d+)?(?::v[^:]+)? # edition and version
           (?::\w{2}(?:,\w{2})*)? # langauge
         }x, '\1') # remove partnumber, status, version, and language
-        @id.sub!(%r{^
+        content.sub!(%r{^
           (urn:iec:std:[^:]+ # IEC prefix and originator
             :\d+) # docnumber
           (?:-[^:]+)? # partnumber

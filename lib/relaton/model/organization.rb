@@ -3,7 +3,7 @@ module Relaton
     class Organization < Lutaml::Model::Serializable
       include Relaton::Model::OrganizationType
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "organization"
       end
     end

@@ -3,7 +3,7 @@ module Relaton
     class Smallcap < Lutaml::Model::Serializable
       include Relaton::Model::PureTextElement::Mapper
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "smallcap"
       end
     end

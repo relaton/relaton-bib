@@ -3,11 +3,11 @@ module Relaton
     module TypedTitleString
       def self.included(base)
         base.class_eval do
-          include Relaton::Model::LocalizedMarkedUpString
+          include Relaton::Model::LocalizedString
 
           attribute :type, Lutaml::Model::Type::String
 
-          @xml_mapping.instance_eval do
+          mappings[:xml].instance_eval do
             map_attribute "type", to: :type
           end
         end

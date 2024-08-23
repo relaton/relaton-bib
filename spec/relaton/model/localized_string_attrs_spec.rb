@@ -5,7 +5,7 @@ describe Relaton::Model::LocalizedStringAttrs do
 
       attribute :content, Lutaml::Model::Type::String
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "content"
         map_content to: :content
       end

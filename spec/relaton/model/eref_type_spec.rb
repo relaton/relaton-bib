@@ -5,7 +5,7 @@ describe Relaton::Model::ErefType do
     Class.new(Lutaml::Model::Serializable) do
       include Relaton::Model::ErefType
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "dummy-element"
       end
     end

@@ -5,7 +5,7 @@ module Relaton
 
       attribute :style, Lutaml::Model::Type::String
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "underline"
         map_attribute "style", to: :style
       end

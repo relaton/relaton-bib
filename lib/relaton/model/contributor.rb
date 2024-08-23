@@ -8,7 +8,7 @@ module Relaton
         root "contributor"
 
         map_element "role", to: :role
-        map_content to: :content, using: { from: :content_from_xml, to: :content_to_xml }
+        map_content to: :content
       end
 
       def content_from_xml(model, node)

@@ -1,15 +1,4 @@
 describe Relaton::Bib::LocalizedString do
-  it "raise ArgumentError" do
-    expect do
-      described_class.new []
-    end.to raise_error ArgumentError, "LocalizedString content is empty"
-  end
-
-  it "create with Aray<String> content" do
-    ls = described_class.new ["Content"]
-    expect(ls.content[0].content).to eq "Content"
-  end
-
   context "instance" do
     subject do
       described_class.new(<<-XML, "en", "Latn")

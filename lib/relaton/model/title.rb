@@ -5,7 +5,7 @@ module Relaton
 
       model Bib::Title
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "title"
       end
     end

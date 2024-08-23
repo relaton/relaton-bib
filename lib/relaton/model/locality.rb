@@ -5,7 +5,7 @@ module Relaton
 
       # model Relaton::Bib::Locality
 
-      # @xml_mapping.instance_eval do
+      # mappings[:xml].instance_eval do
       #   root "locality"
       # end
     end

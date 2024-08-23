@@ -7,7 +7,7 @@ module Relaton
       attribute :type, Lutaml::Model::Type::String
       attribute :alt, Lutaml::Model::Type::String
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "link"
 
         map_attribute "target", to: :target

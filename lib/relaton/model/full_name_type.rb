@@ -4,7 +4,7 @@ module Relaton
       class Abbreviation < Lutaml::Model::Serializable
         include LocalizedString
 
-        @xml_mapping.instance_eval do
+        mappings[:xml].instance_eval do
           root "abbreviation"
         end
       end
@@ -12,7 +12,7 @@ module Relaton
       class Prefix < Lutaml::Model::Serializable
         include LocalizedString
 
-        @xml_mapping.instance_eval do
+        mappings[:xml].instance_eval do
           root "prefix"
         end
       end
@@ -20,7 +20,7 @@ module Relaton
       class Completename < Lutaml::Model::Serializable
         include LocalizedString
 
-        @xml_mapping.instance_eval do
+        mappings[:xml].instance_eval do
           root "completename"
         end
       end
@@ -30,7 +30,7 @@ module Relaton
 
         attribute :initial, Lutaml::Model::Type::String
 
-        @xml_mapping.instance_eval do
+        mappings[:xml].instance_eval do
           root "forename"
           map_attribute "initial", to: :initial
         end
@@ -39,7 +39,7 @@ module Relaton
       class FormattedInitials < Lutaml::Model::Serializable
         include LocalizedString
 
-        @xml_mapping.instance_eval do
+        mappings[:xml].instance_eval do
           root "formatted-initials"
         end
       end
@@ -47,7 +47,7 @@ module Relaton
       class Surname < Lutaml::Model::Serializable
         include LocalizedString
 
-        @xml_mapping.instance_eval do
+        mappings[:xml].instance_eval do
           root "surname"
         end
       end
@@ -55,7 +55,7 @@ module Relaton
       class Addition < Lutaml::Model::Serializable
         include LocalizedString
 
-        @xml_mapping.instance_eval do
+        mappings[:xml].instance_eval do
           root "addition"
         end
       end
@@ -101,7 +101,7 @@ module Relaton
 
         attribute :type, Lutaml::Model::Type::String
 
-        @xml_mapping.instance_eval do
+        mappings[:xml].instance_eval do
           root "variant"
           map_attribute "type", to: :type
         end

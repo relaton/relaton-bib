@@ -5,7 +5,7 @@ module Relaton
 
       model Bib::FullName
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "name"
       end
     end

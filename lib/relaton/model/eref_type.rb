@@ -30,7 +30,7 @@ module Relaton
           attribute :alt, Lutaml::Model::Type::String
           attribute :content, Content
 
-          # @xml_mapping.instance_eval do
+          # mappings[:xml].instance_eval do
           #   map_attribute "normative", to: :normative
           #   map_attribute "citeas", to: :citeas
           #   map_attribute "type", to: :type

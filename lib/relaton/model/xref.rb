@@ -7,7 +7,7 @@ module Relaton
       attribute :type, Lutaml::Model::Type::String
       attribute :alt, Lutaml::Model::Type::String
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "xref"
         map_attribute "target", to: :target
         map_attribute "type", to: :type

@@ -3,7 +3,7 @@ describe Relaton::Model::FullNameType do
     Class.new(Lutaml::Model::Serializable) do
       include Relaton::Model::FullNameType
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "item"
       end
     end

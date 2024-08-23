@@ -1,3 +1,5 @@
+require_relative "uri"
+
 module Relaton
   module Model
     class Contact < Lutaml::Model::Serializable

@@ -29,7 +29,7 @@ module Relaton
 
       attribute :to, Lutaml::Model::Type::String
 
-      @xml_mapping.instance_eval do
+      mappings[:xml].instance_eval do
         root "index"
         map_attribute "to", to: :to
       end
