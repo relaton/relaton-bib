@@ -229,7 +229,7 @@ module RelatonBib
         OrgIdentifier.new(a[:type], a[:id])
       end
       org[:subdivision] = RelatonBib.array(org[:subdivision]).map do |sd|
-        LocalizedString.new sd
+        LocalizedString.new sd.is_a?(Hash) ? sd[:content] : sd
       end
       org[:contact] = contacts_hash_to_bib(org)
       org[:logo] = Image.new(**org[:logo][:image]) if org[:logo]
