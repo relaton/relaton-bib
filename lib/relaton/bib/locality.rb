@@ -2,9 +2,9 @@ module Relaton
   module Bib
     class Locality < BibItemLocality
       # @return [String]
-      def to_xml
-        Model::Locality.to_xml self
-      end
+      # def to_xml
+      #   Model::Locality.to_xml self
+      # end
 
       #
       # Render locality as hash.

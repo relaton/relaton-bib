@@ -1,6 +1,6 @@
 # forzen_string_literal: true
 
-describe Relaton::Bib::Bdate do
+describe Relaton::Bib::Date do
   context "date on given" do
     subject do
       described_class.new(type: "published", on: "November 2014")

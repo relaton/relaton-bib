@@ -9,26 +9,27 @@ module Relaton
       # TYPES = %w[main alt].freeze
 
       # @return [String, nil] allowed values: "main" or "alt"
-      attr_reader :type
+      attr_accessor :type
 
       # @return [Relaton::Bib::Formattedref, nil]
-      attr_reader :formattedref
+      attr_accessor :formattedref
 
-      # @return [Relaton::Bib::Title] title
-      attr_reader :title
+      # @return [Relaton::Bib::TitleCollection] title
+      attr_accessor :title
+
+      # @return [Relaton::Bib::Place, nil]
+      attr_accessor :place
 
       # @return [String, nil]
-      attr_reader :place, :organization, :from, :to, :number, :partnumber, :run
+      attr_accessor :organization, :from, :to, :number, :partnumber, :run
 
       # @return [Relaton::Bib::LocalizedString, nil]
-      attr_reader :abbreviation
+      attr_accessor :abbreviation
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-
-      # @param type [String, nil]
+      # @param type [String, nil] allowed values: "main" or "alt"
       # @param formattedref [Relaton::Bib::Formattedref, nil]
-      # @param title [Relaton::Bib::Title] title
-      # @param place [String, nil]
+      # @param title [Relaton::Bib::TitleCollection] title
+      # @param place [Relation::Bib::Place, nil]
       # @param orgaization [String, nil]
       # @param abbreviation [Relaton::Bib::LocalizedString, nil]
       # @param from [String, nil]
@@ -36,11 +37,7 @@ module Relaton
       # @param number [String, nil]
       # @param partnumber [String, nil]
       # @param run [String, nil]
-      def initialize(**args)
-        unless args[:title].is_a?(Relaton::Bib::Title)
-          raise ArgumentError, "argument `title` should present in series"
-        end
-
+      def initialize(title:, **args)
         # if args[:type] && !TYPES.include?(args[:type])
         #   warn "[relaton-bib] Series type is invalid: #{args[:type]}"
         # end
@@ -57,45 +54,40 @@ module Relaton
         @partnumber   = args[:partnumber]
         @run          = args[:run]
       end
-      # rubocop:enable Metrics/MethodLength
-
-      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       # @param builder [Nokogiri::XML::Builder]
-      def to_xml(builder) # rubocop:disable Metrics/MethodLength
-        xml = builder.series do
-          formattedref&.to_xml builder
-          builder.title { title.to_xml builder }
-          builder.place place if place
-          builder.organization organization if organization
-          builder.abbreviation { abbreviation.to_xml builder } if abbreviation
-          builder.from from if from
-          builder.to to if to
-          builder.number number if number
-          builder.partnumber partnumber if partnumber
-          builder.run run if run
-        end
-        xml[:type] = type if type
-      end
-      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
-      # rubocop:enable Metrics/PerceivedComplexity
+      # def to_xml(builder) # rubocop:disable Metrics/MethodLength
+      #   xml = builder.series do
+      #     formattedref&.to_xml builder
+      #     builder.title { title.to_xml builder }
+      #     builder.place place if place
+      #     builder.organization organization if organization
+      #     builder.abbreviation { abbreviation.to_xml builder } if abbreviation
+      #     builder.from from if from
+      #     builder.to to if to
+      #     builder.number number if number
+      #     builder.partnumber partnumber if partnumber
+      #     builder.run run if run
+      #   end
+      #   xml[:type] = type if type
+      # end
 
       # @return [Hash]
-      def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-        hash = {}
-        hash["type"] = type if type
-        hash["formattedref"] = formattedref.to_hash if formattedref
-        hash["title"] = title.to_hash
-        hash["place"] = place if place
-        hash["organization"] = organization if organization
-        hash["abbreviation"] = abbreviation.to_hash if abbreviation
-        hash["from"] = from if from
-        hash["to"] = to if to
-        hash["number"] = number if number
-        hash["partnumber"] = partnumber if partnumber
-        hash["run"] = run if run
-        hash
-      end
+      # def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+      #   hash = {}
+      #   hash["type"] = type if type
+      #   hash["formattedref"] = formattedref.to_hash if formattedref
+      #   hash["title"] = title.to_hash
+      #   hash["place"] = place if place
+      #   hash["organization"] = organization if organization
+      #   hash["abbreviation"] = abbreviation.to_hash if abbreviation
+      #   hash["from"] = from if from
+      #   hash["to"] = to if to
+      #   hash["number"] = number if number
+      #   hash["partnumber"] = partnumber if partnumber
+      #   hash["run"] = run if run
+      #   hash
+      # end
 
       # @param prefix [String]
       # @param count [Integer]

@@ -1,14 +1,14 @@
-require_relative "typed_uri"
-
 module Relaton
   module Model
     class Uri < Lutaml::Model::Serializable
-      model Bib::Bsource
+      # model Relaton::Bib::Uri
 
-      include TypedUri
+      attribute :type, Lutaml::Model::Type::String
+      attribute :content, Lutaml::Model::Type::String
 
-      mappings[:xml].instance_eval do
-        root "uri"
+      xml do
+        map_attribute "type", to: :type
+        map_content to: :content
       end
     end
   end

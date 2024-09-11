@@ -33,8 +33,8 @@ module Relaton
           attribute :type, Lutaml::Model::Type::String
           attribute :schema_version, Lutaml::Model::Type::String
           attribute :fetched, Lutaml::Model::Type::Date
-          attribute :formattedref, Formattedref
-          attribute :title, Bib::TitleCollection
+          attribute :formattedref, Lutaml::Model::Type::String
+          attribute :title, Title, collection: true
           attribute :source, Uri, collection: true
           attribute :docidentifier, Docidentifier, collection: true
           attribute :docnumber, Lutaml::Model::Type::String
@@ -45,7 +45,7 @@ module Relaton
             map_attribute "schema-version", to: :schema_version
             map_attribute "fetched", to: :fetched
             map_element "formattedref", to: :formattedref
-            map_element "title", to: :title # , using: { from: :title_from_xml, to: :title_to_xml }
+            map_element "title", to: :title # , with: { from: :title_from_xml, to: :title_to_xml }
             map_element "uri", to: :source
             map_element "docidentifier", to: :docidentifier
             map_element "docnumber", to: :docnumber

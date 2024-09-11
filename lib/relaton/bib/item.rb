@@ -1,39 +1,43 @@
 # frozen_string_literal: true
 
-require_relative "contributor"
+require_relative "address"
+require_relative "affiliation"
 require_relative "document_type"
 require_relative "image"
 require_relative "localized_string"
 require_relative "forename"
 require_relative "full_name"
-require_relative "bsource"
+require_relative "source"
+require_relative "docidentifier_type"
 require_relative "docidentifier"
-require_relative "copyright_association"
+require_relative "copyright"
 require_relative "formatted_string"
-require_relative "contribution_info"
-require_relative "bdate"
+require_relative "contributor"
+require_relative "date"
 require_relative "series"
-require_relative "document_status"
+require_relative "status"
 require_relative "organization"
-require_relative "document_relation_collection"
+require_relative "relation_collection"
 require_relative "title"
 require_relative "title_collection"
 require_relative "formattedref"
 require_relative "medium"
 require_relative "classification"
 require_relative "validity"
-require_relative "document_relation"
+require_relative "relation"
 require_relative "bib_item_locality"
 require_relative "locality"
 require_relative "locality_stack"
-require_relative "biblio_note"
-require_relative "biblio_version"
+require_relative "note"
+require_relative "bversion"
 require_relative "place"
+require_relative "price"
+require_relative "size"
 require_relative "structured_identifier"
 require_relative "editorial_group"
 require_relative "ics"
-require_relative "bibliographic_size"
 require_relative "edition"
+require_relative "keyword"
 
 module Relaton
   module Bib
@@ -72,206 +76,153 @@ module Relaton
       # @return [Array<Relaton::Bib::Bdate>]
       attr_writer :date
 
-      # @return [Array<Relaton::Bib::ContributionInfo>]
-      attr_reader :contributor
+      # @return [Array<Relaton::Bib::Contributor>]
+      attr_accessor :contributor
 
-      # @return [Array<Relaton::Bib::Item::Version>]
-      attr_reader :version
+      # @return [Array<Relaton::Bib::Bversion>]
+      attr_accessor :version
 
-      # @return [Relaton::Bib::BiblioNoteCollection]
-      attr_reader :biblionote
+      # @return [Array<Relaton::Bib::Note>]
+      attr_accessor :note
 
       # @return [Array<String>] language Iso639 code
-      attr_reader :language
-
-      # @return [Array<String>] script Iso15924 code
-      attr_reader :script
+      attr_accessor :language, :locale, :script
 
       # @return [Relaton::Bib::Formattedref, nil]
       attr_accessor :formattedref
 
-      # @return [Array<Relaton::Bib::FormattedString>]
+      # @return [Array<Relaton::Bib::LocalizedString>]
       attr_writer :abstract
 
-      # @return [Relaton::Bib::DocumentStatus, nil]
-      attr_reader :status
+      # @return [Relaton::Bib::Status, nil]
+      attr_accessor :status
 
-      # @return [Array<Relaton::Bib::CopyrightAssociation>]
-      attr_reader :copyright
+      # @return [Array<Relaton::Bib::Copyright>]
+      attr_accessor :copyright
 
-      # @return [Relaton::Bib::DocRelationCollection]
-      attr_reader :relation
+      # @return [Relaton::Bib::RelationCollection]
+      attr_accessor :relation
 
       # @return [Array<Relaton::Bib::Series>]
-      attr_reader :series
+      attr_accessor :series
 
       # @return [Relaton::Bib::Medium, nil]
-      attr_reader :medium
+      attr_accessor :medium
 
       # @return [Array<Relaton::Bib::Place>]
-      attr_reader :place
+      attr_accessor :place
+
+      # @return [Array<Relaton::Bib::Price>]
+      attr_accessor :price
 
       # @return [Array<Relaton::Bib::Locality, Relaton::Bib::LocalityStack>]
-      attr_reader :extent
+      attr_accessor :extent
+
+      # @return [Relaton::Bib::Size]
 
       # @return [Array<Strig>]
-      attr_reader :accesslocation, :license
+      attr_accessor :accesslocation, :license
 
       # @return [Array<Relaton::Classification>]
-      attr_reader :classification
+      attr_accessor :classification
 
       # @return [Relaton::Bib:Validity, nil]
-      attr_reader :validity
+      attr_accessor :validity
 
       # @return [Date]
       attr_accessor :fetched
 
-      # @return [Array<Relaton::Bib::LocalizedString>]
-      attr_reader :keyword
+      # @return [Array<Relaton::Bib::Keyword>]
+      attr_accessor :keyword
 
       # @return [Relaton::Bib::EditorialGroup, nil]
-      attr_reader :editorialgroup
+      attr_accessor :editorialgroup
 
       # @return [Array<Relaton::Bib:ICS>]
-      attr_reader :ics
+      attr_accessor :ics
 
       # @return [Relaton::Bib::StructuredIdentifierCollection]
-      attr_reader :structuredidentifier
+      attr_accessor :structuredidentifier
 
-      # @return [Relaton::Bib::BibliographicSize, nil]
-      attr_reader :size
+      # @return [Relaton::Bib::Size, nil]
+      attr_accessor :size
 
       # @param id [String, nil]
       # @param title [Relaton::Bib::TitleCollection]
       # @param formattedref [Relaton::Bib::Formattedref, nil]
       # @param type [String, nil]
-      # @param docid [Array<Relaton::Bib::Docidentifier>]
+      # @param docidentifier [Array<Relaton::Bib::Docidentifier>]
       # @param docnumber [String, nil]
-      # @param language [Arra<String>]
+      # @param language [Array<String>]
+      # @param locale [Array<String>]
       # @param script [Array<String>]
-      # @param docstatus [Relaton::Bib::DocumentStatus, nil]
-      # @param edition [Relaton::Bib::Edition, String, Integer, Float, nil]
-      # @param version [Array<Relaton::Bib::Item::Version>]
-      # @param biblionote [Relaton::Bib::BiblioNoteCollection]
+      # @param status [Relaton::Bib::Status, nil]
+      # @param edition [Relaton::Bib::Edition]
+      # @param version [Array<Relaton::Bib::Bversion>]
+      # @param note [Array<Relaton::Bib::Note>]
       # @param series [Array<Relaton::Bib::Series>]
       # @param medium [Relaton::Bib::Medium, nil]
-      # @param place [Array<String, Relaton::Bib::Place>]
+      # @param place [Array<Relaton::Bib::Place>]
+      # @param price [Array<Relaton::Bib::Price>]
       # @param extent [Array<Relaton::Bib::Locality, Relaton::Bib::LocalityStack>]
       # @param accesslocation [Array<String>]
+      # @param license [Array<String>]
       # @param classification [Array<Relaton::Bib::Classification>]
       # @param validity [Relaton::Bib:Validity, nil]
-      # @param fetched [Date, nil] default nil
+      # @param fetched [Date, nil]
       # @param keyword [Array<String>]
       # @param doctype [Relaton::Bib::DocumentType]
       # @param subdoctype [String]
       # @param editorialgroup [Relaton::Bib::EditorialGroup, nil]
       # @param ics [Array<Relaton::Bib::ICS>]
       # @param structuredidentifier [Relaton::Bib::StructuredIdentifierCollection]
-      # @param size [Relaton::Bib::BibliographicSize, nil]
-      #
-      # @param copyright [Array<Hash, Relaton::Bib::CopyrightAssociation>]
-      # @option copyright [Array<Hash, Relaton::Bib::ContributionInfo>] :owner
-      # @option copyright [String] :from
-      # @option copyright [String, nil] :to
-      # @option copyright [String, nil] :scope
-      #
-      # @param date [Array<Hash, Relaton::Bib::Bdate>]
-      # @option date [String] :type
-      # @option date [String, nil] :from required if :on is nil
-      # @option date [String, nil] :to
-      # @option date [String, nil] :on required if :from is nil
-      #
-      # @param contributor [Array<Hash, Relaton::Bib::ContributionInfo>]
-      # @option contributor [RealtonBib::Organization, Relaton::Bib::Person] :entity
-      # @option contributor [String] :type
-      # @option contributor [String] :from
-      # @option contributor [String] :to
-      # @option contributor [String] :abbreviation
-      # @option contributor [Array<Array<String,Array<String>>>] :role
-      #
-      # @param abstract [Array<Relaton::Bib::FormattedString>]
-      #
-      # @param relation [Array<Hash>]
-      # @option relation [String] :type
-      # @option relation [Relaton::Bib::Item,
-      #                   RelatonIso::IsoItem] :bibitem
-      # @option relation [Array<Relaton::Bib::Locality,
-      #                   Relaton::Bib::LocalityStack>] :locality
-      # @option relation [Array<Relaton::Bib::SourceLocality,
-      #                   Relaton::Bib::SourceLocalityStack>] :source_locality
-      #
-      # @param source [Array<Relaton::Bib::Bsource>]
+      # @param size [Relaton::Bib::Size, nil]
+      # @param copyright [Array<Hash, Relaton::Bib::Copyright>]
+      # @param date [Array<Relaton::Bib::Date>]
+      # @param contributor [Array<Relaton::Bib::Contributor>]
+      # @param abstract [Array<Relaton::Bib::LocalizedString>]
+      # @param relation [Relaton::Bib::RelationCollection]
+      # @param source [Array<Relaton::Bib::Source>]
       def initialize(**args)
-        @id = args[:id]
-        @type = args[:type]
+        @id             = args[:id]
+        @type           = args[:type]
         @schema_version = args[:schema_version]
-        @title = args[:title] || TitleCollection.new
-        @source = args[:source] || []
-        @docidentifier = args[:docidentifier] || []
-        @docnumber = args[:docnumber]
-        @date = args[:date] || []
+        @fetched        = args[:fetched]
+        @formattedref   = args[:formattedref]
+        @title          = args[:title] || TitleCollection.new
+        @source         = args[:source] || []
+        @docidentifier  = args[:docidentifier] || []
+        @docnumber      = args[:docnumber]
+        @date           = args[:date] || []
+        @contributor    = args[:contributor] || []
+        @edition        = args[:edition]
+        @version        = args[:version] || []
+        @note           = args[:note] || []
+        @language       = args[:language] || []
+        @locale         = args[:locale] || []
+        @script         = args[:script] || []
+        @abstract       = args[:abstract] || []
+        @status         = args[:status]
+        @copyright      = args[:copyright] || []
+        @relation       = args[:relation] || RelationCollection.new
+        @series         = args[:series] || []
+        @medium         = args[:medium]
+        @place          = args[:place] || []
+        @price          = args[:price] || []
+        @extent         = args[:extent] || []
+        @size           = args[:size]
+        @accesslocation = args[:accesslocation] || []
+        @license        = args[:license] || []
+        @classification = args[:classification] || []
+        @keyword        = args[:keyword] || []
+        @validity       = args[:validity]
+
       #   if args[:type] && !TYPES.include?(args[:type])
       #     Util.warn %{WARNING: type `#{args[:type]}` is invalid.}
       #   end
 
-      #   @title = args[:title]
-
-      #   @date = (args[:date] || []).map do |d|
-      #     d.is_a?(Hash) ? Bdate.new(**d) : d
-      #   end
-
-      #   @contributor = (args[:contributor] || []).map do |c|
-      #     if c.is_a? Hash
-      #       e = c[:entity].is_a?(Hash) ? Organization.new(**c[:entity]) : c[:entity]
-      #       ContributionInfo.new(entity: e, role: c[:role])
-      #     else c
-      #     end
-      #   end
-
-      #   @abstract = args[:abstract] || []
-
-      #   @copyright = args.fetch(:copyright, []).map do |c|
-      #     c.is_a?(Hash) ? CopyrightAssociation.new(**c) : c
-      #   end
-
-      #   @docidentifier  = args[:docid] || []
-      #   @formattedref   = args[:formattedref] if title.empty?
       #   @id             = args[:id] || makeid(nil, false)
-      #   @type           = args[:type]
-      #   @docnumber      = args[:docnumber]
-      #   @edition        = case args[:edition]
-      #                     when Hash then Edition.new(**args[:edition])
-      #                     when String, Integer, Float
-      #                       Edition.new(content: args[:edition].to_s)
-      #                     when Edition then args[:edition]
-      #                     end
-      #   @version        = args.fetch :version, []
-      #   @biblionote     = args.fetch :biblionote, BiblioNoteCollection.new([])
-      #   @language       = args.fetch :language, []
-      #   @script         = args.fetch :script, []
-      #   @status         = args[:docstatus]
-      #   @relation       = DocRelationCollection.new(args[:relation] || [])
-      #   @source            = args.fetch(:source, [])
-      #   @series         = args.fetch :series, []
-      #   @medium         = args[:medium]
-      #   @place          = args.fetch(:place, []).map do |pl|
-      #     pl.is_a?(String) ? Place.new(name: pl) : pl
       #   end
-      #   @extent         = args[:extent] || []
-      #   @size           = args[:size]
-      #   @accesslocation = args.fetch :accesslocation, []
-      #   @classification = args.fetch :classification, []
-      #   @validity       = args[:validity]
-      #   # we should pass the fetched arg from scrappers
-      #   @fetched        = args.fetch :fetched, nil
-      #   @keyword        = (args[:keyword] || []).map do |kw|
-      #     case kw
-      #     when Hash then LocalizedString.new(kw[:content], kw[:language], kw[:script])
-      #     when String then LocalizedString.new(kw)
-      #     else kw
-      #     end
-      #   end
-      #   @license        = args.fetch :license, []
       #   @doctype        = args[:doctype]
       #   @subdoctype     = args[:subdoctype]
       #   @editorialgroup = args[:editorialgroup]

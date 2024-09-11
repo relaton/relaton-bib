@@ -2,7 +2,7 @@ require "addressable"
 
 module Relaton
   module Bib
-    class Bsource
+    class Source
       # @return [String, nil]
       attr_accessor :type, :language, :script, :locale
 

@@ -5,14 +5,42 @@ require "jing"
 describe Relaton::Bib::Item do
   before(:each) { Relaton::Bib.instance_variable_set :@configuration, nil }
 
+  let(:fref) { Relaton::Bib::Formattedref.new content: "ISOTC211:2014" }
+  let(:title) { Relaton::Bib::Title.new(content: "Geographic information") }
+  let(:title_col) { Relaton::Bib::TitleCollection.new << title }
+  let(:docid) { Relaton::Bib::Docidentifier.new type: "ISO", content: "211" }
+  let(:source) { Relaton::Bib::Source.new content: "https://www.iso.org/standard/53798.html" }
+  let(:date) { Relaton::Bib::Date.new type: "published", on: "2014-10" }
+  let(:org) { Relaton::Bib::Organization.new name: "ISO/TC 211" }
+  let(:contrib) { Relaton::Bib::Contributor.new entity: org, role: [{ type: "author" }] }
+  let(:edition) { Relaton::Bib::Edition.new content: "ed 1", number: "1" }
+  let(:version) { Relaton::Bib::Bversion.new revision_date: Date.parse("2020-11-22"), draft: "v1.0" }
+  let(:note) { Relaton::Bib::Note.new content: "This is note." }
+  let(:abstract) { Relaton::Bib::LocalizedString.new content: "This is abstract.", language: "en" }
+  let(:status) { Relaton::Bib::Status.new stage: "published", substage: "60" }
+  let(:copyright) { Relaton::Bib::Copyright.new owner: [org], from: "2019" }
+  let(:relation) { Relaton::Bib::Relation.new(type: "instanceOf", bibitem: Relaton::Bib::Item.new()) }
+  let(:relation_col) { Relaton::Bib::RelationCollection.new << relation }
+  let(:series) { Relaton::Bib::Series.new title: Relaton::Bib::TitleCollection.new, type: "main" }
+  let(:medium) { Relaton::Bib::Medium.new size: "A4" }
+  let(:place) { Relaton::Bib::Place.new city: "Geneva" }
+  let(:price) { Relaton::Bib::Price.new currency: "USD", amount: 100 }
+  let(:extent) { Relaton::Bib::Locality.new type: "section", reference_from: "1", reference_to: "2" }
+  let(:size) { Relaton::Bib::Size.new value: [Relaton::Bib::Size::Value.new(type: "page", content: "10")] }
+  let(:accesslocation) { "/path/to/file" }
+  let(:license) { "license" }
+  let(:classifications) { Relaton::Bib::Classification.new(type: "IEC", content: "123") }
+  let(:taxon) { Relaton::Bib::LocalizedString.new content: "keyword", language: "en" }
+  let(:keyword) { Relaton::Bib::Keyword.new taxon: [taxon] }
+  let(:validity) { Relaton::Bib::Validity.new start_date: "2020-01-01", end_date: "2020-12-31" }
   subject do
-    title = Relaton::Bib::TitleCollection.new
-    title << Relaton::Bib::Title.new(content: "Geographic information")
-    docid = Relaton::Bib::Docidentifier.new type: "ISO", id: "211"
-    uri = Relaton::Bib::Bsource.new content: "https://www.iso.org/standard/53798.html"
-    abstract = Relaton::Bib::FormattedString.new content: "This is abstract.", language: "en"
     described_class.new(
-      fetched: "2022-05-02", docid: [docid], title: title_collection, uri: [uri], abstract: [abstract],
+      type: "standard", fetched: "2022-05-02", formattedref: fref, title: title_col, source: [source],
+      docidentifier: [docid], docnumber: "211", date: [date], contributor: [contrib], edition: edition,
+      version: [version], note: [note], language: ["en"], locale: ["EN-us"], script: ["Latn"],
+      abstract: [abstract], status: status, copyright: [copyright], relation: relation_col, series: [series],
+      medium: medium, place: [place], price: [price], extent: [extent], size: size, accesslocation: [accesslocation],
+      license: [license], classification: [classifications], keyword: [keyword],
     )
   end
 
@@ -27,12 +55,36 @@ describe Relaton::Bib::Item do
     #   expect(bib.keyword.first.script).to eq ["Latn"]
     # end
 
-    it do
-      expect(subject).to be_instance_of Relaton::Bib::Item
-      expect(subject.docidentifier.first).to be_instance_of Relaton::Bib::Docidentifier
-      expect(subject.docidentifier.first.id).to eq "211"
-      expect(subject.docidentifier.first.type).to eq "ISO"
-    end
+    it { is_expected.to be_instance_of Relaton::Bib::Item }
+    it { expect(subject.type).to eq "standard" }
+    it { expect(subject.fetched).to eq "2022-05-02" }
+    it { expect(subject.formattedref).to eq fref }
+    it { expect(subject.docidentifier).to eq [docid] }
+    it { expect(subject.docnumber).to eq "211" }
+    it { expect(subject.title).to eq title_col }
+    it { expect(subject.source).to eq [source] }
+    it { expect(subject.date).to eq [date] }
+    it { expect(subject.contributor).to eq [contrib] }
+    it { expect(subject.edition).to eq edition }
+    it { expect(subject.version).to eq [version] }
+    it { expect(subject.note).to eq [note] }
+    it { expect(subject.language).to eq ["en"] }
+    it { expect(subject.locale).to eq ["EN-us"] }
+    it { expect(subject.script).to eq ["Latn"] }
+    it { expect(subject.abstract).to eq [abstract] }
+    it { expect(subject.status).to eq status }
+    it { expect(subject.copyright).to eq [copyright] }
+    it { expect(subject.relation).to eq relation_col }
+    it { expect(subject.series).to eq [series] }
+    it { expect(subject.medium).to eq medium }
+    it { expect(subject.place).to eq [place] }
+    it { expect(subject.price).to eq [price] }
+    it { expect(subject.extent).to eq [extent] }
+    it { expect(subject.size).to eq size }
+    it { expect(subject.accesslocation).to eq [accesslocation] }
+    it { expect(subject.license).to eq [license] }
+    it { expect(subject.classification).to eq [classifications] }
+    it { expect(subject.keyword).to eq [keyword] }
   end
 
   context "instance" do
@@ -270,7 +322,7 @@ describe Relaton::Bib::Item do
         fname = Relaton::Bib::Forename.new content: "James", initial: "J"
         name = Relaton::Bib::FullName.new surname: sname, forename: [fname]
         entity = Relaton::Bib::Person.new name: name
-        contrib = Relaton::Bib::ContributionInfo.new entity: entity
+        contrib = Relaton::Bib::Contributor.new entity: entity
         bibitem = Relaton::Bib::Item.new docid: [docid], contributor: [contrib]
         expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
           <reference anchor="ID">
@@ -287,7 +339,7 @@ describe Relaton::Bib::Item do
         docid = Relaton::Bib::Docidentifier.new type: "IETF", id: "ID"
         entity = Relaton::Bib::Organization.new name: "org"
         role = [{ type: "author", description: ["BibXML author"] }]
-        contrib = Relaton::Bib::ContributionInfo.new entity: entity, role: role
+        contrib = Relaton::Bib::Contributor.new entity: entity, role: role
         bibitem = Relaton::Bib::Item.new docid: [docid], contributor: [contrib]
         expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
           <reference anchor="ID">
@@ -316,8 +368,7 @@ describe Relaton::Bib::Item do
     org = Relaton::Bib::Organization.new(
       name: "Test Org", abbreviation: "TO", url: "test.org",
     )
-    owner = [Relaton::Bib::ContributionInfo.new(entity: org)]
-    copyright = Relaton::Bib::CopyrightAssociation.new(owner: owner, from: "2018")
+    copyright = Relaton::Bib::Copyright.new(owner: [org], from: "2018")
     bibitem = Relaton::Bib::Item.new(
       formattedref: Relaton::Bib::Formattedref.new(content: "ISO123"),
       copyright: [copyright],
@@ -333,13 +384,12 @@ describe Relaton::Bib::Item do
     ).to_stderr
   end
 
-  context Relaton::Bib::CopyrightAssociation do
+  context Relaton::Bib::Copyright do
     it "initialise with owner object" do
       org = Relaton::Bib::Organization.new(
         name: "Test Org", abbreviation: "TO", url: "test.org",
       )
-      owner = [Relaton::Bib::ContributionInfo.new(entity: org)]
-      copy = Relaton::Bib::CopyrightAssociation.new owner: owner, from: "2019"
+      copy = Relaton::Bib::Copyright.new owner: [org], from: "2019"
       expect(copy.owner).to eq owner
     end
   end

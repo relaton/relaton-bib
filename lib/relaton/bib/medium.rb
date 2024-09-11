@@ -2,7 +2,7 @@ module Relaton
   module Bib
     class Medium
       # @return [String, nil]
-      attr_reader :content, :genre, :form, :carrier, :size, :scale
+      attr_accessor :content, :genre, :form, :carrier, :size, :scale
 
       #
       # Initialize a Medium object.
@@ -28,32 +28,32 @@ module Relaton
       #
       # @param builder [Nokogiri::XML::Builder]
       #
-      def to_xml(builder) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
-        builder.medium do
-          builder.content content if content
-          builder.genre genre if genre
-          builder.form form if form
-          builder.carrier carrier if carrier
-          builder.size size if size
-          builder.scale scale if scale
-        end
-      end
+      # def to_xml(builder) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      #   builder.medium do
+      #     builder.content content if content
+      #     builder.genre genre if genre
+      #     builder.form form if form
+      #     builder.carrier carrier if carrier
+      #     builder.size size if size
+      #     builder.scale scale if scale
+      #   end
+      # end
 
       #
       # Render Medium object to hash.
       #
       # @return [Hash]
       #
-      def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
-        hash = {}
-        hash["content"] = content if content
-        hash["genre"] = genre if genre
-        hash["form"] = form if form
-        hash["carrier"] = carrier if carrier
-        hash["size"] = size if size
-        hash["scale"] = scale if scale
-        hash
-      end
+      # def to_hash # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      #   hash = {}
+      #   hash["content"] = content if content
+      #   hash["genre"] = genre if genre
+      #   hash["form"] = form if form
+      #   hash["carrier"] = carrier if carrier
+      #   hash["size"] = size if size
+      #   hash["scale"] = scale if scale
+      #   hash
+      # end
 
       #
       # Render Medium object to AsciiBib.

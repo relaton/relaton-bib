@@ -3,18 +3,18 @@
 module Relaton
   module Bib
     # Document status.
-    class DocumentStatus
-      # @return [Relaton::Bib::DocumentStatus::Stage]
-      attr_reader :stage
+    class Status
+      # @return [Relaton::Bib::Status::Stage]
+      attr_accessor :stage
 
-      # @return [Relaton::Bib::DocumentStatus::Stage, nil]
-      attr_reader :substage
+      # @return [Relaton::Bib::Status::Stage, nil]
+      attr_accessor :substage
 
       # @return [String, nil]
-      attr_reader :iteration
+      attr_accessor :iteration
 
-      # @param stage [String, Hash, Relaton::Bib::DocumentStatus::Stage]
-      # @param substage [String, Hash, nil, Relaton::Bib::DocumentStatus::Stage]
+      # @param stage [String, Hash, Relaton::Bib::Status::Stage]
+      # @param substage [String, Hash, nil, Relaton::Bib::Status::Stage]
       # @param iteration [String, nil]
       def initialize(stage:, substage: nil, iteration: nil)
         @stage = stage_new stage
@@ -52,8 +52,8 @@ module Relaton
 
       private
 
-      # @param stg [Relaton::Bib::DocumentStatus::Stage, Hash, String, nil]
-      # @return [Relaton::Bib::DocumentStatus::Stage]
+      # @param stg [Relaton::Bib::Status::Stage, Hash, String, nil]
+      # @return [Relaton::Bib::Status::Stage]
       def stage_new(stg)
         case stg
         when Stage then stg

@@ -1,4 +1,4 @@
-describe Relaton::Model::Uri do
+describe Relaton::Model::Source do
   it "parse XML" do
     xml = <<~XML
       <uri type="src" language="en" locale="EN-us" script="Latn">http://example.com</uri>

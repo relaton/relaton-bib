@@ -10,22 +10,60 @@ module Relaton
                      :each, :detect, :map, :reduce, :length
 
       # @param title [Array<Relaton::Bib::Title, Hash>]
-      def initialize
-        @titles = []
-      #   @titles = (title || []).map do |t|
-      #     t.is_a?(Hash) ? Title.new(**t) : t
-      #   end
+      def initialize(titles = [])
+        @titles = titles
       end
 
-      def self.cast(value)
-        value
+      #
+      # Create TitleCollection from string
+      #
+      # @param title [String] title string
+      # @param lang [String, nil] language code Iso639
+      # @param script [String, nil] script code Iso15924
+      # @param format [String] format text/html, text/plain
+      #
+      # @return [Relaton::Bib::TitleCollection] collection of Title
+      #
+      def self.from_string(title, lang = nil, script = nil, format = "text/plain")
+        types = %w[title-intro title-main title-part]
+        ttls = split_title(title)
+        tts = ttls.map.with_index do |p, i|
+          next unless p
+
+          Title.new type: types[i], content: p, language: lang, script: script, format: format
+        end.compact
+        tts << Title.new(type: "main", content: ttls.compact.join(" - "),
+                  language: lang, script: script, format: format)
+        new tts
+      end
+
+      # @param title [String]
+      # @return [Array<String, nil>]
+      def self.split_title(title)
+        ttls = title.sub(/\w\.Imp\s?\d+\u00A0:\u00A0/, "").split " - "
+        case ttls.size
+        when 0, 1 then [nil, ttls.first.to_s, nil]
+        else intro_or_part ttls
+        end
+      end
+
+      # @param ttls [Array<String>]
+      # @return [Array<String, nil>]
+      def self.intro_or_part(ttls)
+        if /^(Part|Partie) \d+:/.match? ttls[1]
+          [nil, ttls[0], ttls[1..].join(" -- ")]
+        else
+          parts = ttls.slice(2..-1)
+          part = parts.join " -- " if parts.any?
+          [ttls[0], ttls[1], part]
+        end
       end
 
       # @param lang [String, nil] language code Iso639
       # @return [RelatonIsoBib::TitleCollection]
       def lang(lang = nil)
         if lang
-          TitleCollection.new select_lang(lang)
+          new select_lang(lang)
         else self
         end
       end
@@ -36,7 +74,7 @@ module Relaton
 
       # @return [Relaton::Bib::TitleCollection]
       def select(&block)
-        TitleCollection.new titles.select(&block)
+        new titles.select(&block)
       end
 
       # @param init [Array, Hash]
@@ -55,7 +93,7 @@ module Relaton
       # @param tcoll [Relaton::Bib::TitleCollection]
       # @return [Relaton::Bib::TitleCollection]
       def +(tcoll)
-        TitleCollection.new titles + tcoll.titles
+        new titles + tcoll.titles
       end
 
       # @param opts [Hash]

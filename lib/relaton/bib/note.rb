@@ -1,6 +1,6 @@
 module Relaton
   module Bib
-    class BiblioNoteCollection
+    class NoteCollection
       extend Forwardable
 
       def_delegators  :@array, :[], :first, :last, :empty?, :any?, :size,
@@ -20,36 +20,30 @@ module Relaton
       # @param opts [Hash]
       # @option opts [Nokogiri::XML::Builder] XML builder
       # @option opts [String] :lang language
-      def to_xml(**opts)
-        bnc = @array.select { |bn| bn.language&.include? opts[:lang] }
-        bnc = @array unless bnc.any?
-        bnc.each { |bn| bn.to_xml opts[:builder] }
-      end
+      # def to_xml(**opts)
+      #   bnc = @array.select { |bn| bn.language&.include? opts[:lang] }
+      #   bnc = @array unless bnc.any?
+      #   bnc.each { |bn| bn.to_xml opts[:builder] }
+      # end
     end
 
-    class BiblioNote # < FormattedString
+    class Note  < LocalizedString
       # @return [String, nil]
-      attr_accessor :type, :language, :script, :locale
+      attr_accessor :type
 
-      # @return [Relaton::Model::LocalizedMarkedUpString]
-      attr_reader :content
-
-      # @param content [String, Relaton::Model::LocalizedStringCollection, nil]
+      # @param content [String]
       # @param type [String, nil]
       # @param language [String, nil] language code Iso639
       # @param script [String, nil] script code Iso15924
       # @param locale [String, nil] the content format
       def initialize(**args)
-        self.content = args[:content]
+        super
         @type = args[:type]
-        @language = args[:language]
-        @script = args[:script]
-        @locale = args[:locale]
       end
 
-      def content=(content)
-        @content = content.is_a?(String) ? Relaton::Model::LocalizedString.from_xml(content) : content
-      end
+      # def content=(content)
+      #   @content = content.is_a?(String) ? Relaton::Model::LocalizedString.from_xml(content) : content
+      # end
 
       # @param builder [Nokogiri::XML::Builder]
       # def to_xml(builder)

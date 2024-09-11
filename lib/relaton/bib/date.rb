@@ -5,7 +5,7 @@ require "time"
 module Relaton
   module Bib
     # Bibliographic date.
-    class Bdate
+    class Date
       TYPES = %w[published accessed created implemented obsoleted confirmed
                  updated corrected issued transmitted copied unchanged circulated adapted
                  vote-started vote-ended announced stable-until].freeze

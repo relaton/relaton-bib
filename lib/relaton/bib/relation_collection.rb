@@ -3,21 +3,20 @@
 module Relaton
   module Bib
     # Document relation collection
-    class DocRelationCollection
+    class RelationCollection
       extend Forwardable
 
-      def_delegators :@array, :<<, :[], :first, :last, :empty?, :any?, :size,
+      def_delegators :@array, :[], :first, :last, :empty?, :any?, :size,
                      :each, :detect, :map, :reduce, :length, :unshift, :max_by
 
-      # @param relation [Array<Relaton::Bib::DocumentRelation, Hash>]
-      # @option relation [String] :type
-      # @option relation [String] :identifier
-      # @option relation [String, NIllClass] :url (nil)
-      # @option relation [Array<Relaton::Bib::Locality, Relaton::Bib::LocalityStack>] :locality
-      # @option relation [Array<Relaton::Bib::SourceLocality, Relaton::Bib::SourceLocalityStack>] :source_locality
-      # @option relation [Relaton::Bib::Item, NillClass] :bibitem (nil)
-      def initialize(relation)
-        @array = relation.map { |r| r.is_a?(Hash) ? DocumentRelation.new(**r) : r }
+      # @param relation [Array<Relaton::Bib::DocumentRelation>]
+      def initialize(relation: [])
+        @array = relation
+      end
+
+      def <<(relation)
+        @array << relation
+        self
       end
 
       #

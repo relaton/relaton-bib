@@ -10,7 +10,7 @@ module Relaton
       # @return [String]
       attr_accessor :content
 
-      # @param content [String]
+      # @param content [String, Relaton::Bib::LocalizedString::Variants]
       # @param language [String, nil] language code Iso639
       # @param script [String, nil] script code Iso15924
       # @param locale [String, nil] language and script code
@@ -45,31 +45,6 @@ module Relaton
         content.empty?
       end
 
-      #
-      # Encode content.
-      #
-      # @param [String] cnt content
-      #
-      # @return [String] encoded content
-      #
-      # def encode(cnt)
-      #   escp cnt
-      # end
-
-      #
-      # Escope HTML entities.
-      #
-      # @param [String] str input string
-      #
-      # @return [String] output string
-      #
-      # def escp(str)
-      #   return unless str
-
-      #   coder = HTMLEntities.new
-      #   coder.encode coder.decode(str.dup.force_encoding("UTF-8"))
-      # end
-
       # @param prefix [String]
       # @param count [Integer] number of elements
       # @return [String]
@@ -84,17 +59,6 @@ module Relaton
         out += "#{pref}locale:: #{locale}\n" if locale
         out
       end
-
-      #
-      # Should be implemented in subclass.
-      #
-      # @param [String] str content
-      #
-      # @return [String] cleaned content
-      #
-      # def cleanup(str)
-      #   str
-      # end
     end
   end
 end

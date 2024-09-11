@@ -3,10 +3,10 @@ module Relaton
     class Place
 
       # @return [String, nil]
-      attr_reader :name, :city
+      attr_accessor :name, :city
 
       # @return [Array<Relaton::Bib::Place::RegionType>]
-      attr_reader :region, :country
+      attr_accessor :region, :country
 
       #
       # Initialize place.
@@ -16,15 +16,15 @@ module Relaton
       # @param region [Array<Relaton::Bib::Place::RegionType>] region of place
       # @param country [Array<Relaton::Bib::Place::RegionType>] country of place
       #
-      def initialize(name: nil, city: nil, region: [], country: []) # rubocop:disable Metrics/CyclomaticComplexity
+      def initialize(name: nil, city: nil, region: [], country: [])
         if name.nil? && city.nil?
           raise ArgumentError, "`name` or `city` should be provided"
         end
 
         @name    = name
         @city    = city
-        @region  = region.map { |r| r.is_a?(Hash) ? RegionType.new(**r) : r }
-        @country = country.map { |c| c.is_a?(Hash) ? RegionType.new(**c) : c }
+        @region  = region
+        @country = country
       end
 
       #
@@ -32,32 +32,32 @@ module Relaton
       #
       # @param builder [Nologiri::XML::Builder]
       #
-      def to_xml(builder)
-        if name
-          builder.place name
-        else
-          builder.place do |b|
-            b.city city
-            region.each { |r| b.region { r.to_xml b } }
-            country.each { |c| b.country { c.to_xml b } }
-          end
-        end
-      end
+      # def to_xml(builder)
+      #   if name
+      #     builder.place name
+      #   else
+      #     builder.place do |b|
+      #       b.city city
+      #       region.each { |r| b.region { r.to_xml b } }
+      #       country.each { |c| b.country { c.to_xml b } }
+      #     end
+      #   end
+      # end
 
       #
       # Render place as Hash.
       #
       # @return [Hash]
       #
-      def to_hash
-        if name then name
-        else
-          hash = { "city" => city }
-          hash["region"] = region.map(&:to_hash) if region.any?
-          hash["country"] = country.map(&:to_hash) if country.any?
-          hash
-        end
-      end
+      # def to_hash
+      #   if name then name
+      #   else
+      #     hash = { "city" => city }
+      #     hash["region"] = region.map(&:to_hash) if region.any?
+      #     hash["country"] = country.map(&:to_hash) if country.any?
+      #     hash
+      #   end
+      # end
 
       #
       # Render place as AsciiBib.
@@ -136,13 +136,13 @@ module Relaton
         }.freeze
 
         # @return [Strign] name of region
-        attr_reader :name
+        attr_accessor :name
 
         # @return [Strign, nil] ISO code of region
-        attr_reader :iso
+        attr_accessor :iso
 
         # @return [Boolean, nil]
-        attr_reader :recommended
+        attr_accessor :recommended
 
         #
         # Initialize region type. Name or valid US state ISO code should be provided.
@@ -166,23 +166,23 @@ module Relaton
         #
         # @param [Nokogiri::XML::Builder] builder XML builder
         #
-        def to_xml(builder)
-          builder.parent["iso"] = iso if iso
-          builder.parent["recommended"] = recommended.to_s unless recommended.nil?
-          builder.text name
-        end
+        # def to_xml(builder)
+        #   builder.parent["iso"] = iso if iso
+        #   builder.parent["recommended"] = recommended.to_s unless recommended.nil?
+        #   builder.text name
+        # end
 
         #
         # Render region type as Hash.
         #
         # @return [Hash] region type as Hash
         #
-        def to_hash
-          hash = { "name" => name }
-          hash["iso"] = iso if iso
-          hash["recommended"] = recommended unless recommended.nil?
-          hash
-        end
+        # def to_hash
+        #   hash = { "name" => name }
+        #   hash["iso"] = iso if iso
+        #   hash["recommended"] = recommended unless recommended.nil?
+        #   hash
+        # end
 
         #
         # Render region type as AsciiBib.

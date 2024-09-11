@@ -1,18 +1,17 @@
 module Relaton
   module Model
     class Docidentifier < Lutaml::Model::Serializable
-      # include LocalizedString
+      include LocalizedString
 
-      # model Bib::Docidentifier
+      model ::Relaton::Bib::Docidentifier
 
       attribute :type, Lutaml::Model::Type::String
+      attribute :content, Lutaml::Model::Type::String
       attribute :scope, Lutaml::Model::Type::String
       attribute :primary, Lutaml::Model::Type::Boolean
-      attribute :sup, Lutaml::Model::Type::String, collection: true
 
-      xml do
-        root "docidentifier", mixed: true
-        map_element "sup", to: :sup
+      mappings[:xml].instance_eval do
+        root "docidentifier" # , mixed: true
         map_attribute "type", to: :type
         map_attribute "scope", to: :scope
         map_attribute "primary", to: :primary

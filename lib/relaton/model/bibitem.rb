@@ -6,6 +6,7 @@ module Relaton
       include BibliographicItem
 
       model Relaton::Bib::Item
+
       attribute :id, Lutaml::Model::Type::String
 
       mappings[:xml].instance_eval do

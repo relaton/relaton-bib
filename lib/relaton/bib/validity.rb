@@ -4,13 +4,7 @@ module Relaton
       FORMAT = "%Y-%m-%d %H:%M".freeze
 
       # @return [Time, nil]
-      attr_reader :begins
-
-      # @return [Time, nil]
-      attr_reader :ends
-
-      # @return [Time, nil]
-      attr_reader :revision
+      attr_accessor :begins, :ends, :revision
 
       # @param begins [Time, nil]
       # @param ends [Time, nil]
@@ -22,22 +16,22 @@ module Relaton
       end
 
       # @param [Nokogiri::XML::Builder]
-      def to_xml(builder)
-        builder.validity do
-          builder.validityBegins begins.strftime(FORMAT) if begins
-          builder.validityEnds ends.strftime(FORMAT) if ends
-          builder.revision revision.strftime(FORMAT) if revision
-        end
-      end
+      # def to_xml(builder)
+      #   builder.validity do
+      #     builder.validityBegins begins.strftime(FORMAT) if begins
+      #     builder.validityEnds ends.strftime(FORMAT) if ends
+      #     builder.revision revision.strftime(FORMAT) if revision
+      #   end
+      # end
 
       # @return [Hash]
-      def to_hash
-        hash = {}
-        hash["begins"] = begins.strftime(FORMAT) if begins
-        hash["ends"] = ends.strftime(FORMAT) if ends
-        hash["revision"] = revision.strftime(FORMAT) if revision
-        hash
-      end
+      # def to_hash
+      #   hash = {}
+      #   hash["begins"] = begins.strftime(FORMAT) if begins
+      #   hash["ends"] = ends.strftime(FORMAT) if ends
+      #   hash["revision"] = revision.strftime(FORMAT) if revision
+      #   hash
+      # end
 
       # @param prefix [String]
       # @return [String]

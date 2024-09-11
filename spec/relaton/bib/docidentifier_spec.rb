@@ -5,15 +5,13 @@ describe Relaton::Bib::Docidentifier do
     let(:xml) do
       <<~XML
         <docidentifier language="en" script="Latn" locale="EN-us" type="BIPM" scope="part" primary="true">
-          CIPM 43<sup>e</sup> réunion (1950)
+          CIPM 43&lt;sup&gt;e&lt;/sup&gt; réunion (1950)
         </docidentifier>
       XML
     end
     subject { Relaton::Model::Docidentifier.from_xml xml }
-    it do
-      expect(subject.content).to eq "1111-2:2014"
-    end
-    it { expect(subject.type).to eq "ISO" }
+    it { expect(subject.content).to eq "CIPM 43<sup>e</sup> réunion (1950)" }
+    it { expect(subject.type).to eq "BIPM" }
     it { expect(subject.scope).to eq "part" }
     it { expect(subject.primary).to be true }
     it { expect(subject.language).to eq "en" }
@@ -22,9 +20,7 @@ describe Relaton::Bib::Docidentifier do
   end
 
   context "ISO" do
-    subject do
-      described_class.new(content: "1111-2:2014", type: "ISO")
-    end
+    subject { described_class.new(content: "1111-2:2014", type: "ISO") }
 
     it "remove part" do
       subject.remove_part
@@ -95,12 +91,11 @@ describe Relaton::Bib::Docidentifier do
   end
 
   context "#to_xml" do
-    it "with superscription" do
-      subject = described_class.new(content: "CIPM 43<sup>e</sup> réunion (1950)", type: "BIPM")
-      xml = Nokogiri::XML::Builder.new do |builder|
-        subject.to_xml(builder: builder, lang: "en")
-      end.doc.root
-      expect(xml.to_xml).to eq "<docidentifier type=\"BIPM\">CIPM 43<sup>e</sup> r&#xE9;union (1950)</docidentifier>"
+    let(:subject) { described_class.new(content: "CIPM 43<sup>e</sup> réunion (1950)", type: "BIPM") }
+
+    it do
+      xml = Relaton::Model::Docidentifier.to_xml subject
+      expect(xml).to eq "<docidentifier type=\"BIPM\">CIPM 43&lt;sup&gt;e&lt;/sup&gt; r\u00E9union (1950)</docidentifier>"
     end
   end
 end

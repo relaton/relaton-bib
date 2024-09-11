@@ -3,7 +3,7 @@ module Relaton
     class Biblionote < Lutaml::Model::Serializable
       include Relaton::Model::LocalizedString
 
-      model Bib::BiblioNote
+      model Bib::Note
 
       attribute :type, Lutaml::Model::Type::String
 

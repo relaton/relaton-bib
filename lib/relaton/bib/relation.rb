@@ -1,7 +1,7 @@
 module Relaton
   module Bib
     # Documett relation
-    class DocumentRelation
+    class Relation
       # include Relaton
 
       TYPES = %w[

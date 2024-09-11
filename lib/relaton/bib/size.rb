@@ -1,20 +1,20 @@
 module Relaton
   module Bib
-    class BibliographicSize
+    class Size
       extend Forwardable
 
-      def_delegators :@size, :any?
+      def_delegators :@value, :any?
 
-      # @return [Array<Relaton::Bib::BibliographicSize::Value>]
-      attr_reader :size
+      # @return [Array<Relaton::Bib::Size::Value>]
+      attr_accessor :values
 
       #
-      # Initialize a BibliographicSize object.
+      # Initialize a Relaton::Bib::Size object.
       #
-      # @param [<Type>] size <description>
+      # @param [<Relaton::Bib::Size::Value>] value
       #
-      def initialize(size)
-        @size = size
+      def initialize(value: [])
+        @value = value
       end
 
       #
@@ -22,16 +22,16 @@ module Relaton
       #
       # @param [Nokogiri::XML::Builder] builder the XML builder
       #
-      def to_xml(builder)
-        return if size.empty?
+      # def to_xml(builder)
+      #   return if size.empty?
 
-        builder.size do
-          size.each { |s| s.to_xml builder }
-        end
-      end
+      #   builder.size do
+      #     size.each { |s| s.to_xml builder }
+      #   end
+      # end
 
       #
-      # Render BibliographicSize object to AsciiBib.
+      # Render Relaton::Bib::Size object to AsciiBib.
       #
       # @param [String] prefix prefix for the size
       #
@@ -39,7 +39,7 @@ module Relaton
       #
       def to_asciibib(prefix = "")
         pref = prefix.empty? ? "size" : "#{prefix}.size"
-        size.map { |s| s.to_asciibib pref, size.size }.join
+        size.map { |s| s.to_asciibib pref, value.size }.join
       end
 
       #
@@ -47,23 +47,26 @@ module Relaton
       #
       # @return [<Type>] <description>
       #
-      def to_hash
-        size.map &:to_hash
-      end
+      # def to_hash
+      #   size.map &:to_hash
+      # end
 
       class Value
         # @return [String]
-        attr_reader :type, :value
+        attr_accessor :type
+
+        # @return [String, nil]
+        attr_accessor :content
 
         #
-        # Initialize a BibliographicSize::Value object.
+        # Bibliographic size value.
         #
-        # @param [String] type the type of the size
-        # @param [String] value size value
+        # @param [String] type Recommended values: page, volume, time (in ISO 8601 duration values)
+        # @param [String, nil] content The quantity of the size
         #
-        def initialize(type:, value:)
+        def initialize(type:, content: nil)
           @type = type
-          @value = value
+          @content = content
         end
 
         #
@@ -71,21 +74,21 @@ module Relaton
         #
         # @param [Nokogiri::XML::Builder] builder the XML builder
         #
-        def to_xml(builder)
-          builder.value value, type: type
-        end
+        # def to_xml(builder)
+        #   builder.value value, type: type
+        # end
 
         #
         # Render BibliographicSize::Value object to hash.
         #
         # @return [Hash]
         #
-        def to_hash
-          { type: type, value: value }
-        end
+        # def to_hash
+        #   { type: type, value: value }
+        # end
 
         #
-        # Render BibliographicSize::Value object to AsciiBib.
+        # Render Relaton::Bib::Size::Value object to AsciiBib.
         #
         # @param [String] prefix prefix for the size
         # @param [Integer] size size of the array
@@ -95,9 +98,9 @@ module Relaton
         def to_asciibib(prefix, size)
           pref = prefix.empty? ? "" : "#{prefix}."
           out = ""
-          out << "#{prefix}::\n" if size.size > 1
+          out << "#{prefix}::\n" if size > 1
           out << "#{pref}type:: #{type}\n"
-          out << "#{pref}value:: #{value}\n"
+          out << "#{pref}value:: #{content}\n" if content
         end
       end
     end

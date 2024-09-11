@@ -1,4 +1,4 @@
-describe Relaton::Bib::Bsource do
+describe Relaton::Bib::Source do
   it "set content" do
     uri = described_class.new type: "src", content: nil
     uri.content = "http://example.com"

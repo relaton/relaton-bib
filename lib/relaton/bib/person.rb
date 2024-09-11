@@ -63,7 +63,7 @@ module Relaton
     end
 
     # Person class.
-    class Person < Contributor
+    class Person
       # @return [Relaton::Bib::FullName]
       attr_accessor :name
 
@@ -76,42 +76,42 @@ module Relaton
       # @return [Array<Relaton::Bib::PersonIdentifier>]
       attr_accessor :identifier
 
+      # @return [Array<Relaton::Bib::Address, Relaton::Bib::Contact>]
+
       # @param name [Relaton::Bib::FullName]
       # @param credential [Array<String>]
       # @param affiliation [Array<Relaton::Bib::Affiliation>]
-      # @param contact [Array<Relaton::Bib::Address, Relaton::Bib::Contact>]
       # @param identifier [Array<Relaton::Bib::PersonIdentifier>]
-      # @param url [String, nil]
+      # @param contact [Array<Relaton::Bib::Address, Relaton::Bib::Contact>]
       def initialize(name:, **args)
-        contact = args[:contact] || []
-        super(contact: contact, url: args[:url])
         @name        = name
         @credential  = args[:credential] || []
         @affiliation = args[:affiliation] || []
         @identifier = args[:identifier] || []
+        @contact = args[:contact] || []
       end
 
       # @param opts [Hash]
       # @option opts [Nokogiri::XML::Builder] :builder XML builder
       # @option opts [String, Symbol] :lang language
-      def to_xml(**opts) # rubocop:disable Metrics/AbcSize
-        opts[:builder].person do |builder|
-          name.to_xml(**opts)
-          credential.each { |c| builder.credential c }
-          affiliation.each { |a| a.to_xml(**opts) }
-          identifier.each { |id| id.to_xml builder }
-          contact.each { |contact| contact.to_xml builder }
-        end
-      end
+      # def to_xml(**opts) # rubocop:disable Metrics/AbcSize
+      #   opts[:builder].person do |builder|
+      #     name.to_xml(**opts)
+      #     credential.each { |c| builder.credential c }
+      #     affiliation.each { |a| a.to_xml(**opts) }
+      #     identifier.each { |id| id.to_xml builder }
+      #     contact.each { |contact| contact.to_xml builder }
+      #   end
+      # end
 
       # @return [Hash]
-      def to_hash # rubocop:disable Metrics/AbcSize
-        hash = { "name" => name.to_hash }
-        hash["credential"] = credential if credential.any?
-        hash["affiliation"] = affiliation.map &:to_hash if affiliation.any?
-        hash["identifier"] = identifier.map &:to_hash if identifier.any?
-        { "person" => hash.merge(super) }
-      end
+      # def to_hash # rubocop:disable Metrics/AbcSize
+      #   hash = { "name" => name.to_hash }
+      #   hash["credential"] = credential if credential.any?
+      #   hash["affiliation"] = affiliation.map &:to_hash if affiliation.any?
+      #   hash["identifier"] = identifier.map &:to_hash if identifier.any?
+      #   { "person" => hash.merge(super) }
+      # end
 
       # @param prefix [String]
       # @count [Integer] number of persons
