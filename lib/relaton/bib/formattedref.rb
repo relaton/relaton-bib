@@ -2,10 +2,14 @@ module Relaton
   module Bib
     class Formattedref
       # @return [String]
-      attr_accessor :content
+      attr_reader :content
 
-      def initialize(content = nil)
+      def initialize(content: nil)
         @content = content
+      end
+
+      def content=(content)
+        @content = content.is_a?(String) ? content : content.to_xml
       end
 
       # @param content [Relaton::M

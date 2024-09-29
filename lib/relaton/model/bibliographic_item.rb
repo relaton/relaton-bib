@@ -1,12 +1,17 @@
 require "lutaml/model"
 require 'lutaml/model/xml_adapter/nokogiri_adapter'
+require_relative "nested_text_element"
+require_relative "em"
+require_relative "strong"
+require_relative "text_element"
+require_relative "localized_string_attrs"
+require_relative "localized_string"
+require_relative "source"
 require_relative "date"
 require_relative "bib_item_locality"
 require_relative "locality"
 require_relative "locality_stack"
 require_relative "image"
-require_relative "localized_string_attrs"
-require_relative "localized_string"
 require_relative "typed_title_string"
 require_relative "title"
 require_relative "formattedref"
@@ -30,14 +35,14 @@ module Relaton
     module BibliographicItem
       def self.included(base) # rubocop:disable Metrics/MethodLength
         base.class_eval do
-          attribute :type, Lutaml::Model::Type::String
-          attribute :schema_version, Lutaml::Model::Type::String
-          attribute :fetched, Lutaml::Model::Type::Date
-          attribute :formattedref, Lutaml::Model::Type::String
+          attribute :type, :string
+          attribute :schema_version, :string
+          attribute :fetched, :date
+          attribute :formattedref, Formattedref
           attribute :title, Title, collection: true
-          attribute :source, Uri, collection: true
+          attribute :source, Source, collection: true
           attribute :docidentifier, Docidentifier, collection: true
-          attribute :docnumber, Lutaml::Model::Type::String
+          attribute :docnumber, :string
           attribute :date, Date, collection: true
 
           xml do
@@ -45,21 +50,23 @@ module Relaton
             map_attribute "schema-version", to: :schema_version
             map_attribute "fetched", to: :fetched
             map_element "formattedref", to: :formattedref
-            map_element "title", to: :title # , with: { from: :title_from_xml, to: :title_to_xml }
+            map_element "title", to: :title, with: { from: :title_from_xml, to: :title_to_xml }
             map_element "uri", to: :source
             map_element "docidentifier", to: :docidentifier
             map_element "docnumber", to: :docnumber
             map_element "date", to: :date
           end
+
+          def title_from_xml(model, node)
+            model.title << Title.of_xml(node)
+          end
+
+          def title_to_xml(model, parent, _doc)
+            model.title.each do |title|
+              parent << Title.to_xml(title)
+            end
+          end
         end
-      end
-
-      def title_from_xml(model, node)
-        model.title << Title.of_xml(node)
-      end
-
-      def title_to_xml(model, parent, _doc)
-        parent << model.title.to_xml
       end
     end
   end

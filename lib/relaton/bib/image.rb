@@ -10,25 +10,24 @@ module Relaton
       # @param id [String] the ID of the image
       # @param src [String] the source URL of the image
       # @param mimetype [String] the MIME type of the image
-      # @param args [Hash] additional arguments
-      # @option args [String] :filename the filename of the image
-      # @option args [String] :width the width of the image
-      # @option args [String] :height the height of the image
-      # @option args [String] :alt the alternative text for the image
-      # @option args [String] :title the title of the image
-      # @option args [String] :longdesc the long description of the image
+      # @param filename  [String] the filename of the image
+      # @param width  [String] the width of the image
+      # @param height  [String] the height of the image
+      # @param alt  [String] the alternative text for the image
+      # @param title  [String] the title of the image
+      # @param longdesc  [String] the long description of the image
       #
-      # def initialize(id:, src:, mimetype:, **args)
-      #   @id = id
-      #   @src = src
-      #   @mimetype = mimetype
-      #   @filename = args[:filename]
-      #   @width = args[:width]
-      #   @height = args[:height]
-      #   @alt = args[:alt]
-      #   @title = args[:title]
-      #   @longdesc = args[:longdesc]
-      # end
+      def initialize(id: nil, src: nil, mimetype: nil, **args)
+        @id = id
+        @src = src
+        @mimetype = mimetype
+        @filename = args[:filename]
+        @width = args[:width]
+        @height = args[:height]
+        @alt = args[:alt]
+        @title = args[:title]
+        @longdesc = args[:longdesc]
+      end
 
       #
       # Converts the image object to XML format.
@@ -51,9 +50,9 @@ module Relaton
       #   end
       # end
 
-      def to_xml
-        Model::Image.to_xml(self)
-      end
+      # def to_xml
+      #   Model::Image.to_xml(self)
+      # end
 
       #
       # Converts the Image object to a hash representation.

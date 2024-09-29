@@ -1,19 +1,14 @@
 module Relaton
   module Model
-    module TypedUri
-      def self.included(base) # rubocop:disable Metrics/MethodLength
-        base.class_eval do
-          attribute :type, Lutaml::Model::Type::String
-          attribute :language, Lutaml::Model::Type::String
-          attribute :locale, Lutaml::Model::Type::String
-          attribute :script, Lutaml::Model::Type::String
-          attribute :content, Lutaml::Model::Type::String
+    class TypedUri < LocalizedStringAttrs
+      attribute :type, :string
+      attribute :content, :string
 
-          xml do
+      def self.inherited(base)
+        super
+        base.class_eval do
+          mappings[:xml].instance_eval do
             map_attribute "type", to: :type
-            map_attribute "language", to: :language
-            map_attribute "locale", to: :locale
-            map_attribute "script", to: :script
             map_content to: :content
           end
         end

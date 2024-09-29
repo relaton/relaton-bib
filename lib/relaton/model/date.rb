@@ -1,13 +1,13 @@
 module Relaton
   module Model
     class Date < Lutaml::Model::Serializable
-      # model Bib::Bdate
+      model Bib::Date
 
-      attribute :type, Lutaml::Model::Type::String
-      attribute :text, Lutaml::Model::Type::String
-      attribute :from, Lutaml::Model::Type::String
-      attribute :to, Lutaml::Model::Type::String
-      attribute :on, Lutaml::Model::Type::String
+      attribute :type, :string
+      attribute :text, :string
+      attribute :from, :string
+      attribute :to, :string
+      attribute :on, :string
 
       xml do
         root "date"

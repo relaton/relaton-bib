@@ -13,6 +13,15 @@ module Relaton
         root "bibitem"
         map_attribute "id", to: :id
       end
+
+      # xml do
+      #   root "bibitem"
+      #   map_attribute "id", to: :id # , with: { to: :id_to_xml }
+      # end
+
+      # def id_to_xml(value)
+      #   value
+      # end
     end
   end
 end

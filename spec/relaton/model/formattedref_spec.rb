@@ -1,6 +1,6 @@
 describe Relaton::Model::Formattedref do
   let(:xml) do
-    "<formattedref><strong>Strong</strong>content<em>Em</em></formattedref>"
+    "<formattedref><strong>Strong</strong>Content<em>Em</em></formattedref>"
   end
 
   it "parse XML" do

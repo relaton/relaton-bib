@@ -1,20 +1,17 @@
+require_relative "pure_text_element"
+
 module Relaton
   module Model
-    module LocalizedString
-      def self.included(base)
-        base.instance_eval do
-          include Model::LocalizedStringAttrs
+    class LocalizedString < LocalizedStringAttrs
+      attribute :content, PureTextElement
 
-          attribute :content, Lutaml::Model::Type::String
-
+      def self.inherited(base)
+        super
+        base.class_eval do
           mappings[:xml].instance_eval do
-            map_content to: :content, with: { from: :content_from_xml }
+            map_content to: :content # , delegate: :content
           end
         end
-      end
-
-      def content_from_xml(model, value)
-        model.content = value.strip
       end
     end
   end

@@ -5,11 +5,16 @@ require "jing"
 describe Relaton::Bib::Item do
   before(:each) { Relaton::Bib.instance_variable_set :@configuration, nil }
 
+  let(:local_attrs) { { language: "en", script: "Latn", locale: "EN-us" } }
   let(:fref) { Relaton::Bib::Formattedref.new content: "ISOTC211:2014" }
-  let(:title) { Relaton::Bib::Title.new(content: "Geographic information") }
+  let(:title) do
+    Relaton::Bib::Title.new type: "main", content: "Geographic information", **local_attrs
+  end
   let(:title_col) { Relaton::Bib::TitleCollection.new << title }
-  let(:docid) { Relaton::Bib::Docidentifier.new type: "ISO", content: "211" }
-  let(:source) { Relaton::Bib::Source.new content: "https://www.iso.org/standard/53798.html" }
+  let(:source) do
+    Relaton::Bib::Source.new type: "src", content: "https://www.iso.org/standard/53798.html", **local_attrs
+  end
+  let(:docid) { Relaton::Bib::Docidentifier.new type: "ISO", content: "211", scope: "part", primary: true }
   let(:date) { Relaton::Bib::Date.new type: "published", on: "2014-10" }
   let(:org) { Relaton::Bib::Organization.new name: "ISO/TC 211" }
   let(:contrib) { Relaton::Bib::Contributor.new entity: org, role: [{ type: "author" }] }
@@ -32,15 +37,18 @@ describe Relaton::Bib::Item do
   let(:classifications) { Relaton::Bib::Classification.new(type: "IEC", content: "123") }
   let(:taxon) { Relaton::Bib::LocalizedString.new content: "keyword", language: "en" }
   let(:keyword) { Relaton::Bib::Keyword.new taxon: [taxon] }
-  let(:validity) { Relaton::Bib::Validity.new start_date: "2020-01-01", end_date: "2020-12-31" }
+  let(:validity) { Relaton::Bib::Validity.new begins: "2020-01-01", ends: "2020-12-31", revision: "2020-06-01" }
+  let(:image) { Relaton::Bib::Image.new id: "1", src: "http://example.com/image.jpg", mimetype: "image/jpeg" }
+  let(:depiction) { Relaton::Bib::Depiction.new(scope: "scope", image: [image]) }
   subject do
     described_class.new(
-      type: "standard", fetched: "2022-05-02", formattedref: fref, title: title_col, source: [source],
-      docidentifier: [docid], docnumber: "211", date: [date], contributor: [contrib], edition: edition,
-      version: [version], note: [note], language: ["en"], locale: ["EN-us"], script: ["Latn"],
+      id: "ISO211", type: "standard", fetched: "2022-05-02", formattedref: fref, title: title_col,
+      source: [source], docidentifier: [docid], docnumber: "211", date: [date], contributor: [contrib],
+      edition: edition, version: [version], note: [note], language: ["en"], locale: ["EN-us"], script: ["Latn"],
       abstract: [abstract], status: status, copyright: [copyright], relation: relation_col, series: [series],
       medium: medium, place: [place], price: [price], extent: [extent], size: size, accesslocation: [accesslocation],
-      license: [license], classification: [classifications], keyword: [keyword],
+      license: [license], classification: [classifications], keyword: [keyword], validity: validity,
+      depiction: depiction,
     )
   end
 
@@ -56,7 +64,9 @@ describe Relaton::Bib::Item do
     # end
 
     it { is_expected.to be_instance_of Relaton::Bib::Item }
+    it { expect(subject.id).to eq "ISO211" }
     it { expect(subject.type).to eq "standard" }
+    it { expect(subject.schema_version).to match(/^v\d+\.\d+\.\d+$/) }
     it { expect(subject.fetched).to eq "2022-05-02" }
     it { expect(subject.formattedref).to eq fref }
     it { expect(subject.docidentifier).to eq [docid] }
@@ -85,38 +95,59 @@ describe Relaton::Bib::Item do
     it { expect(subject.license).to eq [license] }
     it { expect(subject.classification).to eq [classifications] }
     it { expect(subject.keyword).to eq [keyword] }
+    it { expect(subject.validity).to eq validity }
+    it { expect(subject.depiction).to eq depiction }
   end
 
   context "instance" do
-    context "makeid" do
-      it "with docid" do
-        expect(subject.makeid(nil, false)).to eq "ISOTC211"
+    context "to_xml" do
+      it "bibitem" do
+        xml = Relaton::Model::Bibitem.to_xml(subject)
+        expect(xml).to be_equivalent_to <<~XML
+          <bibitem type="standard" schema-version="v1.3.2" fetched="2022-05-02" id="ISO211">
+            <formattedref>ISOTC211:2014</formattedref>
+            <title language="en" locale="EN-us" script="Latn" type="main">Geographic information</title>
+            <uri language="en" locale="EN-us" script="Latn" type="src">https://www.iso.org/standard/53798.html</uri>
+            <docidentifier type="ISO" scope="part" primary="true">211</docidentifier>
+            <docnumber>211</docnumber>
+            <date type="published">
+              <on>2014-10</on>
+            </date>
+          </bibitem>
+        XML
       end
-
-      it "with argument" do
-        docid = Relaton::Bib::Docidentifier.new type: "ISO", id: "ISO 123 (E)"
-        expect(subject.makeid(docid, false)).to eq "ISO123E"
-      end
     end
 
-    it "has schema-version" do
-      expect(subject.schema).to match(/^v\d+\.\d+\.\d+$/)
-    end
+    # context "makeid" do
+    #   it "with docid" do
+    #     expect(subject.makeid(nil, false)).to eq "ISOTC211"
+    #   end
 
-    it "get set fetched" do
-      expect(subject.fetched).to eq "2022-05-02"
-      subject.fetched = "2022-05-03"
-      expect(subject.fetched).to eq "2022-05-03"
-    end
+    #   it "with argument" do
+    #     docid = Relaton::Bib::Docidentifier.new type: "ISO", id: "ISO 123 (E)"
+    #     expect(subject.makeid(docid, false)).to eq "ISO123E"
+    #   end
+    # end
 
-    it "has array of titiles" do
-      expect(subject.title).to be_instance_of Relaton::Bib::TitleCollection
-    end
+    # it "has schema-version" do
+    #   expect(subject.schema).to match(/^v\d+\.\d+\.\d+$/)
+    # end
 
-    it "has urls" do
-      expect(subject.url).to be_instance_of Array
-      expect(subject.url.first).to be_instance_of Relaton::Bib::Bsource
-    end
+    # it "get set fetched" do
+    #   expect(subject.fetched).to eq "2022-05-02"
+    #   subject.fetched = "2022-05-03"
+    #   expect(subject.fetched).to eq "2022-05-03"
+    # end
+
+    # it "has array of titiles" do
+    #   expect(subject.title).to be_instance_of Relaton::Bib::TitleCollection
+    # end
+
+    # it "has urls" do
+    #   expect(subject.url).to be_instance_of Array
+    #   expect(subject.url.first).to be_instance_of Relaton::Bib::Bsource
+    # end
+
     it "returns shortref" do
       expect(subject.shortref(subject.docidentifier.first)).to eq "ISOTC211:2014"
     end

@@ -1,13 +1,14 @@
 module Relaton
   module Model
-    module TypedTitleString
-      def self.included(base)
+    class TypedTitleString < LocalizedString
+
+      attribute :type, :string
+
+      def self.inherited(base)
+        super
         base.class_eval do
-          include Relaton::Model::LocalizedString
-
-          attribute :type, Lutaml::Model::Type::String
-
           mappings[:xml].instance_eval do
+            root "typedtitlestring"
             map_attribute "type", to: :type
           end
         end

@@ -38,13 +38,12 @@ require_relative "editorial_group"
 require_relative "ics"
 require_relative "edition"
 require_relative "keyword"
+require_relative "depiction"
 
 module Relaton
   module Bib
     # Bibliographic item
     class Item
-      # include Relaton
-
       TYPES = %W[article book booklet manual proceedings presentation
                  thesis techreport standard unpublished map electronic\sresource
                  audiovisual film video broadcast software graphic_work music
@@ -126,14 +125,17 @@ module Relaton
       # @return [Array<Relaton::Classification>]
       attr_accessor :classification
 
-      # @return [Relaton::Bib:Validity, nil]
-      attr_accessor :validity
-
       # @return [Date]
       attr_accessor :fetched
 
       # @return [Array<Relaton::Bib::Keyword>]
       attr_accessor :keyword
+
+      # @return [Relaton::Bib:Validity, nil]
+      attr_accessor :validity
+
+      # @return [Relaton::Bib::Depiction, nil]
+      attr_accessor :depiction
 
       # @return [Relaton::Bib::EditorialGroup, nil]
       attr_accessor :editorialgroup
@@ -186,7 +188,7 @@ module Relaton
       def initialize(**args)
         @id             = args[:id]
         @type           = args[:type]
-        @schema_version = args[:schema_version]
+        @schema_version = schema
         @fetched        = args[:fetched]
         @formattedref   = args[:formattedref]
         @title          = args[:title] || TitleCollection.new
@@ -216,6 +218,7 @@ module Relaton
         @classification = args[:classification] || []
         @keyword        = args[:keyword] || []
         @validity       = args[:validity]
+        @depiction      = args[:depiction]
 
       #   if args[:type] && !TYPES.include?(args[:type])
       #     Util.warn %{WARNING: type `#{args[:type]}` is invalid.}
@@ -228,6 +231,10 @@ module Relaton
       #   @editorialgroup = args[:editorialgroup]
       #   @ics            = args.fetch :ics, []
       #   @structuredidentifier = args[:structuredidentifier]
+      end
+
+      def title_to_xml(mode, doc, builder)
+        doc
       end
 
       #
@@ -245,7 +252,7 @@ module Relaton
       # @return [Hash{String=>String}] schema versions
       #
       def schema_versions
-        JSON.parse File.read(File.join(__dir__, "../../grammars/versions.json"))
+        JSON.parse File.read(File.join(__dir__, "../../../grammars/versions.json"))
       end
 
       # @param hash [Hash]

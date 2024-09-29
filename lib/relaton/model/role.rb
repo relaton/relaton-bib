@@ -2,11 +2,11 @@ module Relaton
   module Model
     class Role < Lutaml::Model::Serializable
       class Description < Lutaml::Model::Serializable
-        include LocalizedString
+        # include LocalizedString
 
-        mappings[:xml].instance_eval do
-          root "description"
-        end
+        # mappings[:xml].instance_eval do
+        #   root "description"
+        # end
       end
 
       attribute :type, Lutaml::Model::Type::String
