@@ -2,10 +2,12 @@ module Relaton
   module Model
     class NestedTextElement < Lutaml::Model::Serializable
       require_relative "pure_text_element"
-      attribute :content, PureTextElement
+      include PureTextElement
+
+      attribute :content, :string
 
       xml do
-        map_content to: :content
+        map_all to: :content
       end
     end
   end

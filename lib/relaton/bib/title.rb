@@ -1,13 +1,8 @@
 module Relaton
   module Bib
     class Title < Relaton::Bib::LocalizedString
-      # ARGS = %i[content language script format].freeze
-
-      # @return [String]
-      attr_accessor :type # , :language, :script, :locale
-
-      # @param type [Relaton::Model::LocalizedMarkedUpString::Content]
-      attr_reader :content
+      ARGS = %i[type content format].freeze # @DEPRECATED format
+      ARGS.each { |a| attr_accessor a }
 
       # @param type [String]
       # @param content [String]
@@ -15,7 +10,7 @@ module Relaton
       # @param script [String]
       # @param locale [String]
       def initialize(**args)
-        @type = args[:type]
+        ARGS.each { |a| instance_variable_set "@#{a}", args[a] }
         super
       end
 

@@ -1,16 +1,23 @@
+require_relative "eref"
+
 module Relaton
   module Model
-    class TextElement < Lutaml::Model::Serializable
-      attribute :text, :string
-      attribute :em, Em
-      attribute :strong, Strong
-
-      xml do
-        root "text-element", mixed: true
-        map_content to: :text
-        map_element "em", to: :em
-        map_element "strong", to: :strong
+    module TextElement # < Lutaml::Model::Serializable
+      def self.included(base)
+        base.class_eval do
+          attribute :text, :string
+          attribute :em, Em
+          attribute :eref, Eref
+          attribute :strong, Strong
+        end
       end
+
+      # xml do
+      #   root "text-element", mixed: true
+      #   map_content to: :text
+      #   map_element "em", to: :em
+      #   map_element "strong", to: :strong
+      # end
 
       # def initialize(element)
       #   @element = element

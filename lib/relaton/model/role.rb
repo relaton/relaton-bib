@@ -1,15 +1,17 @@
 module Relaton
   module Model
     class Role < Lutaml::Model::Serializable
-      class Description < Lutaml::Model::Serializable
-        # include LocalizedString
+      class Description < LocalizedString
+        model Relaton::Bib::LocalizedString
 
-        # mappings[:xml].instance_eval do
-        #   root "description"
-        # end
+        mappings[:xml].instance_eval do
+          root "description"
+        end
       end
 
-      attribute :type, Lutaml::Model::Type::String
+      model Bib::Contributor::Role
+
+      attribute :type, :string
       attribute :description, Description, collection: true
 
       xml do

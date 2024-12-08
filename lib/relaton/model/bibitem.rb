@@ -7,7 +7,7 @@ module Relaton
 
       model Relaton::Bib::Item
 
-      attribute :id, Lutaml::Model::Type::String
+      attribute :id, :string
 
       mappings[:xml].instance_eval do
         root "bibitem"

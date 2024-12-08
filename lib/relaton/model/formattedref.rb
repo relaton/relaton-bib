@@ -1,6 +1,7 @@
 module Relaton
   module Model
     class Formattedref < Lutaml::Model::Serializable
+      include TextElement
 
       model Bib::Formattedref
 

@@ -20,64 +20,70 @@ module Relaton
       # @return [String]
       attr_accessor :type
 
-      # @return [Relaton::Bib::FormattedString, nil]
-      attr_reader :description
+      # @return [Relaton::Bib::LocalizedString, nil]
+      attr_accessor :description
 
       # @return [String]
       # attr_reader :identifier, :url
 
       # @return [Relaton::Bib::Item]
-      attr_reader :bibitem
+      attr_accessor :bibitem
 
-      # @return [Array<Relaton::Bib::Locality, Relaton::Bib::LocalityStack>]
-      attr_reader :locality
+      # @return [Array<Relaton::Bib::Locality>]
+      attr_accessor :locality
 
-      # @return [Array<Relaton::Bib::SourceLocality, Relaton::Bib::SourceLocalityStack>]
-      attr_reader :source_locality
+      # @return [Array<Relaton::Bib::LocalityStack>]
+      attr_accessor :locality_stack
+
+      # @return [Array<Relaton::Bib::SourceLocality>]
+      attr_accessor :source_locality
+
+      # @return [Array<Relaton::Bib::SourceLocalityStack>]
+      attr_accessor :source_locality_stack
 
       # @param type [String]
       # @param description [Relaton::Bib::FormattedString, nil]
       # @param bibitem [Relaton::Bib::Item, RelatonIso::IsoItem]
-      # @param locality [Array<Relaton::Bib::Locality, Relaton::Bib::LocalityStack>]
-      # @param source_locality [Array<Relaton::Bib::SourceLocality, Relaton::Bib::SourceLocalityStack>]
-      def initialize(type:, bibitem:, description: nil, locality: [],
-                    source_locality: [])
-        type = "obsoletes" if type == "Now withdrawn"
+      # @param locality [Array<Relaton::Bib::Locality>]
+      # @param locality_stack [Array<Relaton::Bib::LocalityStack>]
+      # @param source_locality [Array<Relaton::Bib::SourceLocality>]
+      # @param source_locality_stack [Array<Relaton::Bib::SourceLocalityStack>]
+      def initialize(**args)
+        type = args[:type] == "Now withdrawn" ? "obsoletes" : args[:type]
         unless self.class::TYPES.include? type
           Util.warn "WARNING: invalid relation type: `#{type}`"
         end
         @type = type
-        @description = description
-        @locality = locality
-        @source_locality = source_locality
-        @bibitem = bibitem
+        @description = args[:description]
+        @bibitem = args[:bibitem]
+        @locality = args[:locality] || []
+        @locality_stack = args[:locality_stack] || []
+        @source_locality = args[:source_locality]
+        @source_locality_stack = args[:source_locality_stack] || []
       end
 
-      # rubocop:disable Metrics/AbcSize
-
-      # @param builder [Nokogiri::XML::Builder]
-      def to_xml(builder, **opts)
-        opts.delete :bibdata
-        opts.delete :note
-        builder.relation(type: type) do
-          builder.description { description.to_xml builder } if description
-          bibitem.to_xml(**opts.merge(builder: builder, embedded: true))
-          locality.each { |l| l.to_xml builder }
-          source_locality.each { |l| l.to_xml builder }
-        end
-      end
-      # rubocop:enable Metrics/AbcSize
+      # # @param builder [Nokogiri::XML::Builder]
+      # def to_xml(builder, **opts)
+      #   opts.delete :bibdata
+      #   opts.delete :note
+      #   builder.relation(type: type) do
+      #     builder.description { description.to_xml builder } if description
+      #     bibitem.to_xml(**opts.merge(builder: builder, embedded: true))
+      #     locality.each { |l| l.to_xml builder }
+      #     source_locality.each { |l| l.to_xml builder }
+      #   end
+      # end
 
       # @return [Hash]
-      def to_hash # rubocop:disable Metrics/AbcSize
-        hash = { "type" => type, "bibitem" => bibitem.to_hash(embedded: true) }
-        hash["description"] = description.to_hash if description
-        hash["locality"] = single_element_array(locality) if locality&.any?
-        if source_locality&.any?
-          hash["source_locality"] = single_element_array(source_locality)
-        end
-        hash
-      end
+      # def to_hash # rubocop:disable Metrics/AbcSize
+      #   hash = { "type" => type, "bibitem" => bibitem.to_hash(embedded: true) }
+      #   hash["description"] = description.to_hash if description
+      #   hash["locality"] = single_element_array(locality) if locality&.any?
+      #   if source_locality&.any?
+      #     hash["source_locality"] = single_element_array(source_locality)
+      #   end
+      #   hash
+      # end
 
       # @param prefix [String]
       # @return [String]

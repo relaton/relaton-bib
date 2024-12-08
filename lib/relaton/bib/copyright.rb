@@ -11,7 +11,7 @@ module Relaton
       # @return [String, nil]
       attr_accessor :scope
 
-      # @return [Array<Relaton::Bib::Person, Relaton::Bib::Organization>]
+      # @return [Array<Relaton::Bib::ContributionInfo>]
       attr_accessor :owner
 
       # @param owner [Array<Relaton::Bib::Person, Relaton::Bib::Organization>]
@@ -24,8 +24,8 @@ module Relaton
         end
 
         @owner = owner
-        @from  = ::Date.strptime(from.to_s, "%Y") if from.to_s.match?(/\d{4}/)
-        @to    = ::Date.strptime(to.to_s, "%Y") unless to.to_s.empty?
+        @from  = from
+        @to    = to
         @scope = scope
       end
 

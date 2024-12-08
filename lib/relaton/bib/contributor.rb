@@ -8,10 +8,8 @@ module Relaton
     class Contributor
       # Contributor's role.
       class Role
-        # include Relaton
-
         TYPES = %w[author performer publisher editor adapter translator
-                  distributor realizer owner authorizer enabler subject].freeze
+                   distributor realizer owner authorizer enabler subject].freeze
 
         # @return [Array<Relaton::Bib::FormattedString>]
         attr_reader :description
@@ -21,16 +19,14 @@ module Relaton
 
         # @param type [String] allowed types "author", "editor",
         #   "cartographer", "publisher"
-        # @param description [Array<String>]
+        # @param description [Array<LoclizedString>]
         def initialize(**args)
           if args[:type] && !TYPES.include?(args[:type])
             Util.warn %{WARNING: Contributor's type `#{args[:type]}` is invalid.}
           end
 
           @type = args[:type]
-          @description = args.fetch(:description, []).map do |d|
-            FormattedString.new content: d, format: nil
-          end
+          @description = args.fetch(:description, [])
         end
 
         # @param opts [Hash]
@@ -71,14 +67,30 @@ module Relaton
       # @return [Array<Relaton::Bib::Contributor::Role>]
       attr_accessor :role
 
-      # @return [Relaton::Bib::Person, Relaton::Bib::Organization]
+      # @return [Relaton::Bib::ContributionInfo]
       attr_accessor :entity
 
-      # @param entity [Relaton::Bib::Person, Relaton::Bib::Organization]
+      # @param entity [Relaton::Bib::ContributionInfo]
       # @param role [Array<Relaton::Bib::Contributor::Role>]
       def initialize(entity:, role: [])
         @entity = entity
         @role   = role
+      end
+
+      def person
+        entity if entity.is_a? Person
+      end
+
+      def person=(person)
+        @entity = person
+      end
+
+      def organization
+        entity if entity.is_a? Organization
+      end
+
+      def organization=(organization)
+        @entity = organization
       end
 
       # @param opts [Hash]

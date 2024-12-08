@@ -1,3 +1,5 @@
+require_relative "citation_type"
+
 module Relaton
   module Model
     module ErefType

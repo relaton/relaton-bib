@@ -5,6 +5,7 @@ require "jing"
 describe Relaton::Bib::Item do
   before(:each) { Relaton::Bib.instance_variable_set :@configuration, nil }
 
+  let(:fetched) { Date.parse("2022-05-02") }
   let(:local_attrs) { { language: "en", script: "Latn", locale: "EN-us" } }
   let(:fref) { Relaton::Bib::Formattedref.new content: "ISOTC211:2014" }
   let(:title) do
@@ -14,17 +15,26 @@ describe Relaton::Bib::Item do
   let(:source) do
     Relaton::Bib::Source.new type: "src", content: "https://www.iso.org/standard/53798.html", **local_attrs
   end
-  let(:docid) { Relaton::Bib::Docidentifier.new type: "ISO", content: "211", scope: "part", primary: true }
+  let(:docid) { Relaton::Bib::Docidentifier.new type: "ISO", content: "ISO 211", scope: "part", primary: true }
   let(:date) { Relaton::Bib::Date.new type: "published", on: "2014-10" }
-  let(:org) { Relaton::Bib::Organization.new name: "ISO/TC 211" }
-  let(:contrib) { Relaton::Bib::Contributor.new entity: org, role: [{ type: "author" }] }
+  let(:org_name) { Relaton::Bib::Organization::Name.new content: "ISO" }
+  let(:org) { Relaton::Bib::Organization.new name: [org_name] }
+  let(:role_dec) { Relaton::Bib::LocalizedString.new(content: "BibXML author", language: "en") }
+  let(:role) { Relaton::Bib::Contributor::Role.new type: "author", description: [role_dec] }
+  let(:contribution_info) { Relaton::Bib::ContributionInfo.new organization: org }
+  let(:contrib) { Relaton::Bib::Contributor.new entity: org, role: [role] }
   let(:edition) { Relaton::Bib::Edition.new content: "ed 1", number: "1" }
   let(:version) { Relaton::Bib::Bversion.new revision_date: Date.parse("2020-11-22"), draft: "v1.0" }
   let(:note) { Relaton::Bib::Note.new content: "This is note." }
   let(:abstract) { Relaton::Bib::LocalizedString.new content: "This is abstract.", language: "en" }
-  let(:status) { Relaton::Bib::Status.new stage: "published", substage: "60" }
-  let(:copyright) { Relaton::Bib::Copyright.new owner: [org], from: "2019" }
-  let(:relation) { Relaton::Bib::Relation.new(type: "instanceOf", bibitem: Relaton::Bib::Item.new()) }
+  let(:stage) { Relaton::Bib::Status::Stage.new content: "published", abbreviation: "PUB" }
+  let(:substage) { Relaton::Bib::Status::Stage.new content: "60", abbreviation: "6" }
+  let(:status) { Relaton::Bib::Status.new stage: stage, substage: substage, iteration: "1" }
+  let(:copyright) { Relaton::Bib::Copyright.new owner: [contribution_info], from: "2019", to: "2022", scope: "part" }
+  let(:relation_feref) { Relaton::Bib::Formattedref.new content: "ISO 111" }
+  let(:relation_docid) { Relaton::Bib::Docidentifier.new type: "ISO", content: "ISO 111" }
+  let(:relation_bib) { Relaton::Bib::Item.new formattegref: relation_feref, docidentifier: [relation_docid] }
+  let(:relation) { Relaton::Bib::Relation.new(type: "instanceOf", bibitem: relation_bib) }
   let(:relation_col) { Relaton::Bib::RelationCollection.new << relation }
   let(:series) { Relaton::Bib::Series.new title: Relaton::Bib::TitleCollection.new, type: "main" }
   let(:medium) { Relaton::Bib::Medium.new size: "A4" }
@@ -42,7 +52,7 @@ describe Relaton::Bib::Item do
   let(:depiction) { Relaton::Bib::Depiction.new(scope: "scope", image: [image]) }
   subject do
     described_class.new(
-      id: "ISO211", type: "standard", fetched: "2022-05-02", formattedref: fref, title: title_col,
+      id: "ISO211", type: "standard", fetched: fetched, formattedref: fref, title: title_col,
       source: [source], docidentifier: [docid], docnumber: "211", date: [date], contributor: [contrib],
       edition: edition, version: [version], note: [note], language: ["en"], locale: ["EN-us"], script: ["Latn"],
       abstract: [abstract], status: status, copyright: [copyright], relation: relation_col, series: [series],
@@ -104,7 +114,8 @@ describe Relaton::Bib::Item do
       it "bibitem" do
         xml = Relaton::Model::Bibitem.to_xml(subject)
         expect(xml).to be_equivalent_to <<~XML
-          <bibitem type="standard" schema-version="v1.3.2" fetched="2022-05-02" id="ISO211">
+          <bibitem type="standard" schema-version="v1.4.1" id="ISO211">
+            <fetched>2022-05-02</fetched>
             <formattedref>ISOTC211:2014</formattedref>
             <title language="en" locale="EN-us" script="Latn" type="main">Geographic information</title>
             <uri language="en" locale="EN-us" script="Latn" type="src">https://www.iso.org/standard/53798.html</uri>
@@ -113,6 +124,38 @@ describe Relaton::Bib::Item do
             <date type="published">
               <on>2014-10</on>
             </date>
+            <contributor>
+              <role type="author">
+                <description language="en">BibXML author</description>
+              </role>
+              <organization>
+                <name>ISO</name>
+              </organization>
+            </contributor>
+            <edition number="1">ed 1</edition>
+            <version>
+              <revision-date>2020-11-22</revision-date>
+              <draft>v1.0</draft>
+            </version>
+            <language>en</language>
+            <locale>EN-us</locale>
+            <script>Latn</script>
+            <abstract language="en">This is abstract.</abstract>
+            <status>
+              <stage abbreviation="PUB">published</stage>
+              <substage abbreviation="6">60</substage>
+              <iteration>1</iteration>
+            </status>
+            <copyright>
+              <from>2019</from>
+              <to>2022</to>
+              <owner>
+                <organization>
+                  <name>ISO</name>
+                </organization>
+              </owner>
+              <scope>part</scope>
+            </copyright>
           </bibitem>
         XML
       end

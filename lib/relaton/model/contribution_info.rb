@@ -1,20 +1,18 @@
+require_relative "organization"
+
 module Relaton
   module Model
-    class ContributionInfo
-      def initialize(entity)
-        @entity = entity
-      end
+    class ContributionInfo < Lutaml::Model::Serializable
+      model Bib::ContributionInfo
 
-      def self.cast(value)
-        value
-      end
+      attribute :person, Person
+      attribute :organization, Organization
 
-      def self.of_xml(node)
-        if (n = node.at("person"))
-          new Person.of_xml n
-        elsif (n = node.at("organization"))
-          new Organization.of_xml n
-        end
+      xml do
+        root "contributioninfo"
+
+        map_element "person", to: :person
+        map_element "organization", to: :organization
       end
     end
   end

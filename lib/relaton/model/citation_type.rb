@@ -1,3 +1,6 @@
+require_relative "locality"
+require_relative "locality_stack"
+
 module Relaton
   module Model
     module CitationType

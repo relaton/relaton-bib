@@ -39,6 +39,8 @@ module Relaton
       end
 
       class Name < LocalizedString
+        attr_accessor :type
+
         def initialize(**args)
           super
           @type = args[:type]
@@ -46,19 +48,22 @@ module Relaton
       end
 
       # @return [Array<Relaton::Bib::Organization::Name>]
-      attr_reader :name
+      attr_accessor :name
 
       # @return [Relaton::Bib::LocalizedString, nil]
-      attr_reader :abbreviation
+      attr_accessor :abbreviation
 
       # @return [Array<Relaton::Bib::LocalizedString>]
-      attr_reader :subdivision
+      attr_accessor :subdivision
 
       # @return [Array<Relaton::Bib::Organization::Identifier>]
-      attr_reader :identifier
+      attr_accessor :identifier
+
+      # @return [Array<Relaton::Bib::Contact>]
+      attr_accessor :contact
 
       # @return [Relaton::Bib::Image, nil]
-      attr_reader :logo
+      attr_accessor :logo
 
       # @param name [Array<RelatoBib::Organization::Name>]
       # @param abbreviation [RelatoBib::LocalizedString]
@@ -124,7 +129,7 @@ module Relaton
         out
       end
 
-      private
+      # private
 
       # @param arg [String, Hash, RelatoBib::LocalizedString]
       # @return [RelatoBib::LocalizedString]

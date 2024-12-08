@@ -1,8 +1,6 @@
 module Relaton
-  module Module
-    class Abbreviation < Lutaml::Model::Serializable
-      include LocalizedString
-
+  module Model
+    class Abbreviation < LocalizedString
       mappings[:xml].instance_eval do
         root "abbreviation"
       end

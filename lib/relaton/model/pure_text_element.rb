@@ -1,16 +1,20 @@
 module Relaton
   module Model
-    class PureTextElement < Lutaml::Model::Serializable
-      attribute :text, :string
-      attribute :sup, :string
-      attribute :sub, :string
-
-      xml do
-        root "pure-text-element", mixed: true
-        map_content to: :text
-        map_element "sup", to: :sup
-        map_element "sub", to: :sub
+    module PureTextElement # < Lutaml::Model::Serializable
+      def self.included(base)
+        base.class_eval do
+          attribute :text, :string
+          attribute :sup, :string
+          attribute :sub, :string
+        end
       end
+
+      # xml do
+      #   root "pure-text-element", mixed: true
+      #   map_content to: :text
+      #   map_element "sup", to: :sup
+      #   map_element "sub", to: :sub
+      # end
 
       # def initialize(element)
       #   @element = element

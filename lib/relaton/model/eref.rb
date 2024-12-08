@@ -1,3 +1,5 @@
+require_relative "eref_type"
+
 module Relaton
   module Model
     class Eref < Lutaml::Model::Serializable
