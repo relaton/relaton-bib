@@ -58,7 +58,7 @@ RSpec.describe RelatonBib::XMLParser do
     XML
     item = RelatonBib::XMLParser.from_xml xml
     expect(item.relation.first.source_locality.first).to be_instance_of(
-      RelatonBib::SourceLocalityStack,
+      RelatonBib::SourceLocality,
     )
   end
 

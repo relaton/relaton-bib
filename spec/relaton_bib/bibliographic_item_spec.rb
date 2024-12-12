@@ -180,7 +180,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
         expect(subject).to receive(:ext_schema).and_return("v1.0.0").twice
         hash = subject.to_hash
-        expect(hash["ext"]).to eq "schema-version" => "v1.0.0"
+        expect(hash["ext"]["schema-version"]).to eq "v1.0.0"
       end
     end
 

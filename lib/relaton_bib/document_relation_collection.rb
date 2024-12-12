@@ -12,11 +12,9 @@ module RelatonBib
     # @option relation [String] :type
     # @option relation [String] :identifier
     # @option relation [String, NIllClass] :url (nil)
-    # @option relation [Array<RelatonBib::Locality,
-    #                   RelatonBib::LocalityStack>] :locality
-    # @option relation [Array<RelatonBib::SourceLocality,
-    #                   RelatonBib::SourceLocalityStack>] :source_locality
-    # @option relation [RelatonBib::BibliographicItem, NillClass] :bibitem (nil)
+    # @option relation [Array<RelatonBib::Locality, RelatonBib::LocalityStack>] :locality
+    # @option relation [Array<RelatonBib::SourceLocality, RelatonBib::SourceLocalityStack>] :source_locality
+    # @option relation [RelatonBib::BibliographicItem, nil] :bibitem (nil)
     def initialize(relation)
       @array = relation.map { |r| r.is_a?(Hash) ? DocumentRelation.new(**r) : r }
     end

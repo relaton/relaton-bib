@@ -219,11 +219,11 @@ module RelatonBib
       #
       # @param [Nokogiri::XML::Element] item item element
       #
-      # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>] extent
+      # @return [Array<RelatonBib::Extent>] extent
       #
       def fetch_extent(item)
-        item.xpath("./extent").reduce([]) do |a, ex|
-          a + localities(ex)
+        item.xpath("./extent").map do |ex|
+          RelatonBib::Extent.new localities(ex)
         end
       end
 
@@ -644,13 +644,13 @@ module RelatonBib
       # @return [Array<RelatonBib::SourceLocality,
       #   RelatonBib::SourceLocalityStack>]
       def source_localities(rel)
-        rel.xpath("./sourceLocality|./sourceLocalityStack").map do |lc|
-          if lc[:type]
-            SourceLocalityStack.new [locality(lc, SourceLocality)]
+        rel.xpath("./sourceLocality|./sourceLocalityStack").map do |loc|
+          if loc.name == "sourceLocality"
+            # src_locs = loc.xapth("./sourceLocality").map { |sl| locality(sl, SourceLocality) }
+            # SourceLocalityStack.new src_locs
+            locality loc, SourceLocality
           else
-            sls = lc.xpath("./sourceLocality").map do |l|
-              locality l, SourceLocality
-            end
+            sls = loc.xpath("./sourceLocality").map { |l| locality l, SourceLocality }
             SourceLocalityStack.new sls
           end
         end

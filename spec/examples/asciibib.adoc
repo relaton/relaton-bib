@@ -120,6 +120,7 @@ place.region.name:: Region
 place.country.name:: Switzelznd
 place.country.iso:: CH
 place.country.recommended:: true
+extent::
 extent.locality::
 extent.locality.type:: section
 extent.locality.reference_from:: Reference from
@@ -127,7 +128,7 @@ extent.locality.reference_to:: Reference to
 extent.locality::
 extent.locality.type:: chapter
 extent.locality.reference_from:: 4
-extent.locality_stack::
+extent::
 extent.locality_stack.locality::
 extent.locality_stack.locality.type:: page
 extent.locality_stack.locality.reference_from:: 10

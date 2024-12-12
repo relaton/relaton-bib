@@ -17,6 +17,7 @@ require "relaton_bib/classification"
 require "relaton_bib/validity"
 require "relaton_bib/document_relation"
 require "relaton_bib/bib_item_locality"
+require_relative "extent"
 require "relaton_bib/xml_parser"
 require "relaton_bib/bibtex_parser"
 require "relaton_bib/biblio_note"
@@ -105,7 +106,7 @@ module RelatonBib
     # @return [Array<RelatonBib::Place>]
     attr_reader :place
 
-    # @return [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
+    # @return [Array<RelatonBib::Extent>]
     attr_reader :extent
 
     # @return [Array<Strig>]
@@ -154,7 +155,7 @@ module RelatonBib
     # @param series [Array<RelatonBib::Series>]
     # @param medium [RelatonBib::Medium, nil]
     # @param place [Array<String, RelatonBib::Place>]
-    # @param extent [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
+    # @param extent [Array<RelatonBib::Extent>]
     # @param accesslocation [Array<String>]
     # @param classification [Array<RelatonBib::Classification>]
     # @param validity [RelatonBib:Validity, nil]
@@ -417,7 +418,7 @@ module RelatonBib
       hash["series"] = single_element_array(series) if series&.any?
       hash["medium"] = medium.to_hash if medium
       hash["place"] = single_element_array(place) if place&.any?
-      hash["extent"] = single_element_array(extent) if extent&.any?
+      hash["extent"] = extent.map(&:to_hash) if extent&.any?
       hash["size"] = size.to_hash if size&.any?
       if accesslocation&.any?
         hash["accesslocation"] = single_element_array(accesslocation)
@@ -429,16 +430,15 @@ module RelatonBib
       hash["fetched"] = fetched.to_s if fetched
       hash["keyword"] = single_element_array(keyword) if keyword&.any?
       hash["license"] = single_element_array(license) if license&.any?
-      hash["doctype"] = doctype.to_hash if doctype
-      hash["subdoctype"] = subdoctype if subdoctype
-      if editorialgroup&.presence?
-        hash["editorialgroup"] = editorialgroup.to_hash
+      if has_ext?
+        hash["ext"] = {}
+        hash["ext"]["schema-version"] = ext_schema if !embedded && respond_to?(:ext_schema) && ext_schema
+        hash["ext"]["doctype"] = doctype.to_hash if doctype
+        hash["ext"]["subdoctype"] = subdoctype if subdoctype
+        hash["ext"]["editorialgroup"] = editorialgroup.to_hash if editorialgroup&.presence?
+        hash["ext"]["ics"] = single_element_array ics if ics.any?
+        hash["ext"]["structuredidentifier"] = structuredidentifier.to_hash if structuredidentifier&.presence?
       end
-      hash["ics"] = single_element_array ics if ics.any?
-      if structuredidentifier&.presence?
-        hash["structuredidentifier"] = structuredidentifier.to_hash
-      end
-      hash["ext"] = { "schema-version" => ext_schema } if !embedded && respond_to?(:ext_schema) && ext_schema
       hash
     end
 
@@ -572,7 +572,7 @@ module RelatonBib
       link.each { |l| out += l.to_asciibib prefix, link.size }
       out += medium.to_asciibib prefix if medium
       place.each { |pl| out += pl.to_asciibib prefix, place.size }
-      extent.each { |ex| out += ex.to_asciibib "#{pref}extent", extent.size }
+      extent.each { |ex| out += ex.to_asciibib prefix, extent.size }
       out += size.to_asciibib pref if size
       accesslocation.each { |al| out += "#{pref}accesslocation:: #{al}\n" }
       classification.each do |cl|
@@ -634,7 +634,7 @@ module RelatonBib
         series.each { |s| s.to_xml builder }
         medium&.to_xml builder
         place.each { |pl| pl.to_xml builder }
-        extent.each { |e| builder.extent { e.to_xml builder } }
+        extent.each { |e| e.to_xml builder }
         size&.to_xml builder
         accesslocation.each { |al| builder.accesslocation al }
         license.each { |l| builder.license l }
@@ -644,10 +644,9 @@ module RelatonBib
         kwrd.each { |kw| builder.keyword { kw.to_xml(builder) } }
         validity&.to_xml builder
         if block_given? then yield builder
-        elsif opts[:bibdata] && (doctype || editorialgroup || ics&.any? ||
-                                 structuredidentifier&.presence?)
+        elsif opts[:bibdata] && has_ext?
           ext = builder.ext do |b|
-            doctype.to_xml b if doctype
+            doctype&.to_xml b
             b.subdoctype subdoctype if subdoctype
             editorialgroup&.to_xml b
             ics.each { |i| i.to_xml b }
@@ -660,6 +659,10 @@ module RelatonBib
       xml[:type] = type if type
       xml["schema-version"] = schema unless opts[:embedded]
       xml
+    end
+
+    def has_ext? # rubocop:disable Metrics/CyclomaticComplexity
+      doctype || subdoctype || editorialgroup || ics&.any? || structuredidentifier&.presence?
     end
   end
 end

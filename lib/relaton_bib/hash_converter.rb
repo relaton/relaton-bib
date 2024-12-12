@@ -1,11 +1,9 @@
 module RelatonBib
   module HashConverter
     extend self
-    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-
     # @param args [Hash]
     # @return [Hash]
-    def hash_to_bib(args)
+    def hash_to_bib(args) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       return nil unless args.is_a?(Hash)
 
       ret = Marshal.load(Marshal.dump(symbolize(args))) # deep copy
@@ -34,13 +32,21 @@ module RelatonBib
       keyword_hash_to_bib(ret)
       # ret[:keyword] = RelatonBib.array(ret[:keyword])
       ret[:license] = RelatonBib.array(ret[:license])
+      # editorialgroup_hash_to_bib ret
+      # ics_hash_to_bib ret
+      # structuredidentifier_hash_to_bib ret
+      # doctype_hash_to_bib ret
+      ext_has_to_bib ret
+      ret
+    end
+
+    def ext_has_to_bib(ret)
+      doctype_hash_to_bib ret
+      ret[:subdoctype] = ret[:ext][:subdoctype] if ret.dig(:ext, :subdoctype)
       editorialgroup_hash_to_bib ret
       ics_hash_to_bib ret
       structuredidentifier_hash_to_bib ret
-      doctype_hash_to_bib ret
-      ret
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def keyword_hash_to_bib(ret)
       ret[:keyword] = RelatonBib.array(ret[:keyword]).map do |keyword|
@@ -52,18 +58,19 @@ module RelatonBib
       return unless ret[:extent]
 
       ret[:extent] = RelatonBib.array(ret[:extent]).map do |e|
-        locality e
-        # ret[:extent][i] = Locality.new(e[:type], e[:reference_from],
-        #                                       e[:reference_to])
+        RelatonBib::Extent.new locality(e)
       end
     end
 
     def locality(loc)
       if loc[:locality_stack]
-        LocalityStack.new(loc[:locality_stack].map { |l| locality(l) })
+        RelatonBib.array(loc[:locality_stack]).map do |l|
+          LocalityStack.new locality(l)
+        end
       else
-        l = loc[:locality]
-        Locality.new(l[:type], l[:reference_from], l[:reference_to])
+        RelatonBib.array(loc[:locality]).map do |l|
+          Locality.new(l[:type], l[:reference_from], l[:reference_to])
+        end
       end
     end
 
@@ -339,17 +346,17 @@ module RelatonBib
     end
 
     # @param ret [Hash]
-    def relations_hash_to_bib(ret)
+    def relations_hash_to_bib(ret) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
       return unless ret[:relation]
 
       ret[:relation] = RelatonBib.array(ret[:relation])
-      ret[:relation]&.each do |r|
-        if r[:description]
-          r[:description] = FormattedString.new(**r[:description])
-        end
-        relation_bibitem_hash_to_bib(r)
-        relation_locality_hash_to_bib(r)
-        relation_source_locality_hash_to_bib(r)
+      ret[:relation]&.each do |rel|
+        rel[:description] = FormattedString.new(**rel[:description]) if rel[:description]
+        relation_bibitem_hash_to_bib(rel)
+        relation_locality_hash_to_bib(rel)
+        relation_locality_stack_hash_to_bib(rel)
+        relation_source_locality_hash_to_bib(rel)
+        relaton_source_locality_stack_hash_to_bib(rel)
       end
     end
 
@@ -372,36 +379,54 @@ module RelatonBib
     # @param rel [Hash] relation
     # @return [RelatonBib::LocalityStack]
     def relation_locality_hash_to_bib(rel)
-      rel[:locality] = RelatonBib.array(rel[:locality])&.map do |bl|
-        LocalityStack.new locality_locality_stack(bl)
+      return unless rel[:locality]&.any?
+
+      rel[:locality] = RelatonBib.array(rel[:locality]).map do |bl|
+        Locality.new(bl[:type], bl[:reference_from], bl[:reference_to])
       end
     end
 
-    def locality_locality_stack(lls)
-      if lls[:locality_stack]
-        RelatonBib.array(lls[:locality_stack]).map do |lc|
-          l = lc[:locality] || lc
-          Locality.new(l[:type], l[:reference_from], l[:reference_to])
-        end
-      else
-        [Locality.new(lls[:type], lls[:reference_from], lls[:reference_to])]
+    def relation_locality_stack_hash_to_bib(rel)
+      return unless rel[:locality_stack]&.any?
+
+      rel[:locality_stack] = RelatonBib.array(rel[:locality_stack]).map do |ls|
+        LocalityStack.new relation_locality_hash_to_bib(ls)
       end
     end
+
+    # def locality_locality_stack(lls)
+    #   if lls[:locality_stack]
+    #     RelatonBib.array(lls[:locality_stack]).map do |lc|
+    #       l = lc[:locality] || lc
+    #       Locality.new(l[:type], l[:reference_from], l[:reference_to])
+    #     end
+    #   else
+    #     [Locality.new(lls[:type], lls[:reference_from], lls[:reference_to])]
+    #   end
+    # end
 
     # @param rel [Hash] relation
     def relation_source_locality_hash_to_bib(rel) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      rel[:source_locality] = RelatonBib.array(rel[:source_locality])&.map do |sl|
-        sls = if sl[:source_locality_stack]
-                RelatonBib.array(sl[:source_locality_stack]).map do |l|
-                  SourceLocality.new(l[:type], l[:reference_from],
-                                      l[:reference_to])
-                end
-              else
-                l = SourceLocality.new(sl[:type], sl[:reference_from],
-                                        sl[:reference_to])
-                [l]
-              end
-        SourceLocalityStack.new sls
+      return unless rel[:source_locality]&.any?
+
+      rel[:source_locality] = RelatonBib.array(rel[:source_locality])&.map do |loc|
+        # sls = if sl[:source_locality_stack]
+        #         RelatonBib.array(sl[:source_locality_stack]).map do |l|
+        #           SourceLocality.new(l[:type], l[:reference_from], l[:reference_to])
+        #         end
+        #       else
+        #         l = SourceLocality.new(sl[:type], sl[:reference_from], sl[:reference_to])
+        #         [l]
+        #       end
+        SourceLocality.new loc[:type], loc[:reference_from], loc[:reference_to]
+      end
+    end
+
+    def relaton_source_locality_stack_hash_to_bib(rel)
+      return unless rel[:source_locality_stack]&.any?
+
+      rel[:source_locality_stack] = RelatonBib.array(rel[:source_locality_stack]).map do |loc|
+        SourceLocalityStack.new relation_source_locality_hash_to_bib(loc)
       end
     end
 
@@ -465,9 +490,10 @@ module RelatonBib
 
     # @param ret [Hash]
     def editorialgroup_hash_to_bib(ret)
-      return unless ret[:editorialgroup]
+      eg = ret.dig(:ext, :editorialgroup) || ret[:editorialgroup] # @todo remove ret[:editorialgroup] in the future
+      return unless eg
 
-      technical_committee = RelatonBib.array(ret[:editorialgroup]).map do |wg|
+      technical_committee = RelatonBib.array(eg).map do |wg|
         TechnicalCommittee.new WorkGroup.new(**wg)
       end
       ret[:editorialgroup] = EditorialGroup.new technical_committee
@@ -475,16 +501,18 @@ module RelatonBib
 
     # @param ret [Hash]
     def ics_hash_to_bib(ret)
-      return unless ret[:ics]
+      ics = ret.dig(:ext, :ics) || ret[:ics] # @todo remove ret[:ics] in the future
+      return unless ics
 
-      ret[:ics] = RelatonBib.array(ret[:ics]).map { |ics| ICS.new(**ics) }
+      ret[:ics] = RelatonBib.array(ics).map { |item| ICS.new(**item) }
     end
 
     # @param ret [Hash]
     def structuredidentifier_hash_to_bib(ret)
-      return unless ret[:structuredidentifier]
+      struct_id = ret.dig(:ext, :structuredidentifier) || ret[:structuredidentifier] # @todo remove ret[:structuredidentifier] in the future
+      return unless struct_id
 
-      sids = RelatonBib.array(ret[:structuredidentifier]).map do |si|
+      sids = RelatonBib.array(struct_id).map do |si|
         si[:agency] = RelatonBib.array si[:agency]
         StructuredIdentifier.new(**si)
       end
@@ -527,12 +555,10 @@ module RelatonBib
     end
 
     def doctype_hash_to_bib(ret)
-      return unless ret[:doctype]
+      doctype = ret.dig(:ext, :doctype) || ret[:doctype] # @todo remove ret[:doctype] in the future
+      return unless doctype
 
-      ret[:doctype] = if ret[:doctype].is_a?(String)
-                        create_doctype(type: ret[:doctype])
-                      else create_doctype(**ret[:doctype])
-                      end
+      ret[:doctype] = doctype.is_a?(String) ? create_doctype(type: doctype) : create_doctype(**doctype)
     end
 
     def create_doctype(**args)

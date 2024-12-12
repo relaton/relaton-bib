@@ -8,10 +8,6 @@ title:
     script: Latn
 
 type: standard
-doctype:
-  type: Doctype
-  abbreviation: DCT
-subdoctype: Subdoctype
 
 docid:
   - id: ISO TC 211
@@ -242,16 +238,10 @@ relation:
     bibitem:
       formattedref: ISO 19115:2003
     locality:
-      - locality_stack:
-          type: section
-          reference_from: Reference from
-      - locality_stack:
-        - type: chapter
-          reference_from: "1"
-        - type: page
-          reference_from: "2"
-    source_locality:
-      source_locality_stack:
+      - type: section
+        reference_from: Reference from
+    source_locality_stack:
+      - source_locality:
         - type: volume
           reference_from: "2"
         - type: chapter
@@ -263,6 +253,17 @@ relation:
     bibitem:
       type: standard
       formattedref: ISO 19115:2003/Cor 1:2006
+    locality_stack:
+      - locality:
+        - type: chapter
+          reference_from: "1"
+      - locality:
+        - type: page
+          reference_from: "2"
+    source_locality:
+      - type: section
+        reference_from: Reference from
+        reference_to: Reference to
   - type: partOf
     bibitem:
       title:
@@ -327,19 +328,17 @@ place:
 
 extent:
   - locality:
-      type: section
+    - type: section
       reference_from: Reference from
       reference_to: Reference to
-  - locality:
-      type: chapter
+    - type: chapter
       reference_from: "4"
   - locality_stack:
     - locality:
-        type: page
+      - type: page
         reference_from: "10"
         reference_to: "20"
-    - locality:
-        type: volume
+      - type: volume
         reference_from: "1"
 
 size:
@@ -371,30 +370,37 @@ validity:
   ends: "2011-02-03 18:30"
   revision: "2011-03-04 09:00"
 
-editorialgroup:
-  - name: Editorial group
-    number: 1
-    type: Type
-    identifier: Identifier
-    prefix: Prefix
+ext:
+  doctype:
+    type: Doctype
+    abbreviation: DCT
 
-ics:
-  - code: "01"
-    text: First
+  subdoctype: Subdoctype
 
-structuredidentifier:
-  - type: type 1
-    agency:
-      - agency 1
-      - agency 2
-    class: class 1
-    docnumber: "123"
-    partnumber: "4"
-    edition: "1"
-    version: "2"
-    supplementtype: type 2
-    supplementnumber: "5"
-    language: en
-    year: "2020"
-  - agency: agency 3
-    docnumber: "456"
+  editorialgroup:
+    - name: Editorial group
+      number: 1
+      type: Type
+      identifier: Identifier
+      prefix: Prefix
+
+  ics:
+    - code: "01"
+      text: First
+
+  structuredidentifier:
+    - type: type 1
+      agency:
+        - agency 1
+        - agency 2
+      class: class 1
+      docnumber: "123"
+      partnumber: "4"
+      edition: "1"
+      version: "2"
+      supplementtype: type 2
+      supplementnumber: "5"
+      language: en
+      year: "2020"
+    - agency: agency 3
+      docnumber: "456"

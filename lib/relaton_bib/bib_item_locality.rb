@@ -119,7 +119,12 @@ module RelatonBib
 
     # @returnt [Hash]
     def to_hash
-      { "locality_stack" => single_element_array(locality) }
+      hash = Hash.new { |h, k| h[k] = [] }
+      locality.each_with_object(hash) do |l, obj|
+        k, v = l.to_hash.first
+        obj[k] << v
+      end
+      { "locality_stack" => hash }
     end
 
     #
