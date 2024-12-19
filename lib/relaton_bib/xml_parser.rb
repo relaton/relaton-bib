@@ -313,7 +313,7 @@ module RelatonBib
         return unless title
 
         content = variants(title)
-        content = title.text unless content.any?
+        content = title.children.map { |n| n.text? ? n.content : n.to_xml }.join unless content.any?
         TypedTitleString.new(
           type: title[:type], content: content, language: title[:language],
           script: title[:script], format: title[:format]
