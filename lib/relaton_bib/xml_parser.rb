@@ -290,7 +290,7 @@ module RelatonBib
       def fetch_docid(item)
         item.xpath("./docidentifier").map do |id|
           args = id.to_h.transform_keys(&:to_sym)
-          args[:id] = id.text
+          args[:id] = id.children.map { |n| n.text? ? n.content : n.to_xml }.join
           args[:primary] = id[:primary] == "true" ? true : nil
           create_docid(**args)
         end
