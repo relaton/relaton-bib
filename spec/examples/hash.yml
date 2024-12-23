@@ -66,9 +66,9 @@ contributor:
     - content: division
     logo:
       image:
-        id: logo1
         src: logo1.png
         mimetype: image/png
+        id: logo1
         filename: logo1.png
         width: '200'
         height: 100%
@@ -272,17 +272,8 @@ relation:
       content: ISO 19115:2003
       format: text/plain
   locality:
-  - locality_stack:
-    - locality:
-        type: section
-        reference_from: Reference from
-  - locality_stack:
-    - locality:
-        type: chapter
-        reference_from: '1'
-    - locality:
-        type: page
-        reference_from: '2'
+  - type: section
+    reference_from: Reference from
   source_locality:
   - source_locality_stack:
     - type: volume
@@ -298,6 +289,17 @@ relation:
   description:
     content: supersedes
     format: text/plain
+  locality_stack:
+  - locality:
+    - type: chapter
+      reference_from: '1'
+  - locality:
+    - type: page
+      reference_from: '2'
+  source_locality:
+  - type: section
+    reference_from: Reference from
+    reference_to: Reference to
 - type: partOf
   bibitem:
     title:
@@ -376,19 +378,17 @@ place:
     recommended: true
 extent:
 - locality:
-    type: section
+  - type: section
     reference_from: Reference from
     reference_to: Reference to
-- locality:
-    type: chapter
+  - type: chapter
     reference_from: '4'
 - locality_stack:
   - locality:
-      type: page
+    - type: page
       reference_from: '10'
       reference_to: '20'
-  - locality:
-      type: volume
+    - type: volume
       reference_from: '1'
 size:
 - :type: page
@@ -415,33 +415,34 @@ keyword:
 - content: Key Word
 license:
 - License
-doctype:
-  type: Doctype
-  abbreviation: DCT
-subdoctype: Subdoctype
-editorialgroup:
-- name: Editorial group
-  number: 1
-  type: Type
-  identifier: Identifier
-  prefix: Prefix
-ics:
-- code: '01'
-  text: First
-structuredidentifier:
-- docnumber: '123'
-  type: type 1
-  agency:
-  - agency 1
-  - agency 2
-  class: class 1
-  partnumber: '4'
-  edition: '1'
-  version: '2'
-  supplementtype: type 2
-  supplementnumber: '5'
-  language: en
-  year: '2020'
-- docnumber: '456'
-  agency:
-  - agency 3
+ext:
+  doctype:
+    type: Doctype
+    abbreviation: DCT
+  subdoctype: Subdoctype
+  editorialgroup:
+  - name: Editorial group
+    number: 1
+    type: Type
+    identifier: Identifier
+    prefix: Prefix
+  ics:
+  - code: '01'
+    text: First
+  structuredidentifier:
+  - docnumber: '123'
+    type: type 1
+    agency:
+    - agency 1
+    - agency 2
+    class: class 1
+    partnumber: '4'
+    edition: '1'
+    version: '2'
+    supplementtype: type 2
+    supplementnumber: '5'
+    language: en
+    year: '2020'
+  - docnumber: '456'
+    agency:
+    - agency 3

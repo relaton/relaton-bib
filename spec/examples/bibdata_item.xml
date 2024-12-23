@@ -1,5 +1,5 @@
 <bibdata type="standard" schema-version="v1.2.9">
-  <fetched>2024-01-10</fetched>
+  <fetched>2024-12-11</fetched>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -172,19 +172,9 @@
     <bibitem>
       <formattedref format="text/plain">ISO 19115:2003</formattedref>
     </bibitem>
-    <localityStack>
-      <locality type="section">
-        <referenceFrom>Reference from</referenceFrom>
-      </locality>
-    </localityStack>
-    <localityStack>
-      <locality type="chapter">
-        <referenceFrom>1</referenceFrom>
-      </locality>
-      <locality type="page">
-        <referenceFrom>2</referenceFrom>
-      </locality>
-    </localityStack>
+    <locality type="section">
+      <referenceFrom>Reference from</referenceFrom>
+    </locality>
     <sourceLocalityStack>
       <sourceLocality type="volume">
         <referenceFrom>2</referenceFrom>
@@ -199,6 +189,20 @@
     <bibitem type="standard">
       <formattedref format="text/plain">ISO 19115:2003/Cor 1:2006</formattedref>
     </bibitem>
+    <localityStack>
+      <locality type="chapter">
+        <referenceFrom>1</referenceFrom>
+      </locality>
+    </localityStack>
+    <localityStack>
+      <locality type="page">
+        <referenceFrom>2</referenceFrom>
+      </locality>
+    </localityStack>
+    <sourceLocality type="section">
+      <referenceFrom>Reference from</referenceFrom>
+      <referenceTo>Reference to</referenceTo>
+    </sourceLocality>
   </relation>
   <relation type="partOf">
     <bibitem>
@@ -254,8 +258,6 @@
       <referenceFrom>Reference from</referenceFrom>
       <referenceTo>Reference to</referenceTo>
     </locality>
-  </extent>
-  <extent>
     <locality type="chapter">
       <referenceFrom>4</referenceFrom>
     </locality>

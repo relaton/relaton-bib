@@ -169,9 +169,9 @@ module Relaton
       end
 
       # @param bibtex [BibTeX::Entry]
-      # @return [Array<Relaton::Bib::Locality>]
+      # @return [Array<RelatonBib::Extent>]
       def fetch_extent(bibtex) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
-        bibtex.select do |k, _v|
+        locs = bibtex.select do |k, _v|
           %i[chapter pages volume].include? k
         end.reduce([]) do |mem, loc|
           if loc[0] == :pages
@@ -184,6 +184,7 @@ module Relaton
           end
           mem << Locality.new(type, from, to)
         end
+        [RelatonBib::Extent.new(locs)]
       end
 
       # @param bibtex [BibTeX::Entry]

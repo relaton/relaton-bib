@@ -39,23 +39,21 @@ module RelatonBib
     # @param description [RelatonBib::FormattedString, nil]
     # @param bibitem [RelatonBib::BibliographicItem,
     #   RelatonIso::IsoBibliographicItem]
-    # @param locality [Array<RelatonBib::Locality, RelatonBib::LocalityStack>]
+    # @param locality [Array<RelatonBib::Locality>]
+    # @param locality_stack [Array<RelatonBib::LocalityStack>]
     # @param source_locality [Array<RelatonBib::SourceLocality,
     #   RelatonBib::SourceLocalityStack>]
-    def initialize(type:, bibitem:, description: nil, locality: [],
-                   source_locality: [])
+    def initialize(type:, bibitem:, **args)
       type = "obsoletes" if type == "Now withdrawn"
       unless self.class::TYPES.include? type
         Util.warn "Invalid relation type: `#{type}`"
       end
       @type = type
-      @description = description
-      @locality = locality
-      @source_locality = source_locality
+      @description = args[:description]
+      @locality = args[:locality] || args[:locality_stack] || []
+      @source_locality = args[:source_locality] || args[:source_locality_stack] || []
       @bibitem = bibitem
     end
-
-    # rubocop:disable Metrics/AbcSize
 
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder, **opts)
@@ -68,13 +66,16 @@ module RelatonBib
         source_locality.each { |l| l.to_xml builder }
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     # @return [Hash]
     def to_hash # rubocop:disable Metrics/AbcSize
       hash = { "type" => type, "bibitem" => bibitem.to_hash(embedded: true) }
       hash["description"] = description.to_hash if description
-      hash["locality"] = single_element_array(locality) if locality&.any?
+      locality.each_with_object(hash) do |l, obj|
+        k, v = l.to_hash.first
+        hash[k] ||= []
+        hash[k] << v
+      end
       if source_locality&.any?
         hash["source_locality"] = single_element_array(source_locality)
       end

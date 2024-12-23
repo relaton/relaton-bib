@@ -23,19 +23,19 @@ describe Relaton::HashConverter do
     expect(ls).to be_instance_of Relaton::Bib::LocalizedString
   end
 
-  it "make localityStack from unwrapped loclaity" do
-    hash = { locality: [{ type: "section", reference_from: "1" }] }
-    described_class.relation_locality_hash_to_bib hash
-    expect(hash[:locality].first).to be_instance_of Relaton::Bib::LocalityStack
-  end
+  # it "make localityStack from unwrapped loclaity" do
+  #   hash = { locality: [{ type: "section", reference_from: "1" }] }
+  #   described_class.relation_locality_hash_to_bib hash
+  #   expect(hash[:locality].first).to be_instance_of Relaton::Bib::LocalityStack
+  # end
 
-  it "make sourceLocalityStack from unwrapped sourceLoclaity" do
-    hash = { source_locality: [{ type: "section", reference_from: "1" }] }
-    described_class.relation_source_locality_hash_to_bib hash
-    expect(hash[:source_locality].first).to be_instance_of(
-      Relaton::Bib::SourceLocalityStack,
-    )
-  end
+  # it "make sourceLocalityStack from unwrapped sourceLoclaity" do
+  #   hash = { source_locality: [{ type: "section", reference_from: "1" }] }
+  #   described_class.relation_source_locality_hash_to_bib hash
+  #   expect(hash[:source_locality].first).to be_instance_of(
+  #     Relaton::Bib::SourceLocalityStack,
+  #   )
+  # end
 
   it "parse validity time" do
     r = described_class.parse_validity_time({ begins: 1999 }, :begins)
@@ -120,7 +120,7 @@ describe Relaton::HashConverter do
 
   context "create doctype" do
     it "from string" do
-      ret = { doctype: "Doctype" }
+      ret = { ext: { doctype: "Doctype" } }
       described_class.doctype_hash_to_bib ret
       expect(ret[:doctype]).to be_instance_of Relaton::Bib::DocumentType
       expect(ret[:doctype].type).to eq "Doctype"
@@ -128,7 +128,7 @@ describe Relaton::HashConverter do
     end
 
     it "from hash" do
-      ret = { doctype: { type: "Doctype", abbreviation: "DCT" } }
+      ret = { ext: { doctype: { type: "Doctype", abbreviation: "DCT" } } }
       described_class.doctype_hash_to_bib ret
       expect(ret[:doctype]).to be_instance_of Relaton::Bib::DocumentType
       expect(ret[:doctype].type).to eq "Doctype"

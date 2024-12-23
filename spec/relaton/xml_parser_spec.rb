@@ -60,7 +60,7 @@ describe Relaton::XMLParser do
     XML
     item = described_class.from_xml xml
     expect(item.relation.first.source_locality.first).to be_instance_of(
-      Relaton::Bib::SourceLocalityStack,
+      Relaton::Bib::SourceLocality,
     )
   end
 

@@ -219,11 +219,11 @@ module Relaton
       #
       # @param [Nokogiri::XML::Element] item item element
       #
-      # @return [Array<Relaton::Bib::Locality, Relaton::Bib::LocalityStack>] extent
+      # @return [Array<RelatonBib::Extent>] extent
       #
       def fetch_extent(item)
-        item.xpath("./extent").reduce([]) do |a, ex|
-          a + localities(ex)
+        item.xpath("./extent").map do |ex|
+          RelatonBib::Extent.new localities(ex)
         end
       end
 
@@ -290,7 +290,7 @@ module Relaton
       def fetch_docid(item)
         item.xpath("./docidentifier").map do |id|
           args = id.to_h.transform_keys(&:to_sym)
-          args[:id] = id.text
+          args[:id] = id.children.map { |n| n.text? ? n.content : n.to_xml }.join
           args[:primary] = id[:primary] == "true" ? true : nil
           create_docid(**args)
         end
@@ -313,8 +313,8 @@ module Relaton
         return unless title
 
         content = variants(title)
-        content = title.text unless content.any?
-        Title.new(
+        content = title.children.map { |n| n.text? ? n.content : n.to_xml }.join unless content.any?
+        Typed.new(
           type: title[:type], content: content, language: title[:language],
           script: title[:script], format: title[:format]
         )
@@ -642,13 +642,13 @@ module Relaton
       # @param rel [Nokogiri::XML::Element]
       # @return [Array<Relaton::Bib::SourceLocality, Relaton::Bib::SourceLocalityStack>]
       def source_localities(rel)
-        rel.xpath("./sourceLocality|./sourceLocalityStack").map do |lc|
-          if lc[:type]
-            SourceLocalityStack.new [locality(lc, SourceLocality)]
+        rel.xpath("./sourceLocality|./sourceLocalityStack").map do |loc|
+          if loc.name == "sourceLocality"
+            # src_locs = loc.xapth("./sourceLocality").map { |sl| locality(sl, SourceLocality) }
+            # SourceLocalityStack.new src_locs
+            locality loc, SourceLocality
           else
-            sls = lc.xpath("./sourceLocality").map do |l|
-              locality l, SourceLocality
-            end
+            sls = loc.xpath("./sourceLocality").map { |l| locality l, SourceLocality }
             SourceLocalityStack.new sls
           end
         end
