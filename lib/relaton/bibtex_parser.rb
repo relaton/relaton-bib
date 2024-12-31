@@ -1,6 +1,3 @@
-require "bibtex"
-require "iso639"
-
 module Relaton
   # @todo: move this class to the Relaton::Bib::Bibtex module
   class BibtexParser

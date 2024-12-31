@@ -1,11 +1,11 @@
 module Relaton
   module Bib
     class Price
-      attr_accessor :amount, :currency
+      attr_accessor :content, :currency
 
-      def initialize(amount:, currency:)
-        @amount = amount
-        @currency = currency
+      def initialize(**args)
+        @content = args[:content]
+        @currency = args[:currency]
       end
     end
   end

@@ -5,10 +5,14 @@ module Relaton
   module Model
     class Relation < Lutaml::Model::Serializable
       model Bib::Relation
+    end
 
+    require_relative "bibitem_base"
+
+    class Relation
       attribute :type, :string
-      attribute :decription, LocalizedString
-      attribute :bibitem, Bibitem
+      attribute :description, LocalizedString
+      attribute :bibitem, BibitemBase
       attribute :locality, Locality, collection: true
       attribute :locality_stack, LocalityStack, collection: true
       attribute :source_locality, SourceLocality, collection: true

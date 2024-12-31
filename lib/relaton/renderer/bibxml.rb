@@ -30,10 +30,10 @@ module Relaton
       # @param [Boolean] include_bibdata
       #
       def render_bibxml(builder, include_keywords) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-        target = @bib.link.detect { |l| l.type.casecmp("src").zero? } ||
-          @bib.link.detect { |l| l.type.casecmp("doi").zero? }
-        bxml = if @bib.docnumber&.match(/^BCP/) || (@bib.docidentifier.detect(&:primary)&.id ||
-                    @bib.docidentifier[0].id).include?("BCP")
+        target = @bib.source.detect { |l| l.type.casecmp("src").zero? } ||
+          @bib.source.detect { |l| l.type.casecmp("doi").zero? }
+        bxml = if @bib.docnumber&.match(/^BCP/) || (@bib.docidentifier.detect(&:primary)&.content ||
+                    @bib.docidentifier[0].content).include?("BCP")
                  render_bibxml_refgroup(builder, include_keywords)
                else
                  render_bibxml_ref(builder, include_keywords)
@@ -67,7 +67,7 @@ module Relaton
               @bib.editorialgroup&.technical_committee&.any? ||
               (include_keywords && @bib.keyword.any?)
             xml.front do
-              xml.title @bib.title[0].title.content if @bib.title.any?
+              xml.title @bib.title[0].content if @bib.title.any?
               render_authors xml
               render_date xml
               render_workgroup xml
@@ -95,8 +95,8 @@ module Relaton
         return attrs if attrs.any?
 
         @bib.docidentifier.first&.tap do |di|
-          anchor = di.type == "IANA" ? di.id.split[1..].join(" ").upcase : di.id
-          return { anchor: anchor.gsub(" ", ".") }
+          anchor = di.type == "IANA" ? di.content.split[1..].join(" ").upcase : di.content
+          return { anchor: anchor.tr(" ", ".") }
         end
       end
 
@@ -109,7 +109,7 @@ module Relaton
         @bib.contributor.each do |c|
           builder.author do |xml|
             xml.parent[:role] = "editor" if c.role.detect { |r| r.type == "editor" }
-            if c.entity.is_a?(Person) then render_person xml, c.entity
+            if c.entity.is_a?(Bib::Person) then render_person xml, c.entity
             else render_organization xml, c.entity, c.role
             end
             render_address xml, c
@@ -287,7 +287,7 @@ module Relaton
       end
 
       def render_format(builder)
-        @bib.link.select { |l| l.type == "TXT" }.each do |l|
+        @bib.source.select { |l| l.type == "TXT" }.each do |l|
           builder.format type: l.type, target: l.content
         end
       end

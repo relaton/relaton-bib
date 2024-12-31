@@ -6,7 +6,7 @@ module Relaton
       def_delegators :@value, :any?
 
       # @return [Array<Relaton::Bib::Size::Value>]
-      attr_accessor :values
+      attr_accessor :value
 
       #
       # Initialize a Relaton::Bib::Size object.
@@ -64,9 +64,9 @@ module Relaton
         # @param [String] type Recommended values: page, volume, time (in ISO 8601 duration values)
         # @param [String, nil] content The quantity of the size
         #
-        def initialize(type:, content: nil)
-          @type = type
-          @content = content
+        def initialize(**args)
+          @type = args[:type]
+          @content = args[:content]
         end
 
         #

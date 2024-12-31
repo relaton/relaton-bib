@@ -91,7 +91,7 @@ module Relaton
       if si
         id = si[:value]
         id.sub!(/(?<=-)\d{2}$/, ver) if ver
-        ret << Docidentifier.new(type: "Internet-Draft", id: id, primary: true)
+        ret << Bib::Docidentifier.new(type: "Internet-Draft", id: id, primary: true)
       else
         id = reference[:anchor] || reference[:docName] || reference[:number]
         ret << create_docid(id, ver) if id
@@ -106,7 +106,7 @@ module Relaton
                     reference[atr]
                   end
           type = pubid_type id
-          ret << Docidentifier.new(id: atrid, type: type, scope: atr)
+          ret << Bib::Docidentifier.new(id: atrid, type: type, scope: atr)
         end
       end
 
@@ -115,7 +115,7 @@ module Relaton
 
         id = si[:value]
         # id.sub!(/(?<=-)\d{2}$/, ver) if ver && si[:name] == "Internet-Draft"
-        Docidentifier.new(id: id, type: si[:name])
+        Bib::Docidentifier.new(id: id, type: si[:name])
       end.compact
     end
 
@@ -204,10 +204,8 @@ module Relaton
     # @return [Array<Relaton::Bib::FormattedString>]
     def abstracts(ref)
       ref.xpath("./front/abstract").map do |a|
-        c = a.inner_html.gsub(/\s*(<\/?)t(>)\s*/, '\1p\2')
-          .gsub(/[\t\n]/, " ").squeeze " "
-        FormattedString.new(content: c, language: language(ref), script: "Latn",
-                            format: "text/html")
+        c = a.inner_html.gsub(/\s*(<\/?)t(>)\s*/, '\1p\2').gsub(/[\t\n]/, " ").squeeze " "
+        Bib::FormattedString.new(content: c, language: language(ref), script: "Latn", format: "text/html")
       end
     end
 
@@ -230,8 +228,7 @@ module Relaton
       return unless author[:fullname] || author[:surname]
 
       name = full_name(author[:fullname], author[:surname], author[:initials], lang)
-      Person.new(name: name, affiliation: affiliation(author),
-                 contact: contacts(author.at("./address")))
+      Bib::Person.new(name: name, affiliation: affiliation(author), contact: contacts(author.at("./address")))
     end
 
     # @param contrib [Nokogiri::XML::Element]
@@ -254,7 +251,7 @@ module Relaton
     # @return [Relaton::Bib::FullName]
     def full_name(fname, sname, inits, lang)
       initials = localized_string(inits, lang) if inits
-      FullName.new(
+      Bib::FullName.new(
         completename: localized_string(fname, lang), initials: initials,
         forename: forename(inits, lang), surname: localized_string(sname, lang)
       )
@@ -272,7 +269,7 @@ module Relaton
       return [] unless initials
 
       initials.split(/\.-?\s?|\s/).map do |i|
-        Forename.new(initial: i, language: lang, script: script)
+        Bib::Forename.new(initial: i, language: lang, script: script)
       end
     end
 
@@ -283,14 +280,14 @@ module Relaton
       return [] if o.nil? || o.text.empty?
 
       org = new_org o.text, o[:abbrev]
-      [Affiliation.new(organization: org)]
+      [Bib::Affiliation.new(organization: org)]
     end
 
     # @param name [String]
     # @param abbr [String, nil]
     # @return [Relaton::Bib::Organization]
     def new_org(name, abbr = nil)
-      Organization.new name: name, abbreviation: abbr
+      Bib::Organization.new name: name, abbreviation: abbr
     end
 
     # @param content [String, nil]
@@ -298,7 +295,7 @@ module Relaton
     # @param script [String, nil]
     # @return [Relaton::Bib::LocalizedString, nil]
     def localized_string(content, lang, script = nil)
-      LocalizedString.new(content, lang, script) if content
+      Bib::LocalizedString.new(content: content, laguage: lang, script: script) if content
     end
 
     # @param postal [Nokogiri::XML::Element]
@@ -319,7 +316,7 @@ module Relaton
     # @return [Relaton::Bib::Address]
     def address(postal) # rubocop:disable Metrics/CyclomaticComplexity
       street = [postal.at("./postalLine | ./street")&.text].compact
-      Address.new(
+      Bib::Address.new(
         street: street,
         city: postal.at("./city")&.text,
         postcode: postal.at("./code")&.text,
@@ -332,7 +329,7 @@ module Relaton
     # @param type [String] allowed "phone", "email" or "uri"
     # @param value [String]
     def add_contact(conts, type, value)
-      conts << Contact.new(type: type, value: value.text) if value
+      conts << Bib::Contact.new(type: type, value: value.text) if value
     end
 
     # @param author [Nokogiri::XML::Document]
@@ -363,14 +360,14 @@ module Relaton
       d += "-#{month(date[:month])}" if date[:month] && !date[:month].empty?
       d += "-#{date[:day]}" if date[:day]
       # date = Time.parse(d).strftime "%Y-%m-%d"
-      [Bdate.new(type: "published", on: d)]
+      [Bib::Date.new(type: "published", on: d)]
     end
 
     # @param reference [Nokogiri::XML::Element]
     # @return [Relaton::Bib::EditorialGroup, nil]
     def editorialgroup(reference)
       tc = reference.xpath("./front/workgroup").map do |ed|
-        wg = WorkGroup.new name: ed.text
+        wg = Bib::WorkGroup.new name: ed.text
         committee wg
       end
       EditorialGroup.new tc if tc.any?
@@ -379,7 +376,7 @@ module Relaton
     # @param [Relaton::Bib::WorkGroup]
     # @return [Relaton::Bib::TechnicalCommittee]
     def committee(wgr)
-      TechnicalCommittee.new wgr
+      Bib::TechnicalCommittee.new wgr
     end
 
     def month(mon)

@@ -8,17 +8,17 @@ module Relaton
       # @param type [String]
       # @param referenceFrom [String]
       # @param referenceTo [String, nil]
-      def initialize(type:, reference_from:, reference_to: nil)
-        type_ptrn = %r{section|clause|part|paragraph|chapter|page|title|line|
-          whole|table|annex|figure|note|list|example|volume|issue|time|anchor|
-          locality:[a-zA-Z0-9_]+}x
-        unless type&.match? type_ptrn
-          Util.warn "Invalid locality type: `#{type}`"
-        end
+      def initialize(**args)
+        # type_ptrn = %r{section|clause|part|paragraph|chapter|page|title|line|
+        #   whole|table|annex|figure|note|list|example|volume|issue|time|anchor|
+        #   locality:[a-zA-Z0-9_]+}x
+        # unless type&.match? type_ptrn
+        #   Util.warn "Invalid locality type: `#{type}`"
+        # end
 
-        @type           = type
-        @reference_from = reference_from
-        @reference_to   = reference_to
+        @type           = args[:type]
+        @reference_from = args[:reference_from]
+        @reference_to   = args[:reference_to]
       end
 
       # @param builder [Nokogiri::XML::Builder]

@@ -68,7 +68,7 @@ module Relaton
       attr_accessor :name
 
       # @return [Array<String>]
-      attr_reader :credential
+      attr_accessor :credential
 
       # @return [Array<Relaton::Bib::Affiliation>]
       attr_accessor :affiliation
@@ -77,14 +77,15 @@ module Relaton
       attr_accessor :identifier
 
       # @return [Array<Relaton::Bib::Address, Relaton::Bib::Contact>]
+      attr_accessor :contact
 
       # @param name [Relaton::Bib::FullName]
       # @param credential [Array<String>]
       # @param affiliation [Array<Relaton::Bib::Affiliation>]
       # @param identifier [Array<Relaton::Bib::PersonIdentifier>]
       # @param contact [Array<Relaton::Bib::Address, Relaton::Bib::Contact>]
-      def initialize(name:, **args)
-        @name        = name
+      def initialize(**args)
+        @name        = args[:name]
         @credential  = args[:credential] || []
         @affiliation = args[:affiliation] || []
         @identifier = args[:identifier] || []

@@ -44,7 +44,7 @@ describe Relaton::Model::FullName do
         </name>
       XML
       name = described_class.from_xml xml
-      expect(name.note.first).to be_instance_of Relaton::Bib::BiblioNote
+      expect(name.note.first).to be_instance_of Relaton::Bib::Note
       expect(described_class.to_xml(name)).to be_equivalent_to xml
     end
 

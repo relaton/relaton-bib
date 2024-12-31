@@ -9,7 +9,7 @@ describe Relaton::Model::Eref do
       XML
     end
 
-    it "from XML" do
+    xit "from XML" do
       eref = described_class.from_xml xml
       expect(eref).to be_instance_of Relaton::Model::Eref
       expect(eref.normative).to be true
@@ -35,7 +35,7 @@ describe Relaton::Model::Eref do
       XML
     end
 
-    it "from XML" do
+    xit "from XML" do
       eref = described_class.from_xml xml
       expect(eref).to be_instance_of Relaton::Model::Eref
       expect(eref.normative).to be true

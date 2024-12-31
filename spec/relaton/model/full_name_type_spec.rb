@@ -24,7 +24,7 @@ describe Relaton::Model::FullNameType do
       expect(item.completename).to be_instance_of Relaton::Model::FullNameType::Completename
       expect(item.note).to be_instance_of Array
       expect(item.note.size).to eq 1
-      expect(item.note.first).to be_instance_of Relaton::Bib::BiblioNote
+      expect(item.note.first).to be_instance_of Relaton::Bib::Note
       expect(item.to_xml).to be_equivalent_to xml
     end
 

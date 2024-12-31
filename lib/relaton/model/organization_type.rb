@@ -4,7 +4,6 @@ module Relaton
   module Model
     module OrganizationType
       class Name < Model::LocalizedString
-
         model Bib::Organization::Name
 
         attribute :type, :string

@@ -1,6 +1,8 @@
 module Relaton
   module Model
     class Edition < Lutaml::Model::Serializable
+      model Bib::Edition
+
       attribute :number, :string
       attribute :content, :string
 

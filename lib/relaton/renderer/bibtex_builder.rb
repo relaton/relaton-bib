@@ -122,7 +122,7 @@ module Relaton
       #
       def add_author_editor(type)
         contribs = @bib.contributor.select do |c|
-          c.entity.is_a?(Person) && c.role.any? { |e| e.type == type }
+          c.entity.is_a?(Bib::Person) && c.role.any? { |e| e.type == type }
         end.map &:entity
 
         return unless contribs.any?
@@ -272,7 +272,9 @@ module Relaton
       # Add keywords to BibTeX item
       #
       def add_keyword
-        @item.keywords = @bib.keyword.map(&:content).join(", ") if @bib.keyword.any?
+        if @bib.keyword.any?
+          @item.keywords = @bib.keyword.reduce([]) { |m, kw| m + kw.taxon.map(&:content) }.join(", ")
+        end
       end
 
       #
@@ -299,12 +301,12 @@ module Relaton
       # Add link to BibTeX item
       #
       def add_link
-        @bib.link.each do |l|
+        @bib.source.each do |l|
           case l.type&.downcase
           when "doi" then @item.doi = l.content
           when "file" then @item.file2 = l.content
           when "src" then @item.url = l.content
-          end
+          end.to_s
         end
       end
     end

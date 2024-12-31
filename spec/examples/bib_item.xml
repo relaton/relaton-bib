@@ -1,5 +1,6 @@
 <bibitem id="ISOTC211" type="standard" schema-version="v1.2.9">
   <fetched>2024-12-11</fetched>
+  <formattedref>ISO TC 211</formattedref>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -31,7 +32,7 @@
       <description>Publisher role</description>
     </role>
     <organization>
-      <name>International Organization for Standardization</name>
+      <name type="Org name type" language="en" script="Latn" locale="en-US">International Organization for Standardization</name>
       <subdivision>division</subdivision>
       <abbreviation>ISO</abbreviation>
       <uri>www.iso.org</uri>
@@ -147,6 +148,7 @@
   <language>en</language>
   <language>fr</language>
   <script>Latn</script>
+  <locale>en-US</locale>
   <abstract format="text/html" language="en" script="Latn">
     <p>ISO 19115-1:2014 defines the schema required for...</p>
   </abstract>
@@ -209,58 +211,53 @@
       <title type="main" format="text/plain">Book title</title>
     </bibitem>
   </relation>
-  <series type="Internet-Draft">
-    <title format="text/plain">Internet-Draft</title>
-    <number>draft-ietf-somewg-someprotocol-07</number>
-    <run>seriesrun</run>
-  </series>
   <series type="main">
-    <title type="original" format="text/plain" language="en" script="Latn">ISO/IEC FDIS 10118-3</title>
-    <place>Serie's place</place>
+    <formattedref>Series formatted ref</formattedref>
+    <title type="main">Series Title</title>
+    <place>
+      <city>New York</city>
+      <formattedPlace>New York, NY, US</formattedPlace>
+      <region iso="NY" recommended="true">New York</region>
+      <country iso="US" recommended="true">USA</country>
+    </place>
+  </series>
+  <series type="alt">
+    <formattedref format="text/plain">ISO/IEC FDIS 10118-3</formattedref>
+    <title type="original" language="en" script="Latn" locale="en-US">ISO/IEC FDIS 10118-3</title>
     <organization>Serie's organization</organization>
-    <abbreviation>ABVR</abbreviation>
+    <abbreviation language="en" script="Latn" locale="en-US">ABVR</abbreviation>
     <from>2009-02-01</from>
     <to>2010-12-20</to>
     <number>serie1234</number>
     <partnumber>part5678</partnumber>
-  </series>
-  <series type="alt">
-    <formattedref format="text/plain" language="en" script="Latn">serieref</formattedref>
-    <title format="text/plain">Formattedref</title>
-  </series>
-  <series type="journal">
-    <title format="text/plain">Journal</title>
-    <number>7</number>
-  </series>
-  <series>
-    <title format="text/plain">
-      <variant language="en" script="Latn">Series</variant>
-      <variant language="fr" script="Latn">Séries</variant>
-    </title>
-  </series>
-  <series>
-    <title format="text/plain">RFC</title>
-    <number>4</number>
+    <run>2</run>
   </series>
   <medium>
-    <form>medium form</form>
-    <size>medium size</size>
-    <scale>medium scale</scale>
+    <content>Medium content</content>
+    <genre>Medium Genre</genre>
+    <form>Medium form</form>
+    <carrier>Medium carrier</carrier>
+    <size>Medium size</size>
+    <scale>Medium scale</scale>
   </medium>
   <place>bib place</place>
   <place>
     <city>Geneva</city>
-    <region>Region</region>
-    <country iso="CH" recommended="true">Switzelznd</country>
+    <formattedPlace>Geneva, Switzeland</formattedPlace>
+    <region>Europe</region>
+    <country iso="CH" recommended="true">Switzeland</country>
   </place>
+  <price currency="USD">123</price>
   <extent>
-    <locality type="section">
-      <referenceFrom>Reference from</referenceFrom>
-      <referenceTo>Reference to</referenceTo>
-    </locality>
-    <locality type="chapter">
-      <referenceFrom>4</referenceFrom>
-    </locality>
+    <localityStack>
+      <locality type="section">
+        <referenceFrom>Reference from</referenceFrom>
+        <referenceTo>Reference to</referenceTo>
+      </locality>
+      <locality type="chapter">
+        <referenceFrom>4</referenceFrom>
+      </locality>
+    </localityStack>
   </extent>
   <extent>
     <localityStack>
@@ -283,11 +280,21 @@
   <classification type="type">value</classification>
   <classification type="keyword">Keywords</classification>
   <classification type="mendeley">Mendeley Tags</classification>
-  <keyword>Keyword</keyword>
-  <keyword>Key Word</keyword>
+  <keyword>
+    <vocab language="en" script="Latn">Vocab 1</vocab>
+    <taxon language="en" script="Latn">Taxon 1</taxon>
+    <taxon language="fr" script="Latn">Taxon 2</taxon>
+    <vocabid type="vocab-id-type" uri="http://vovab">
+      <code>444</code>
+      <term>VocabId Term</term>
+    </vocabid>
+  </keyword>
   <validity>
     <validityBegins>2010-10-10 12:21</validityBegins>
     <validityEnds>2011-02-03 18:30</validityEnds>
     <revision>2011-03-04 09:00</revision>
   </validity>
+  <depiction scope="cover">
+    <image src="cover1.png" mimetype="image/png" filename="cover1.png" width="200" height="100%" alt="Cover 1" title="Cover #1" longdesc="Cover number 1"/>
+  </depiction>
 </bibitem>

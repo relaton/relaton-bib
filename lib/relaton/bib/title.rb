@@ -34,7 +34,7 @@ module Relaton
         pref = prefix.empty? ? prefix : "#{prefix}."
         out = count > 1 ? "#{pref}title::\n" : ""
         out += "#{pref}title.type:: #{type}\n" if type
-        out += title.to_asciibib "#{pref}title", 1, !(type.nil? || type.empty?)
+        out += "#{pref}title.content:: #{content}\n"
         out
       end
     end

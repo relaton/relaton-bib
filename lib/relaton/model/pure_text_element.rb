@@ -6,6 +6,7 @@ module Relaton
           attribute :text, :string
           attribute :sup, :string
           attribute :sub, :string
+          attribute :em, :string
         end
       end
 

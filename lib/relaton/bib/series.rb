@@ -37,7 +37,7 @@ module Relaton
       # @param number [String, nil]
       # @param partnumber [String, nil]
       # @param run [String, nil]
-      def initialize(title:, **args)
+      def initialize(**args) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
         # if args[:type] && !TYPES.include?(args[:type])
         #   warn "[relaton-bib] Series type is invalid: #{args[:type]}"
         # end

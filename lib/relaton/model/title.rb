@@ -1,7 +1,6 @@
 module Relaton
   module Model
     class Title < TypedTitleString
-
       model Bib::Title
 
       mappings[:xml].instance_eval do

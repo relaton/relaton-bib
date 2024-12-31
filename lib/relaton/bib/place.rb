@@ -1,30 +1,34 @@
 module Relaton
   module Bib
     class Place
-
       # @return [String, nil]
-      attr_accessor :name, :city
+      attr_accessor :formatted_place, :city
 
       # @return [Array<Relaton::Bib::Place::RegionType>]
       attr_accessor :region, :country
 
+      # @return [Relaton::Model::Uri, nil]
+      attr_accessor :uri
+
       #
       # Initialize place.
       #
-      # @param name [String, nil] name of place, name or city should be provided
-      # @param city [String, nil] name of city, city or name should be provided
+      # @param city [String, nil] city or formatted place should be provided
       # @param region [Array<Relaton::Bib::Place::RegionType>] region of place
       # @param country [Array<Relaton::Bib::Place::RegionType>] country of place
+      # @param formatted_place [String, nil] formatted place or city should be provided
+      # @param uri [Relaton::Model::Uri, nil] URI of place
       #
-      def initialize(name: nil, city: nil, region: [], country: [])
-        if name.nil? && city.nil?
-          raise ArgumentError, "`name` or `city` should be provided"
-        end
+      def initialize(**args)
+        # if formatted_place.nil? && city.nil?
+        #   raise ArgumentError, "`formatted_place` or `city` should be provided"
+        # end
 
-        @name    = name
-        @city    = city
-        @region  = region
-        @country = country
+        @city             = args[:city]
+        @region           = args[:region] || []
+        @country          = args[:country] || []
+        @formatted_place  = args[:formatted_place]
+        @uri              = args[:uri]
       end
 
       #
@@ -33,8 +37,8 @@ module Relaton
       # @param builder [Nologiri::XML::Builder]
       #
       # def to_xml(builder)
-      #   if name
-      #     builder.place name
+      #   if formatted_place
+      #     builder.place formatted_place
       #   else
       #     builder.place do |b|
       #       b.city city
@@ -50,7 +54,7 @@ module Relaton
       # @return [Hash]
       #
       # def to_hash
-      #   if name then name
+      #   if formatted_place then formatted_place
       #   else
       #     hash = { "city" => city }
       #     hash["region"] = region.map(&:to_hash) if region.any?
@@ -70,7 +74,7 @@ module Relaton
       def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize
         pref = prefix.empty? ? "place" : "#{prefix}.place"
         out = count > 1 ? "#{pref}::\n" : ""
-        return "#{out}#{pref}.name:: #{name}\n" if name
+        return "#{out}#{pref}.formatted_place:: #{formatted_place}\n" if formatted_place
 
         out += "#{pref}.city:: #{city}\n"
         out += region.map { |r| r.to_asciibib("#{pref}.region", region.size) }.join
@@ -135,8 +139,8 @@ module Relaton
           "WY" =>	"Wyoming",
         }.freeze
 
-        # @return [Strign] name of region
-        attr_accessor :name
+        # @return [Strign] content of region
+        attr_accessor :content
 
         # @return [Strign, nil] ISO code of region
         attr_accessor :iso
@@ -147,16 +151,16 @@ module Relaton
         #
         # Initialize region type. Name or valid US state ISO code should be provided.
         #
-        # @param [String, nil] name name of region
+        # @param [String, nil] content name of region
         # @param [String, nil] iso ISO code of region
         # @param [Boolean, nil] recommended recommended region
         #
-        def initialize(name: nil, iso: nil, recommended: nil)
-          unless name || STATES.key?(iso&.upcase)
-            raise ArgumentError, "`name` or valid US state ISO code should be provided"
-          end
+        def initialize(content: nil, iso: nil, recommended: nil)
+          # unless content || STATES.key?(iso&.upcase)
+          #   raise ArgumentError, "`content` or valid US state ISO code should be provided"
+          # end
 
-          @name = name || STATES[iso&.upcase]
+          @content = content || STATES[iso&.upcase]
           @iso  = iso
           @recommended = recommended
         end
@@ -169,7 +173,7 @@ module Relaton
         # def to_xml(builder)
         #   builder.parent["iso"] = iso if iso
         #   builder.parent["recommended"] = recommended.to_s unless recommended.nil?
-        #   builder.text name
+        #   builder.text content
         # end
 
         #
@@ -178,7 +182,7 @@ module Relaton
         # @return [Hash] region type as Hash
         #
         # def to_hash
-        #   hash = { "name" => name }
+        #   hash = { "content" => content }
         #   hash["iso"] = iso if iso
         #   hash["recommended"] = recommended unless recommended.nil?
         #   hash
@@ -194,7 +198,7 @@ module Relaton
         #
         def to_asciibib(pref, count = 1) # rubocop:disable Metrics/AbcSize
           out = count > 1 ? "#{pref}::\n" : ""
-          out += "#{pref}.name:: #{name}\n"
+          out += "#{pref}.content:: #{content}\n"
           out += "#{pref}.iso:: #{iso}\n" if iso
           out += "#{pref}.recommended:: #{recommended}\n" if recommended
           out

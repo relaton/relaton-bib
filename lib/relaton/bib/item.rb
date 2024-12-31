@@ -32,6 +32,7 @@ require_relative "note"
 require_relative "bversion"
 require_relative "place"
 require_relative "price"
+require_relative "extent"
 require_relative "size"
 require_relative "structured_identifier"
 require_relative "editorial_group"
@@ -57,7 +58,6 @@ module Relaton
         schema_version: nil,
         fetched: nil,
         formattedref: nil,
-        title: -> { TitleCollection.new },
         source: -> { [] },
         docidentifier: -> { [] },
         docnumber: nil,
@@ -65,29 +65,31 @@ module Relaton
         contributor: -> { [] },
         edition: nil,
         version: -> { [] },
-        biblionote: -> { [] },
+        note: -> { [] },
         language: -> { [] },
         locale: -> { [] },
         script: -> { [] },
         abstract: -> { [] },
         status: nil,
         copyright: -> { [] },
-        relation: -> { RelationCollection.new },
         series: -> { [] },
         medium: nil,
         place: -> { [] },
         price: -> { [] },
         extent: -> { [] },
-        bibliographic_size: nil,
+        size: nil,
         accesslocation: -> { [] },
         license: -> { [] },
         classification: -> { [] },
         keyword: -> { [] },
         validity: nil,
         depiction: nil,
+        editorialgroup: nil,
       }.freeze
 
       ATTRS.each_key { |k| attr_accessor k }
+
+      attr_reader :title, :relation
 
       # @param id [String, nil]
       # @param type [String, nil]
@@ -129,11 +131,22 @@ module Relaton
       # @param structuredidentifier [Relaton::Bib::StructuredIdentifierCollection]
       # @param size [Relaton::Bib::Size, nil]
       def initialize(**args)
+        @title = args[:title] || [] # TitleCollection.new
+        @relation = args[:relation] || [] # RelationCollection.new
+
         ATTRS.each do |k, v|
           val = args[k] || v&.call
           instance_variable_set "@#{k}", val
         end
         @schema_version = schema
+      end
+
+      def title=(title)
+        @title = title.is_a?(TitleCollection) ? title : TitleCollection.new(title)
+      end
+
+      def relation=(relation)
+        @relation = relation.is_a?(RelationCollection) ? relation : RelationCollection.new(relation: relation)
       end
 
       # def title_to_xml(mode, doc, builder)
@@ -193,7 +206,7 @@ module Relaton
         identifier ||= @docidentifier.reject { |i| i.type == "DOI" }[0]
         return unless identifier
 
-        idstr = identifier.id.gsub(/[:\/]/, "-").gsub(/[\s\(\)]/, "")
+        idstr = identifier.content.gsub(/[:\/]/, "-").gsub(/[\s\(\)]/, "")
         idstr.strip
       end
 
@@ -227,6 +240,10 @@ module Relaton
       #     end.doc.root.to_xml
       #   end
       # end
+
+      def to_xml(bibdata: false)
+        bibdata ? Model::Bibdata.to_xml(self) : Model::Bibitem.to_xml(self)
+      end
 
       #
       # Render BibXML (RFC)
@@ -336,7 +353,7 @@ module Relaton
       def to_all_parts # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength,Metrics/PerceivedComplexity
         me = deep_clone
         me.disable_id_attribute
-        me.relation << DocumentRelation.new(type: "instanceOf", bibitem: self)
+        me.relation << Relation.new(type: "instanceOf", bibitem: self)
         me.language.each do |l|
           me.title.delete_title_part!
           ttl = me.title.select do |t|
@@ -367,7 +384,7 @@ module Relaton
       def to_most_recent_reference
         me = deep_clone
         disable_id_attribute
-        me.relation << DocumentRelation.new(type: "instanceOf", bibitem: self)
+        me.relation << Relation.new(type: "instanceOf", bibitem: self)
         me.abstract = []
         me.date = []
         me.docidentifier.each &:remove_date

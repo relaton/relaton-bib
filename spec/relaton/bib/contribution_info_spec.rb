@@ -1,7 +1,5 @@
-describe Relaton::Bib::ContributorRole do
-  before(:each) do
-    Relaton::Bib.instance_variable_set :@configuration, nil
-  end
+describe Relaton::Bib::Contributor::Role do
+  # before(:each) { Relaton::Bib.instance_variable_set :@configuration, nil }
 
   it "raises invalid type argument error" do
     expect { described_class.new type: "type" }.to output(

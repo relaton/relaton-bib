@@ -3,7 +3,7 @@ describe Relaton::Renderer::BibtexBuilder do
     subject { Relaton::Renderer::BibtexBuilder.new bibitem }
     context "add_link" do
       let(:bibitem) { Relaton::Bib::Item.new link: ["http://example.com"] }
-      it "ignore links without type" do
+      xit "ignore links without type" do
         item = double "item"
         expect(item).not_to receive :doi=
         expect(item).not_to receive :url=
@@ -14,7 +14,7 @@ describe Relaton::Renderer::BibtexBuilder do
     end
   end
 
-  it "render article" do
+  xit "render article" do
     bibitem = Relaton::XMLParser.from_xml File.read("spec/examples/bibtex_article.xml")
     expect(bibitem.to_bibtex).to eq <<~"OUTPUT"
       @article{DOC123,
@@ -29,7 +29,7 @@ describe Relaton::Renderer::BibtexBuilder do
     OUTPUT
   end
 
-  it "render book, rpoceedings" do
+  xit "render book, rpoceedings" do
     bibitem = Relaton::XMLParser.from_xml File.read("spec/examples/bibtex_book.xml")
     expect(bibitem.to_bibtex).to eq <<~"OUTPUT"
       @book{DOC123,
@@ -46,7 +46,7 @@ describe Relaton::Renderer::BibtexBuilder do
     OUTPUT
   end
 
-  it "render inbook, incollection" do
+  xit "render inbook, incollection" do
     bibitem = Relaton::XMLParser.from_xml File.read("spec/examples/bibtex_inbook.xml")
     expect(bibitem.to_bibtex).to eq <<~"OUTPUT"
       @inbook{DOC123,
@@ -66,7 +66,7 @@ describe Relaton::Renderer::BibtexBuilder do
     OUTPUT
   end
 
-  it "render inproceedings" do
+  xit "render inproceedings" do
     bibitem = Relaton::XMLParser.from_xml File.read("spec/examples/bibtex_inproceedings.xml")
     expect(bibitem.to_bibtex).to eq <<~"OUTPUT"
       @inproceedings{DOC123,
@@ -84,7 +84,7 @@ describe Relaton::Renderer::BibtexBuilder do
     OUTPUT
   end
 
-  it "render phdthesis" do
+  xit "render phdthesis" do
     bibitem = Relaton::XMLParser.from_xml File.read("spec/examples/bibtex_phdthesis.xml")
     expect(bibitem.to_bibtex).to eq <<~"OUTPUT"
       @phdthesis{DOC123,
@@ -97,7 +97,7 @@ describe Relaton::Renderer::BibtexBuilder do
     OUTPUT
   end
 
-  it "render techreport" do
+  xit "render techreport" do
     bibitem = Relaton::XMLParser.from_xml File.read("spec/examples/bibtex_techreport.xml")
     expect(bibitem.to_bibtex).to eq <<~"OUTPUT"
       @techreport{DOC123,

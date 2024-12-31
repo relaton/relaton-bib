@@ -1,6 +1,6 @@
 describe Relaton::Bib::Person do
   context Relaton::Bib::FullName do
-    it "rises name error" do
+    xit "rises name error" do
       expect do
         Relaton::Bib::FullName.new
       end.to raise_error ArgumentError

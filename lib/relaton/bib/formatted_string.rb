@@ -21,7 +21,7 @@ module Relaton
         # end
 
         @format = format
-        super(content, language, script)
+        super(content: content, language: language, script: script)
       end
 
       # @param builder [Nokogiri::XML::Builder]

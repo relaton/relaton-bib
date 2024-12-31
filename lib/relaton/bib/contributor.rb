@@ -12,10 +12,10 @@ module Relaton
                    distributor realizer owner authorizer enabler subject].freeze
 
         # @return [Array<Relaton::Bib::FormattedString>]
-        attr_reader :description
+        attr_accessor :description
 
         # @return [Strig]
-        attr_reader :type
+        attr_accessor :type
 
         # @param type [String] allowed types "author", "editor",
         #   "cartographer", "publisher"
@@ -72,9 +72,9 @@ module Relaton
 
       # @param entity [Relaton::Bib::ContributionInfo]
       # @param role [Array<Relaton::Bib::Contributor::Role>]
-      def initialize(entity:, role: [])
-        @entity = entity
-        @role   = role
+      def initialize(**args)
+        @entity = args[:entity]
+        @role   = args[:role] || []
       end
 
       def person
@@ -82,7 +82,7 @@ module Relaton
       end
 
       def person=(person)
-        @entity = person
+        @entity = person if person
       end
 
       def organization
@@ -90,7 +90,7 @@ module Relaton
       end
 
       def organization=(organization)
-        @entity = organization
+        @entity = organization if organization
       end
 
       # @param opts [Hash]

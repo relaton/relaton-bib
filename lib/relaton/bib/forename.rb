@@ -8,13 +8,13 @@ module Relaton
       # Initialize Forename instance
       #
       # @param [String] content content of forename, can be empty
-      # @param [Array<String>] language languages, `en`, `fr`, `de` etc.
-      # @param [Array<String>] script scripts `Latn`, `Cyrl` etc.
+      # @param [String] language languages, `en`, `fr`, `de` etc.
+      # @param [String] script scripts `Latn`, `Cyrl` etc.
       # @param [String, nil] initial initial of forename
       #
       def initialize(content: nil, language: [], script: [], initial: nil)
         @initial = initial
-        super content, language, script
+        super # content, language, script
       end
 
       def to_s

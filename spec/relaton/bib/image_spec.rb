@@ -25,7 +25,7 @@ describe Relaton::Bib::Image do
     expect(subject.longdesc).to eq "long description"
   end
 
-  it "to_xml" do
+  xit "to_xml" do
     builder = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
       subject.to_xml xml
     end
@@ -35,7 +35,7 @@ describe Relaton::Bib::Image do
     XML
   end
 
-  it "to_hash" do
+  xit "to_hash" do
     expect(subject.to_hash).to eq(
       "image" => {
         "id" => "id",

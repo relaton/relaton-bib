@@ -7,23 +7,23 @@ module Relaton
       # Organization identifier.
       class Identifier
         # @return [String]
-        attr_accessor :type, :value
+        attr_accessor :type, :content
 
         # @param type [String]
-        # @param value [String]
-        def initialize(type, value)
-          @type  = type
-          @value = value
+        # @param content [String]
+        def initialize(**args)
+          @type  = args[:type]
+          @content = args[:content]
         end
 
         # @param builder [Nokogiri::XML::Builder]
         # def to_xml(builder)
-        #   builder.identifier(value, type: type)
+        #   builder.identifier(content, type: type)
         # end
 
         # @return [Hash]
         # def to_hash
-        #   { "type" => type, "id" => value }
+        #   { "type" => type, "id" => content }
         # end
 
         # @param prefix [String]
@@ -33,7 +33,7 @@ module Relaton
           pref = prefix.empty? ? prefix : "#{prefix}."
           out = count > 1 ? "#{pref}identifier::\n" : ""
           out += "#{pref}identifier.type:: #{type}\n"
-          out += "#{pref}identifier.value:: #{value}\n"
+          out += "#{pref}identifier.content:: #{content}\n"
           out
         end
       end
@@ -71,8 +71,8 @@ module Relaton
       # @param identifier [Array<Relaton::Bib::Organization::Identifier>]
       # @param contact [Array<Relaton::Bib::Address, Relaton::Bib::Contact>]
       # @param logo [Relaton::Bib::Image, nil]
-      def initialize(name:, **args)
-        @name = name
+      def initialize(**args)
+        @name = args[:name]
         @abbreviation = args[:abbreviation]
         @subdivision  = args[:subdivision] || []
         @identifier = args[:identifier] || []

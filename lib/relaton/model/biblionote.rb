@@ -1,16 +1,16 @@
 module Relaton
   module Model
-    class Biblionote < Lutaml::Model::Serializable
-      # include Relaton::Model::LocalizedString
-
+    class Biblionote < LocalizedStringAttrs
       model Bib::Note
 
-      attribute :type, Lutaml::Model::Type::String
+      attribute :type, :string
+      attribute :content, :string
 
-      # mappings[:xml].instance_eval do
-      #   root "note"
-      #   map_attribute "type", to: :type
-      # end
+      mappings[:xml].instance_eval do
+        root "note"
+        map_attribute "type", to: :type
+        map_content to: :content
+      end
     end
   end
 end

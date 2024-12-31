@@ -23,7 +23,7 @@ describe Relaton::Model::Date do
 
   context "to XML" do
     it "from and to" do
-      bdate = Relaton::Bib::Bdate.new
+      bdate = Relaton::Bib::Date.new
       bdate.type = "published"
       bdate.from = "2020-01-01"
       bdate.to = "2020-01-02"
@@ -33,7 +33,7 @@ describe Relaton::Model::Date do
     end
 
     it "on" do
-      bdate = Relaton::Bib::Bdate.new
+      bdate = Relaton::Bib::Date.new
       bdate.type = "published"
       bdate.text = "str"
       bdate.on = "2020-01-01"

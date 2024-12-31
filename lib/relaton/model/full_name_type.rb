@@ -1,63 +1,49 @@
 module Relaton
   module Model
     module FullNameType
-      class Abbreviation < Lutaml::Model::Serializable
-        # include LocalizedString
-
-        # mappings[:xml].instance_eval do
-        #   root "abbreviation"
-        # end
+      class Abbreviation < LocalizedString
+        mappings[:xml].instance_eval do
+          root "abbreviation"
+        end
       end
 
-      class Prefix < Lutaml::Model::Serializable
-        # include LocalizedString
-
-        # mappings[:xml].instance_eval do
-        #   root "prefix"
-        # end
+      class Prefix < LocalizedString
+        mappings[:xml].instance_eval do
+          root "prefix"
+        end
       end
 
-      class Completename < Lutaml::Model::Serializable
-        # include LocalizedString
-
-        # mappings[:xml].instance_eval do
-        #   root "completename"
-        # end
+      class Completename < LocalizedString
+        mappings[:xml].instance_eval do
+          root "completename"
+        end
       end
 
-      class Forename < Lutaml::Model::Serializable
-        # include LocalizedString
-
+      class Forename < LocalizedString
         attribute :initial, Lutaml::Model::Type::String
 
-        # mappings[:xml].instance_eval do
-        #   root "forename"
-        #   map_attribute "initial", to: :initial
-        # end
+        mappings[:xml].instance_eval do
+          root "forename"
+          map_attribute "initial", to: :initial
+        end
       end
 
-      class FormattedInitials < Lutaml::Model::Serializable
-        # include LocalizedString
-
-        # mappings[:xml].instance_eval do
-        #   root "formatted-initials"
-        # end
+      class FormattedInitials < LocalizedString
+        mappings[:xml].instance_eval do
+          root "formatted-initials"
+        end
       end
 
-      class Surname < Lutaml::Model::Serializable
-        # include LocalizedString
-
-        # mappings[:xml].instance_eval do
-        #   root "surname"
-        # end
+      class Surname < LocalizedString
+        mappings[:xml].instance_eval do
+          root "surname"
+        end
       end
 
-      class Addition < Lutaml::Model::Serializable
-        # include LocalizedString
-
-        # mappings[:xml].instance_eval do
-        #   root "addition"
-        # end
+      class Addition < LocalizedString
+        mappings[:xml].instance_eval do
+          root "addition"
+        end
       end
 
       def self.included(base) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -86,13 +72,13 @@ module Relaton
         end
       end
 
-      def content_from_xml(model, node)
-        model.content = Content.of_xml node.instance_variable_get(:@node) || node
-      end
+      # def content_from_xml(model, node)
+      #   model.content = Content.of_xml node.instance_variable_get(:@node) || node
+      # end
 
-      def content_to_xml(model, parent, _doc)
-        model.content.add_to_xml parent
-      end
+      # def content_to_xml(model, parent, _doc)
+      #   model.content.add_to_xml parent
+      # end
     end
 
     module FullNameType

@@ -4,7 +4,7 @@ describe Relaton::Model::Contributor do
       <<~XML
         <contributor>
           <role type="author"/>
-          <person><fullname>John Doe</fullname></person>
+          <person><name><completename>John Doe</completename></name></person>
         </contributor>
       XML
     end
@@ -12,8 +12,9 @@ describe Relaton::Model::Contributor do
     it "parse XML" do
       contrib = described_class.from_xml xml
       expect(contrib.role.first.type).to eq "author"
-      expect(contrib.content).to be_instance_of Relaton::Model::ContributionInfo
-      expect(contrib.content.person.fullname.content).to eq "John Doe"
+      expect(contrib.entity).to be_instance_of Relaton::Bib::Person
+      expect(contrib.entity.name).to be_instance_of Relaton::Bib::FullName
+      expect(contrib.entity.name.completename.content).to eq "John Doe"
     end
   end
 end

@@ -1,8 +1,6 @@
 describe Relaton::Model::LocalizedStringAttrs do
   let(:fake_class) do
-    Class.new(Lutaml::Model::Serializable) do
-      include Relaton::Model::LocalizedStringAttrs
-
+    Class.new(Relaton::Model::LocalizedStringAttrs) do
       attribute :content, Lutaml::Model::Type::String
 
       mappings[:xml].instance_eval do

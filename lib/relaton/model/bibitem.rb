@@ -2,16 +2,11 @@ require_relative "bibliographic_item"
 
 module Relaton
   module Model
-    class Bibitem < Lutaml::Model::Serializable
-      include BibliographicItem
-
+    class Bibitem < BibliographicItem
       model Relaton::Bib::Item
-
-      attribute :id, :string
 
       mappings[:xml].instance_eval do
         root "bibitem"
-        map_attribute "id", to: :id
       end
 
       # xml do

@@ -1,5 +1,5 @@
-describe Relaton::Bib::DocumentRelation do
-  before(:each) { Relaton::Bib.instance_variable_set :@configuration, nil }
+describe Relaton::Bib::Relation do
+  # before(:each) { Relaton::Bib.instance_variable_set :@configuration, nil }
 
   it "warn when type is invalid" do
     expect do

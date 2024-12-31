@@ -10,7 +10,7 @@ module Relaton
                      :each, :detect, :map, :reduce, :length, :unshift, :max_by
 
       # @param relation [Array<Relaton::Bib::DocumentRelation>]
-      def initialize(relation: [])
+      def initialize(relation = [])
         @array = relation
       end
 
@@ -31,7 +31,7 @@ module Relaton
       #
       def select(&block)
         arr = @array.select(&block)
-        self.class.new arr
+        self.class.new relation: arr
       end
 
       # @todo We don't have replace type anymore. Suppose we should update this
@@ -39,7 +39,7 @@ module Relaton
       #
       # @return [Relaton::Bib::DocRelationCollection]
       def replaces
-        DocRelationCollection.new(@array.select { |r| r.type == "replace" })
+        RelationCollection.new(@array.select { |r| r.type == "replace" })
       end
 
       # @param prefix [String]
@@ -52,6 +52,11 @@ module Relaton
           out += r.to_asciibib pref
         end
         out
+      end
+
+      # This is needed for lutaml-model to treat RelationCollection instance as Array
+      def is_a?(klass)
+        klass == Array || super
       end
     end
   end

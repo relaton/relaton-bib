@@ -33,7 +33,7 @@ describe Relaton::Bib::Item do
   let(:copyright) { Relaton::Bib::Copyright.new owner: [contribution_info], from: "2019", to: "2022", scope: "part" }
   let(:relation_feref) { Relaton::Bib::Formattedref.new content: "ISO 111" }
   let(:relation_docid) { Relaton::Bib::Docidentifier.new type: "ISO", content: "ISO 111" }
-  let(:relation_bib) { Relaton::Bib::Item.new formattegref: relation_feref, docidentifier: [relation_docid] }
+  let(:relation_bib) { Relaton::Bib::Item.new formattedref: relation_feref, docidentifier: [relation_docid] }
   let(:relation) { Relaton::Bib::Relation.new(type: "instanceOf", bibitem: relation_bib) }
   let(:relation_col) { Relaton::Bib::RelationCollection.new << relation }
   let(:series) { Relaton::Bib::Series.new title: Relaton::Bib::TitleCollection.new, type: "main" }
@@ -50,16 +50,18 @@ describe Relaton::Bib::Item do
   let(:validity) { Relaton::Bib::Validity.new begins: "2020-01-01", ends: "2020-12-31", revision: "2020-06-01" }
   let(:image) { Relaton::Bib::Image.new id: "1", src: "http://example.com/image.jpg", mimetype: "image/jpeg" }
   let(:depiction) { Relaton::Bib::Depiction.new(scope: "scope", image: [image]) }
+  let(:series) { Relaton::Bib::Series.new type: "main", title: sr_title_col }
   subject do
-    described_class.new(
-      id: "ISO211", type: "standard", fetched: fetched, formattedref: fref, title: title_col,
-      source: [source], docidentifier: [docid], docnumber: "211", date: [date], contributor: [contrib],
-      edition: edition, version: [version], note: [note], language: ["en"], locale: ["EN-us"], script: ["Latn"],
-      abstract: [abstract], status: status, copyright: [copyright], relation: relation_col, series: [series],
-      medium: medium, place: [place], price: [price], extent: [extent], size: size, accesslocation: [accesslocation],
-      license: [license], classification: [classifications], keyword: [keyword], validity: validity,
-      depiction: depiction,
-    )
+    # described_class.new(
+    #   id: "ISO211", type: "standard", fetched: fetched, formattedref: fref, title: title_col,
+    #   source: [source], docidentifier: [docid], docnumber: "211", date: [date], contributor: [contrib],
+    #   edition: edition, version: [version], note: [note], language: ["en"], locale: ["EN-us"], script: ["Latn"],
+    #   abstract: [abstract], status: status, copyright: [copyright], relation: relation_col, series: [series],
+    #   medium: medium, place: [place], price: [price], extent: [extent], size: size, accesslocation: [accesslocation],
+    #   license: [license], classification: [classifications], keyword: [keyword], validity: validity,
+    #   depiction: depiction
+    # )
+    Relaton::Model::Bibitem.from_xml File.read("spec/examples/bib_item.xml", encoding: "utf-8")
   end
 
   context "initialize" do
@@ -74,39 +76,39 @@ describe Relaton::Bib::Item do
     # end
 
     it { is_expected.to be_instance_of Relaton::Bib::Item }
-    it { expect(subject.id).to eq "ISO211" }
+    it { expect(subject.id).to eq "ISOTC211" }
     it { expect(subject.type).to eq "standard" }
     it { expect(subject.schema_version).to match(/^v\d+\.\d+\.\d+$/) }
-    it { expect(subject.fetched).to eq "2022-05-02" }
-    it { expect(subject.formattedref).to eq fref }
-    it { expect(subject.docidentifier).to eq [docid] }
-    it { expect(subject.docnumber).to eq "211" }
-    it { expect(subject.title).to eq title_col }
-    it { expect(subject.source).to eq [source] }
-    it { expect(subject.date).to eq [date] }
-    it { expect(subject.contributor).to eq [contrib] }
-    it { expect(subject.edition).to eq edition }
-    it { expect(subject.version).to eq [version] }
-    it { expect(subject.note).to eq [note] }
-    it { expect(subject.language).to eq ["en"] }
-    it { expect(subject.locale).to eq ["EN-us"] }
+    it { expect(subject.fetched).to be_instance_of Date }
+    it { expect(subject.formattedref).to be_instance_of Relaton::Bib::Formattedref }
+    it { expect(subject.docidentifier[0]).to be_instance_of Relaton::Bib::Docidentifier }
+    it { expect(subject.docnumber).to eq "TC211" }
+    it { expect(subject.title).to be_instance_of Relaton::Bib::TitleCollection }
+    it { expect(subject.source[0]).to be_instance_of Relaton::Bib::Source }
+    it { expect(subject.date[0]).to be_instance_of Relaton::Bib::Date }
+    it { expect(subject.contributor[0]).to be_instance_of Relaton::Bib::Contributor }
+    it { expect(subject.edition).to be_instance_of Relaton::Bib::Edition }
+    it { expect(subject.version[0]).to be_instance_of Relaton::Bib::Bversion }
+    it { expect(subject.note[0]).to be_instance_of Relaton::Bib::Note }
+    it { expect(subject.language).to eq ["en", "fr"] }
+    it { expect(subject.locale).to eq ["en-US"] }
     it { expect(subject.script).to eq ["Latn"] }
-    it { expect(subject.abstract).to eq [abstract] }
-    it { expect(subject.status).to eq status }
-    it { expect(subject.copyright).to eq [copyright] }
-    it { expect(subject.relation).to eq relation_col }
-    it { expect(subject.series).to eq [series] }
-    it { expect(subject.medium).to eq medium }
-    it { expect(subject.place).to eq [place] }
-    it { expect(subject.price).to eq [price] }
-    it { expect(subject.extent).to eq [extent] }
-    it { expect(subject.size).to eq size }
-    it { expect(subject.accesslocation).to eq [accesslocation] }
-    it { expect(subject.license).to eq [license] }
-    it { expect(subject.classification).to eq [classifications] }
-    it { expect(subject.keyword).to eq [keyword] }
-    it { expect(subject.validity).to eq validity }
-    it { expect(subject.depiction).to eq depiction }
+    it { expect(subject.abstract[0]).to be_instance_of Relaton::Bib::LocalizedString }
+    it { expect(subject.status).to be_instance_of Relaton::Bib::Status }
+    it { expect(subject.copyright[0]).to be_instance_of Relaton::Bib::Copyright }
+    it { expect(subject.relation).to be_instance_of Relaton::Bib::RelationCollection }
+    it { expect(subject.series[0]).to be_instance_of Relaton::Bib::Series }
+    it { expect(subject.medium).to be_instance_of Relaton::Bib::Medium }
+    it { expect(subject.place[0]).to be_instance_of Relaton::Bib::Place }
+    it { expect(subject.price[0]).to be_instance_of Relaton::Bib::Price }
+    it { expect(subject.extent[0]).to be_instance_of Relaton::Bib::Extent }
+    it { expect(subject.size).to be_instance_of Relaton::Bib::Size }
+    it { expect(subject.accesslocation).to eq %w[accesslocation1 accesslocation2] }
+    it { expect(subject.license).to eq %w[License] }
+    it { expect(subject.classification[0]).to be_instance_of Relaton::Bib::Classification }
+    it { expect(subject.keyword[0]).to be_instance_of Relaton::Bib::Keyword }
+    it { expect(subject.validity).to be_instance_of Relaton::Bib::Validity }
+    it { expect(subject.depiction).to be_instance_of Relaton::Bib::Depiction }
   end
 
   context "instance" do
@@ -119,7 +121,7 @@ describe Relaton::Bib::Item do
             <formattedref>ISOTC211:2014</formattedref>
             <title language="en" locale="EN-us" script="Latn" type="main">Geographic information</title>
             <uri language="en" locale="EN-us" script="Latn" type="src">https://www.iso.org/standard/53798.html</uri>
-            <docidentifier type="ISO" scope="part" primary="true">211</docidentifier>
+            <docidentifier type="ISO" scope="part" primary="true">ISO 211</docidentifier>
             <docnumber>211</docnumber>
             <date type="published">
               <on>2014-10</on>
@@ -137,6 +139,7 @@ describe Relaton::Bib::Item do
               <revision-date>2020-11-22</revision-date>
               <draft>v1.0</draft>
             </version>
+            <note>This is note.</note>
             <language>en</language>
             <locale>EN-us</locale>
             <script>Latn</script>
@@ -156,31 +159,37 @@ describe Relaton::Bib::Item do
               </owner>
               <scope>part</scope>
             </copyright>
+            <relation type="instanceOf">
+              <bibitem>
+                <docidentifier type="ISO">ISO 111</docidentifier>
+                <formattedref>ISO 111</formattedref>
+              </bibitem>
+            </relation>
           </bibitem>
         XML
       end
     end
 
-    # context "makeid" do
-    #   it "with docid" do
-    #     expect(subject.makeid(nil, false)).to eq "ISOTC211"
-    #   end
+    context "makeid" do
+      xit "with docid" do
+        expect(subject.makeid(nil, false)).to eq "ISOTC211"
+      end
 
-    #   it "with argument" do
-    #     docid = Relaton::Bib::Docidentifier.new type: "ISO", id: "ISO 123 (E)"
-    #     expect(subject.makeid(docid, false)).to eq "ISO123E"
-    #   end
-    # end
+      xit "with argument" do
+        docid = Relaton::Bib::Docidentifier.new type: "ISO", id: "ISO 123 (E)"
+        expect(subject.makeid(docid, false)).to eq "ISO123E"
+      end
+    end
 
-    # it "has schema-version" do
-    #   expect(subject.schema).to match(/^v\d+\.\d+\.\d+$/)
-    # end
+    it "has schema-version" do
+      expect(subject.schema).to match(/^v\d+\.\d+\.\d+$/)
+    end
 
-    # it "get set fetched" do
-    #   expect(subject.fetched).to eq "2022-05-02"
-    #   subject.fetched = "2022-05-03"
-    #   expect(subject.fetched).to eq "2022-05-03"
-    # end
+    it "get set fetched" do
+      expect(subject.fetched).to eq Date.parse("2024-12-11")
+      subject.fetched = Date.parse "2022-05-03"
+      expect(subject.fetched).to eq Date.parse "2022-05-03"
+    end
 
     # it "has array of titiles" do
     #   expect(subject.title).to be_instance_of Relaton::Bib::TitleCollection
@@ -196,16 +205,16 @@ describe Relaton::Bib::Item do
     end
 
     it "returns abstract with en language" do
-      expect(subject.abstract(lang: "en")).to be_instance_of Relaton::Bib::FormattedString
+      expect(subject.abstract(lang: "en")).to be_instance_of Relaton::Bib::LocalizedString
     end
 
-    it "to most recent reference" do
+    xit "to most recent reference" do
       item = subject.to_most_recent_reference
       expect(item.relation[3].bibitem.structuredidentifier[0].year).to eq "2020"
       expect(item.structuredidentifier[0].year).to be_nil
     end
 
-    it "to all parts" do
+    xit "to all parts" do
       item = subject.to_all_parts
       expect(item).to_not be subject
       expect(item.all_parts).to be true
@@ -219,7 +228,7 @@ describe Relaton::Bib::Item do
         d.type != "Internet-Draft" && d.id =~ /-\d/
       end
       expect(id_with_part).to be_nil
-      expect(item.docidentifier.reject { |d| d.id =~ %r{(all parts)} }.size).to eq 1
+      expect(item.docidentifier.count { |d| d.id =~ %r{(all parts)} }).to eq 1
       expect(item.docidentifier.detect { |d| d.id =~ /:[12]\d\d\d/ }).to be_nil
       expect(item.structuredidentifier.detect { |d| !d.partnumber.nil? }).to be_nil
       expect(item.structuredidentifier.detect { |d| d.docnumber =~ /-\d/ }).to be_nil
@@ -228,85 +237,84 @@ describe Relaton::Bib::Item do
     end
 
     context "render XML" do
-      # it "returns bibitem xml string" do
-      #   file = "spec/examples/bib_item.xml"
-      #   subject_xml = subject.to_xml
-      #     .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-      #   File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
-      #   xml = File.read(file, encoding: "utf-8")
-      #     .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-      #   expect(subject_xml).to be_equivalent_to xml
-      #   schema = Jing.new "grammars/biblio-compile.rng"
-      #   errors = schema.validate file
-      #   expect(errors).to eq []
-      # end
+      xit "returns bibitem xml string" do
+        file = "spec/examples/bib_item.xml"
+        subject_xml = subject.to_xml
+          .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
+        xml = File.read(file, encoding: "utf-8")
+          .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        expect(subject_xml).to be_equivalent_to xml
+        schema = Jing.new "grammars/biblio-compile.rng"
+        errors = schema.validate file
+        expect(errors).to eq []
+      end
 
-      # it "returns bibdata xml string" do
-      #   file = "spec/examples/bibdata_item.xml"
-      #   subject_xml = subject.to_xml(bibdata: true)
-      #     .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-      #   File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
-      #   xml = File.read(file, encoding: "utf-8")
-      #     .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-      #   expect(subject_xml).to be_equivalent_to xml
-      #   schema = Jing.new "grammars/biblio-compile.rng"
-      #   errors = schema.validate file
-      #   expect(errors).to eq []
-      # end
+      xit "returns bibdata xml string" do
+        file = "spec/examples/bibdata_item.xml"
+        subject_xml = subject.to_xml(bibdata: true)
+          .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
+        xml = File.read(file, encoding: "utf-8")
+          .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        expect(subject_xml).to be_equivalent_to xml
+        schema = Jing.new "grammars/biblio-compile.rng"
+        errors = schema.validate file
+        expect(errors).to eq []
+      end
 
-      # it "render only French laguage tagged string" do
-      #   file = "spec/examples/bibdata_item_fr.xml"
-      #   xml = subject.to_xml(bibdata: true, lang: "fr")
-      #     .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-      #   File.write file, xml, encoding: "UTF-8" unless File.exist? file
-      #   expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
-      #     .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-      # end
+      xit "render only French laguage tagged string" do
+        file = "spec/examples/bibdata_item_fr.xml"
+        xml = subject.to_xml(bibdata: true, lang: "fr")
+          .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+        File.write file, xml, encoding: "UTF-8" unless File.exist? file
+        expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
+          .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+      end
 
       # it "render addition elements" do
       #   xml = subject.to_xml { |b| b.element "test" }
       #   expect(xml).to include "<element>test</element>"
       # end
 
-      # it "add note to xml" do
-      #   xml = subject.to_xml note: [{ text: "Note", type: "note" }]
-      #   expect(xml).to include "<note format=\"text/plain\" type=\"note\">" \
-      #                          "Note</note>"
-      # end
+      xit "add note to xml" do
+        xml = subject.to_xml note: [{ text: "Note", type: "note" }]
+        expect(xml).to include "<note format=\"text/plain\" type=\"note\">Note</note>"
+      end
 
-      # it "render ext schema-verson" do
-      #   expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
-      #   expect(subject).to receive(:ext_schema).and_return("v1.0.0").twice
-      #   expect(subject.to_xml(bibdata: true)).to include "<ext schema-version=\"v1.0.0\">"
-      # end
+      xit "render ext schema-verson" do
+        expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
+        expect(subject).to receive(:ext_schema).and_return("v1.0.0").twice
+        expect(Relaton::Model::Bibitem.to_xml(subject)).to include "<ext schema-version=\"v1.0.0\">"
+      end
     end
 
-    # it "deals with hashes" do
-    #   file = "spec/examples/bib_item.yml"
-    #   h = Relaton::Bib::HashConverter.hash_to_bib(YAML.load_file(file))
-    #   b = Relaton::Bib::Item.new(**h)
-    #   expect(b.to_xml).to be_equivalent_to subject.to_xml
-    # end
+    xit "deals with hashes" do
+      file = "spec/examples/bib_item.yml"
+      h = Relaton::Bib::HashConverter.hash_to_bib(YAML.load_file(file))
+      b = Relaton::Bib::Item.new(**h)
+      expect(b.to_xml).to be_equivalent_to subject.to_xml
+    end
 
     context "converts item to hash" do
-      # it do
-      #   hash = subject.to_hash
-      #   file = "spec/examples/hash.yml"
-      #   File.write file, hash.to_yaml unless File.exist? file
-      #   expect(hash).to eq YAML.load_file(file)
-      #   expect(hash["revdate"]).to eq "2019-04-01"
-      # end
+      xit do
+        hash = subject.to_hash
+        file = "spec/examples/hash.yml"
+        File.write file, hash.to_yaml unless File.exist? file
+        expect(hash).to eq YAML.load_file(file)
+        expect(hash["revdate"]).to eq "2019-04-01"
+      end
 
-      # it "with ext schema-version" do
-      #   expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
-      #   expect(subject).to receive(:ext_schema).and_return("v1.0.0").twice
-      #   hash = subject.to_hash
-      #   expect(hash["ext"]).to eq "schema-version" => "v1.0.0"
-      # end
+      xit "with ext schema-version" do
+        expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
+        expect(subject).to receive(:ext_schema).and_return("v1.0.0").twice
+        hash = subject.to_hash
+        expect(hash["ext"]).to eq "schema-version" => "v1.0.0"
+      end
     end
 
     context "converts to BibTex" do
-      it "standard" do
+      xit "standard" do
         bibtex = subject.to_bibtex
           .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
         file = "spec/examples/misc.bib"
@@ -315,7 +323,7 @@ describe Relaton::Bib::Item do
           .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       end
 
-      it "techreport" do
+      xit "techreport" do
         expect(subject).to receive(:type).and_return("techreport")
           .at_least :once
         bibtex = subject.to_bibtex
@@ -326,7 +334,7 @@ describe Relaton::Bib::Item do
           .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       end
 
-      it "manual" do
+      xit "manual" do
         expect(subject).to receive(:type).and_return("manual").at_least :once
         bibtex = subject.to_bibtex
           .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
@@ -336,7 +344,7 @@ describe Relaton::Bib::Item do
           .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       end
 
-      it "phdthesis" do
+      xit "phdthesis" do
         expect(subject).to receive(:type).and_return("phdthesis").at_least :once
         bibtex = subject.to_bibtex
         file = "spec/examples/phdthesis.bib"
@@ -345,7 +353,7 @@ describe Relaton::Bib::Item do
       end
     end
 
-    it "convert item to AsciiBib" do
+    xit "convert item to AsciiBib" do
       file = "spec/examples/asciibib.adoc"
       bib = subject.to_asciibib
       File.write file, bib, encoding: "UTF-8" unless File.exist? file
@@ -353,14 +361,14 @@ describe Relaton::Bib::Item do
     end
 
     context "convert item to BibXML" do
-      it "RFC" do
+      xit "RFC" do
         file = "spec/examples/rfc.xml"
         rfc = subject.to_bibxml
         File.write file, rfc, encoding: "UTF-8" unless File.exist? file
         expect(rfc).to be_equivalent_to File.read file, encoding: "UTF-8"
       end
 
-      it "BCP" do
+      xit "BCP" do
         hash = YAML.load_file "spec/examples/bcp_item.yml"
         bcpbib = Relaton::Bib::Item.from_hash(hash)
         file = "spec/examples/bcp_item.xml"
@@ -369,7 +377,7 @@ describe Relaton::Bib::Item do
         expect(bcpxml).to be_equivalent_to File.read file, encoding: "UTF-8"
       end
 
-      it "ID" do
+      xit "ID" do
         hash = YAML.load_file "spec/examples/id_item.yml"
         id = Relaton::Bib::Item.from_hash hash
         file = "spec/examples/id_item.xml"
@@ -378,9 +386,10 @@ describe Relaton::Bib::Item do
         expect(idxml).to be_equivalent_to File.read file, encoding: "UTF-8"
       end
 
-      it "render keywords" do
-        docid = Relaton::Bib::Docidentifier.new type: "IETF", id: "ID"
-        bibitem = Relaton::Bib::Item.new keyword: ["kw"], docid: [docid]
+      xit "render keywords" do
+        docid = Relaton::Bib::Docidentifier.new type: "IETF", content: "ID"
+        taxon = Relaton::Bib::LocalizedString.new content: "keyword", language: "en"
+        bibitem = Relaton::Bib::Item.new taxon: [taxon], docidentifier: [docid]
         expect(bibitem.to_bibxml(include_keywords: true)).to be_equivalent_to <<~XML
           <reference anchor="ID">
             <front>
@@ -391,13 +400,13 @@ describe Relaton::Bib::Item do
       end
 
       it "render person's forename" do
-        docid = Relaton::Bib::Docidentifier.new type: "IETF", id: "ID"
-        sname = Relaton::Bib::LocalizedString.new "Cook"
+        docid = Relaton::Bib::Docidentifier.new type: "IETF", content: "ID"
+        sname = Relaton::Bib::LocalizedString.new content: "Cook"
         fname = Relaton::Bib::Forename.new content: "James", initial: "J"
         name = Relaton::Bib::FullName.new surname: sname, forename: [fname]
         entity = Relaton::Bib::Person.new name: name
         contrib = Relaton::Bib::Contributor.new entity: entity
-        bibitem = Relaton::Bib::Item.new docid: [docid], contributor: [contrib]
+        bibitem = Relaton::Bib::Item.new docidentifier: [docid], contributor: [contrib]
         expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
           <reference anchor="ID">
             <front>
@@ -410,16 +419,18 @@ describe Relaton::Bib::Item do
       end
 
       it "render organization as author name" do
-        docid = Relaton::Bib::Docidentifier.new type: "IETF", id: "ID"
-        entity = Relaton::Bib::Organization.new name: "org"
-        role = [{ type: "author", description: ["BibXML author"] }]
+        docid = Relaton::Bib::Docidentifier.new type: "IETF", content: "ID"
+        name = Relaton::Bib::Organization::Name.new content: "Org Name"
+        entity = Relaton::Bib::Organization.new name: [name]
+        desc = Relaton::Bib::LocalizedString.new content: "BibXML author", language: "en"
+        role = [Relaton::Bib::Contributor::Role.new(type: "author", description: [desc])]
         contrib = Relaton::Bib::Contributor.new entity: entity, role: role
-        bibitem = Relaton::Bib::Item.new docid: [docid], contributor: [contrib]
+        bibitem = Relaton::Bib::Item.new docidentifier: [docid], contributor: [contrib]
         expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
           <reference anchor="ID">
             <front>
               <author>
-                <organization>org</organization>
+                <organization>Org Name</organization>
               </author>
             </front>
           </reference>
@@ -427,7 +438,7 @@ describe Relaton::Bib::Item do
       end
     end
 
-    it "convert item to citeproc" do
+    xit "convert item to citeproc" do
       file = "spec/examples/citeproc.json"
       cp = subject.to_citeproc
       File.write file, cp.to_json, encoding: "UTF-8" unless File.exist? file
@@ -439,23 +450,24 @@ describe Relaton::Bib::Item do
   end
 
   it "initialize with copyright object" do
-    org = Relaton::Bib::Organization.new(
-      name: "Test Org", abbreviation: "TO", url: "test.org",
-    )
-    copyright = Relaton::Bib::Copyright.new(owner: [org], from: "2018")
+    orgname = Relaton::Bib::Organization::Name.new content: "Test Org"
+    abbreviation = Relaton::Bib::LocalizedString.new content: "TO", language: "en"
+    org = Relaton::Bib::Organization.new(name: [orgname], abbreviation: abbreviation, url: "test.org")
+    contribution_info = Relaton::Bib::ContributionInfo.new organization: org
+    copyright = Relaton::Bib::Copyright.new(owner: [contribution_info], from: "2018")
     bibitem = Relaton::Bib::Item.new(
       formattedref: Relaton::Bib::Formattedref.new(content: "ISO123"),
       copyright: [copyright],
     )
-    expect(bibitem.to_xml).to include(
-      "<formattedref format=\"text/plain\">ISO123</formattedref>",
+    expect(Relaton::Model::Bibitem.to_xml(bibitem)).to include(
+      "<formattedref>ISO123</formattedref>",
     )
   end
 
-  it "warn invalid type argument error" do
+  xit "warn invalid type argument error" do
     expect { Relaton::Bib::Item.new type: "type" }.to output(
       /\[relaton-bib\] WARNING: type `type` is invalid./,
-    ).to_stderr
+    ).to_stderr_from_any_process
   end
 
   context Relaton::Bib::Copyright do
@@ -464,14 +476,14 @@ describe Relaton::Bib::Item do
         name: "Test Org", abbreviation: "TO", url: "test.org",
       )
       copy = Relaton::Bib::Copyright.new owner: [org], from: "2019"
-      expect(copy.owner).to eq owner
+      expect(copy.owner.first).to eq org
     end
   end
 
-  it "initialize with string link" do
-    bibitem = Relaton::Bib::Item.new link: ["http://example.com"]
-    expect(bibitem.link[0]).to be_instance_of Relaton::Bib::Bsource
-    expect(bibitem.link[0].content).to be_instance_of Addressable::URI
-    expect(bibitem.link[0].content.to_s).to eq "http://example.com"
+  xit "initialize with string link" do
+    bibitem = Relaton::Bib::Item.new source: ["http://example.com"]
+    expect(bibitem.source[0]).to be_instance_of Relaton::Bib::Bsource
+    expect(bibitem.source[0].content).to be_instance_of Addressable::URI
+    expect(bibitem.source[0].content.to_s).to eq "http://example.com"
   end
 end

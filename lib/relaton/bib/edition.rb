@@ -2,10 +2,10 @@ module Relaton
   module Bib
     class Edition
       # @return [String] edition
-      attr_reader :content
+      attr_accessor :content
 
       # @return [String, nil] number
-      attr_reader :number
+      attr_accessor :number
 
       #
       # Initialize edition.
@@ -13,9 +13,9 @@ module Relaton
       # @param [String, Integer, Float] content edition
       # @param [String, Integer, Float, nil] number number
       #
-      def initialize(content:, number: nil)
-        @content = content.to_s
-        @number = number&.to_s
+      def initialize(**args)
+        @content = args[:content].to_s
+        @number = args[:number]&.to_s
       end
 
       #

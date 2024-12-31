@@ -7,17 +7,15 @@ describe Relaton::Model::Locality do
     locality = described_class.from_xml xml
     expect(locality).to be_instance_of Relaton::Bib::Locality
     expect(locality.type).to eq "page"
-    expect(locality.reference_from.content).to eq "1"
-    expect(locality.reference_to.content).to eq "4"
+    expect(locality.reference_from).to eq "1"
+    expect(locality.reference_to).to eq "4"
   end
 
   it "to XML" do
     locality = Relaton::Bib::Locality.new
     locality.type = "page"
-    reference_from = Relaton::Model::ReferenceFrom.new content: "1"
-    locality.reference_from = reference_from
-    reference_to = Relaton::Model::ReferenceTo.new content: "4"
-    locality.reference_to = reference_to
-    expect(described_class.to_xml((locality))).to be_equivalent_to xml
+    locality.reference_from = "1"
+    locality.reference_to = "4"
+    expect(described_class.to_xml(locality)).to be_equivalent_to xml
   end
 end

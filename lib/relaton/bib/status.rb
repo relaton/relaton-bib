@@ -16,10 +16,10 @@ module Relaton
       # @param stage [String, Hash, Relaton::Bib::Status::Stage]
       # @param substage [String, Hash, nil, Relaton::Bib::Status::Stage]
       # @param iteration [String, nil]
-      def initialize(stage:, substage: nil, iteration: nil)
-        @stage = stage_new stage
-        @substage = stage_new substage
-        @iteration = iteration
+      def initialize(**args)
+        @stage = stage_new args[:stage]
+        @substage = stage_new args[:substage]
+        @iteration = args[:iteration]
       end
 
       # @param [Nokogiri::XML::Builder]
@@ -71,9 +71,9 @@ module Relaton
 
         # @param content [String]
         # @param abbreviation [String, nil]
-        def initialize(content:, abbreviation: nil)
-          @content = content
-          @abbreviation = abbreviation
+        def initialize(**args)
+          @content = args[:content]
+          @abbreviation = args[:abbreviation]
         end
 
         # @param [Nokogiri::XML::Builder]

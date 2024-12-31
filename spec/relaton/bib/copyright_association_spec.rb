@@ -1,4 +1,4 @@
-describe Relaton::Bib::CopyrightAssociation do
+describe Relaton::Bib::Copyright do
   it "raise error if owners is empty" do
     expect do
       described_class.new owner: [], from: "2019"

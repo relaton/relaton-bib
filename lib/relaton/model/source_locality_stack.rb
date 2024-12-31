@@ -1,7 +1,7 @@
 module Relaton
   module Model
     class SourceLocalityStack < Lutaml::Model::Serializable
-      attribute :connecive, :string
+      attribute :connective, :string
       attribute :source_locality, SourceLocality, collection: true
 
       xml do

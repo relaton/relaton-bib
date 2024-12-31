@@ -1,15 +1,15 @@
-describe Relaton::Bib::DocRelationCollection do
+describe Relaton::Bib::RelationCollection do
   context "instance" do
     subject do
       described_class.new(
         [
-          Relaton::Bib::DocumentRelation.new(
+          Relaton::Bib::Relation.new(
             type: "replace",
             bibitem: Relaton::Bib::Item.new(
               formattedref: Relaton::Bib::Formattedref.new(content: "realtion1"),
             ),
           ),
-          Relaton::Bib::DocumentRelation.new(
+          Relaton::Bib::Relation.new(
             type: "obsoletes", bibitem: "realtion1",
           ),
         ],
@@ -21,7 +21,7 @@ describe Relaton::Bib::DocRelationCollection do
     end
 
     it "#select" do
-      expect(subject.select { |r| r.type == "replace" }.size).to eq 1
+      expect(subject.select { |r| r.type == "replace" }.size).to eq 1 # @TODO use count instead of select and size
     end
   end
 end

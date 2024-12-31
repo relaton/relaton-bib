@@ -33,7 +33,7 @@ module Relaton
           Title.new type: types[i], content: p, language: lang, script: script, format: format
         end.compact
         tts << Title.new(type: "main", content: ttls.compact.join(" - "),
-                  language: lang, script: script, format: format)
+                         language: lang, script: script, format: format)
         new tts
       end
 
@@ -74,7 +74,7 @@ module Relaton
 
       # @return [Relaton::Bib::TitleCollection]
       def select(&block)
-        new titles.select(&block)
+        self.class.new titles.select(&block)
       end
 
       # @param init [Array, Hash]
@@ -119,7 +119,12 @@ module Relaton
         tl = titles.detect { |t| t.type == "main" } || titles.first
         return unless tl
 
-        item.title = tl.title.content
+        item.title = tl.content
+      end
+
+      # This is needed for lutaml-model to treat TitleCollection instance as Array
+      def is_a?(klass)
+        klass == Array || super
       end
 
       private

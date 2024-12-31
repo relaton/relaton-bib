@@ -2,6 +2,8 @@ module Relaton
   module Model
     class Status < Lutaml::Model::Serializable
       class Stage < Lutaml::Model::Serializable
+        model Bib::Status::Stage
+
         attribute :abbreviation, :string
         attribute :content, :string
 
@@ -11,6 +13,8 @@ module Relaton
           map_content to: :content
         end
       end
+
+      model Bib::Status
 
       attribute :stage, Stage
       attribute :substage, Stage

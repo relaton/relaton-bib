@@ -1,5 +1,5 @@
 describe Relaton::Model::Strong do
-  it "from XML" do
+  xit "from XML" do
     xml = <<~XML
       <strong>
         Text

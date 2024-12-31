@@ -41,7 +41,7 @@ module Relaton
 
       xml do
         root "em"
-        map_content to: :content # , using: { from: :content_from_xml, to: :content_to_xml }
+        map_all to: :content # , using: { from: :content_from_xml, to: :content_to_xml }
       end
 
       # def content_from_xml(model, node)

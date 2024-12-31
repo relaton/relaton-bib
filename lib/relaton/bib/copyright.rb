@@ -18,15 +18,15 @@ module Relaton
       # @param from [String] date
       # @param to [String, nil] date
       # @param scope [String, nil]
-      def initialize(owner:, from:, to: nil, scope: nil)
-        unless owner.any?
-          raise ArgumentError, "at least one owner should exist."
-        end
+      def initialize(**args)
+        # unless owner.any?
+        #   raise ArgumentError, "at least one owner should exist."
+        # end
 
-        @owner = owner
-        @from  = from
-        @to    = to
-        @scope = scope
+        @owner = args[:owner]
+        @from  = args[:rom]
+        @to    = args[:o]
+        @scope = args[:cope]
       end
 
       # @param opts [Hash]

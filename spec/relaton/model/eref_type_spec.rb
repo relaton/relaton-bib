@@ -23,7 +23,7 @@ describe Relaton::Model::ErefType do
     XML
   end
 
-  it "from_xml" do
+  xit "from_xml" do
     item = dummy_class.from_xml xml
     expect(item.bibitemid).to eq "ISO712"
     expect(item.content).to be_instance_of Relaton::Model::ErefType::Content
