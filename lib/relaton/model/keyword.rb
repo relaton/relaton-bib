@@ -1,6 +1,9 @@
 module Relaton
   module Model
     class Keyword < Lutaml::Model::Serializable
+      class Vocab < LocalizedString
+      end
+
       class Vocabid < Lutaml::Model::Serializable
         attribute :type, :string
         attribute :uri, :string
@@ -18,31 +21,16 @@ module Relaton
       model Bib::Keyword
 
       # attribute :content, Content
-      attribute :vocab, LocalizedString, collection: true
-      attribute :taxon, LocalizedString, collection: true
+      attribute :vocab, Vocab, collection: true
+      attribute :taxon, Vocab, collection: true
       attribute :vocabid, Vocabid
 
       xml do
         root "keyword"
         map_element "vocab", to: :vocab
         map_element "taxon", to: :taxon
-        # map_content to: :content, using: { from: :content_from_xml, to: :content_to_xml }
+        map_element "vocabid", to: :vocabid
       end
-
-      # def content_from_xml(model, node)
-      #   model.content = Content.of_xml node.instance_variable_get(:@node) || node
-      # end
-
-      #
-      # Convert content to XML
-      #
-      # @param [Relaton::Model::En] model
-      # @param [Nokogiri::XML::Element] parent
-      # @param [Shale::Adapter::Nokogiri::Document] doc
-      #
-      # def content_to_xml(model, parent, _doc)
-      #   model.content.to_xml parent
-      # end
     end
   end
 end

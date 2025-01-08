@@ -95,7 +95,7 @@ module Relaton
       # @param type [String, nil]
       # @param schema_version [String, nil]
       # @param fetched [Date, nil]
-      # @param formattedref [Relaton::Bib::Formattedref, nil]
+      # @param formattedref [String, nil]
       # @param title [Relaton::Bib::TitleCollection]
       # @param source [Array<Relaton::Bib::Source>]
       # @param docidentifier [Array<Relaton::Bib::Docidentifier>]
@@ -146,7 +146,7 @@ module Relaton
       end
 
       def relation=(relation)
-        @relation = relation.is_a?(RelationCollection) ? relation : RelationCollection.new(relation: relation)
+        @relation = relation.is_a?(RelationCollection) ? relation : RelationCollection.new(relation)
       end
 
       # def title_to_xml(mode, doc, builder)

@@ -11,7 +11,7 @@ module Relaton
         xml do
           root "region"
           map_attribute "iso", to: :iso
-          map_attribute "reccomended", to: :recommended
+          map_attribute "recommended", to: :recommended
           map_content to: :content
         end
       end

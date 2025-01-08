@@ -1,14 +1,27 @@
 describe Relaton::Model::TextElement do
-  let(:doc) { Shale::Adapter::Nokogiri::Document.new }
-  let(:parent) { Nokogiri::XML::Node.new "parent", doc.doc }
+  # let(:doc) { Shale::Adapter::Nokogiri::Document.new }
+  # let(:parent) { Nokogiri::XML::Node.new "parent", doc.doc }
+
+  let(:dummy_class) do
+    Class.new(Lutaml::Model::Serializable) do
+      include Relaton::Model::TextElement
+      attribute :content, :string
+      xml do
+        root "parent"
+        map_all to: :content
+      end
+    end
+  end
 
   shared_examples "parse & serialize" do |content|
-    xit do
-      node = Nokogiri::XML::DocumentFragment.parse content
-      element = described_class.of_xml node.children.first
-      expect(element).to be_instance_of Relaton::Model::TextElement
-      element.add_to_xml(parent)
-      expect(parent.to_xml).to be_equivalent_to "<parent>#{content}</parent>"
+    it do
+      # node = Nokogiri::XML::DocumentFragment.parse content
+      # element = described_class.of_xml node.children.first
+      # expect(element).to be_instance_of Relaton::Model::TextElement
+      # element.add_to_xml(parent)
+      xml = "<parent>#{content}</parent>"
+      node = dummy_class.from_xml xml
+      expect(node.to_xml).to be_equivalent_to xml
     end
   end
 

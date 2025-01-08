@@ -3,24 +3,24 @@ require_relative "citation_type"
 module Relaton
   module Model
     module ErefType
-      class Content
-        def initialize(elements = [])
-          @elements = elements
-        end
+      # class Content
+      #   def initialize(elements = [])
+      #     @elements = elements
+      #   end
 
-        def self.cast(value)
-          value
-        end
+      #   def self.cast(value)
+      #     value
+      #   end
 
-        def self.of_xml(node)
-          elms = node.children.map { |n| PureTextElement.of_xml n }.compact
-          new elms
-        end
+      #   def self.of_xml(node)
+      #     elms = node.children.map { |n| PureTextElement.of_xml n }.compact
+      #     new elms
+      #   end
 
-        def add_to_xml(parent)
-          @elements.each { |element| element.add_to_xml parent }
-        end
-      end
+      #   def add_to_xml(parent)
+      #     @elements.each { |element| element.add_to_xml parent }
+      #   end
+      # end
 
       def self.included(base) # rubocop:disable Metrics/MethodLength
         base.class_eval do

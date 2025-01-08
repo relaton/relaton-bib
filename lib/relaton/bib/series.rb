@@ -11,7 +11,7 @@ module Relaton
       # @return [String, nil] allowed values: "main" or "alt"
       attr_accessor :type
 
-      # @return [Relaton::Bib::Formattedref, nil]
+      # @return [String, nil]
       attr_accessor :formattedref
 
       # @return [Relaton::Bib::TitleCollection] title
@@ -27,7 +27,7 @@ module Relaton
       attr_accessor :abbreviation
 
       # @param type [String, nil] allowed values: "main" or "alt"
-      # @param formattedref [Relaton::Bib::Formattedref, nil]
+      # @param formattedref [String, nil]
       # @param title [Relaton::Bib::TitleCollection] title
       # @param place [Relation::Bib::Place, nil]
       # @param orgaization [String, nil]

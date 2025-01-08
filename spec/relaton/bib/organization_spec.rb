@@ -5,7 +5,7 @@ describe Relaton::Bib::Organization do
       abbreviation: "ORG",
       subdivision: [Relaton::Bib::LocalizedString.new(content: "Subdivision", language: "en")],
       url: "http://example.com",
-      identifier: [Relaton::Bib::Organization::Identifier.new("uri", "http://example.com")],
+      identifier: [Relaton::Bib::Organization::Identifier.new(type: "uri", content: "http://example.com")],
       contact: [Relaton::Bib::Contact.new(type: "work", value: "http://example.com")],
       logo: Relaton::Bib::Image.new(id: "IMG", src: "http://example.com/logo.png", mimetype: "image/png"),
     )
@@ -18,7 +18,7 @@ describe Relaton::Bib::Organization do
         abbreviation: "ORG",
         subdivision: [Relaton::Bib::LocalizedString.new(content: "Subdivision", language: "en")],
         url: "http://example.com",
-        identifier: [Relaton::Bib::Organization::Identifier.new("uri", "http://example.com")],
+        identifier: [Relaton::Bib::Organization::Identifier.new(type: "uri", content: "http://example.com")],
         contact: [Relaton::Bib::Contact.new(type: "work", value: "http://example.com")],
         logo: Relaton::Bib::Image.new(id: "IMG", src: "http://example.com/logo.png", mimetype: "image/png"),
       )
@@ -31,7 +31,7 @@ describe Relaton::Bib::Organization do
         abbreviation: "ORG",
         subdivision: [Relaton::Bib::LocalizedString.new(content: "Subdivision", language: "en")],
         url: "http://example.com",
-        identifier: [Relaton::Bib::Organization::Identifier.new("uri", "http://example.com")],
+        identifier: [Relaton::Bib::Organization::Identifier.new(type: "uri", content: "http://example.com")],
         contact: [Relaton::Bib::Contact.new(type: "work", value: "http://example.com")],
       )
       expect(subject).not_to eq other

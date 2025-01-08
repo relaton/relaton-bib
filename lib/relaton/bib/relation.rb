@@ -48,7 +48,7 @@ module Relaton
       # @param locality_stack [Array<Relaton::Bib::LocalityStack>]
       # @param source_locality [Array<Relaton::Bib::SourceLocality>]
       # @param source_locality_stack [Array<Relaton::Bib::SourceLocalityStack>]
-      def initialize(**args)
+      def initialize(**args) # rubocop:disable Metrics/MethodLength
         type = args[:type] == "Now withdrawn" ? "obsoletes" : args[:type]
         unless self.class::TYPES.include? type
           Util.warn "WARNING: invalid relation type: `#{type}`"

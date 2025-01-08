@@ -112,7 +112,7 @@ module Relaton
             if c.entity.is_a?(Bib::Person) then render_person xml, c.entity
             else render_organization xml, c.entity, c.role
             end
-            render_address xml, c
+            render_contacts xml, c
           end
         end
       end
@@ -123,32 +123,33 @@ module Relaton
       # @param [Nokogiri::XML::Builder] builder xml builder
       # @param [Relaton::Bib::ContributionInfo] contrib contributor
       #
-      def render_address(builder, contrib) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-        address, contact = address_contact contrib.entity.contact
-        if address || contact.any?
-          builder.address do |xml|
-            # address = contrib.entity.contact.detect { |cn| cn.is_a? Address }
-            if address
-              xml.postal do
-                xml.city address.city if address.city
-                xml.code address.postcode if address.postcode
-                xml.country address.country if address.country
-                xml.region address.state if address.state
-                xml.street address.street[0] if address.street.any?
-              end
-            end
-            render_contact xml, contact
+      def render_contacts(builder, contrib)
+        # address, contact = address_contact contrib.entity.contact
+        # if address || contact.any?
+        contrib.entity.address.each { |address| render_address builder, address }
+        render_contact builder, contrib.entity
+      end
+
+      def render_address(builder, address) # rubocop:disable Lint/DuplicateMethods,Metrics/AbcSize
+        builder.address do |xml|
+          # address = contrib.entity.contact.detect { |cn| cn.is_a? Address }
+          xml.postal do
+            xml.city address.city if address.city
+            xml.code address.postcode if address.postcode
+            xml.country address.country if address.country
+            xml.region address.state if address.state
+            xml.street address.street[0] if address.street.any?
           end
         end
       end
 
-      def address_contact(contact) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-        addr = contact.detect do |c|
-          c.is_a?(Address) && (c.city || c.postcode || c.country || c.state || c.street.any?)
-        end
-        cont = contact.select { |c| c.is_a?(Contact) }
-        [addr, cont]
-      end
+      # def address_contact(contact) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+      #   addr = contact.detect do |c|
+      #     c.is_a?(Address) && (c.city || c.postcode || c.country || c.state || c.street.any?)
+      #   end
+      #   cont = contact.select { |c| c.is_a?(Contact) }
+      #   [addr, cont]
+      # end
 
       #
       # Render contact
@@ -156,10 +157,12 @@ module Relaton
       # @param [Nokogiri::XML::Builder] builder xml builder
       # @param [Array<Relaton::Bib::Address, Relaton::Bib::Contact>] addr contact
       #
-      def render_contact(builder, addr)
+      def render_contact(builder, entity)
         %w[phone email uri].each do |type|
-          cont = addr.detect { |cn| cn.is_a?(Contact) && cn.type == type }
-          builder.send type, cont.value if cont
+          entity.send(type).each do |cont|
+            # cont = addr.detect { |cn| cn.is_a?(Contact) && cn.type == type }
+            builder.send type, cont.value # if cont
+          end
         end
       end
 

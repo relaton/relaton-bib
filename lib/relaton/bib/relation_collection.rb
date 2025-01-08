@@ -6,7 +6,7 @@ module Relaton
     class RelationCollection
       extend Forwardable
 
-      def_delegators :@array, :[], :first, :last, :empty?, :any?, :size,
+      def_delegators :@array, :[], :first, :last, :empty?, :any?, :size, :count,
                      :each, :detect, :map, :reduce, :length, :unshift, :max_by
 
       # @param relation [Array<Relaton::Bib::DocumentRelation>]

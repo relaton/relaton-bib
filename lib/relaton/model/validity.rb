@@ -11,7 +11,7 @@ module Relaton
         root "validity"
         map_element "validityBegins", to: :begins
         map_element "validityEnds", to: :ends
-        map_element "validityRevision", to: :revision
+        map_element "revision", to: :revision
       end
     end
   end

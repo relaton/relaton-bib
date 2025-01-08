@@ -7,7 +7,6 @@ describe Relaton::Bib::Item do
 
   let(:fetched) { Date.parse("2022-05-02") }
   let(:local_attrs) { { language: "en", script: "Latn", locale: "EN-us" } }
-  let(:fref) { Relaton::Bib::Formattedref.new content: "ISOTC211:2014" }
   let(:title) do
     Relaton::Bib::Title.new type: "main", content: "Geographic information", **local_attrs
   end
@@ -31,9 +30,8 @@ describe Relaton::Bib::Item do
   let(:substage) { Relaton::Bib::Status::Stage.new content: "60", abbreviation: "6" }
   let(:status) { Relaton::Bib::Status.new stage: stage, substage: substage, iteration: "1" }
   let(:copyright) { Relaton::Bib::Copyright.new owner: [contribution_info], from: "2019", to: "2022", scope: "part" }
-  let(:relation_feref) { Relaton::Bib::Formattedref.new content: "ISO 111" }
   let(:relation_docid) { Relaton::Bib::Docidentifier.new type: "ISO", content: "ISO 111" }
-  let(:relation_bib) { Relaton::Bib::Item.new formattedref: relation_feref, docidentifier: [relation_docid] }
+  let(:relation_bib) { Relaton::Bib::Item.new formattedref: "ISO 111", docidentifier: [relation_docid] }
   let(:relation) { Relaton::Bib::Relation.new(type: "instanceOf", bibitem: relation_bib) }
   let(:relation_col) { Relaton::Bib::RelationCollection.new << relation }
   let(:series) { Relaton::Bib::Series.new title: Relaton::Bib::TitleCollection.new, type: "main" }
@@ -51,9 +49,10 @@ describe Relaton::Bib::Item do
   let(:image) { Relaton::Bib::Image.new id: "1", src: "http://example.com/image.jpg", mimetype: "image/jpeg" }
   let(:depiction) { Relaton::Bib::Depiction.new(scope: "scope", image: [image]) }
   let(:series) { Relaton::Bib::Series.new type: "main", title: sr_title_col }
+  let(:bibxml) { File.read("spec/examples/bib_item.xml", encoding: "utf-8") }
   subject do
     # described_class.new(
-    #   id: "ISO211", type: "standard", fetched: fetched, formattedref: fref, title: title_col,
+    #   id: "ISO211", type: "standard", fetched: fetched, formattedref: "ISOTC211:2014", title: title_col,
     #   source: [source], docidentifier: [docid], docnumber: "211", date: [date], contributor: [contrib],
     #   edition: edition, version: [version], note: [note], language: ["en"], locale: ["EN-us"], script: ["Latn"],
     #   abstract: [abstract], status: status, copyright: [copyright], relation: relation_col, series: [series],
@@ -61,7 +60,7 @@ describe Relaton::Bib::Item do
     #   license: [license], classification: [classifications], keyword: [keyword], validity: validity,
     #   depiction: depiction
     # )
-    Relaton::Model::Bibitem.from_xml File.read("spec/examples/bib_item.xml", encoding: "utf-8")
+    Relaton::Model::Bibitem.from_xml bibxml
   end
 
   context "initialize" do
@@ -80,7 +79,7 @@ describe Relaton::Bib::Item do
     it { expect(subject.type).to eq "standard" }
     it { expect(subject.schema_version).to match(/^v\d+\.\d+\.\d+$/) }
     it { expect(subject.fetched).to be_instance_of Date }
-    it { expect(subject.formattedref).to be_instance_of Relaton::Bib::Formattedref }
+    it { expect(subject.formattedref).to eq "ISO TC 211" }
     it { expect(subject.docidentifier[0]).to be_instance_of Relaton::Bib::Docidentifier }
     it { expect(subject.docnumber).to eq "TC211" }
     it { expect(subject.title).to be_instance_of Relaton::Bib::TitleCollection }
@@ -115,7 +114,8 @@ describe Relaton::Bib::Item do
     context "to_xml" do
       it "bibitem" do
         xml = Relaton::Model::Bibitem.to_xml(subject)
-        expect(xml).to be_equivalent_to <<~XML
+        expect(xml).to be_equivalent_to bibxml
+        <<~XML
           <bibitem type="standard" schema-version="v1.4.1" id="ISO211">
             <fetched>2022-05-02</fetched>
             <formattedref>ISOTC211:2014</formattedref>
@@ -455,10 +455,7 @@ describe Relaton::Bib::Item do
     org = Relaton::Bib::Organization.new(name: [orgname], abbreviation: abbreviation, url: "test.org")
     contribution_info = Relaton::Bib::ContributionInfo.new organization: org
     copyright = Relaton::Bib::Copyright.new(owner: [contribution_info], from: "2018")
-    bibitem = Relaton::Bib::Item.new(
-      formattedref: Relaton::Bib::Formattedref.new(content: "ISO123"),
-      copyright: [copyright],
-    )
+    bibitem = Relaton::Bib::Item.new(formattedref: "ISO123", copyright: [copyright])
     expect(Relaton::Model::Bibitem.to_xml(bibitem)).to include(
       "<formattedref>ISO123</formattedref>",
     )

@@ -19,7 +19,7 @@ require_relative "renderer/bibxml"
 # require_relative "hash_converter"
 
 module Relaton
-  class Error < StandardError; end
+  # class Error < StandardError; end
 
   class RequestError < StandardError; end
 
@@ -85,8 +85,10 @@ module Relaton
         YAML.safe_load(yaml, classes, symbolize_names: symbolize_names)
       end
     end
+  end
 
-    def grammar_hash
+  module Bib
+    def self.grammar_hash
       # gem_path = File.expand_path "..", __dir__
       # grammars_path = File.join gem_path, "grammars", "*"
       # grammars = Dir[grammars_path].sort.map { |gp| File.read gp }.join

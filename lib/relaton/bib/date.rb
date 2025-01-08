@@ -16,11 +16,13 @@ module Relaton
       attr_writer :on, :from, :to
 
       # @param type [String] "published", "accessed", "created", "activated"
+      # @param text [String]
       # @param on [String]
       # @param from [String]
       # @param to [String]
       def initialize(**args)
         @type = args[:type]
+        @text = args[:text]
         @on = Relaton.parse_date args[:on]
         @from = Relaton.parse_date args[:from]
         @to = Relaton.parse_date args[:to]

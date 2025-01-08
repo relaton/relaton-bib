@@ -20,8 +20,10 @@ require_relative "docidentifier"
 require_relative "biblionote"
 require_relative "full_name_type"
 require_relative "fullname"
-require_relative "affiliation"
 require_relative "contact"
+require_relative "logo"
+require_relative "organization"
+require_relative "affiliation"
 require_relative "person"
 require_relative "contribution_info"
 require_relative "role"
@@ -57,10 +59,15 @@ module Relaton
 
         base.class_eval do # rubocop:disable Metrics/BlockLength
           attribute :id, :string
-          attribute :type, :string
+          attribute :type, :string, values: %W[
+            article book booklet manual proceedings presentation thesis techreport standard
+            unpublished map electronic\sresource audiovisual film video boradcast software
+            graphic_work music patent inbook incollection inproceedings journal website
+            webresource dataset archival social_media alert message convesation misc
+          ]
           attribute :schema_version, :string
           attribute :fetched, :date
-          attribute :formattedref, Formattedref
+          attribute :formattedref, :string, raw: true
           attribute :title, Title, collection: true
           attribute :source, Source, collection: true
           attribute :docidentifier, Docidentifier, collection: true

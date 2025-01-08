@@ -10,8 +10,14 @@ module Relaton
     require_relative "bibitem_base"
 
     class Relation
+      class Description < LocalizedString
+        xml do
+          root "description"
+        end
+      end
+
       attribute :type, :string
-      attribute :description, LocalizedString
+      attribute :description, Description
       attribute :bibitem, BibitemBase
       attribute :locality, Locality, collection: true
       attribute :locality_stack, LocalityStack, collection: true

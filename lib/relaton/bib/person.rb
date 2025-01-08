@@ -76,20 +76,25 @@ module Relaton
       # @return [Array<Relaton::Bib::PersonIdentifier>]
       attr_accessor :identifier
 
-      # @return [Array<Relaton::Bib::Address, Relaton::Bib::Contact>]
-      attr_accessor :contact
+      attr_accessor :address, :phone, :email, :uri
 
       # @param name [Relaton::Bib::FullName]
       # @param credential [Array<String>]
       # @param affiliation [Array<Relaton::Bib::Affiliation>]
       # @param identifier [Array<Relaton::Bib::PersonIdentifier>]
-      # @param contact [Array<Relaton::Bib::Address, Relaton::Bib::Contact>]
-      def initialize(**args)
+      # @param address [Array<Relaton::Model::Address]
+      # @param phone [Array<Relaton::Model::Phone]
+      # @param email [Array<String>]
+      # @param uri [Array<Relaton::Model::Uri]
+      def initialize(**args) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
         @name        = args[:name]
         @credential  = args[:credential] || []
         @affiliation = args[:affiliation] || []
         @identifier = args[:identifier] || []
-        @contact = args[:contact] || []
+        @address = args[:address] || []
+        @phone = args[:phone] || []
+        @email = args[:email] || []
+        @uri = args[:uri] || []
       end
 
       # @param opts [Hash]

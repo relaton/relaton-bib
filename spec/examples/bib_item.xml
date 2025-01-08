@@ -18,13 +18,13 @@
   <docidentifier type="DOI">10.17487/rfc1149</docidentifier>
   <docidentifier type="Internet-Draft">draft-ietf-somewg-someprotocol-07</docidentifier>
   <docnumber>TC211</docnumber>
-  <date type="issued">
+  <date type="issued" text="">
     <on>2014</on>
   </date>
-  <date type="published">
+  <date type="published" text="">
     <on>2014-04</on>
   </date>
-  <date type="accessed">
+  <date type="accessed" text="">
     <on>2015-05-20</on>
   </date>
   <contributor>
@@ -33,7 +33,9 @@
     </role>
     <organization>
       <name type="Org name type" language="en" script="Latn" locale="en-US">International Organization for Standardization</name>
-      <subdivision>division</subdivision>
+      <subdivision type="Sub Div type">
+        <name>Sub division name</name>
+      </subdivision>
       <abbreviation>ISO</abbreviation>
       <uri>www.iso.org</uri>
       <logo>
@@ -147,12 +149,12 @@
   <note type="tableOfContents">Table Of Contents</note>
   <language>en</language>
   <language>fr</language>
-  <script>Latn</script>
   <locale>en-US</locale>
-  <abstract format="text/html" language="en" script="Latn">
+  <script>Latn</script>
+  <abstract language="en" script="Latn">
     <p>ISO 19115-1:2014 defines the schema required for...</p>
   </abstract>
-  <abstract format="text/plain" language="fr" script="Latn">L'ISO 19115-1:2014 définit le schéma requis pour...</abstract>
+  <abstract language="fr" script="Latn">L'ISO 19115-1:2014 définit le schéma requis pour...</abstract>
   <status>
     <stage abbreviation="CD">30</stage>
     <substage>substage</substage>
@@ -172,7 +174,7 @@
   </copyright>
   <relation type="updates">
     <bibitem>
-      <formattedref format="text/plain">ISO 19115:2003</formattedref>
+      <formattedref>ISO 19115:2003</formattedref>
     </bibitem>
     <locality type="section">
       <referenceFrom>Reference from</referenceFrom>
@@ -187,9 +189,9 @@
     </sourceLocalityStack>
   </relation>
   <relation type="obsoletes">
-    <description format="text/plain">supersedes</description>
+    <description>supersedes</description>
     <bibitem type="standard">
-      <formattedref format="text/plain">ISO 19115:2003/Cor 1:2006</formattedref>
+      <formattedref>ISO 19115:2003/Cor 1:2006</formattedref>
     </bibitem>
     <localityStack>
       <locality type="chapter">
@@ -216,13 +218,13 @@
     <title type="main">Series Title</title>
     <place>
       <city>New York</city>
-      <formattedPlace>New York, NY, US</formattedPlace>
       <region iso="NY" recommended="true">New York</region>
       <country iso="US" recommended="true">USA</country>
+      <formattedPlace>New York, NY, US</formattedPlace>
     </place>
   </series>
   <series type="alt">
-    <formattedref format="text/plain">ISO/IEC FDIS 10118-3</formattedref>
+    <formattedref>ISO/IEC FDIS 10118-3</formattedref>
     <title type="original" language="en" script="Latn" locale="en-US">ISO/IEC FDIS 10118-3</title>
     <organization>Serie's organization</organization>
     <abbreviation language="en" script="Latn" locale="en-US">ABVR</abbreviation>
@@ -240,12 +242,11 @@
     <size>Medium size</size>
     <scale>Medium scale</scale>
   </medium>
-  <place>bib place</place>
   <place>
     <city>Geneva</city>
-    <formattedPlace>Geneva, Switzeland</formattedPlace>
     <region>Europe</region>
     <country iso="CH" recommended="true">Switzeland</country>
+    <formattedPlace>Geneva, Switzeland</formattedPlace>
   </place>
   <price currency="USD">123</price>
   <extent>
@@ -290,9 +291,9 @@
     </vocabid>
   </keyword>
   <validity>
-    <validityBegins>2010-10-10 12:21</validityBegins>
-    <validityEnds>2011-02-03 18:30</validityEnds>
-    <revision>2011-03-04 09:00</revision>
+    <validityBegins>2010-10-10</validityBegins>
+    <validityEnds>2011-02-03</validityEnds>
+    <revision>2011-03-04</revision>
   </validity>
   <depiction scope="cover">
     <image src="cover1.png" mimetype="image/png" filename="cover1.png" width="200" height="100%" alt="Cover 1" title="Cover #1" longdesc="Cover number 1"/>

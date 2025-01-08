@@ -4,7 +4,7 @@ module Relaton
       model Bib::Series
 
       attribute :type, :string, values: %w[main alt]
-      attribute :formattedref, Formattedref
+      attribute :formattedref, :string, raw: true
       attribute :title, Title, collection: (1..)
       attribute :place, Place
       attribute :organization, :string

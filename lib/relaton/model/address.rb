@@ -1,59 +1,22 @@
 module Relaton
   module Model
-    class Street < Lutaml::Model::Serializable
-      attribute :content, Lutaml::Model::Type::String
-
-      xml do
-        map_content :content
-      end
-    end
-
-    class City < Lutaml::Model::Serializable
-      attribute :content, Lutaml::Model::Type::String
-
-      xml do
-        map_content :content
-      end
-    end
-
-    class State < Lutaml::Model::Serializable
-      attribute :content, Lutaml::Model::Type::String
-
-      xml do
-        map_content :content
-      end
-    end
-
-    class Country < Lutaml::Model::Serializable
-      attribute :content, Lutaml::Model::Type::String
-
-      xml do
-        map_content :content
-      end
-    end
-
-    class Postcode < Lutaml::Model::Serializable
-      attribute :content, Lutaml::Model::Type::String
-
-      xml do
-        map_content :content
-      end
-    end
-
-    class FormattedAddress < Lutaml::Model::Serializable
-      attribute :content, Lutaml::Model::Type::String
-
-      xml do
-        map_content :content
-      end
-    end
-
     class Address < Lutaml::Model::Serializable
-      attribute :street, Street, collection: true
-      attribute :city, City
-      attribute :state, State
-      attribute :country, Country
-      attribute :postcode, Postcode
+      attribute :street, :string, collection: true
+      attribute :city, :string
+      attribute :state, :string
+      attribute :country, :string
+      attribute :postcode, :string
+      attribute :formatted_address, :string, raw: true
+
+      xml do
+        root "address"
+        map_element "street", to: :street
+        map_element "city", to: :city
+        map_element "state", to: :state
+        map_element "country", to: :country
+        map_element "postcode", to: :postcode
+        map_element "formattedAddress", to: :formatted_address
+      end
     end
   end
 end

@@ -1,5 +1,3 @@
-require_relative "organization"
-
 module Relaton
   module Model
     class ContributionInfo < Lutaml::Model::Serializable

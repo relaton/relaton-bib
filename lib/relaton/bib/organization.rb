@@ -12,8 +12,8 @@ module Relaton
         # @param type [String]
         # @param content [String]
         def initialize(**args)
-          @type  = args[:type]
-          @content = args[:content]
+          @type     = args[:type]
+          @content  = args[:content]
         end
 
         # @param builder [Nokogiri::XML::Builder]
@@ -59,8 +59,7 @@ module Relaton
       # @return [Array<Relaton::Bib::Organization::Identifier>]
       attr_accessor :identifier
 
-      # @return [Array<Relaton::Bib::Contact>]
-      attr_accessor :contact
+      attr_accessor :address, :phone, :email, :uri
 
       # @return [Relaton::Bib::Image, nil]
       attr_accessor :logo
@@ -69,35 +68,22 @@ module Relaton
       # @param abbreviation [RelatoBib::LocalizedString]
       # @param subdivision [Array<RelatoBib::LocalizedString>]
       # @param identifier [Array<Relaton::Bib::Organization::Identifier>]
-      # @param contact [Array<Relaton::Bib::Address, Relaton::Bib::Contact>]
+      # @param address [Array<Relaton::Model::Address>]
+      # @param phone [Array<Relaton::Model::Phone>]
+      # @param email [Array<String>]
+      # @param uri [Array<Relaton::Model::Uri>]
       # @param logo [Relaton::Bib::Image, nil]
-      def initialize(**args)
+      def initialize(**args) # rubocop:disable Metrics/CyclomaticComplexity
         @name = args[:name]
         @abbreviation = args[:abbreviation]
         @subdivision  = args[:subdivision] || []
         @identifier = args[:identifier] || []
-        @contact = args[:contact] || []
+        @address = args[:address] || []
+        @phone = args[:phone] || []
+        @email = args[:email] || []
+        @uri = args[:uri] || []
         @logo = args[:logo]
       end
-
-      # @param opts [Hash]
-      # @option opts [Nokogiri::XML::Builder] :builder XML builder
-      # @option opts [String] :lang language
-      # def to_xml(**opts) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength
-      #   opts[:builder].organization do |builder|
-      #     nm = name.select { |n| n.language&.include? opts[:lang] }
-      #     nm = name unless nm.any?
-      #     nm.each { |n| builder.name { |b| n.to_xml b } }
-      #     sbdv = subdivision.select { |sd| sd.language&.include? opts[:lang] }
-      #     sbdv = subdivision unless sbdv.any?
-      #     sbdv.each { |sd| builder.subdivision { sd.to_xml builder } }
-      #     builder.abbreviation { |a| abbreviation.to_xml a } if abbreviation
-      #     builder.uri url if uri
-      #     identifier.each { |identifier| identifier.to_xml builder }
-      #     super builder
-      #     builder.logo { |b| logo.to_xml b } if logo
-      #   end
-      # end
 
       # @return [Hash]
       # def to_hash # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
@@ -128,18 +114,6 @@ module Relaton
         out += logo.to_asciibib "#{pref}.logo" if logo
         out
       end
-
-      # private
-
-      # @param arg [String, Hash, RelatoBib::LocalizedString]
-      # @return [RelatoBib::LocalizedString]
-      # def localized_string(arg)
-      #   case arg
-      #   when String then LocalizedString.new(content: arg)
-      #   when Hash then LocalizedString.new(**arg)
-      #   when LocalizedString then arg
-      #   end
-      # end
     end
   end
 end
