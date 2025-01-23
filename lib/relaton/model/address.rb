@@ -1,6 +1,8 @@
 module Relaton
   module Model
     class Address < Lutaml::Model::Serializable
+      model Bib::Address
+
       attribute :street, :string, collection: true
       attribute :city, :string
       attribute :state, :string

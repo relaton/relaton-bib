@@ -51,7 +51,7 @@ module Relaton
           attribute :abbreviation, Abbreviation
           attribute :prefix, Prefix, collection: true
           attribute :forename, Forename, collection: true
-          attribute :formatted_initials, FormattedInitials
+          attribute :initials, FormattedInitials
           attribute :surname, Surname
           attribute :addition, Addition, collection: true
           attribute :completename, Completename
@@ -62,7 +62,7 @@ module Relaton
             map_element "abbreviation", to: :abbreviation
             map_element "prefix", to: :prefix
             map_element "forename", to: :forename
-            map_element "formatted-initials", to: :formatted_initials
+            map_element "formatted-initials", to: :initials
             map_element "surname", to: :surname
             map_element "addition", to: :addition
             map_element "completename", to: :completename

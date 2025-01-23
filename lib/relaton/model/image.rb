@@ -3,15 +3,15 @@ module Relaton
     class Image < Lutaml::Model::Serializable
       model Relaton::Bib::Image
 
-      attribute :id, Lutaml::Model::Type::String
-      attribute :src, Lutaml::Model::Type::String # anyURI
-      attribute :mimetype, Lutaml::Model::Type::String
-      attribute :filename, Lutaml::Model::Type::String
-      attribute :width, Lutaml::Model::Type::String
-      attribute :height, Lutaml::Model::Type::String
-      attribute :alt, Lutaml::Model::Type::String
-      attribute :title, Lutaml::Model::Type::String
-      attribute :longdesc, Lutaml::Model::Type::String # anyURI
+      attribute :id, :string
+      attribute :src, :string # anyURI
+      attribute :mimetype, :string
+      attribute :filename, :string
+      attribute :width, :string
+      attribute :height, :string
+      attribute :alt, :string
+      attribute :title, :string
+      attribute :longdesc, :string # anyURI
 
       xml do
         root "image"

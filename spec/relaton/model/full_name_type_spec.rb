@@ -46,7 +46,7 @@ describe Relaton::Model::FullNameType do
       expect(item.forename).to be_instance_of Array
       expect(item.forename.size).to eq 1
       expect(item.forename.first).to be_instance_of Relaton::Model::FullNameType::Forename
-      expect(item.formatted_initials).to be_instance_of Relaton::Model::FullNameType::FormattedInitials
+      expect(item.initials).to be_instance_of Relaton::Model::FullNameType::FormattedInitials
       expect(item.surname).to be_instance_of Relaton::Model::FullNameType::Surname
       expect(item.addition).to be_instance_of Array
       expect(item.to_xml).to be_equivalent_to xml

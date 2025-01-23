@@ -7,7 +7,7 @@ module Relaton
       attr_accessor :titles
 
       def_delegators :@titles, :[], :first, :last, :empty?, :any?, :size,
-                     :each, :detect, :map, :reduce, :length
+                     :each, :detect, :map, :reduce, :length, :find
 
       # @param title [Array<Relaton::Bib::Title, Hash>]
       def initialize(titles = [])
@@ -75,6 +75,10 @@ module Relaton
       # @return [Relaton::Bib::TitleCollection]
       def select(&block)
         self.class.new titles.select(&block)
+      end
+
+      def reject(&block)
+        self.class.new titles.reject(&block)
       end
 
       # @param init [Array, Hash]

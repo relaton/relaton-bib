@@ -3,16 +3,18 @@ module Relaton
     class Person < Lutaml::Model::Serializable
       model Bib::Person
 
-      class Credential < Lutaml::Model::Serializable
-        attribute :content, :string
+      # class Credential < Lutaml::Model::Serializable
+      #   attribute :content, :string
 
-        xml do
-          root "credential"
-          map_content to: :content
-        end
-      end
+      #   xml do
+      #     root "credential"
+      #     map_content to: :content
+      #   end
+      # end
 
       class Identifier < Lutaml::Model::Serializable
+        model Bib::Person::Identifier
+
         attribute :type, :string
         attribute :content, :string
 
@@ -26,7 +28,7 @@ module Relaton
       include Contact
 
       attribute :name, FullName
-      attribute :credential, Credential, collection: true
+      attribute :credential, :string, collection: true
       attribute :affiliation, Affiliation, collection: true
       attribute :identifier, Identifier, collection: true
       # attribute :contact, Contact, collection: true

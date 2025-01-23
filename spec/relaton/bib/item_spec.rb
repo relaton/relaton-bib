@@ -420,7 +420,7 @@ describe Relaton::Bib::Item do
 
       it "render organization as author name" do
         docid = Relaton::Bib::Docidentifier.new type: "IETF", content: "ID"
-        name = Relaton::Bib::Organization::Name.new content: "Org Name"
+        name = Relaton::Bib::TypedLocalizedString.new content: "Org Name"
         entity = Relaton::Bib::Organization.new name: [name]
         desc = Relaton::Bib::LocalizedString.new content: "BibXML author", language: "en"
         role = [Relaton::Bib::Contributor::Role.new(type: "author", description: [desc])]
@@ -450,7 +450,7 @@ describe Relaton::Bib::Item do
   end
 
   it "initialize with copyright object" do
-    orgname = Relaton::Bib::Organization::Name.new content: "Test Org"
+    orgname = Relaton::Bib::TypedLocalizedString.new content: "Test Org"
     abbreviation = Relaton::Bib::LocalizedString.new content: "TO", language: "en"
     org = Relaton::Bib::Organization.new(name: [orgname], abbreviation: abbreviation, url: "test.org")
     contribution_info = Relaton::Bib::ContributionInfo.new organization: org

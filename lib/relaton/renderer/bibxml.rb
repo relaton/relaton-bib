@@ -90,7 +90,7 @@ module Relaton
         attrs = @bib.docidentifier.each_with_object({}) do |di, h|
           next unless discopes.include?(di.scope)
 
-          h[di.scope.to_sym] = di.id
+          h[di.scope.to_sym] = di.content
         end
         return attrs if attrs.any?
 
@@ -112,7 +112,7 @@ module Relaton
             if c.entity.is_a?(Bib::Person) then render_person xml, c.entity
             else render_organization xml, c.entity, c.role
             end
-            render_contacts xml, c
+            render_address xml, c.entity
           end
         end
       end
@@ -126,21 +126,47 @@ module Relaton
       def render_contacts(builder, contrib)
         # address, contact = address_contact contrib.entity.contact
         # if address || contact.any?
-        contrib.entity.address.each { |address| render_address builder, address }
-        render_contact builder, contrib.entity
+        # contrib.entity.address.each { |address| render_address builder, address }
+        # render_contact builder, contrib.entity
+        render_address builder, contrib.entity
       end
 
-      def render_address(builder, address) # rubocop:disable Lint/DuplicateMethods,Metrics/AbcSize
+      def render_address(builder, entity) # rubocop:disable Metrics/AbcSize
+        return unless entity.address.any? || entity.phone.any? || entity.email.any? || entity.uri.any?
+
         builder.address do |xml|
-          # address = contrib.entity.contact.detect { |cn| cn.is_a? Address }
-          xml.postal do
-            xml.city address.city if address.city
-            xml.code address.postcode if address.postcode
-            xml.country address.country if address.country
-            xml.region address.state if address.state
-            xml.street address.street[0] if address.street.any?
-          end
+          render_postal xml, entity.address
+          render_contact xml, entity.phone.first, "phone"
+          xml.email entity.email.first if entity.email.any?
+          render_contact xml, entity.uri.first, "uri"
         end
+      end
+
+      def render_postal(builder, address) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
+        addr = address.find do |a|
+          a.city || a.postcode || a.country || a.state || a.street.any?
+        end
+
+        if addr
+          builder.postal do |xml|
+            xml.city addr.city if addr.city
+            xml.code addr.postcode if addr.postcode
+            xml.country addr.country if addr.country
+            xml.region addr.state if addr.state
+            xml.street addr.street[0] if addr.street.any?
+          end
+          return
+        end
+
+        address.select(&:formatted_address).each do |a|
+          builder.postalLine a.formatted_address
+        end
+      end
+
+      def render_contact(builder, contact, type)
+        return unless contact
+
+        builder.send type, contact.content
       end
 
       # def address_contact(contact) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
@@ -157,14 +183,14 @@ module Relaton
       # @param [Nokogiri::XML::Builder] builder xml builder
       # @param [Array<Relaton::Bib::Address, Relaton::Bib::Contact>] addr contact
       #
-      def render_contact(builder, entity)
-        %w[phone email uri].each do |type|
-          entity.send(type).each do |cont|
-            # cont = addr.detect { |cn| cn.is_a?(Contact) && cn.type == type }
-            builder.send type, cont.value # if cont
-          end
-        end
-      end
+      # def render_contact(builder, entity)
+      #   %w[phone email uri].each do |type|
+      #     entity.send(type).each do |cont|
+      #       # cont = addr.detect { |cn| cn.is_a?(Contact) && cn.type == type }
+      #       builder.send type, cont.value # if cont
+      #     end
+      #   end
+      # end
 
       #
       # Render person
@@ -276,15 +302,17 @@ module Relaton
       def render_seriesinfo(builder) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         @bib.docidentifier.each do |di|
           if BibXMLParser::SERIESINFONAMES.include?(di.type) && di.scope != "trademark"
-            builder.seriesInfo(name: di.type, value: di.id)
+            builder.seriesInfo(name: di.type, value: di.content)
           end
         end
-        # di_types = docidentifier.map(&:type)
+
         @bib.series.select do |s|
-          s.title && # !di_types.include?(s.title.title.to_s) &&
-            !BibXMLParser::SERIESINFONAMES.include?(s.title.title.to_s)
-        end.uniq { |s| s.title.title.to_s }.each do |s|
-          si = builder.seriesInfo(name: s.title.title.to_s)
+          s.title.reject { |t| BibXMLParser::SERIESINFONAMES.include?(t.content) }.any?
+        end.uniq do |s|
+          s.title.find { |t| !BibXMLParser::SERIESINFONAMES.include?(t.content)}.content
+        end.each do |s|
+          title = s.title.find { |t| !BibXMLParser::SERIESINFONAMES.include?(t.content) }
+          si = builder.seriesInfo(name: title.content)
           si[:value] = s.number if s.number
         end
       end

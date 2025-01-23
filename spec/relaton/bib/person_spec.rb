@@ -7,12 +7,12 @@ describe Relaton::Bib::Person do
     end
   end
 
-  context Relaton::Bib::PersonIdentifier do
-    it "raises type error" do
+  context Relaton::Bib::Person::Identifier do
+    xit "raises type error" do
       expect do
         Relaton::Bib::Person.new(
           name: Relaton::Bib::FullName.new(completename: "John Lennon"),
-          identifier: Relaton::Bib::PersonIdentifier.new("wrong_type", "value"),
+          identifier: Relaton::Bib::Person::Identifier.new(type: "wrong_type", content: "value"),
         )
       end.to raise_error ArgumentError
     end

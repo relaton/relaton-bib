@@ -107,8 +107,8 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     end
 
     context "render XML" do
-      xit "returns bibitem xml string" do
-        file = "spec/examples/bib_item.xml"
+      it "returns bibitem xml string" do
+        file = "spec/examples/from_old_yaml.xml"
         subject_xml = subject.to_xml
           .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
         File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
@@ -154,16 +154,16 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       end
 
       xit "render ext schema-verson" do
-        expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
-        expect(subject).to receive(:ext_schema).and_return("v1.0.0").twice
+        # expect(subject).to receive(:respond_to?).with(:ext_schema).and_return(true).twice
+        # expect(subject).to receive(:ext_schema).and_return("v1.0.0").twice
         expect(subject.to_xml(bibdata: true)).to include "<ext schema-version=\"v1.0.0\">"
       end
     end
 
-    xit "deals with hashes" do
+    it "deals with hashes" do
       file = "spec/examples/bib_item.yml"
-      h = RelatonBib::HashConverter.hash_to_bib(YAML.load_file(file))
-      b = RelatonBib::BibliographicItem.new(**h)
+      h = Relaton::HashConverter.hash_to_bib(YAML.load_file(file))
+      b = Relaton::Bib::Item.new(**h)
       expect(b.to_xml).to be_equivalent_to subject.to_xml
     end
 
@@ -185,7 +185,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     end
 
     context "converts to BibTex" do
-      xit "standard" do
+      it "standard" do
         bibtex = subject.to_bibtex
           .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
         file = "spec/examples/misc.bib"
@@ -194,7 +194,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
           .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       end
 
-      xit "techreport" do
+      it "techreport" do
         expect(subject).to receive(:type).and_return("techreport")
           .at_least :once
         bibtex = subject.to_bibtex
@@ -205,7 +205,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
           .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       end
 
-      xit "manual" do
+      it "manual" do
         expect(subject).to receive(:type).and_return("manual").at_least :once
         bibtex = subject.to_bibtex
           .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
@@ -215,7 +215,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
           .sub(/(?<=timestamp = {)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       end
 
-      xit "phdthesis" do
+      it "phdthesis" do
         expect(subject).to receive(:type).and_return("phdthesis").at_least :once
         bibtex = subject.to_bibtex
         file = "spec/examples/phdthesis.bib"
@@ -232,23 +232,23 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
     end
 
     context "convert item to BibXML" do
-      xit "RFC" do
+      it "RFC" do
         file = "spec/examples/rfc.xml"
         rfc = subject.to_bibxml
         File.write file, rfc, encoding: "UTF-8" unless File.exist? file
         expect(rfc).to be_equivalent_to File.read file, encoding: "UTF-8"
       end
 
-      xit "BCP" do
+      it "BCP" do
         hash = YAML.load_file "spec/examples/bcp_item.yml"
-        bcpbib = RelatonBib::BibliographicItem.from_hash(hash)
+        bcpbib = Relaton::Bib::Item.from_hash(hash)
         file = "spec/examples/bcp_item.xml"
         bcpxml = bcpbib.to_bibxml
         File.write file, bcpxml, encoding: "UTF-8" unless File.exist? file
         expect(bcpxml).to be_equivalent_to File.read file, encoding: "UTF-8"
       end
 
-      xit "ID" do
+      it "ID" do
         hash = YAML.load_file "spec/examples/id_item.yml"
         id = Relaton::Bib::Item.from_hash hash
         file = "spec/examples/id_item.xml"
@@ -257,9 +257,10 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         expect(idxml).to be_equivalent_to File.read file, encoding: "UTF-8"
       end
 
-      xit "render keywords" do
-        docid = Relaton::Bib::Docidentifier.new type: "IETF", id: "ID"
-        bibitem = Relaton::Bib::Item.new keyword: ["kw"], docid: [docid]
+      it "render keywords" do
+        docid = Relaton::Bib::Docidentifier.new type: "IETF", content: "ID"
+        kw = Relaton::Bib::LocalizedString.new content: "kw"
+        bibitem = Relaton::Bib::Item.new keyword: [kw], docidentifier: [docid]
         expect(bibitem.to_bibxml(include_keywords: true)).to be_equivalent_to <<~XML
           <reference anchor="ID">
             <front>
@@ -269,14 +270,14 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         XML
       end
 
-      xit "render person's forename" do
-        docid = Relaton::Bib::Docidentifier.new type: "IETF", id: "ID"
+      it "render person's forename" do
+        docid = Relaton::Bib::Docidentifier.new type: "IETF", content: "ID"
         sname = Relaton::Bib::LocalizedString.new content: "Cook"
         fname = Relaton::Bib::Forename.new content: "James", initial: "J"
         name = Relaton::Bib::FullName.new surname: sname, forename: [fname]
         entity = Relaton::Bib::Person.new name: name
         contrib = Relaton::Bib::Contributor.new entity: entity
-        bibitem = Relaton::Bib::Item.new docid: [docid], contributor: [contrib]
+        bibitem = Relaton::Bib::Item.new docidentifier: [docid], contributor: [contrib]
         expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
           <reference anchor="ID">
             <front>
@@ -288,12 +289,14 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         XML
       end
 
-      xit "render organization as author name" do
-        docid = Relaton::Bib::Docidentifier.new type: "IETF", id: "ID"
-        entity = Relaton::Bib::Organization.new name: "org"
-        role = [{ type: "author", description: ["BibXML author"] }]
-        contrib = Relaton::Bib::Contributor.new entity: entity, role: role
-        bibitem = Relaton::Bib::Item.new docid: [docid], contributor: [contrib]
+      it "render organization as author name" do
+        docid = Relaton::Bib::Docidentifier.new type: "IETF", content: "ID"
+        name = Relaton::Bib::TypedLocalizedString.new content: "org"
+        entity = Relaton::Bib::Organization.new name: [name]
+        desc = Relaton::Bib::LocalizedString.new content: "BibXML author"
+        role = Relaton::Bib::Contributor::Role.new type: "author", description: [desc]
+        contrib = Relaton::Bib::Contributor.new entity: entity, role: [role]
+        bibitem = Relaton::Bib::Item.new docidentifier: [docid], contributor: [contrib]
         expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
           <reference anchor="ID">
             <front>

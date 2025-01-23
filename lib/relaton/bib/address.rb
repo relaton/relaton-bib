@@ -7,10 +7,10 @@ module Relaton
     # Address class.
     class Address
       # @return [Array<String>]
-      attr_reader :street
+      attr_accessor :street
 
       # @return [String, nil]
-      attr_reader :city, :state, :country, :postcode, :formatted_address
+      attr_accessor :city, :state, :country, :postcode, :formatted_address
 
       # @param street [Array<String>] streets
       # @param city [String, nil] city, should be present or formatted address provided
@@ -19,16 +19,16 @@ module Relaton
       # @param postcode [String, nil] postcode
       # @param formatted_address [String, nil] formatted address, should be present or city and country provided
       def initialize(**args) # rubocop:disable Metrics/CyclomaticComplexity
-        unless args[:formatted_address] || (args[:city] && args[:country])
-          raise ArgumentError, "Either formatted address or city and country must be provided"
-        end
+        # unless args[:formatted_address] || (args[:city] && args[:country])
+        #   raise ArgumentError, "Either formatted address or city and country must be provided"
+        # end
 
-        @street   = args[:street] || []
-        @city     = args[:city]
-        @state    = args[:state]
-        @country  = args[:country]
-        @postcode = args[:postcode]
-        @formatted_address = args[:formatted_address] unless args[:city] && args[:country]
+        @street             = args[:street] || []
+        @city               = args[:city]
+        @state              = args[:state]
+        @country            = args[:country]
+        @postcode           = args[:postcode]
+        @formatted_address  = args[:formatted_address] unless args[:city] && args[:country]
       end
 
       # @param doc [Nokogiri::XML::Document]
@@ -81,50 +81,50 @@ module Relaton
     end
 
     # Contact class.
-    class Contact
-      # @return [String] allowed "phone", "email" or "uri"
-      attr_reader :type
+    # class Contact
+    #   # @return [String] allowed "phone", "email" or "uri"
+    #   attr_reader :type
 
-      # @return [String, nil]
-      attr_reader :subtype
+    #   # @return [String, nil]
+    #   attr_reader :subtype
 
-      # @return [String]
-      attr_reader :value
+    #   # @return [String]
+    #   attr_reader :value
 
-      # @param type [String] allowed "phone", "email" or "uri"
-      # @param subtype [String, nil] i.e. "fax", "mobile", "landline" for "phone"
-      #                              or "work", "personal" for "uri" type
-      # @param value [String]
-      def initialize(type:, value:, subtype: nil)
-        @type     = type
-        @subtype  = subtype
-        @value    = value
-      end
+    #   # @param type [String] allowed "phone", "email" or "uri"
+    #   # @param subtype [String, nil] i.e. "fax", "mobile", "landline" for "phone"
+    #   #                              or "work", "personal" for "uri" type
+    #   # @param value [String]
+    #   def initialize(type:, value:, subtype: nil)
+    #     @type     = type
+    #     @subtype  = subtype
+    #     @value    = value
+    #   end
 
-      # @param builder [Nokogiri::XML::Document]
-      # def to_xml(builder)
-      #   node = builder.send type, value
-      #   node["type"] = subtype if subtype
-      # end
+    #   # @param builder [Nokogiri::XML::Document]
+    #   # def to_xml(builder)
+    #   #   node = builder.send type, value
+    #   #   node["type"] = subtype if subtype
+    #   # end
 
-      # @return [Hash]
-      # def to_hash
-      #   hash = { type => value }
-      #   hash["type"] = subtype if subtype
-      #   hash
-      # end
+    #   # @return [Hash]
+    #   # def to_hash
+    #   #   hash = { type => value }
+    #   #   hash["type"] = subtype if subtype
+    #   #   hash
+    #   # end
 
-      # @param prefix [String]
-      # @param count [Integer] number of contacts
-      # @return [string]
-      def to_asciibib(prefix = "", count = 1)
-        pref = prefix.empty? ? prefix : "#{prefix}."
-        out = count > 1 ? "#{pref}contact::\n" : ""
-        out += "#{pref}contact.#{type}:: #{value}\n"
-        out += "#{pref}contact.type:: #{subtype}\n" if subtype
-        out
-      end
-    end
+    #   # @param prefix [String]
+    #   # @param count [Integer] number of contacts
+    #   # @return [string]
+    #   def to_asciibib(prefix = "", count = 1)
+    #     pref = prefix.empty? ? prefix : "#{prefix}."
+    #     out = count > 1 ? "#{pref}contact::\n" : ""
+    #     out += "#{pref}contact.#{type}:: #{value}\n"
+    #     out += "#{pref}contact.type:: #{subtype}\n" if subtype
+    #     out
+    #   end
+    # end
     # # Contributor.
     # class Contributor
     #   # include Relaton

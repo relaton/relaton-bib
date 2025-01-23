@@ -3,12 +3,12 @@ module Relaton
     class Validity
       FORMAT = "%Y-%m-%d %H:%M".freeze
 
-      # @return [Time, nil]
+      # @return [Date, nil]
       attr_accessor :begins, :ends, :revision
 
-      # @param begins [Time, nil]
-      # @param ends [Time, nil]
-      # @param revision [Time, nil]
+      # @param begins [Date, nil]
+      # @param ends [Date, nil]
+      # @param revision [Date, nil]
       def initialize(begins: nil, ends: nil, revision: nil)
         @begins   = begins
         @ends     = ends

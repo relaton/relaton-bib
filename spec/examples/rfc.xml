@@ -3,6 +3,9 @@
     <title>Geographic information</title>
     <author>
       <organization abbrev="ISO">International Organization for Standardization</organization>
+      <address>
+        <uri>www.iso.org</uri>
+      </address>
     </author>
     <author fullname="A. Bierman">
       <organization abbrev="IETF">IETF</organization>
@@ -21,6 +24,9 @@
     </author>
     <author role="editor">
       <organization abbrev="IEEE">IEEE</organization>
+      <address>
+        <postalLine>Formatted address</postalLine>
+      </address>
     </author>
     <author fullname="Arnold Bierman" initials="A." surname="Bierman">
       <organization abbrev="IETF">IETF</organization>
@@ -40,6 +46,9 @@
     </author>
     <author>
       <organization>W3C</organization>
+      <address>
+        <postalLine>Address string</postalLine>
+      </address>
     </author>
     <date year="2014" month="April"/>
     <workgroup>Editorial group</workgroup>

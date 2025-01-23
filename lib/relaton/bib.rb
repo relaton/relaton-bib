@@ -11,12 +11,13 @@ require_relative "workers_pool"
 require_relative "bib/item"
 # require_relative "xml_parser"
 require_relative "model/bibitem"
+require_relative "model/bibdata"
 require_relative "hit_collection"
 require_relative "hit"
 require_relative "bibxml_parser"
 require_relative "renderer/bibtex_builder"
 require_relative "renderer/bibxml"
-# require_relative "hash_converter"
+require_relative "hash_converter"
 
 module Relaton
   # class Error < StandardError; end

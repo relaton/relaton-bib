@@ -10,9 +10,9 @@ module Relaton
       attr_accessor :locality
 
       # @param locality [Array<Relaton::Bib::Locality>]
-      # def initialize(locality)
-      #   @locality = locality
-      # end
+      def initialize(locality = [])
+        @locality = locality
+      end
 
       # @return [String]
       def to_xml
@@ -49,7 +49,16 @@ module Relaton
       end
     end
 
-    class SourceLocalityStack < LocalityStack
+    class SourceLocalityStack
+      attr_accessor :connective, :source_locality
+
+      # @param connective [String, nil]
+      # @param source_locality [Array<Relaton::Bib::SourceLocality>]
+      def initialize(connective: nil, source_locality: [])
+        @connective = connective
+        @source_locality = source_locality
+      end
+
       # @param builder [Nokogiri::XML::Builder]
       # def to_xml(builder)
       #   builder.sourceLocalityStack do |b|

@@ -5,6 +5,8 @@ module Relaton
       end
 
       class Vocabid < Lutaml::Model::Serializable
+        model Bib::Keyword::Vocabid
+
         attribute :type, :string
         attribute :uri, :string
         attribute :code, :string
@@ -20,9 +22,8 @@ module Relaton
 
       model Bib::Keyword
 
-      # attribute :content, Content
       attribute :vocab, Vocab, collection: true
-      attribute :taxon, Vocab, collection: true
+      attribute :taxon, Vocab, collection: (1..)
       attribute :vocabid, Vocabid
 
       xml do

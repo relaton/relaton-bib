@@ -13,7 +13,7 @@ module Relaton
       #
       # @param [<Relaton::Bib::Size::Value>] value
       #
-      def initialize(value: [])
+      def initialize(value = [])
         @value = value
       end
 

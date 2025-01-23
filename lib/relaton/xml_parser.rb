@@ -415,7 +415,7 @@ module Relaton
 
         contact = parse_contact person
         identifier = person.xpath("./identifier").map do |pi|
-          PersonIdentifier.new pi[:type], pi.text
+          Person::Identifier.new type: pi[:type], content: pi.text
         end
 
         Person.new(

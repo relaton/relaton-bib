@@ -160,9 +160,9 @@ module Relaton
           #   raise ArgumentError, "`content` or valid US state ISO code should be provided"
           # end
 
-          @content = content || STATES[iso&.upcase]
-          @iso  = iso
-          @recommended = recommended
+          @content      = content || STATES[iso&.upcase]
+          @iso          = iso
+          @recommended  = recommended
         end
 
         #

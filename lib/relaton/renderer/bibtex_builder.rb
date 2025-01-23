@@ -150,13 +150,13 @@ module Relaton
       #
       # Add series to BibTeX item
       #
-      def add_series
+      def add_series # rubocop:disable Metrics/AbcSize
         @bib.series.each do |s|
           case s.type
           when "journal"
-            @item.journal = s.title.title
+            @item.journal = s.title.first.content
             @item.number = s.number if s.number
-          when nil then @item.series = s.title.title
+          when nil then @item.series = s.title.first.content
           end
         end
       end
@@ -169,7 +169,7 @@ module Relaton
 
         did = @bib.docidentifier.detect { |i| i.primary == true }
         did ||= @bib.docidentifier.first
-        @item.number = did.id if did
+        @item.number = did.content if did
       end
 
       #
@@ -219,7 +219,7 @@ module Relaton
         return unless @bib.place.any?
 
         reg = @bib.place[0].region[0].name if @bib.place[0].region.any?
-        addr = [@bib.place[0].name, @bib.place[0].city, reg]
+        addr = [@bib.place[0].formatted_place, @bib.place[0].city, reg]
         @item.address = addr.compact.join(", ")
       end
 
@@ -227,7 +227,7 @@ module Relaton
       # Add note to BibTeX item
       #
       def add_note # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
-        @bib.biblionote.each do |n|
+        @bib.note.each do |n|
           case n.type
           when "annote" then @item.annote = n.content
           when "howpublished" then @item.howpublished = n.content
@@ -245,7 +245,7 @@ module Relaton
         rel = @bib.relation.detect { |r| r.type == "partOf" }
         if rel
           title_main = rel.bibitem.title.detect { |t| t.type == "main" }
-          @item.booktitle = title_main.title.content
+          @item.booktitle = title_main.content
         end
       end
 
@@ -262,8 +262,8 @@ module Relaton
       def add_classification
         @bib.classification.each do |c|
           case c.type
-          when "type" then @item["type"] = c.value
-          when "mendeley" then @item["mendeley-tags"] = c.value
+          when "type" then @item["type"] = c.content
+          when "mendeley" then @item["mendeley-tags"] = c.content
           end
         end
       end
@@ -283,9 +283,9 @@ module Relaton
       def add_docidentifier
         @bib.docidentifier.each do |i|
           case i.type
-          when "isbn" then @item.isbn = i.id
-          when "lccn" then @item.lccn = i.id
-          when "issn" then @item.issn = i.id
+          when "isbn" then @item.isbn = i.content
+          when "lccn" then @item.lccn = i.content
+          when "issn" then @item.issn = i.content
           end
         end
       end

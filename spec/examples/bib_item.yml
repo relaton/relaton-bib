@@ -181,6 +181,9 @@ contributor:
       identifier:
         type: uri
         id: www.person.com
+    role:
+      - type: author
+        description: Author description
 
   - person:
       name:
@@ -300,13 +303,12 @@ series:
       content: Journal
     number: "7"
   - title:
-      content:
-        - content: Series
-          language: en
-          script: Latn
-        - content: Séries
-          language: fr
-          script: Latn
+      - content: Series
+        language: en
+        script: Latn
+      - content: Séries
+        language: fr
+        script: Latn
   - title:
       content: RFC
     number: "4"
@@ -320,10 +322,10 @@ place:
   - bib place
   - city: Geneva
     region:
-      - name: Region
+      - name: Europe
     country:
       - iso: CH
-        name: Switzelznd
+        name: Switzeland
         recommended: true
 
 extent:
@@ -366,9 +368,21 @@ keyword:
 license: License
 
 validity:
-  begins: "2010-10-10 12:21"
-  ends: "2011-02-03 18:30"
-  revision: "2011-03-04 09:00"
+  begins: "2010-10-10"
+  ends: "2011-02-03"
+  revision: "2011-03-04"
+
+# depiction:
+#   scope: cover
+#   image:
+#     srl: cover1.png
+#     mimetype: image/png
+#     filename: cover1.png
+#     width: "200"
+#     height: 100%
+#     alt: Cover 1
+#     title: Cover #1
+#     longdesc: Cover number 1
 
 ext:
   doctype:

@@ -12,9 +12,9 @@ module Relaton
       # @param [String] script scripts `Latn`, `Cyrl` etc.
       # @param [String, nil] initial initial of forename
       #
-      def initialize(content: nil, language: [], script: [], initial: nil)
-        @initial = initial
-        super # content, language, script
+      def initialize(**args)
+        @initial = args[:initial]
+        super
       end
 
       def to_s

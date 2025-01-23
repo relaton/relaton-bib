@@ -1,7 +1,7 @@
 module Relaton
   module Model
     class LocalityStack < Lutaml::Model::Serializable
-      model Relaton::Bib::LocalityStack
+      model Bib::LocalityStack
 
       attribute :connective, :string, values: %w[and or from to]
       attribute :locality, Locality, collection: true

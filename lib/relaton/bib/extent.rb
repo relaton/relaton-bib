@@ -37,6 +37,7 @@ module Relaton
 
       def to_bibtex(item)
         locality.map { |l| l.to_bibtex(item) }.join
+        locality_stack.map { |l| l.to_bibtex(item) }.join
       end
     end
   end

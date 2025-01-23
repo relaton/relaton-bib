@@ -24,9 +24,9 @@ module Relaton
         # end
 
         @owner = args[:owner]
-        @from  = args[:rom]
-        @to    = args[:o]
-        @scope = args[:cope]
+        @from  = args[:from]
+        @to    = args[:to]
+        @scope = args[:scope]
       end
 
       # @param opts [Hash]

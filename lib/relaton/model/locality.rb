@@ -5,7 +5,7 @@ module Relaton
     class Locality < Lutaml::Model::Serializable
       include BibItemLocality
 
-      model Relaton::Bib::Locality
+      model Bib::Locality
 
       mappings[:xml].instance_eval do
         root "locality"

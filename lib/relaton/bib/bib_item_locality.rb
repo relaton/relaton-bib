@@ -64,6 +64,5 @@ module Relaton
         end
       end
     end
-
   end
 end

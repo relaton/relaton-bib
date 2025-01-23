@@ -3,10 +3,7 @@
 module Relaton
   module Bib
     # Localized string.
-    class LocalizedString
-      # @return [String, nil]
-      attr_accessor :language, :script, :locale
-
+    class LocalizedString < LocalizedStringAttrs
       # @return [String]
       attr_accessor :content
 
@@ -15,10 +12,8 @@ module Relaton
       # @param script [String, nil] script code Iso15924
       # @param locale [String, nil] language and script code
       def initialize(**args)
+        super
         @content = args[:content]
-        @language = args[:language]
-        @script = args[:script]
-        @locale = args[:locale]
       end
 
       def ==(other)

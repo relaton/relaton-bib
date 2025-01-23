@@ -3,16 +3,16 @@ require_relative "abbreviation"
 module Relaton
   module Model
     module OrganizationType
-      class Name < Model::LocalizedString
-        model Bib::Organization::Name
+      # class Name < Model::LocalizedString
+      #   model Bib::Organization::Name
 
-        attribute :type, :string
+      #   attribute :type, :string
 
-        mappings[:xml].instance_eval do
-          root "name"
-          map_attribute "type", to: :type
-        end
-      end
+      #   mappings[:xml].instance_eval do
+      #     root "name"
+      #     map_attribute "type", to: :type
+      #   end
+      # end
 
       class Identifier < Lutaml::Model::Serializable
         model Bib::Organization::Identifier
@@ -33,7 +33,7 @@ module Relaton
         base.instance_eval do
           include Contact
 
-          attribute :name, Name, collection: true
+          attribute :name, TypedLocalizedString, collection: true
           attribute :subdivision, Subdivision, collection: true
           attribute :abbreviation, Abbreviation
           attribute :identifier, Identifier, collection: true

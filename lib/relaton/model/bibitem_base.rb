@@ -1,5 +1,6 @@
 module Relaton
   module Model
+    # The class is for relaton bibitem instances
     class BibitemBase < BibliographicItem
       model Relaton::Bib::Item
 

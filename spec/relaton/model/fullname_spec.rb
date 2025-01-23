@@ -18,7 +18,7 @@ describe Relaton::Model::FullName do
       expect(name.abbreviation).to be_instance_of Relaton::Model::FullNameType::Abbreviation
       expect(name.prefix.first).to be_instance_of Relaton::Model::FullNameType::Prefix
       expect(name.forename.first).to be_instance_of Relaton::Model::FullNameType::Forename
-      expect(name.formatted_initials).to be_instance_of Relaton::Model::FullNameType::FormattedInitials
+      expect(name.initials).to be_instance_of Relaton::Model::FullNameType::FormattedInitials
       expect(name.surname).to be_instance_of Relaton::Model::FullNameType::Surname
       expect(name.addition.first).to be_instance_of Relaton::Model::FullNameType::Addition
       expect(described_class.to_xml(name)).to be_equivalent_to xml

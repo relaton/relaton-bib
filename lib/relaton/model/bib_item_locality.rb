@@ -1,27 +1,12 @@
 module Relaton
   module Model
-    # class ReferenceFrom < Lutaml::Model::Serializable
-    #   attribute :content, :string
-
-    #   xml do
-    #     root "referenceFrom"
-    #     map_content to: :content
-    #   end
-    # end
-
-    # class ReferenceTo < Lutaml::Model::Serializable
-    #   attribute :content, :string
-
-    #   xml do
-    #     root "referenceTo"
-    #     map_content to: :content
-    #   end
-    # end
-
     module BibItemLocality
-      def self.included(base)
+      def self.included(base) # rubocop:disable Metrics/MethodLength
         base.class_eval do
-          attribute :type, :string
+          attribute :type, :string, pattern: %r{
+            section|clause|part|paragraph|chapter|page|title|line|whole|table|annex|
+            figure|note|list|example|volume|issue|time|anchor|locality:[a-zA-Z0-9_]+
+          }x
           attribute :reference_from, :string
           attribute :reference_to, :string
 

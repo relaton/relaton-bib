@@ -2,6 +2,8 @@ module Relaton
   module Bib
     class Keyword
       class Vocabid
+        attr_accessor :type, :uri, :code, :term
+
         #
         # Vocabid initializer
         #
@@ -10,11 +12,11 @@ module Relaton
         # @param [String, nil] code The code or identifier for the controlled vocabulary item
         # @param [String, nil] term The term itself for the controlled vocabulary item
         #
-        def initialize(type:, uri: nil, code: nil, term: nil)
-          @type = type
-          @uri = uri
-          @code = code
-          @term = term
+        def initialize(**args)
+          @type = args[:type]
+          @uri  = args[:uri]
+          @code = args[:code]
+          @term = args[:term]
         end
       end
 

@@ -8,7 +8,7 @@ module Relaton
       attr_accessor :forename
 
       # @return [Array<Relaton::Bib::LocalizedString>]
-      attr_accessor :initials, :addition, :prefix, :formatted_initials
+      attr_accessor :initials, :addition, :prefix
 
       # @return [Relaton::Bib::LocalizedString, nil]
       attr_accessor :surname, :abbreviation, :completename
@@ -25,7 +25,7 @@ module Relaton
       # @param abbreviation [Relaton::Bib::LocalizedString, nil] abbreviation
       # @param prefix [Array<Relaton::Bib::LocalizedString>] array of prefixes
       # @param forename [Array<Relaton::Bib::Forename>] forename
-      # @param formatted_initials [Relaton::Bib::LocalizedString, String, nil] string of initials
+      # @param initials [Relaton::Bib::LocalizedString, nil] string of initials
       # @param surname [Relaton::Bib::LocalizedString, nil] surname or completename should be present
       # @param addition [Array<Relaton::Bib::LocalizedString>] array of additions
       # @param completename [Relaton::Bib::LocalizedString, nil] completename or surname should be present
@@ -40,7 +40,7 @@ module Relaton
         @abbreviation = args[:abbreviation]
         @prefix       = args.fetch :prefix, []
         @forename     = args.fetch :forename, []
-        @formatted_initials = args[:formatted_initials]
+        @initials     = args[:initials]
         @surname      = args[:surname]
         @addition     = args.fetch :addition, []
         @completename = args[:completename]

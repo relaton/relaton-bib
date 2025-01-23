@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
+require_relative "logo"
+require_relative "localized_string_attrs"
+require_relative "localized_string"
+require_relative "typed_localized_string"
 require_relative "address"
+require_relative "phone"
+require_relative "uri"
 require_relative "affiliation"
 require_relative "document_type"
 require_relative "image"
-require_relative "localized_string"
 require_relative "forename"
 require_relative "full_name"
 require_relative "source"
@@ -104,7 +109,7 @@ module Relaton
       # @param contributor [Array<Relaton::Bib::Contributor>]
       # @param edition [Relaton::Bib::Edition]
       # @param version [Array<Relaton::Bib::Bversion>]
-      # @param biblionote [Array<Relaton::Bib::Biblionote>]
+      # @param note [Array<Relaton::Bib::Note>]
       # @param language [Array<String>]
       # @param locale [Array<String>]
       # @param script [Array<String>]
@@ -174,8 +179,8 @@ module Relaton
       # @param hash [Hash]
       # @return [RelatonBipm::BipmItem]
       def self.from_hash(hash)
-        # item_hash = Object.const_get(name.split("::")[0])::HashConverter.hash_to_bib(hash)
-        # new(**item_hash)
+        item_hash = Object.const_get(name.split("::")[0])::HashConverter.hash_to_bib(hash)
+        new(**item_hash)
       end
 
       #
@@ -420,7 +425,7 @@ module Relaton
         language.each { |l| out += "#{pref}language:: #{l}\n" }
         script.each { |s| out += "#{pref}script:: #{s}\n" }
         version.each { |v| out += v.to_asciibib prefix, version.size }
-        biblionote&.each { |b| out += b.to_asciibib prefix, biblionote.size }
+        note&.each { |b| out += b.to_asciibib prefix, note.size }
         out += status.to_asciibib prefix if status
         date.each { |d| out += d.to_asciibib prefix, date.size }
         abstract.each do |a|

@@ -2,7 +2,7 @@ module Relaton
   module Model
     # Contact URI
     class Uri < LocalizedStringAttrs
-      # model Bib::Uri
+      model Bib::Uri
 
       attribute :type, :string
       attribute :content, :string

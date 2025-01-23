@@ -27,7 +27,7 @@ module Relaton
       # end
     end
 
-    class Note  < LocalizedString
+    class Note < LocalizedString
       # @return [String, nil]
       attr_accessor :type
 

@@ -4,6 +4,19 @@ module Relaton
   module Bib
     # Organization.
     class Organization
+    end
+
+    class Organization
+      # Subdivision of an organization.
+      class Subdivision < Organization
+        attr_accessor :type
+
+        def initialize(**args)
+          super
+          @type = args[:type]
+        end
+      end
+
       # Organization identifier.
       class Identifier
         # @return [String]
@@ -38,14 +51,14 @@ module Relaton
         end
       end
 
-      class Name < LocalizedString
-        attr_accessor :type
+      # class Name < LocalizedString
+      #   attr_accessor :type
 
-        def initialize(**args)
-          super
-          @type = args[:type]
-        end
-      end
+      #   def initialize(**args)
+      #     super
+      #     @type = args[:type]
+      #   end
+      # end
 
       # @return [Array<Relaton::Bib::Organization::Name>]
       attr_accessor :name
@@ -53,7 +66,7 @@ module Relaton
       # @return [Relaton::Bib::LocalizedString, nil]
       attr_accessor :abbreviation
 
-      # @return [Array<Relaton::Bib::LocalizedString>]
+      # @return [Array<Relaton::Bib::TypedLocalizedString>]
       attr_accessor :subdivision
 
       # @return [Array<Relaton::Bib::Organization::Identifier>]
@@ -64,25 +77,25 @@ module Relaton
       # @return [Relaton::Bib::Image, nil]
       attr_accessor :logo
 
-      # @param name [Array<RelatoBib::Organization::Name>]
+      # @param name [Array<RelatoBib::TypedLocalizedString>]
       # @param abbreviation [RelatoBib::LocalizedString]
-      # @param subdivision [Array<RelatoBib::LocalizedString>]
+      # @param subdivision [Array<RelatoBib::Organization::Subdivision>]
       # @param identifier [Array<Relaton::Bib::Organization::Identifier>]
       # @param address [Array<Relaton::Model::Address>]
       # @param phone [Array<Relaton::Model::Phone>]
       # @param email [Array<String>]
       # @param uri [Array<Relaton::Model::Uri>]
       # @param logo [Relaton::Bib::Image, nil]
-      def initialize(**args) # rubocop:disable Metrics/CyclomaticComplexity
-        @name = args[:name]
+      def initialize(**args) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+        @name = args[:name] || []
         @abbreviation = args[:abbreviation]
         @subdivision  = args[:subdivision] || []
-        @identifier = args[:identifier] || []
-        @address = args[:address] || []
-        @phone = args[:phone] || []
-        @email = args[:email] || []
-        @uri = args[:uri] || []
-        @logo = args[:logo]
+        @identifier   = args[:identifier] || []
+        @address      = args[:address] || []
+        @phone        = args[:phone] || []
+        @email        = args[:email] || []
+        @uri          = args[:uri] || []
+        @logo         = args[:logo]
       end
 
       # @return [Hash]

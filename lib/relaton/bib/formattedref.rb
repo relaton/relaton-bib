@@ -4,8 +4,8 @@ module Relaton
       # @return [String]
       attr_accessor :content
 
-      def initialize(content: nil)
-        @content = content
+      def initialize(**args)
+        @content = args[:content]
       end
 
       # @param prefix [String]
