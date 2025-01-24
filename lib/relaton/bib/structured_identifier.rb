@@ -8,7 +8,7 @@ module Relaton
                      :reduce
 
       # @param collection [Array<Relaton::Bib::StructuredIdentifier>]
-      def initialize(collection)
+      def initialize(collection = [])
         @collection = collection
       end
 
@@ -50,6 +50,11 @@ module Relaton
         any?
       end
 
+      # This is needed for lutaml-model to treat RelationCollection instance as Array
+      def is_a?(klass)
+        klass == Array || super
+      end
+
       # @return [Relaton::Bib::StructuredIdentifierCollection]
       # def map(&block)
       #   StructuredIdentifierCollection.new @collection.map &block
@@ -59,79 +64,72 @@ module Relaton
     class StructuredIdentifier
       # include Relaton
 
-      # @return [String]
-      attr_reader :docnumber
+      ARGS = %i[docnumber type agency class partnumber edition version
+                supplementtype supplementnumber amendment corrigendum
+                language year].freeze
 
-      # @return [Array<String>]
-      attr_reader :agency
-
-      # @return [String, nil]
-      attr_reader :type, :klass, :partnumber, :edition, :version, :supplementtype,
-                  :supplementnumber, :language, :year
-
-      # rubocop:disable Metrics/MethodLength
+      ARGS.each { |attr| attr_accessor attr }
 
       # @param docnumber [String]
-      # @param args [Hash]
-      # @option args [String, nil] :type
-      # @option args [Array<String>] :agency
-      # @option args [Stirng, nil] :class
-      # @option args [String, nil] :partnumber
-      # @option args [String, nil] :edition
-      # @option args [String, nil] :version
-      # @option args [String, nil] :supplementtype
-      # @option args [String, nil] :supplementnumber
-      # @option args [String, nil] :language
-      # @option args [String, nil] :year
-      def initialize(docnumber:, **args)
-        @type = args[:type]
-        @agency = args[:agency]
-        @klass = args[:class]
-        @docnumber = docnumber
-        @partnumber = args[:partnumber]
-        @edition = args[:edition]
-        @version = args[:version]
-        @supplementtype = args[:supplementtype]
-        @supplementnumber = args[:supplementnumber]
-        @language = args[:language]
-        @year = args[:year]
+      # @param type [String, nil]
+      # @param agency [Array<String>]
+      # @param class [Stirng, nil]
+      # @param partnumber [String, nil]
+      # @param edition [String, nil]
+      # @param version [String, nil]
+      # @param supplementtype [String, nil]
+      # @param supplementnumber [String, nil]
+      # @param amendment [String, nil]
+      # @param corrigendum [String, nil]
+      # @param language [String, nil]
+      # @param year [String, nil]
+      def initialize(**args)
+        ARGS.each { |attr| instance_variable_set "@#{attr}", args[attr] }
+        # @type = args[:type]
+        # @agency = args[:agency]
+        # @klass = args[:class]
+        # @docnumber = args[:docnumber]
+        # @partnumber = args[:partnumber]
+        # @edition = args[:edition]
+        # @version = args[:version]
+        # @supplementtype = args[:supplementtype]
+        # @supplementnumber = args[:supplementnumber]
+        # @language = args[:language]
+        # @year = args[:year]
       end
-
-      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       # @param builder [Nokogiri::XML::Builder]
-      def to_xml(builder)
-        xml = builder.structuredidentifier do |b|
-          agency&.each { |a| b.agency a }
-          b.class_ klass if klass
-          b.docnumber docnumber
-          b.partnumber partnumber if partnumber
-          b.edition edition if edition
-          b.version version if version
-          b.supplementtype supplementtype if supplementtype
-          b.supplementnumber supplementnumber if supplementnumber
-          b.language language if language
-          b.year year if year
-        end
-        xml[:type] = type if type
-      end
+      # def to_xml(builder)
+      #   xml = builder.structuredidentifier do |b|
+      #     agency&.each { |a| b.agency a }
+      #     b.class_ klass if klass
+      #     b.docnumber docnumber
+      #     b.partnumber partnumber if partnumber
+      #     b.edition edition if edition
+      #     b.version version if version
+      #     b.supplementtype supplementtype if supplementtype
+      #     b.supplementnumber supplementnumber if supplementnumber
+      #     b.language language if language
+      #     b.year year if year
+      #   end
+      #   xml[:type] = type if type
+      # end
 
       # @return [Hash]
-      def to_hash
-        hash = { "docnumber" => docnumber }
-        hash["type"] = type if type
-        hash["agency"] = single_element_array agency if agency&.any?
-        hash["class"] = klass if klass
-        hash["partnumber"] = partnumber if partnumber
-        hash["edition"] = edition if edition
-        hash["version"] = version if version
-        hash["supplementtype"] = supplementtype if supplementtype
-        hash["supplementnumber"] = supplementnumber if supplementnumber
-        hash["language"] = language if language
-        hash["year"] = year if year
-        hash
-      end
-      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      # def to_hash
+      #   hash = { "docnumber" => docnumber }
+      #   hash["type"] = type if type
+      #   hash["agency"] = single_element_array agency if agency&.any?
+      #   hash["class"] = klass if klass
+      #   hash["partnumber"] = partnumber if partnumber
+      #   hash["edition"] = edition if edition
+      #   hash["version"] = version if version
+      #   hash["supplementtype"] = supplementtype if supplementtype
+      #   hash["supplementnumber"] = supplementnumber if supplementnumber
+      #   hash["language"] = language if language
+      #   hash["year"] = year if year
+      #   hash
+      # end
 
       # @param prefix [String]
       # @return [String]

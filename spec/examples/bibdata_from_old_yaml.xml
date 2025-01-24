@@ -1,6 +1,5 @@
-<bibitem id="ISOTC211" type="standard" schema-version="v1.4.1">
+<bibdata type="standard" schema-version="v1.2.9">
   <fetched>2024-12-11</fetched>
-  <formattedref>ISO TC 211</formattedref>
   <title type="title-main" format="text/plain">Geographic information</title>
   <title type="main" format="text/plain">Geographic information</title>
   <title format="text/plain" language="fr" script="Latn">Information géographique</title>
@@ -18,13 +17,13 @@
   <docidentifier type="DOI">10.17487/rfc1149</docidentifier>
   <docidentifier type="Internet-Draft">draft-ietf-somewg-someprotocol-07</docidentifier>
   <docnumber>TC211</docnumber>
-  <date type="issued" text="">
+  <date type="issued">
     <on>2014</on>
   </date>
-  <date type="published" text="">
+  <date type="published">
     <on>2014-04</on>
   </date>
-  <date type="accessed" text="">
+  <date type="accessed">
     <on>2015-05-20</on>
   </date>
   <contributor>
@@ -32,10 +31,8 @@
       <description>Publisher role</description>
     </role>
     <organization>
-      <name type="Org name type" language="en" script="Latn" locale="en-US">International Organization for Standardization</name>
-      <subdivision type="Sub Div type">
-        <name>Sub division name</name>
-      </subdivision>
+      <name>International Organization for Standardization</name>
+      <subdivision>division</subdivision>
       <abbreviation>ISO</abbreviation>
       <uri>www.iso.org</uri>
       <logo>
@@ -149,12 +146,11 @@
   <note type="tableOfContents">Table Of Contents</note>
   <language>en</language>
   <language>fr</language>
-  <locale>en-US</locale>
   <script>Latn</script>
-  <abstract language="en" script="Latn">
+  <abstract format="text/html" language="en" script="Latn">
     <p>ISO 19115-1:2014 defines the schema required for...</p>
   </abstract>
-  <abstract language="fr" script="Latn">L'ISO 19115-1:2014 définit le schéma requis pour...</abstract>
+  <abstract format="text/plain" language="fr" script="Latn">L'ISO 19115-1:2014 définit le schéma requis pour...</abstract>
   <status>
     <stage abbreviation="CD">30</stage>
     <substage>substage</substage>
@@ -210,55 +206,63 @@
   </relation>
   <relation type="partOf">
     <bibitem>
-      <title type="main" format="text/plain">Book title</title>
+      <title type="main">Book title</title>
     </bibitem>
   </relation>
-  <series type="main">
-    <formattedref>Series formatted ref</formattedref>
-    <title type="main">Series Title</title>
-    <place>
-      <city>New York</city>
-      <region iso="NY" recommended="true">New York</region>
-      <country iso="US" recommended="true">USA</country>
-      <formattedPlace>New York, NY, US</formattedPlace>
-    </place>
+  <series type="Internet-Draft">
+    <title>Internet-Draft</title>
+    <number>draft-ietf-somewg-someprotocol-07</number>
+    <run>seriesrun</run>
   </series>
-  <series type="alt">
-    <formattedref>ISO/IEC FDIS 10118-3</formattedref>
-    <title type="original" language="en" script="Latn" locale="en-US">ISO/IEC FDIS 10118-3</title>
+  <series type="main">
+    <title type="original" format="text/plain" language="en" script="Latn">ISO/IEC FDIS 10118-3</title>
+    <place>
+      <formattedPlace>Serie's place</formattedPlace>
+    </place>
     <organization>Serie's organization</organization>
-    <abbreviation language="en" script="Latn" locale="en-US">ABVR</abbreviation>
+    <abbreviation>ABVR</abbreviation>
     <from>2009-02-01</from>
     <to>2010-12-20</to>
     <number>serie1234</number>
     <partnumber>part5678</partnumber>
-    <run>2</run>
+  </series>
+  <series type="alt">
+    <formattedref>serieref</formattedref>
+    <title>Formattedref</title>
+  </series>
+  <series type="journal">
+    <title>Journal</title>
+    <number>7</number>
+  </series>
+  <series>
+    <title language="en" script="Latn">Series</title>
+    <title language="fr" script="Latn">Séries</title>
+  </series>
+  <series>
+    <title>RFC</title>
+    <number>4</number>
   </series>
   <medium>
-    <content>Medium content</content>
-    <genre>Medium Genre</genre>
-    <form>Medium form</form>
-    <carrier>Medium carrier</carrier>
-    <size>Medium size</size>
-    <scale>Medium scale</scale>
+    <form>medium form</form>
+    <size>medium size</size>
+    <scale>medium scale</scale>
   </medium>
+  <place>
+    <formattedPlace>bib place</formattedPlace>
+  </place>
   <place>
     <city>Geneva</city>
     <region>Europe</region>
     <country iso="CH" recommended="true">Switzeland</country>
-    <formattedPlace>Geneva, Switzeland</formattedPlace>
   </place>
-  <price currency="USD">123</price>
   <extent>
-    <localityStack>
-      <locality type="section">
-        <referenceFrom>Reference from</referenceFrom>
-        <referenceTo>Reference to</referenceTo>
-      </locality>
-      <locality type="chapter">
-        <referenceFrom>4</referenceFrom>
-      </locality>
-    </localityStack>
+    <locality type="section">
+      <referenceFrom>Reference from</referenceFrom>
+      <referenceTo>Reference to</referenceTo>
+    </locality>
+    <locality type="chapter">
+      <referenceFrom>4</referenceFrom>
+    </locality>
   </extent>
   <extent>
     <localityStack>
@@ -282,20 +286,42 @@
   <classification type="keyword">Keywords</classification>
   <classification type="mendeley">Mendeley Tags</classification>
   <keyword>
-    <vocab language="en" script="Latn">Vocab 1</vocab>
-    <taxon language="en" script="Latn">Taxon 1</taxon>
-    <taxon language="fr" script="Latn">Taxon 2</taxon>
-    <vocabid type="vocab-id-type" uri="http://vovab">
-      <code>444</code>
-      <term>VocabId Term</term>
-    </vocabid>
+    <taxon>Keyword</taxon>
+  </keyword>
+  <keyword>
+    <taxon>Key Word</taxon>
   </keyword>
   <validity>
     <validityBegins>2010-10-10</validityBegins>
     <validityEnds>2011-02-03</validityEnds>
     <revision>2011-03-04</revision>
   </validity>
-  <depiction scope="cover">
-    <image src="cover1.png" mimetype="image/png" filename="cover1.png" width="200" height="100%" alt="Cover 1" title="Cover #1" longdesc="Cover number 1"/>
-  </depiction>
-</bibitem>
+  <ext>
+    <doctype abbreviation="DCT">Doctype</doctype>
+    <subdoctype>Subdoctype</subdoctype>
+    <editorialgroup>
+      <technical-committee number="1" type="Type" identifier="Identifier" prefix="Prefix">Editorial group</technical-committee>
+    </editorialgroup>
+    <ics>
+      <code>01</code>
+      <text>First</text>
+    </ics>
+    <structuredidentifier type="type 1">
+      <agency>agency 1</agency>
+      <agency>agency 2</agency>
+      <class>class 1</class>
+      <docnumber>123</docnumber>
+      <partnumber>4</partnumber>
+      <edition>1</edition>
+      <version>2</version>
+      <supplementtype>type 2</supplementtype>
+      <supplementnumber>5</supplementnumber>
+      <language>en</language>
+      <year>2020</year>
+    </structuredidentifier>
+    <structuredidentifier>
+      <agency>agency 3</agency>
+      <docnumber>456</docnumber>
+    </structuredidentifier>
+  </ext>
+</bibdata>

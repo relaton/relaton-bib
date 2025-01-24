@@ -77,32 +77,32 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       expect(item.structuredidentifier[0].year).to be_nil
     end
 
-    xit "to all parts" do
+    it "to all parts" do
       item = subject.to_all_parts
       expect(item).to_not be subject
       expect(item.all_parts).to be true
       expect(item.relation.last.type).to eq "instanceOf"
       expect(item.title.detect { |t| t.type == "title-part" }).to be_nil
-      expect(item.title.detect { |t| t.type == "main" }.title.content).to eq(
+      expect(item.title.detect { |t| t.type.nil? }.content).to eq(
         "Geographic information",
       )
       expect(item.abstract).to be_empty
       id_with_part = item.docidentifier.detect do |d|
-        d.type != "Internet-Draft" && d.id =~ /-\d/
+        d.type != "Internet-Draft" && d.content =~ /-\d/
       end
       expect(id_with_part).to be_nil
-      expect(item.docidentifier.reject { |d| d.id =~ %r{(all parts)} }.size)
+      expect(item.docidentifier.count { |d| d.content !~ %r{(all parts)} })
         .to eq 1
-      expect(item.docidentifier.detect { |d| d.id =~ /:[12]\d\d\d/ }).to be_nil
-      expect(item.structuredidentifier.detect { |d| !d.partnumber.nil? })
+      expect(item.docidentifier.detect { |d| d.content =~ /:[12]\d\d\d/ }).to be_nil
+      expect(item.ext.structuredidentifier.detect { |d| !d.partnumber.nil? })
         .to be_nil
-      expect(item.structuredidentifier.detect { |d| d.docnumber =~ /-\d/ })
+      expect(item.ext.structuredidentifier.detect { |d| d.docnumber =~ /-\d/ })
         .to be_nil
       expect(
-        item.structuredidentifier.detect { |d| d.docnumber !~ %r{(all parts)} },
+        item.ext.structuredidentifier.detect { |d| d.docnumber !~ %r{(all parts)} },
       ).to be_nil
       expect(
-        item.structuredidentifier.detect { |d| d.docnumber =~ /:[12]\d\d\d/ },
+        item.ext.structuredidentifier.detect { |d| d.docnumber =~ /:[12]\d\d\d/ },
       ).to be_nil
     end
 
@@ -120,8 +120,8 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         expect(errors).to eq []
       end
 
-      xit "returns bibdata xml string" do
-        file = "spec/examples/bibdata_item.xml"
+      it "returns bibdata xml string" do
+        file = "spec/examples/bibdata_from_old_yaml.xml"
         subject_xml = subject.to_xml(bibdata: true)
           .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
         File.write file, subject_xml, encoding: "utf-8" unless File.exist? file

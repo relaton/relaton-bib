@@ -32,8 +32,8 @@ module Relaton
       def render_bibxml(builder, include_keywords) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         target = @bib.source.detect { |l| l.type.casecmp("src").zero? } ||
           @bib.source.detect { |l| l.type.casecmp("doi").zero? }
-        bxml = if @bib.docnumber&.match(/^BCP/) || (@bib.docidentifier.detect(&:primary)&.content ||
-                    @bib.docidentifier[0].content).include?("BCP")
+        bxml = if @bib.docnumber&.match(/^BCP/) ||
+            (@bib.docidentifier.detect(&:primary) || @bib.docidentifier[0])&.content&.include?("BCP")
                  render_bibxml_refgroup(builder, include_keywords)
                else
                  render_bibxml_ref(builder, include_keywords)

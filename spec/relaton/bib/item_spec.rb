@@ -182,7 +182,7 @@ describe Relaton::Bib::Item do
     end
 
     it "has schema-version" do
-      expect(subject.schema).to match(/^v\d+\.\d+\.\d+$/)
+      expect(subject.schema_version).to match(/^v\d+\.\d+\.\d+$/)
     end
 
     it "get set fetched" do

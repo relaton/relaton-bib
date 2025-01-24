@@ -39,12 +39,10 @@ require_relative "place"
 require_relative "price"
 require_relative "extent"
 require_relative "size"
-require_relative "structured_identifier"
-require_relative "editorial_group"
-require_relative "ics"
 require_relative "edition"
 require_relative "keyword"
 require_relative "depiction"
+require_relative "ext"
 
 module Relaton
   module Bib
@@ -58,9 +56,9 @@ module Relaton
                  conversation misc internal].freeze
 
       ATTRS = {
+        all_parts: false,
         id: nil,
         type: nil,
-        schema_version: nil,
         fetched: nil,
         formattedref: nil,
         source: -> { [] },
@@ -89,12 +87,17 @@ module Relaton
         keyword: -> { [] },
         validity: nil,
         depiction: nil,
-        editorialgroup: nil,
+        ext: nil,
       }.freeze
 
       ATTRS.each_key { |k| attr_accessor k }
 
-      attr_reader :title, :relation
+      ATTR_READERS = {
+        title: -> { [] },
+        relation: -> { [] },
+      }.freeze
+
+      ATTR_READERS.each_key { |k| attr_reader k }
 
       # @param id [String, nil]
       # @param type [String, nil]
@@ -131,19 +134,16 @@ module Relaton
       # @param depiction [Relaton::Bib::Depiction, nil]
       # @param doctype [Relaton::Bib::DocumentType]
       # @param subdoctype [String]
-      # @param editorialgroup [Relaton::Bib::EditorialGroup, nil]
-      # @param ics [Array<Relaton::Bib::ICS>]
-      # @param structuredidentifier [Relaton::Bib::StructuredIdentifierCollection]
       # @param size [Relaton::Bib::Size, nil]
+      # @param ext [Relaton::Bib::Ext, nil]
       def initialize(**args)
-        @title = args[:title] || [] # TitleCollection.new
-        @relation = args[:relation] || [] # RelationCollection.new
+        # @title = args[:title] || [] # TitleCollection.new
+        # @relation = args[:relation] || [] # RelationCollection.new
 
-        ATTRS.each do |k, v|
-          val = args[k] || v&.call
+        ATTRS.merge(ATTR_READERS).each do |k, v|
+          val = args[k] || (v.is_a?(Proc) ? v.call : v)
           instance_variable_set "@#{k}", val
         end
-        @schema_version = schema
       end
 
       def title=(title)
@@ -163,9 +163,11 @@ module Relaton
       #
       # @return [String] schema version
       #
-      def schema
-        @schema ||= schema_versions["relaton-models"]
+      def schema_version
+        @schema_version ||= schema_versions["relaton-models"]
       end
+
+      def schema_version=(version) end
 
       #
       # Read schema versions from file
@@ -362,11 +364,11 @@ module Relaton
         me.language.each do |l|
           me.title.delete_title_part!
           ttl = me.title.select do |t|
-            t.type != "main" && t.title.language&.include?(l)
+            t.type != "main" && t.language&.include?(l)
           end
           next if ttl.empty?
 
-          tm_en = ttl.map { |t| t.title.content }.join " – "
+          tm_en = ttl.map(&:content).join " – "
           me.title.detect do |t|
             t.type == "main" && t.title.language&.include?(l)
           end&.title&.content = tm_en
@@ -374,10 +376,10 @@ module Relaton
         me.abstract = []
         me.docidentifier.each(&:remove_part)
         me.docidentifier.each(&:all_parts)
-        me.structuredidentifier.remove_part
-        me.structuredidentifier.all_parts
+        me.ext.structuredidentifier.remove_part
+        me.ext.structuredidentifier.all_parts
         me.docidentifier.each &:remove_date
-        me.structuredidentifier&.remove_date
+        me.ext.structuredidentifier&.remove_date
         me.all_parts = true
         me
       end
@@ -393,7 +395,7 @@ module Relaton
         me.abstract = []
         me.date = []
         me.docidentifier.each &:remove_date
-        me.structuredidentifier&.remove_date
+        me.ext.structuredidentifier&.remove_date
         me.id&.sub!(/-[12]\d\d\d/, "")
         me
       end
@@ -402,10 +404,10 @@ module Relaton
       # @return [String, nil]
       def revdate # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
         @revdate ||= if (v = version.detect &:revision_date)
-                      v.revision_date
-                    else
-                      date.detect { |d| d.type == "published" }&.on&.to_s
-                    end
+                       v.revision_date
+                     else
+                       date.detect { |d| d.type == "published" }&.on&.to_s
+                     end
       end
 
       # @param prefix [String]
@@ -452,8 +454,8 @@ module Relaton
         out += "#{pref}formattedref:: #{formattedref}\n" if formattedref
         keyword.each { |kw| out += kw.to_asciibib "#{pref}keyword", keyword.size }
         out += editorialgroup.to_asciibib prefix if editorialgroup
-        ics.each { |i| out += i.to_asciibib prefix, ics.size }
-        out += structuredidentifier.to_asciibib prefix if structuredidentifier
+        ext.ics.each { |i| out += i.to_asciibib prefix, ext.ics.size }
+        out += ext.structuredidentifier.to_asciibib prefix if ext.structuredidentifier
         out
       end
 

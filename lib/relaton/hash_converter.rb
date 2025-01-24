@@ -38,11 +38,13 @@ module Relaton
     end
 
     def ext_has_to_bib(ret)
+      ret[:ext] ||= {}
       doctype_hash_to_bib ret
-      ret[:subdoctype] = ret[:ext][:subdoctype] if ret.dig(:ext, :subdoctype)
+      ret[:ext][:subdoctype] = ret.delete(:subdoctype) if ret[:subdoctype]
       editorialgroup_hash_to_bib ret
       ics_hash_to_bib ret
       structuredidentifier_hash_to_bib ret
+      ret[:ext] = Bib::Ext.new(**ret[:ext])
     end
 
     def keyword_hash_to_bib(ret)
@@ -584,7 +586,7 @@ module Relaton
       technical_committee = Relaton.array(eg).map do |wg|
         Bib::TechnicalCommittee.new Bib::WorkGroup.new(**wg)
       end
-      ret[:editorialgroup] = Bib::EditorialGroup.new technical_committee
+      ret[:ext][:editorialgroup] = Bib::EditorialGroup.new technical_committee
     end
 
     # @param ret [Hash]
@@ -592,7 +594,7 @@ module Relaton
       ics = ret.dig(:ext, :ics) || ret[:ics] # @todo remove ret[:ics] in the future
       return unless ics
 
-      ret[:ics] = Relaton.array(ics).map { |item| Bib::ICS.new(**item) }
+      ret[:ext][:ics] = Relaton.array(ics).map { |item| Bib::ICS.new(**item) }
     end
 
     # @param ret [Hash]
@@ -604,7 +606,7 @@ module Relaton
         si[:agency] = Relaton.array si[:agency]
         Bib::StructuredIdentifier.new(**si)
       end
-      ret[:structuredidentifier] = Bib::StructuredIdentifierCollection.new sids
+      ret[:ext][:structuredidentifier] = Bib::StructuredIdentifierCollection.new(sids)
     end
 
     # @param ogj [Hash, Array, String]
@@ -648,7 +650,7 @@ module Relaton
       doctype = ret.dig(:ext, :doctype) || ret[:doctype] # @todo remove ret[:doctype] in the future
       return unless doctype
 
-      ret[:doctype] = doctype.is_a?(String) ? create_doctype(type: doctype) : create_doctype(**doctype)
+      ret[:ext][:doctype] = doctype.is_a?(String) ? create_doctype(type: doctype) : create_doctype(**doctype)
     end
 
     def create_doctype(**args)

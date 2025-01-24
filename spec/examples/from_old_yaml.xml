@@ -1,13 +1,13 @@
 <bibitem id="ISOTC211" type="standard" schema-version="v1.4.1">
-  <fetched>2024-12-11</fetched>
+  <fetched>2025-01-23</fetched>
   <title>Geographic information</title>
   <title language="fr" script="Latn">Information géographique</title>
-  <uri type="src" language="en" script="Latn">https://www.iso.org/standard/53798.html</uri>
+  <uri language="en" script="Latn" type="src">https://www.iso.org/standard/53798.html</uri>
   <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
   <uri type="rss">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
   <uri type="doi">http://standrd.org/doi-123</uri>
   <uri type="file">file://path/file</uri>
-  <docidentifier type="ISO" primary="true" language="en" script="Latn">ISO TC 211</docidentifier>
+  <docidentifier language="en" script="Latn" type="ISO" primary="true">ISO TC 211</docidentifier>
   <docidentifier type="isbn">ISBN</docidentifier>
   <docidentifier type="lccn">LCCN</docidentifier>
   <docidentifier type="issn" scope="series">ISSN</docidentifier>
