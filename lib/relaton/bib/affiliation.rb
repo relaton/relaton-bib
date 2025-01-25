@@ -7,16 +7,23 @@ module Relaton
       # @return [Relaton::Bib::LocalizedString, nil]
       attr_accessor :name
 
+      attr_writer :description
+
       # @return [Relaton::Bib::Organization]
       attr_accessor :organization
 
       # @param organization [Relaton::Bib::Organization, nil]
       # @param name [Relaton::Bib::LocalizedString, nil]
-      # @param description [Array<Relaton::Bib::FormattedString>]
+      # @param description [Array<Relaton::Bib::LocalizedString>]
       def initialize(organization: nil, name: nil, description: [])
         @name = name
         @organization = organization
         @description  = description
+      end
+
+      def ==(other)
+        name == other.name && organization == other.organization &&
+          description == other.description
       end
 
       # @param opts [Hash]

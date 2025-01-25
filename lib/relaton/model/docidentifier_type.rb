@@ -7,7 +7,7 @@ module Relaton
         subclass.instance_eval do
           attribute :type, :string
           attribute :scope, :string
-          attribute :primary, :string
+          attribute :primary, :boolean
 
           mappings[:xml].instance_eval do
             map_attribute "type", to: :type

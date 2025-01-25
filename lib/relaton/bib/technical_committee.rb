@@ -12,14 +12,14 @@ module Relaton
       end
 
       # @param builder [Nokogiri::XML::Builder]
-      def to_xml(builder)
-        builder.send(:"technical-committee") { |b| workgroup.to_xml b }
-      end
+      # def to_xml(builder)
+      #   builder.send(:"technical-committee") { |b| workgroup.to_xml b }
+      # end
 
       # @return [Hash]
-      def to_hash
-        workgroup.to_hash
-      end
+      # def to_hash
+      #   workgroup.to_hash
+      # end
 
       # @param prefix [String]
       # @param count [Integer] number of technical committees

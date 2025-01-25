@@ -35,7 +35,7 @@
         <name>division</name>
       </subdivision>
       <abbreviation>ISO</abbreviation>
-      <uri type="uri">www.iso.org</uri>
+      <uri>www.iso.org</uri>
       <logo>
         <image id="logo1" src="logo1.png" mimetype="image/png" filename="logo1.png" width="200" height="100%" alt="Logo 1" title="Logo #1" longdesc="Logo number 1"/>
       </logo>
@@ -65,7 +65,7 @@
       </address>
       <phone type="work">223322</phone>
       <email>person@email.org</email>
-      <uri type="uri">www.person.com</uri>
+      <uri>www.person.com</uri>
     </person>
   </contributor>
   <contributor>
@@ -166,7 +166,7 @@
       <organization>
         <name>International Organization for Standardization</name>
         <abbreviation>ISO</abbreviation>
-        <uri type="uri">www.iso.org</uri>
+        <uri>www.iso.org</uri>
       </organization>
     </owner>
     <scope>Scope</scope>

@@ -4,7 +4,7 @@ describe Relaton::Bib::Address do
   end
 
   context "==" do
-    xit "same content" do
+    it "same content" do
       contrib = described_class.new(formatted_address: "formatted address")
       other = described_class.new(formatted_address: "formatted address")
       expect(contrib).to eq other
@@ -18,26 +18,29 @@ describe Relaton::Bib::Address do
   end
 
   context "render formatted address" do
-    let(:contrib) { described_class.new(formatted_address: "formatted address") }
+    let(:address) { described_class.new(formatted_address: "formatted address") }
 
-    xit "as XML" do
-      xml = Nokogiri::XML::Builder.new { |b| contrib.to_xml(b) }.doc.root
-      formatted_address = xml.xpath("/address/formattedAddress").text
-      expect(formatted_address).to eq "formatted address"
+    it "as XML" do
+      xml = Relaton::Model::Address.to_xml address
+      expect(xml).to be_equivalent_to <<~XML
+        <address>
+          <formattedAddress>formatted address</formattedAddress>
+        </address>
+      XML
     end
 
     xit "as Hash" do
-      hash = contrib.to_hash
+      hash = address.to_hash
       expect(hash["address"]["formatted_address"]).to eq "formatted address"
     end
 
     it "as AsciiBib" do
-      expect(contrib.to_asciibib).to eq "address.formatted_address:: formatted address\n"
+      expect(address.to_asciibib).to eq "address.formatted_address:: formatted address\n"
     end
   end
 
   context "render address" do
-    let(:contrib) do
+    let(:address) do
       described_class.new(
         street: ["street1", "street2"],
         city: "city",
@@ -47,14 +50,18 @@ describe Relaton::Bib::Address do
       )
     end
 
-    xit "as XML" do
-      xml = Nokogiri::XML::Builder.new { |b| contrib.to_xml(b) }.doc.root
-      street = xml.xpath("/address/street").map(&:text)
-      expect(street).to eq %w[street1 street2]
-      expect(xml.xpath("/address/city").text).to eq "city"
-      expect(xml.xpath("/address/state").text).to eq "state"
-      expect(xml.xpath("/address/country").text).to eq "country"
-      expect(xml.xpath("/address/postcode").text).to eq "postcode"
+    it "as XML" do
+      xml = Relaton::Model::Address.to_xml address
+      expect(xml).to be_equivalent_to <<~XML
+        <address>
+          <street>street1</street>
+          <street>street2</street>
+          <city>city</city>
+          <state>state</state>
+          <country>country</country>
+          <postcode>postcode</postcode>
+        </address>
+      XML
     end
 
     xit "as Hash" do
@@ -67,7 +74,7 @@ describe Relaton::Bib::Address do
     end
 
     it "as AsciiBib" do
-      expect(contrib.to_asciibib).to eq <<~ASCIIBIB
+      expect(address.to_asciibib).to eq <<~ASCIIBIB
         address.street:: street1
         address.street:: street2
         address.city:: city
@@ -80,16 +87,17 @@ describe Relaton::Bib::Address do
 end
 
 describe Relaton::Bib::Affiliation do
-  let(:org) { Relaton::Bib::Organization.new(name: "Org") }
+  let(:orgname) { Relaton::Bib::TypedLocalizedString.new(content: "Org") }
+  let(:org) { Relaton::Bib::Organization.new(name: [orgname]) }
   let(:name) { Relaton::Bib::LocalizedString.new(content: "Name", language: "en") }
-  let(:desc) { Relaton::Bib::FormattedString.new(content: "Description", language: "en") }
+  let(:desc) { Relaton::Bib::LocalizedString.new(content: "Description", language: "en") }
   subject do
     description = desc ? [desc] : []
     described_class.new(organization: org, name: name, description: description)
   end
 
   context "==" do
-    xit "same content" do
+    it "same content" do
       other = described_class.new(organization: org, name: name, description: [desc])
       expect(subject).to eq other
     end
@@ -103,12 +111,12 @@ describe Relaton::Bib::Affiliation do
 
   context "render affiliation" do
     context "with all fields" do
-      xit "as XML" do
-        xml = Nokogiri::XML::Builder.new { |b| subject.to_xml(builder: b) }.doc.root
-        expect(xml.to_s).to be_equivalent_to <<~XML
+      it "as XML" do
+        xml = Relaton::Model::Affiliation.to_xml subject
+        expect(xml).to be_equivalent_to <<~XML
           <affiliation>
             <name language="en">Name</name>
-            <description format="text/plain" language="en">Description</description>
+            <description language="en">Description</description>
             <organization>
               <name>Org</name>
             </organization>
@@ -125,13 +133,12 @@ describe Relaton::Bib::Affiliation do
         expect(hash["description"][0]["language"]).to eq ["en"]
       end
 
-      xit "as AsciiBib" do
+      it "as AsciiBib" do
         expect(subject.to_asciibib).to eq <<~ASCIIBIB
           affiliation.name.content:: Name
           affiliation.name.language:: en
           affiliation.description.content:: Description
           affiliation.description.language:: en
-          affiliation.description.format:: text/plain
           affiliation.organization.name:: Org
         ASCIIBIB
       end
@@ -140,12 +147,12 @@ describe Relaton::Bib::Affiliation do
     context "without organization" do
       let(:org) { nil }
 
-      xit "as XML" do
-        xml = Nokogiri::XML::Builder.new { |b| subject.to_xml(builder: b) }.doc.root
-        expect(xml.to_s).to be_equivalent_to <<~XML
+      it "as XML" do
+        xml = Relaton::Model::Affiliation.to_xml subject
+        expect(xml).to be_equivalent_to <<~XML
           <affiliation>
             <name language="en">Name</name>
-            <description format="text/plain" language="en">Description</description>
+            <description language="en">Description</description>
           </affiliation>
         XML
       end
@@ -163,11 +170,11 @@ describe Relaton::Bib::Affiliation do
     context "without name" do
       let(:name) { nil }
 
-      xit "as XML" do
-        xml = Nokogiri::XML::Builder.new { |b| subject.to_xml(builder: b) }.doc.root
-        expect(xml.to_s).to be_equivalent_to <<~XML
+      it "as XML" do
+        xml = Relaton::Model::Affiliation.to_xml subject
+        expect(xml).to be_equivalent_to <<~XML
           <affiliation>
-            <description format="text/plain" language="en">Description</description>
+            <description language="en">Description</description>
             <organization>
               <name>Org</name>
             </organization>
@@ -180,7 +187,7 @@ describe Relaton::Bib::Affiliation do
         expect(hash).not_to have_key "name"
       end
 
-      xit "as AsciiBib" do
+      it "as AsciiBib" do
         expect(subject.to_asciibib).not_to include "affiliation.name"
       end
     end
@@ -188,9 +195,9 @@ describe Relaton::Bib::Affiliation do
     context "without description" do
       let(:desc) { nil }
 
-      xit "as XML" do
-        xml = Nokogiri::XML::Builder.new { |b| subject.to_xml(builder: b) }.doc.root
-        expect(xml.to_s).to be_equivalent_to <<~XML
+      it "as XML" do
+        xml = Relaton::Model::Affiliation.to_xml subject
+        expect(xml).to be_equivalent_to <<~XML
           <affiliation>
             <name language="en">Name</name>
             <organization>
@@ -204,14 +211,14 @@ describe Relaton::Bib::Affiliation do
         expect(subject.to_hash).not_to have_key "description"
       end
 
-      xit "as AsciiBib" do
+      it "as AsciiBib" do
         expect(subject.to_asciibib).not_to include "affiliation.description"
       end
     end
 
     xit "without any fields" do
-      xml = Nokogiri::XML::Builder.new { |b| described_class.new.to_xml(builder: b) }.doc.root
-      expect(xml.to_s).to eq ""
+      xml = Relaton::Model::Affiliation.to_xml described_class.new
+      expect(xml).to eq ""
     end
   end
 

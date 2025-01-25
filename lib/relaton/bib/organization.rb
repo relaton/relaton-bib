@@ -60,7 +60,7 @@ module Relaton
       #   end
       # end
 
-      # @return [Array<Relaton::Bib::Organization::Name>]
+      # @return [Array<Relaton::Bib::TypedLocalizedString>]
       attr_accessor :name
 
       # @return [Relaton::Bib::LocalizedString, nil]
@@ -123,7 +123,7 @@ module Relaton
           out += sd.to_asciibib "#{pref}.subdivision"
         end
         identifier.each { |n| out += n.to_asciibib pref, identifier.size }
-        out += super pref
+        # out += super pref
         out += logo.to_asciibib "#{pref}.logo" if logo
         out
       end

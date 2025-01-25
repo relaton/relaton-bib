@@ -5,15 +5,15 @@ describe Relaton::Bib::Docidentifier do
     let(:xml) do
       <<~XML
         <docidentifier language="en" script="Latn" locale="EN-us" type="BIPM" scope="part" primary="true">
-          CIPM 43&lt;sup&gt;e&lt;/sup&gt; réunion (1950)
+          CIPM 43<sup>e</sup> réunion (1950)
         </docidentifier>
       XML
     end
     subject { Relaton::Model::Docidentifier.from_xml xml }
-    xit { expect(subject.content).to eq "CIPM 43<sup>e</sup> réunion (1950)" }
+    it { expect(subject.content).to eq "CIPM 43<sup>e</sup> réunion (1950)" }
     it { expect(subject.type).to eq "BIPM" }
     it { expect(subject.scope).to eq "part" }
-    xit { expect(subject.primary).to be true }
+    it { expect(subject.primary).to be true }
     it { expect(subject.language).to eq "en" }
     it { expect(subject.script).to eq "Latn" }
     it { expect(subject.locale).to eq "EN-us" }

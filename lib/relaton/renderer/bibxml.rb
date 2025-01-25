@@ -64,7 +64,7 @@ module Relaton
       def render_bibxml_ref(builder, include_keywords) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         builder.reference(**ref_attrs) do |xml|
           if @bib.title.any? || @bib.contributor.any? || @bib.date.any? || @bib.abstract.any? ||
-              @bib.editorialgroup&.technical_committee&.any? ||
+              @bib.ext&.editorialgroup&.technical_committee&.any? ||
               (include_keywords && @bib.keyword.any?)
             xml.front do
               xml.title @bib.title[0].content if @bib.title.any?
@@ -269,8 +269,8 @@ module Relaton
       # @param [Nokogiri::XML::Builder] builder xml builder
       #
       def render_workgroup(builder)
-        @bib.editorialgroup&.technical_committee&.each do |tc|
-          builder.workgroup tc.workgroup.name
+        @bib.ext&.editorialgroup&.technical_committee&.each do |tc|
+          builder.workgroup tc.content
         end
       end
 

@@ -21,6 +21,10 @@ module Relaton
         @primary  = args[:primary]
       end
 
+      def content=(value)
+        @content = value.strip
+      end
+
       # in docid manipulations, assume ISO as the default: id-part:year
       def remove_part
         case @type

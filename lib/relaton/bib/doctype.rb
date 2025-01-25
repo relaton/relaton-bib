@@ -1,16 +1,16 @@
 module Relaton
   module Bib
-    class DocumentType
-      attr_reader :type, :abbreviation
+    class Doctype
+      attr_accessor :content, :abbreviation
 
       #
       # Initialize a DocumentType.
       #
-      # @param [String] type document type
+      # @param [String] content document type
       # @param [String, nil] abbreviation type abbreviation
       #
-      def initialize(type:, abbreviation: nil)
-        @type = type
+      def initialize(content: nil, abbreviation: nil)
+        @content = content
         @abbreviation = abbreviation
       end
 
@@ -19,21 +19,21 @@ module Relaton
       #
       # @param [Nokogiri::XML::Builder] builder XML builder
       #
-      def to_xml(builder)
-        xml = builder.doctype @type
-        xml[:abbreviation] = @abbreviation if @abbreviation
-      end
+      # def to_xml(builder)
+      #   xml = builder.doctype @content
+      #   xml[:abbreviation] = @abbreviation if @abbreviation
+      # end
 
       #
       # Hash representation of the document type.
       #
       # @return [Hash]
       #
-      def to_hash
-        hash = { "type" => @type }
-        hash["abbreviation"] = @abbreviation if @abbreviation
-        hash
-      end
+      # def to_hash
+      #   hash = { "type" => @content }
+      #   hash["abbreviation"] = @abbreviation if @abbreviation
+      #   hash
+      # end
 
       #
       # Asciibib representation of the document type.
@@ -45,7 +45,7 @@ module Relaton
       def to_asciibib(prefix = "")
         pref = prefix.empty? ? prefix : "#{prefix}."
         pref += "doctype."
-        out = "#{pref}type:: #{@type}\n"
+        out = "#{pref}content:: #{@content}\n"
         out += "#{pref}abbreviation:: #{@abbreviation}\n" if @abbreviation
         out
       end

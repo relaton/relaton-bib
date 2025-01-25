@@ -31,6 +31,12 @@ module Relaton
         @formatted_address  = args[:formatted_address] unless args[:city] && args[:country]
       end
 
+      def ==(other) # rubocop:disable Metrics/AbcSize
+        street == other.street && city == other.city && state == other.state &&
+          country == other.country && postcode == other.postcode &&
+          formatted_address == other.formatted_address
+      end
+
       # @param doc [Nokogiri::XML::Document]
       # def to_xml(doc) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       #   doc.address do

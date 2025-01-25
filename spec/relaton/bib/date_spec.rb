@@ -18,19 +18,16 @@ describe Relaton::Bib::Date do
       expect(subject.on(:date)).to be_instance_of Date
     end
 
-    xit "returns xml string" do
-      xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
-        subject.to_xml builder
-      end.doc.root.to_xml
+    it "returns xml string" do
+      xml = Relaton::Model::Date.to_xml subject
       expect(xml).to be_equivalent_to <<~XML
         <date type="published"><on>2014-11</on></date>
       XML
     end
 
-    xit "returns xml string with full date" do
-      xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
-        subject.to_xml builder, date_format: :full
-      end.doc.root.to_xml
+    it "returns xml string with full date" do
+      subject.format = :full
+      xml = Relaton::Model::Date.to_xml subject
       expect(xml).to be_equivalent_to <<~XML
         <date type="published"><on>2014-11-01</on></date>
       XML
@@ -72,41 +69,36 @@ describe Relaton::Bib::Date do
       described_class.new type: "published", from: "2014-11", to: "2015-12"
     end
 
-    xit "returns xml string" do
-      xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
-        subject.to_xml builder
-      end.doc.root.to_xml
+    it "returns xml string" do
+      xml = Relaton::Model::Date.to_xml subject
       expect(xml).to be_equivalent_to <<~XML
         <date type="published"><from>2014-11</from><to>2015-12</to></date>
       XML
     end
 
-    xit "returns xml string with short date" do
-      xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
-        subject.to_xml builder, date_format: :short
-      end.doc.root.to_xml
+    it "returns xml string with short date" do
+      subject.format = :short
+      xml = Relaton::Model::Date.to_xml subject
       expect(xml).to be_equivalent_to <<~XML
         <date type="published"><from>2014-11</from><to>2015-12</to></date>
       XML
     end
   end
 
-  xit "handle full date" do
+  it "handle full date" do
     item = described_class.new type: "published", on: "2014-11-22"
-    xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
-      item.to_xml builder, date_format: :full
-    end.doc.root.to_xml
+    item.format = :full
+    xml = Relaton::Model::Date.to_xml item
 
     expect(xml).to be_equivalent_to <<~XML
       <date type="published"><on>2014-11-22</on></date>
     XML
   end
 
-  xit "handle year only" do
+  it "handle year only" do
     item = described_class.new(type: "published", on: "2014")
-    xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
-      item.to_xml builder, date_format: :full
-    end.doc.root.to_xml
+    item.format = :full
+    xml = Relaton::Model::Date.to_xml item
 
     expect(xml).to be_equivalent_to <<~XML
       <date type="published"><on>2014-01-01</on></date>

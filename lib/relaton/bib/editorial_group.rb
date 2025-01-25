@@ -5,25 +5,25 @@ module Relaton
     class EditorialGroup
       # include Relaton
 
-      # @return [Array<Relaton::Bib::TechnicalCommittee>]
+      # @return [Array<Relaton::Bib::WorkGroup>]
       attr_accessor :technical_committee
 
-      # @param technical_committee [Array<Relaton::Bib::TechnicalCommittee>]
-      def initialize(technical_committee)
+      # @param technical_committee [Array<Relaton::Bib::WorkGroup>]
+      def initialize(technical_committee = [])
         @technical_committee = technical_committee
       end
 
       # @param builder [Nokogigi::XML::Builder]
-      def to_xml(builder)
-        builder.editorialgroup do |b|
-          technical_committee.each { |tc| tc.to_xml b }
-        end
-      end
+      # def to_xml(builder)
+      #   builder.editorialgroup do |b|
+      #     technical_committee.each { |tc| tc.to_xml b }
+      #   end
+      # end
 
       # @return [Hash]
-      def to_hash
-        single_element_array technical_committee
-      end
+      # def to_hash
+      #   single_element_array technical_committee
+      # end
 
       # @param prefix [String]
       # @return [String]

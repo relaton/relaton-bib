@@ -8,7 +8,6 @@ require_relative "address"
 require_relative "phone"
 require_relative "uri"
 require_relative "affiliation"
-require_relative "document_type"
 require_relative "image"
 require_relative "forename"
 require_relative "full_name"
@@ -132,8 +131,6 @@ module Relaton
       # @param keyword [Array<String>]
       # @param validity [Relaton::Bib:Validity, nil]
       # @param depiction [Relaton::Bib::Depiction, nil]
-      # @param doctype [Relaton::Bib::DocumentType]
-      # @param subdoctype [String]
       # @param size [Relaton::Bib::Size, nil]
       # @param ext [Relaton::Bib::Ext, nil]
       def initialize(**args)
@@ -154,9 +151,18 @@ module Relaton
         @relation = relation.is_a?(RelationCollection) ? relation : RelationCollection.new(relation)
       end
 
-      # def title_to_xml(mode, doc, builder)
-      #   doc
-      # end
+      #
+      # <Description>
+      #
+      # @param [Symbol, nil] format format of date output (:short, :full)
+      #
+      # @return [Realton::Bib::Item]
+      #
+      def date_format(format = nil)
+        item = deep_clone
+        item.date.each { |d| d.format = format }
+        item
+      end
 
       #
       # Fetch schema version

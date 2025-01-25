@@ -2,7 +2,6 @@ module Relaton
   module Bib
     # Document identifier.
     class Docidentifier < DocidentifierType
-
       #
       # Add docidentifier xml element
       #

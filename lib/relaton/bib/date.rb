@@ -11,7 +11,7 @@ module Relaton
                  vote-started vote-ended announced stable-until].freeze
 
       # @return [String]
-      attr_accessor :type, :text
+      attr_accessor :type, :text, :format
 
       attr_writer :on, :from, :to
 
@@ -41,7 +41,7 @@ module Relaton
       # @return [String, Date, nil]
       def from(part = nil) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         d = instance_variable_get "@#{__callee__}".to_sym
-        return d unless part && d
+        return date_format(d) unless part && d
 
         # date = parse_date(d)
         # return date if part == :date
@@ -102,14 +102,14 @@ module Relaton
       # @param date [String]
       # @param format [Symbol, nil] :full (yyyy-mm-dd), :short (yyyy-mm) or nil
       # @return [String]
-      def date_format(date, format = nil)
+      def date_format(date)
         tmplt = case format
                 when :short then "%Y-%m"
                 when :full then "%Y-%m-%d"
                 else return date
                 end
         d = parse_date(date)
-        d.is_a?(Date) ? d.strftime(tmplt) : d
+        d.respond_to?(:strftime) ? d.strftime(tmplt) : d
       end
 
       # @param date [String]

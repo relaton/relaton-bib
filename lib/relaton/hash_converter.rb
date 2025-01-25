@@ -41,10 +41,20 @@ module Relaton
       ret[:ext] ||= {}
       doctype_hash_to_bib ret
       ret[:ext][:subdoctype] = ret.delete(:subdoctype) if ret[:subdoctype]
+      ret[:ext][:flavor] ||= flavor(ret)
       editorialgroup_hash_to_bib ret
       ics_hash_to_bib ret
       structuredidentifier_hash_to_bib ret
       ret[:ext] = Bib::Ext.new(**ret[:ext])
+    end
+
+    def flavor(ret)
+      return unless ret[:docid]
+
+      docid = ret[:docidentifier].find(&:primary)
+      return unless docid
+
+      docid.type.downcase
     end
 
     def keyword_hash_to_bib(ret)
@@ -384,7 +394,7 @@ module Relaton
       Relaton.array(contact).reduce([]) do |a, c|
         next a unless c[:uri] || c[:url]
 
-        a << Bib::Uri.new(type: "uri", content: c[:uri] || c[:url])
+        a << Bib::Uri.new(content: c[:uri] || c[:url])
       end
     end
 
@@ -584,7 +594,9 @@ module Relaton
       return unless eg
 
       technical_committee = Relaton.array(eg).map do |wg|
-        Bib::TechnicalCommittee.new Bib::WorkGroup.new(**wg)
+        wg[:content] ||= wg.delete(:name)
+        # Bib::TechnicalCommittee.new
+        Bib::WorkGroup.new(**wg)
       end
       ret[:ext][:editorialgroup] = Bib::EditorialGroup.new technical_committee
     end
@@ -650,11 +662,16 @@ module Relaton
       doctype = ret.dig(:ext, :doctype) || ret[:doctype] # @todo remove ret[:doctype] in the future
       return unless doctype
 
-      ret[:ext][:doctype] = doctype.is_a?(String) ? create_doctype(type: doctype) : create_doctype(**doctype)
+      ret[:ext][:doctype] = create_doctype(doctype)
     end
 
-    def create_doctype(**args)
-      Bib::DocumentType.new(**args)
+    def create_doctype(args)
+      if args.is_a?(String)
+        Bib::Doctype.new type: args
+      else
+        args[:content] = args.delete(:type)
+        Bib::Doctype.new(**args)
+      end
     end
   end
 end
