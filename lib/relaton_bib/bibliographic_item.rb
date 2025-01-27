@@ -41,7 +41,7 @@ module RelatonBib
                audiovisual film video broadcast software graphic_work music
                patent inbook incollection inproceedings journal website
                webresource dataset archival social_media alert message
-               conversation misc internal].freeze
+               conversation collection misc internal].freeze # internal is defined in isodoc grammar
 
     # @return [Boolean, nil]
     attr_accessor :all_parts
