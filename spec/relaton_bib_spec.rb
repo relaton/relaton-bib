@@ -42,7 +42,7 @@ describe Relaton::Bib do
 
     it "invalid date" do
       expect do
-        expect(RelatonBib.parse_date("2012-02-31")).to eq "2012-02-31"
+        expect(Relaton.parse_date("2012-02-31")).to eq "2012-02-31"
       end.to output(/invalid date/).to_stderr_from_any_process
     end
   end
