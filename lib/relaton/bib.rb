@@ -58,6 +58,9 @@ module Relaton
     def format_date(date, format, str, outformat = nil)
       date = Date.strptime(date, format)
       str ? date.strftime(outformat || format) : date
+    rescue Date::Error => e
+      Util.warn "#{date} #{e.message}"
+      date
     end
 
     # @param arr [nil, Array, #is_a?]
