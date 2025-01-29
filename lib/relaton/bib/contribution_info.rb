@@ -1,14 +1,14 @@
-require_relative "person"
-require_relative "organization"
-
 module Relaton
   module Bib
-    class ContributionInfo
-      attr_accessor :person, :organization
+    class ContributionInfo < Lutaml::Model::Serializable
+      attribute :person, Person
+      attribute :organization, Organization
 
-      def initialize(person: nil, organization: nil)
-        @person = person
-        @organization = organization
+      xml do
+        root "contributioninfo"
+
+        map_element "person", to: :person
+        map_element "organization", to: :organization
       end
     end
   end

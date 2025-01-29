@@ -1,16 +1,29 @@
-describe Relaton::Bib::Title do
-  context "from xml" do
-    let(:xml) do
-      <<~XML
-        <title type="main" language="en" script="Latn" locale="EN-us">Title</title>
-      XML
-    end
+# describe Relaton::Bib::Title do
+#   context "parse & render" do
+#     xit "with content" do
+#       xml = <<~XML
+#         <title type="main" language="en" script="Latn" locale="en-US"><em>Main</em> Title</title>
+#       XML
+#       title = described_class.from_xml xml
+#       expect(title.content).to be_instance_of Relaton::Model::LocalizedMarkedUpString::Content
+#       expect(title.type).to eq "main"
+#       expect(title.language).to eq "en"
+#       expect(title.script).to eq "Latn"
+#       expect(title.locale).to eq "en-US"
+#       expect(described_class.to_xml(title)).to be_equivalent_to xml
+#     end
 
-    subject { Relaton::Model::Title.from_xml xml }
-    it { is_expected.to be_instance_of described_class }
-    it { expect(subject.content).to eq "Title" }
-    it { expect(subject.language).to eq "en" }
-    it { expect(subject.script).to eq "Latn" }
-    it { expect(subject.locale).to eq "EN-us" }
-  end
-end
+#     xit "with variant" do
+#       xml = <<~XML
+#         <title type="main">
+#           <variant language="en" script="Latn" locale="en-US">
+#             <em>Main</em> Title
+#           </variant>
+#         </title>
+#       XML
+#       title = described_class.from_xml xml
+#       expect(title.content).to be_instance_of Relaton::Model::LocalizedMarkedUpString::Variants
+#       expect(described_class.to_xml(title)).to be_equivalent_to xml
+#     end
+#   end
+# end

@@ -5,33 +5,22 @@ require_relative "structured_identifier"
 
 module Relaton
   module Bib
-    class Ext
-      attr_accessor :doctype, :subdoctype, :flavor, :editorialgroup, :ics
+    class Ext < Lutaml::Model::Serializable
+      attribute :doctype, Doctype
+      attribute :subdoctype, :string
+      attribute :flavor, :string
+      attribute :editorialgroup, EditorialGroup
+      attribute :ics, ICS, collection: true
+      attribute :structuredidentifier, StructuredIdentifier, collection: true
 
-      attr_reader :structuredidentifier
-
-      # @param doctype [Relaton::Bib::DocumentType]
-      # @param subdoctype [String]
-      # @param flavor [String]
-      # @param editorialgroup [Relaton::Bib::EditorialGroup, nil]
-      # @param ics [Array<Relaton::Bib::ICS>]
-      # @param structuredidentifier [Relaton::Bib::StructuredIdentifierCollection]
-      def initialize(**args)
-        @doctype = args[:doctype]
-        @subdoctype = args[:subdoctype]
-        @flavor = args[:flavor]
-        @editorialgroup = args[:editorialgroup]
-        @ics = args[:ics] || []
-        @structuredidentifier = args[:structuredidentifier] || StructuredIdentifierCollection.new
-      end
-
-      def structuredidentifier=(structuredidentifier)
-        @structuredidentifier = case structuredidentifier
-                                when StructuredIdentifierCollection
-                                  structuredidentifier
-                                else
-                                  StructuredIdentifierCollection.new(structuredidentifier)
-                                end
+      xml do
+        root "ext"
+        map_element "doctype", to: :doctype
+        map_element "subdoctype", to: :subdoctype
+        map_element "flavor", to: :flavor
+        map_element "editorialgroup", to: :editorialgroup
+        map_element "ics", to: :ics
+        map_element "structuredidentifier", to: :structuredidentifier
       end
     end
   end

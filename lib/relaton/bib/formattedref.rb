@@ -1,18 +1,15 @@
 module Relaton
   module Bib
-    class Formattedref
-      # @return [String]
-      attr_accessor :content
+    class Formattedref < Lutaml::Model::Serializable
+      include TextElement
 
-      def initialize(**args)
-        @content = args[:content]
-      end
+      model Bib::Formattedref
 
-      # @param prefix [String]
-      # @return [String]
-      def to_asciibib(prefix = "")
-        pref = prefix.empty? ? "formattedref" : "#{prefix}.formattedref"
-        super pref
+      attribute :content, :string
+
+      xml do
+        root "formattedref"
+        map_all to: :content
       end
     end
   end

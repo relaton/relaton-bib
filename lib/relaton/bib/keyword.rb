@@ -1,38 +1,32 @@
 module Relaton
   module Bib
-    class Keyword
-      class Vocabid
-        attr_accessor :type, :uri, :code, :term
+    class Keyword < Lutaml::Model::Serializable
+      class Vocab < LocalizedString
+      end
 
-        #
-        # Vocabid initializer
-        #
-        # @param [String] type A label for the controlled vocabulary
-        # @param [String, nil] uri A URI for the controlled vocabulary item
-        # @param [String, nil] code The code or identifier for the controlled vocabulary item
-        # @param [String, nil] term The term itself for the controlled vocabulary item
-        #
-        def initialize(**args)
-          @type = args[:type]
-          @uri  = args[:uri]
-          @code = args[:code]
-          @term = args[:term]
+      class Vocabid < Lutaml::Model::Serializable
+        attribute :type, :string
+        attribute :uri, :string
+        attribute :code, :string
+        attribute :term, :string
+
+        xml do
+          map_attribute "type", to: :type
+          map_attribute "uri", to: :uri
+          map_element "code", to: :code
+          map_element "term", to: :term
         end
       end
 
-      attr_accessor :vocab, :taxon, :vocabid
+      attribute :vocab, Vocab, collection: true
+      attribute :taxon, Vocab, collection: (1..)
+      attribute :vocabid, Vocabid
 
-      #
-      # Keyword initializer
-      #
-      # @param [Relaton::Bib::LocalizedString, nil] vocab The keyword as a single, controlled or uncontrolled vocabulary item
-      # @param [Array<Relation::Bib::LocalizedString>] taxon The keywords as a hierarchical taxonomy
-      # @param [Array<Relaton::Bib::Keyword::Vocabid>] vocabid Identifiers for the keyword as a controlled vocabulary
-      #
-      def initialize(vocab: nil, taxon: [], vocabid: [])
-        @vocab = vocab
-        @taxon = taxon
-        @vocabid = vocabid
+      xml do
+        root "keyword"
+        map_element "vocab", to: :vocab
+        map_element "taxon", to: :taxon
+        map_element "vocabid", to: :vocabid
       end
     end
   end

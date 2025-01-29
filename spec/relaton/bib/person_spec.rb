@@ -1,20 +1,19 @@
 describe Relaton::Bib::Person do
-  context Relaton::Bib::FullName do
-    xit "rises name error" do
-      expect do
-        Relaton::Bib::FullName.new
-      end.to raise_error ArgumentError
-    end
-  end
-
-  context Relaton::Bib::Person::Identifier do
-    xit "raises type error" do
-      expect do
-        Relaton::Bib::Person.new(
-          name: Relaton::Bib::FullName.new(completename: "John Lennon"),
-          identifier: Relaton::Bib::Person::Identifier.new(type: "wrong_type", content: "value"),
-        )
-      end.to raise_error ArgumentError
-    end
+  it "parse XML" do
+    xml = <<~XML
+      <person>
+        <name><completename>John Doe</completename></name>
+        <credential>PhD</credential>
+        <affiliation>
+          <organization><name>ISO</name></organization>
+        </affiliation>
+        <identifier type="uri">https://example.com</identifier>
+        <contact>
+          <phone type="mobile">123456789</phone>
+        </contact>
+      </person>
+    XML
+    person = described_class.from_xml xml
+    expect(person.name.completename.content).to eq "John Doe"
   end
 end

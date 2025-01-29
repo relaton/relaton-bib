@@ -1,11 +1,12 @@
 module Relaton
   module Bib
     class TypedLocalizedString < LocalizedString
-      attr_accessor :type
+      model Bib::TypedLocalizedString
 
-      def initialize(**args)
-        super
-        @type = args[:type]
+      attribute :type, :string
+
+      mappings[:xml].instance_eval do
+        map_attribute "type", to: :type
       end
     end
   end

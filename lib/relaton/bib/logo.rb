@@ -1,11 +1,11 @@
 module Relaton
   module Bib
-    class Logo
-      # @return [Relaton::Bib::Image]
-      attr_accessor :image
+    class Logo < Lutaml::Model::Serializable
+      attribute :image, Image
 
-      def initialize(image)
-        @image = image
+      xml do
+        root "logo"
+        map_element "image", to: :image
       end
     end
   end

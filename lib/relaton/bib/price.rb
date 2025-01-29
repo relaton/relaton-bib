@@ -1,11 +1,13 @@
 module Relaton
   module Bib
-    class Price
-      attr_accessor :content, :currency
+    class Price < Lutaml::Model::Serializable
+      attribute :currency, :string
+      attribute :content, :string
 
-      def initialize(**args)
-        @content = args[:content]
-        @currency = args[:currency]
+      xml do
+        root "price"
+        map_attribute "currency", to: :currency
+        map_content to: :content
       end
     end
   end

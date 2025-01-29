@@ -1,42 +1,18 @@
 module Relaton
   module Bib
-    class Title < Relaton::Bib::LocalizedString
-      ARGS = %i[type content format].freeze # @DEPRECATED format
-      ARGS.each { |a| attr_accessor a }
-
-      # @param type [String]
-      # @param content [String]
-      # @param language [String]
-      # @param script [String]
-      # @param locale [String]
-      def initialize(**args)
-        ARGS.each { |a| instance_variable_set "@#{a}", args[a] }
-        super
+    class Title < TypedTitleString
+      mappings[:xml].instance_eval do
+        root "title"
+        # map_content to: :content # , with: { from: :content_from_xml, to: :content_to_xml }
       end
 
-      # @param builder [Nokogiri::XML::Builder]
-      # def to_xml
-      #   Model::Title.to_xml self
+      # def content_from_xml(model, node)
+      #   model.content = TypedTitleString.of_xml(node)
       # end
 
-      # @return [Hash]
-      # def to_hash
-      #   th = title.to_hash
-      #   return th unless type
-
-      #   th.merge "type" => type
+      # def content_to_xml(model, parent, _doc)
+      #   parent << TypedTitleString.to_xml(model.content)
       # end
-
-      # @param prefix [String]
-      # @param count [Integer] number of titles
-      # @return [String]
-      def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize
-        pref = prefix.empty? ? prefix : "#{prefix}."
-        out = count > 1 ? "#{pref}title::\n" : ""
-        out += "#{pref}title.type:: #{type}\n" if type
-        out += "#{pref}title.content:: #{content}\n"
-        out
-      end
     end
   end
 end

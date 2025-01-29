@@ -1,11 +1,13 @@
 module Relaton
   module Bib
-    class Phone
-      attr_accessor :type, :content
+    class Phone < Lutaml::Model::Serializable
+      attribute :type, :string
+      attribute :content, :string
 
-      def initialize(**args)
-        @type = args[:type]
-        @content = args[:content]
+      xml do
+        root "phone"
+        map_attribute "type", to: :type
+        map_content to: :content
       end
     end
   end

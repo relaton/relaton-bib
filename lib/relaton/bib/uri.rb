@@ -1,12 +1,14 @@
 module Relaton
   module Bib
+    # Contact URI
     class Uri < LocalizedStringAttrs
-      attr_accessor :type, :content
+      attribute :type, :string
+      attribute :content, :string
 
-      def initialize(**args)
-        super
-        @type = args[:type]
-        @content = args[:content]
+      xml do
+        root "uri"
+        map_attribute "type", to: :type
+        map_content to: :content
       end
     end
   end

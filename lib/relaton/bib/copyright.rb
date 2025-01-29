@@ -1,69 +1,26 @@
 module Relaton
   module Bib
-    # Copyright association.
-    class Copyright
-      # @return [Date]
-      attr_accessor :from
+    class Copyright < Lutaml::Model::Serializable
+      attribute :from, :string
+      attribute :to, :string
+      attribute :owner, ContributionInfo, collection: true
+      attribute :scope, :string
 
-      # @return [Date, nil]
-      attr_accessor :to
+      xml do
+        root "copyright"
 
-      # @return [String, nil]
-      attr_accessor :scope
-
-      # @return [Array<Relaton::Bib::ContributionInfo>]
-      attr_accessor :owner
-
-      # @param owner [Array<Relaton::Bib::Person, Relaton::Bib::Organization>]
-      # @param from [String] date
-      # @param to [String, nil] date
-      # @param scope [String, nil]
-      def initialize(**args)
-        # unless owner.any?
-        #   raise ArgumentError, "at least one owner should exist."
-        # end
-
-        @owner = args[:owner]
-        @from  = args[:from]
-        @to    = args[:to]
-        @scope = args[:scope]
+        map_element "from", to: :from
+        map_element "to", to: :to
+        map_element "owner", to: :owner # , with: { from: :owner_from_xml, to: :owner_to_xml }
+        map_element "scope", to: :scope
       end
 
-      # @param opts [Hash]
-      # @option opts [Nokogiri::XML::Builder] :builder XML builder
-      # @option opts [String, Symbol] :lang language
-      # def to_xml(**opts)
-      #   opts[:builder].copyright do |builder|
-      #     builder.from from ? from.year : "unknown"
-      #     builder.to to.year if to
-      #     owner.each { |o| builder.owner { o.to_xml(**opts) } }
-      #     builder.scope scope if scope
-      #   end
-      # end
+      def owner_from_xml(model, node)
+        model.owner = ContributionInfo.from_xml node
+      end
 
-      # @return [Hash]
-      # def to_hash # rubocop:disable Metrics/AbcSize
-      #   owners = single_element_array(owner.map { |o| o.to_hash["organization"] })
-      #   hash = {
-      #     "owner" => owners,
-      #     "from" => from.year.to_s,
-      #   }
-      #   hash["to"] = to.year.to_s if to
-      #   hash["scope"] = scope if scope
-      #   hash
-      # end
-
-      # @param prefix [String]
-      # @param count [Iteger] number of copyright elements
-      # @return [String]
-      def to_asciibib(prefix = "", count = 1) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
-        pref = prefix.empty? ? "copyright" : "#{prefix}.copyright"
-        out = count > 1 ? "#{pref}::\n" : ""
-        owner.each { |ow| out += ow.to_asciibib "#{pref}.owner", owner.size }
-        out += "#{pref}.from:: #{from.year}\n" if from
-        out += "#{pref}.to:: #{to.year}\n" if to
-        out += "#{pref}.scope:: #{scope}\n" if scope
-        out
+      def owner_to_xml(model, parent, _doc)
+        model.owner.to_xml parent
       end
     end
   end

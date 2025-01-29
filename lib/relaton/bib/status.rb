@@ -1,93 +1,28 @@
-# frozen_string_literal: true
-
 module Relaton
   module Bib
-    # Document status.
-    class Status
-      # @return [Relaton::Bib::Status::Stage]
-      attr_accessor :stage
+    class Status < Lutaml::Model::Serializable
+      class Stage < Lutaml::Model::Serializable
+        attribute :abbreviation, :string
+        attribute :content, :string
 
-      # @return [Relaton::Bib::Status::Stage, nil]
-      attr_accessor :substage
-
-      # @return [String, nil]
-      attr_accessor :iteration
-
-      # @param stage [String, Hash, Relaton::Bib::Status::Stage]
-      # @param substage [String, Hash, nil, Relaton::Bib::Status::Stage]
-      # @param iteration [String, nil]
-      def initialize(**args)
-        @stage = stage_new args[:stage]
-        @substage = stage_new args[:substage]
-        @iteration = args[:iteration]
-      end
-
-      # @param [Nokogiri::XML::Builder]
-      # def to_xml(builder)
-      #   builder.status do
-      #     # FormattedString.instance_method(:to_xml).bind(status).call builder
-      #     builder.stage { |b| stage.to_xml b }
-      #     builder.substage { |b| substage.to_xml b } if substage
-      #     builder.iteration iteration unless iteration.to_s.empty?
-      #   end
-      # end
-
-      # @return [Hash]
-      # def to_hash
-      #   hash = { "stage" => stage.to_hash }
-      #   hash["substage"] = substage.to_hash if substage
-      #   hash["iteration"] = iteration if iteration
-      #   hash
-      # end
-
-      # @param prefix [String]
-      # @return [String]
-      def to_asciibib(prefix = "")
-        pref = prefix.empty? ? prefix : "#{prefix}."
-        out = "#{pref}docstatus.stage:: #{stage.content}\n"
-        out += "#{pref}docstatus.substage:: #{substage.content}\n" if substage
-        out += "#{pref}docstatus.iteration:: #{iteration}\n" if iteration
-        out
-      end
-
-      private
-
-      # @param stg [Relaton::Bib::Status::Stage, Hash, String, nil]
-      # @return [Relaton::Bib::Status::Stage]
-      def stage_new(stg)
-        case stg
-        when Stage then stg
-        when Hash then self.class::Stage.new(**stg)
-        when String then self.class::Stage.new(content: stg)
+        xml do
+          root "stage"
+          map_attribute "abbreviation", to: :abbreviation
+          map_content to: :content
         end
       end
 
-      class Stage
-        # @return [String]
-        attr_accessor :content
+      model Bib::Status
 
-        # @return [String, nil]
-        attr_accessor :abbreviation
+      attribute :stage, Stage
+      attribute :substage, Stage
+      attribute :iteration, :string
 
-        # @param content [String]
-        # @param abbreviation [String, nil]
-        def initialize(**args)
-          @content = args[:content]
-          @abbreviation = args[:abbreviation]
-        end
-
-        # @param [Nokogiri::XML::Builder]
-        # def to_xml(builder)
-        #   builder.parent[:abbreviation] = abbreviation if abbreviation
-        #   builder.text content
-        # end
-
-        # @return [Hash]
-        # def to_hash
-        #   hash = { "content" => value }
-        #   hash["abbreviation"] = abbreviation if abbreviation
-        #   hash
-        # end
+      xml do
+        root "status"
+        map_element "stage", to: :stage
+        map_element "substage", to: :substage
+        map_element "iteration", to: :iteration
       end
     end
   end
