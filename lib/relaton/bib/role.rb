@@ -1,14 +1,8 @@
 module Relaton
   module Bib
     class Role < Lutaml::Model::Serializable
-      class Description < LocalizedString
-        mappings[:xml].instance_eval do
-          root "description"
-        end
-      end
-
       attribute :type, :string
-      attribute :description, Description, collection: true
+      attribute :description, LocalizedMarkedUpString, collection: true
 
       xml do
         root "role"

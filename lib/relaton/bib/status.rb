@@ -12,8 +12,6 @@ module Relaton
         end
       end
 
-      model Bib::Status
-
       attribute :stage, Stage
       attribute :substage, Stage
       attribute :iteration, :string

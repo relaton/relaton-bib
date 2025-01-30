@@ -1,5 +1,5 @@
-describe Relaton::Bib::Bibitem do
-  let(:input_xml) { File.read("spec/fixtures/bibitem.xml", encoding: "UTF-8") }
+describe Relaton::Bib::Bibdata do
+  let(:input_xml) { File.read "spec/fixtures/bibdata_item.xml", encoding: "UTF-8" }
   let(:item) { described_class.from_xml input_xml }
 
   context "round trip" do

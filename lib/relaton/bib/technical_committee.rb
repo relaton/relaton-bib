@@ -1,10 +1,8 @@
 require_relative "workgroup"
 
 module Relaton
-  module Model
+  module Bib
     class TechnicalCommittee < Lutaml::Model::Serializable
-      model Bib::TechnicalCommittee
-
       attribute :workgroup, WorkGroup
 
       xml do

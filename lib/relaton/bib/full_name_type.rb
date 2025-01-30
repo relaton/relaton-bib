@@ -1,60 +1,23 @@
 module Relaton
   module Bib
     module FullNameType
-      class Abbreviation < LocalizedString
-        mappings[:xml].instance_eval do
-          root "abbreviation"
-        end
-      end
-
-      class Prefix < LocalizedString
-        mappings[:xml].instance_eval do
-          root "prefix"
-        end
-      end
-
-      class Completename < LocalizedString
-        mappings[:xml].instance_eval do
-          root "completename"
-        end
-      end
-
       class Forename < LocalizedString
-        attribute :initial, Lutaml::Model::Type::String
+        attribute :initial, :string
 
         mappings[:xml].instance_eval do
-          root "forename"
           map_attribute "initial", to: :initial
-        end
-      end
-
-      class FormattedInitials < LocalizedString
-        mappings[:xml].instance_eval do
-          root "formatted-initials"
-        end
-      end
-
-      class Surname < LocalizedString
-        mappings[:xml].instance_eval do
-          root "surname"
-        end
-      end
-
-      class Addition < LocalizedString
-        mappings[:xml].instance_eval do
-          root "addition"
         end
       end
 
       def self.included(base) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
         base.instance_eval do
-          attribute :abbreviation, Abbreviation
-          attribute :prefix, Prefix, collection: true
+          attribute :abbreviation, LocalizedMarkedUpString
+          attribute :prefix, LocalizedMarkedUpString, collection: true
           attribute :forename, Forename, collection: true
-          attribute :initials, FormattedInitials
-          attribute :surname, Surname
-          attribute :addition, Addition, collection: true
-          attribute :completename, Completename
+          attribute :initials, LocalizedMarkedUpString
+          attribute :surname, LocalizedMarkedUpString
+          attribute :addition, LocalizedMarkedUpString, collection: true
+          attribute :completename, LocalizedMarkedUpString
           attribute :note, Note, collection: true
           attribute :variant, Variant, collection: true
 

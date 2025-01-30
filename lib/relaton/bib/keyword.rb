@@ -1,9 +1,6 @@
 module Relaton
   module Bib
     class Keyword < Lutaml::Model::Serializable
-      class Vocab < LocalizedString
-      end
-
       class Vocabid < Lutaml::Model::Serializable
         attribute :type, :string
         attribute :uri, :string
@@ -18,8 +15,8 @@ module Relaton
         end
       end
 
-      attribute :vocab, Vocab, collection: true
-      attribute :taxon, Vocab, collection: (1..)
+      attribute :vocab, LocalizedMarkedUpString, collection: true
+      attribute :taxon, LocalizedMarkedUpString, collection: (1..)
       attribute :vocabid, Vocabid
 
       xml do

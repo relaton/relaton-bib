@@ -2,11 +2,13 @@ require_relative "ext"
 
 module Relaton
   module Bib
-    class Bibdata < Item
+    class Bibdata < BibliographicItem
+      model Item
+
       attribute :ext, Ext
 
       # we don't need id attribute in bibdata XML output
-      mappings[:xml].instance_variable_get(:@attributes).delete("id")
+      # mappings[:xml].instance_variable_get(:@attributes).delete("id")
 
       mappings[:xml].instance_eval do
         root "bibdata"

@@ -3,7 +3,7 @@ module Relaton
     class StructuredIdentifier < Lutaml::Model::Serializable
       attribute :type, :string
       attribute :agency, :string, collection: (1..)
-      attribute :class, :string
+      attribute :klass, :string
       attribute :docnumber, :string
       attribute :partnumber, :string
       attribute :edition, :string
@@ -19,7 +19,7 @@ module Relaton
         root "structuredidentifier"
         map_attribute "type", to: :type
         map_element "agency", to: :agency
-        map_element "class", to: :class
+        map_element "class", to: :klass
         map_element "docnumber", to: :docnumber
         map_element "partnumber", to: :partnumber
         map_element "edition", to: :edition

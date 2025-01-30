@@ -1,8 +1,6 @@
 module Relaton
   module Bib
     class Contributor < Lutaml::Model::Serializable
-      model Bib::Contributor
-
       attribute :role, Role, collection: true
       # attribute :entity, ContributionInfo
       attribute :person, Person
@@ -12,26 +10,26 @@ module Relaton
         root "contributor"
 
         map_element "role", to: :role
-        # map_content with: { from: :entity_from_xml, to: :entity_to_xml }
+        # map_content to: :entity, with: { from: :entity_from_xml, to: :entity_to_xml }
         map_element "person", to: :person
         map_element "organization", to: :organization # , with: { from: :organization_from_xml, to: :organization_to_xml }
       end
 
-      def entity
-        person || organization
-      end
+      # def entity
+      #   person || organization
+      # end
 
-      def entity=(value)
-        if value.is_a? Person
-          self.person = value
-          self.organization = nil
-        elsif value.is_a? Organization
-          self.organization = value
-          self.person = nil
-        else
-          raise ArgumentError, "value must be a Person or Organization"
-        end
-      end
+      # def entity=(value)
+      #   if value.is_a? Person
+      #     self.person = value
+      #     self.organization = nil
+      #   elsif value.is_a? Organization
+      #     self.organization = value
+      #     self.person = nil
+      #   else
+      #     raise ArgumentError, "value must be a Person or Organization"
+      #   end
+      # end
 
       # def organization_from_xml(model, node)
       #   model.entity = Organization.of_xml node
@@ -42,8 +40,9 @@ module Relaton
       # end
 
       # def entity_from_xml(model, node)
-      #   n = node.instance_variable_get :@node || node
+      #   n = node.instance_variable_get(:@node) || node
       #   model.content = ContributionInfo.of_xml n
+      # rescue StandardError
       # end
 
       # def entity_to_xml(model, parent, _doc)

@@ -1,10 +1,6 @@
-require_relative "pure_text_element"
-
 module Relaton
   module Bib
     class LocalizedString < LocalizedStringAttrs
-      include PureTextElement
-
       attribute :content, :string
 
       def self.inherited(base)
@@ -15,6 +11,17 @@ module Relaton
           end
         end
       end
+    end
+
+    class TypedLocalizedString < LocalizedString
+      attribute :type, :string
+
+      mappings[:xml].instance_eval do
+        map_attribute "type", to: :type
+      end
+    end
+
+    class LocalizedMarkedUpString < LocalizedString
     end
   end
 end
