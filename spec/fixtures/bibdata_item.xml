@@ -237,10 +237,8 @@
     <number>7</number>
   </series>
   <series>
-    <title format="text/plain">
-      <variant language="en" script="Latn">Series</variant>
-      <variant language="fr" script="Latn">Séries</variant>
-    </title>
+    <title format="text/plain" language="en" script="Latn">Series</title>
+    <title language="fr" script="Latn">Séries</title>
   </series>
   <series>
     <title format="text/plain">RFC</title>
@@ -303,6 +301,7 @@
   <ext>
     <doctype abbreviation="DCT">Doctype</doctype>
     <subdoctype>Subdoctype</subdoctype>
+    <flavor>iso</flavor>
     <editorialgroup>
       <technical-committee number="1" type="Type" identifier="Identifier" prefix="Prefix">Editorial group</technical-committee>
     </editorialgroup>
