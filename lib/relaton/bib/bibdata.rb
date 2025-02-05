@@ -1,18 +1,13 @@
-require_relative "ext"
-
 module Relaton
   module Bib
-    class Bibdata < BibliographicItem
-      model Item
+    # This class represents a bibliographic item as a bibdata.
+    class Bibdata < Item
+      model ItemData
 
-      attribute :ext, Ext
+      mappings[:xml].instance_variable_get(:@attributes).delete("id")
 
-      # we don't need id attribute in bibdata XML output
-      # mappings[:xml].instance_variable_get(:@attributes).delete("id")
-
-      mappings[:xml].instance_eval do
+      xml do
         root "bibdata"
-        map_element "ext", to: :ext
       end
     end
   end

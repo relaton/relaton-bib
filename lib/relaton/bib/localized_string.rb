@@ -6,7 +6,7 @@ module Relaton
       def self.inherited(base)
         super
         base.class_eval do
-          mappings[:xml].instance_eval do
+          xml do
             map_all to: :content
           end
         end
@@ -16,7 +16,7 @@ module Relaton
     class TypedLocalizedString < LocalizedString
       attribute :type, :string
 
-      mappings[:xml].instance_eval do
+      xml do
         map_attribute "type", to: :type
       end
     end

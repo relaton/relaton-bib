@@ -6,6 +6,7 @@ require_relative "structured_identifier"
 module Relaton
   module Bib
     class Ext < Lutaml::Model::Serializable
+      attribute :schema_version, :string
       attribute :doctype, Doctype
       attribute :subdoctype, :string
       attribute :flavor, :string
@@ -15,6 +16,7 @@ module Relaton
 
       xml do
         root "ext"
+        map_attribute "schema-version", to: :schema_version
         map_element "doctype", to: :doctype
         map_element "subdoctype", to: :subdoctype
         map_element "flavor", to: :flavor

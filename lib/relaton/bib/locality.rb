@@ -1,12 +1,17 @@
-require_relative "bib_item_locality"
-
 module Relaton
   module Bib
     class Locality < Lutaml::Model::Serializable
-      include BibItemLocality
+      attribute :type, :string, pattern: %r{
+        section|clause|part|paragraph|chapter|page|title|line|whole|table|annex|
+        figure|note|list|example|volume|issue|time|anchor|locality:[a-zA-Z0-9_]+
+      }x
+      attribute :reference_from, :string
+      attribute :reference_to, :string
 
-      mappings[:xml].instance_eval do
-        root "locality"
+      xml do
+        map_attribute "type", to: :type
+        map_element "referenceFrom", to: :reference_from
+        map_element "referenceTo", to: :reference_to
       end
     end
   end

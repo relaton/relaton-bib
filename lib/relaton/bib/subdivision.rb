@@ -5,7 +5,7 @@ module Relaton
 
       attribute :type, :string
 
-      mappings[:xml].instance_eval do
+      xml do
         root "subdivision"
         map_attribute "type", to: :type
       end

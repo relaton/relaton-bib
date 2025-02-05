@@ -3,7 +3,7 @@ module Relaton
     class FullName < Lutaml::Model::Serializable
       include FullNameType
 
-      mappings[:xml].instance_eval do
+      xml do
         root "name"
       end
     end

@@ -1,13 +1,7 @@
-require_relative "source_locality"
-require_relative "source_locality_stack"
+require_relative "item_base"
 
 module Relaton
   module Bib
-    class Relation < Lutaml::Model::Serializable
-    end
-
-    require_relative "bibitem_base"
-
     class Relation
       class Description < LocalizedString
         xml do
@@ -17,10 +11,10 @@ module Relaton
 
       attribute :type, :string
       attribute :description, Description
-      attribute :bibitem, BibitemBase
+      attribute :bibitem, ItemBase
       attribute :locality, Locality, collection: true
       attribute :locality_stack, LocalityStack, collection: true
-      attribute :source_locality, SourceLocality, collection: true
+      attribute :source_locality, Locality, collection: true
       attribute :source_locality_stack, SourceLocalityStack, collection: true
 
       xml do

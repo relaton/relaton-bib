@@ -1,7 +1,10 @@
 module Relaton
   module Bib
     class Role < Lutaml::Model::Serializable
-      attribute :type, :string
+      attribute :type, :string, values: %w[
+        author performer publisher editor adapter translator distributor reazer
+        owner authorizer enabler subject
+      ]
       attribute :description, LocalizedMarkedUpString, collection: true
 
       xml do

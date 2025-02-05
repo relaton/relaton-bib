@@ -5,8 +5,6 @@ module Relaton
       attribute :organization, Organization
 
       xml do
-        root "contributioninfo"
-
         map_element "person", to: :person
         map_element "organization", to: :organization
       end

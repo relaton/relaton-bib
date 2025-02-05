@@ -4,7 +4,7 @@ module Relaton
       class Forename < LocalizedString
         attribute :initial, :string
 
-        mappings[:xml].instance_eval do
+        xml do
           map_attribute "initial", to: :initial
         end
       end
@@ -14,7 +14,7 @@ module Relaton
           attribute :abbreviation, LocalizedMarkedUpString
           attribute :prefix, LocalizedMarkedUpString, collection: true
           attribute :forename, Forename, collection: true
-          attribute :initials, LocalizedMarkedUpString
+          attribute :formatted_initials, LocalizedMarkedUpString
           attribute :surname, LocalizedMarkedUpString
           attribute :addition, LocalizedMarkedUpString, collection: true
           attribute :completename, LocalizedMarkedUpString
@@ -25,7 +25,7 @@ module Relaton
             map_element "abbreviation", to: :abbreviation
             map_element "prefix", to: :prefix
             map_element "forename", to: :forename
-            map_element "formatted-initials", to: :initials
+            map_element "formatted-initials", to: :formatted_initials
             map_element "surname", to: :surname
             map_element "addition", to: :addition
             map_element "completename", to: :completename
@@ -48,9 +48,9 @@ module Relaton
       class Variant < Lutaml::Model::Serializable
         include FullNameType
 
-        attribute :type, Lutaml::Model::Type::String
+        attribute :type, :string
 
-        mappings[:xml].instance_eval do
+        xml do
           root "variant"
           map_attribute "type", to: :type
         end

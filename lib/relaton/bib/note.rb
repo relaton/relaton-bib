@@ -4,10 +4,10 @@ module Relaton
       attribute :type, :string
       attribute :content, :string
 
-      mappings[:xml].instance_eval do
+      xml do
         root "note"
         map_attribute "type", to: :type
-        map_content to: :content
+        map_all to: :content
       end
     end
   end
