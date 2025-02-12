@@ -3,13 +3,8 @@ module Relaton
     class LocalizedString < LocalizedStringAttrs
       attribute :content, :string
 
-      def self.inherited(base)
-        super
-        base.class_eval do
-          xml do
-            map_all to: :content
-          end
-        end
+      xml do
+        map_content to: :content
       end
     end
 
@@ -21,7 +16,12 @@ module Relaton
       end
     end
 
-    class LocalizedMarkedUpString < LocalizedString
+    class LocalizedMarkedUpString < LocalizedStringAttrs
+      attribute :content, :string
+
+      xml do
+        map_all to: :content
+      end
     end
   end
 end

@@ -20,7 +20,7 @@ module Relaton
 
           attribute :name, TypedLocalizedString, collection: true
           attribute :subdivision, Subdivision, collection: true
-          attribute :abbreviation, LocalizedMarkedUpString
+          attribute :abbreviation, LocalizedString
           attribute :identifier, Identifier, collection: true
           attribute :logo, Logo
 

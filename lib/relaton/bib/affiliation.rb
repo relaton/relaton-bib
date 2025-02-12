@@ -1,7 +1,7 @@
 module Relaton
   module Bib
     class Affiliation < Lutaml::Model::Serializable
-      attribute :name, LocalizedMarkedUpString
+      attribute :name, LocalizedString
       attribute :description, LocalizedMarkedUpString, collection: true
       attribute :organization, Organization
 

@@ -11,13 +11,13 @@ module Relaton
 
       def self.included(base) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
         base.instance_eval do
-          attribute :abbreviation, LocalizedMarkedUpString
-          attribute :prefix, LocalizedMarkedUpString, collection: true
+          attribute :abbreviation, LocalizedString
+          attribute :prefix, LocalizedString, collection: true
           attribute :forename, Forename, collection: true
-          attribute :formatted_initials, LocalizedMarkedUpString
-          attribute :surname, LocalizedMarkedUpString
-          attribute :addition, LocalizedMarkedUpString, collection: true
-          attribute :completename, LocalizedMarkedUpString
+          attribute :formatted_initials, LocalizedString
+          attribute :surname, LocalizedString
+          attribute :addition, LocalizedString, collection: true
+          attribute :completename, LocalizedString
           attribute :note, Note, collection: true
           attribute :variant, Variant, collection: true
 

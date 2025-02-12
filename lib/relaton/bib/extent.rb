@@ -1,8 +1,10 @@
 module Relaton
   module Bib
     class Extent < Lutaml::Model::Serializable
-      attribute :locality, Locality, collection: true
-      attribute :locality_stack, LocalityStack, collection: true
+      choice(min: 1, max: 1) do
+        attribute :locality, Locality, collection: true
+        attribute :locality_stack, LocalityStack, collection: true
+      end
 
       xml do
         root "extent"

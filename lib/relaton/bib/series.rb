@@ -6,7 +6,7 @@ module Relaton
       attribute :title, Title, collection: (1..)
       attribute :place, Place
       attribute :organization, :string
-      attribute :abbreviation, LocalizedMarkedUpString
+      attribute :abbreviation, LocalizedString
       attribute :from, :date
       attribute :to, :date
       attribute :number, :string

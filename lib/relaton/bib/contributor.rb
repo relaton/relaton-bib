@@ -3,9 +3,12 @@ module Relaton
     class Contributor < Lutaml::Model::Serializable
       attribute :role, Role, collection: true
       # attribute :entity, ContributionInfo
-      # @TODO: use choice for person and organization when Lutaml supports it
-      attribute :person, Person
-      attribute :organization, Organization
+      # @TODO: use `import_model ContributionInfo` for person and organization when Lutaml supports it
+      choice(min: 1, max: 1) do
+        attribute :person, Person
+        attribute :organization, Organization
+      end
+      # import_model_attributes ContributionInfo
 
       xml do
         root "contributor"

@@ -1,6 +1,6 @@
 id: ISO1231994
 type: standard
-schema_version: "1.0.0"
+schema_version: 1.0.0
 fetched: "2022-05-02"
 formattedref: ISO 123:1994
 title:
@@ -377,7 +377,34 @@ depiction:
       width: 100%
       height: auto
 ext:
-  schema_version: "1.0.0"
+  schema_version: 1.0.0
   doctype:
-    abbreviation: "std"
+    abbreviation: std
     content: Standard
+  subdoctype: Technical Report
+  flavor: iso
+  editorialgroup:
+    technical_committee:
+      number: "211"
+      type: main
+      identifier: ISO/TC 211
+      prefix: ISO
+      content: Geographic information
+  ics:
+    - code: "01.040.11"
+      text: ISO 123-1
+  structuredidentifier:
+    - type: standard
+      agency:
+        - ISO
+      klass: technical report
+      docnumber: "123-1"
+      partnumber: "1"
+      edition: "2"
+      version: "3"
+      supplementtype: "A"
+      supplementnumber: "1"
+      amendment: "1"
+      corrigendum: "1"
+      language: "en"
+      year: "1994"

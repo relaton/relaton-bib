@@ -3,19 +3,17 @@ require_relative "item_base"
 module Relaton
   module Bib
     class Relation
-      class Description < LocalizedString
-        xml do
-          root "description"
-        end
-      end
-
       attribute :type, :string
-      attribute :description, Description
+      attribute :description, LocalizedMarkedUpString
       attribute :bibitem, ItemBase
-      attribute :locality, Locality, collection: true
-      attribute :locality_stack, LocalityStack, collection: true
-      attribute :source_locality, Locality, collection: true
-      attribute :source_locality_stack, SourceLocalityStack, collection: true
+      choice(min: 1, max: 1) do
+        attribute :locality, Locality, collection: true
+        attribute :locality_stack, LocalityStack, collection: true
+      end
+      choice(min: 1, max: 1) do
+        attribute :source_locality, Locality, collection: true
+        attribute :source_locality_stack, SourceLocalityStack, collection: true
+      end
 
       xml do
         root "relation"

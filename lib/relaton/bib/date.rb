@@ -3,9 +3,14 @@ module Relaton
     class Date < Lutaml::Model::Serializable
       attribute :type, :string
       attribute :text, :string
-      attribute :from, :string
-      attribute :to, :string
-      attribute :at, :string # `on` is reserved word in YAML, so use `at` instead to avoid remapping key-value formats
+      choice(min: 1, max: 2) do
+        choice(min: 1, max: 2) do
+          attribute :from, :string
+          attribute :to, :string
+        end
+        # `on` is reserved word in YAML, so use `at` instead to avoid remapping key-value formats
+        attribute :at, :string
+      end
 
       xml do
         root "date"
