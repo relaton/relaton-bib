@@ -47,6 +47,8 @@ module Relaton
 
     # Item class repesents bibliographic item metadata.
     class Item < Lutaml::Model::Serializable
+      model ItemData
+
       attribute :id, :string
       attribute :type, :string, values: %W[
         article book booklet manual proceedings presentation thesis techreport standard

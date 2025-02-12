@@ -119,7 +119,7 @@ contributor:
           city: Geneva
           country: Switzerland
           postcode: "1211"
-          formatted_address: 1, rue de Varembé,<br>Geneva, Switzerland, 1211
+          formatted_address: 1, rue de Varembé,<br/>Geneva, Switzerland, 1211
       phone:
         - type: mobile
           content: "+41 22 749 01 11"
@@ -154,7 +154,7 @@ contributor:
             city: Geneva
             country: Switzerland
             postcode: "1211"
-            formatted_address: 1, rue de Varembé,<br>Geneva, Switzerland, 1211
+            formatted_address: 1, rue de Varembé,<br/>Geneva, Switzerland, 1211
         phone:
           - type: main
             content: "+41 22 749 01 11"
@@ -168,7 +168,7 @@ contributor:
             locale: en-US
         logo:
           image:
-            id: 12345678-abcd-1234-abcd-1234567890ab
+            id: ertg-1234567890ab
             src: https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg
             mimetype: image/jpeg
             filename: PUB100080.jpg
@@ -223,7 +223,7 @@ copyright:
               content: John Doe
     scope: Book preface
 relation:
-  - type: isPartOf
+  - type: partOf
     description:
       content: Part of the ISO 123 serieso
       language: en
@@ -238,10 +238,26 @@ relation:
       - type: section
         reference_from: "1"
         reference_to: "10"
+    source_locality_stack:
+      - connective: or
+        source_locality:
+          - type: article
+            reference_from: "2"
+            reference_to: "5"
+        source_locality:
+          - type: line
+            reference_from: "7"
+            reference_to: "9"
+  - type: hasPart
+    bibitem:
+      formattedref: ISO 123-2:1994
+      docidentifier:
+        - type: ISO
+          content: ISO 123-2:1994
     locality_stack:
       - connective: and
         locality:
-          - type: article
+          - type: annex
             reference_from: "1"
           - type: page
             reference_from: "2"
@@ -250,16 +266,6 @@ relation:
       - type: chapter
         reference_from: "4"
         reference_to: "11"
-    source_locality_stack:
-      - connective: or
-        source_locality:
-          - type: article
-            reference_from: "2"
-            reference_to: "5"
-        source_locality:
-          - type: article
-            reference_from: "7"
-            reference_to: "9"
 series:
   - type: main
     formattedref: ISO 123
@@ -321,7 +327,7 @@ extent:
   - locality_stack:
       - connective: and
         locality:
-          - type: article
+          - type: example
             reference_from: "1"
           - type: page
             reference_from: "2"
@@ -367,7 +373,7 @@ validity:
 depiction:
   scope: local
   image:
-    - id: 12345678-abcd-1234-abcd-1234567890ab
+    - id: abcd-1234567890ab
       src: https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg
       mimetype: image/jpeg
       filename: PUB100080.jpg

@@ -4,6 +4,7 @@ module Relaton
     class Bibdata < Item
       model ItemData
 
+      # Bibdata doesn't have id attribute.
       mappings[:xml].instance_variable_get(:@attributes).delete("id")
 
       xml do

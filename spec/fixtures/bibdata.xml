@@ -1,4 +1,4 @@
-<bibitem id="ISO1231994" type="standard" schema-version="1.0.0">
+<bibdata type="standard" schema-version="1.0.0">
   <fetched>2022-05-02</fetched>
   <formattedref>ISO 123:1994</formattedref>
   <title language="en" locale="en-US" script="Latn">Geographic information -- Metadata</title>
@@ -225,4 +225,30 @@
   <depiction scope="local">
     <image id="abcd-1234567890ab" src="https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg" mimetype="image/jpeg" filename="PUB100080.jpg" width="100%" height="auto" alt="ISO logo" title="ISO Logo" longdesc="https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg"/>
   </depiction>
-</bibitem>
+  <ext schema-version="1.0.0">
+    <doctype abbreviation="std">Standard</doctype>
+    <subdoctype>Technical Report</subdoctype>
+    <flavor>iso</flavor>
+    <editorialgroup>
+      <technical-committee number="211" type="main" identifier="ISO/TC 211" prefix="ISO">Geographic information</technical-committee>
+    </editorialgroup>
+    <ics>
+      <code>01.040.11</code>
+      <text>ISO 123-1</text>
+    </ics>
+    <structuredidentifier type="standard">
+      <agency>ISO</agency>
+      <class>technical report</class>
+      <docnumber>123-1</docnumber>
+      <partnumber>1</partnumber>
+      <edition>2</edition>
+      <version>3</version>
+      <supplementtype>A</supplementtype>
+      <supplementnumber>1</supplementnumber>
+      <amendment>1</amendment>
+      <corrigendum>1</corrigendum>
+      <language>en</language>
+      <year>1994</year>
+    </structuredidentifier>
+  </ext>
+</bibdata>

@@ -1,6 +1,6 @@
 describe Relaton::Bib::Bibdata do
   context "XML" do
-    let(:file) { "spec/fixtures/bibdata_item.xml" }
+    let(:file) { "spec/fixtures/bibdata.xml" }
     let(:input_xml) { File.read file, encoding: "UTF-8" }
     let(:item) { described_class.from_xml input_xml }
 
