@@ -1,0 +1,301 @@
+<bibitem id="ISOTC211" type="standard" schema-version="v1.4.1">
+  <fetched>2024-12-11</fetched>
+  <formattedref>ISO TC 211</formattedref>
+  <title type="title-main" format="text/plain">Geographic information</title>
+  <title type="main" format="text/plain">Geographic information</title>
+  <title format="text/plain" language="fr" script="Latn">Information géographique</title>
+  <uri type="src" language="en" script="Latn">https://www.iso.org/standard/53798.html</uri>
+  <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:53798:en</uri>
+  <uri type="rss">https://www.iso.org/contents/data/standard/05/37/53798.detail.rss</uri>
+  <uri type="doi">http://standrd.org/doi-123</uri>
+  <uri type="file">file://path/file</uri>
+  <docidentifier type="ISO" primary="true" language="en" script="Latn">ISO TC 211</docidentifier>
+  <docidentifier type="isbn">ISBN</docidentifier>
+  <docidentifier type="lccn">LCCN</docidentifier>
+  <docidentifier type="issn" scope="series">ISSN</docidentifier>
+  <docidentifier type="URN">urn:iso:std:iso:123:stage-90.93:ed-3:en,fr</docidentifier>
+  <docidentifier>XYZ</docidentifier>
+  <docidentifier type="DOI">10.17487/rfc1149</docidentifier>
+  <docidentifier type="Internet-Draft">draft-ietf-somewg-someprotocol-07</docidentifier>
+  <docnumber>TC211</docnumber>
+  <date type="issued" text="">
+    <on>2014</on>
+  </date>
+  <date type="published" text="">
+    <on>2014-04</on>
+  </date>
+  <date type="accessed" text="">
+    <on>2015-05-20</on>
+  </date>
+  <contributor>
+    <role type="publisher">
+      <description>Publisher role</description>
+    </role>
+    <organization>
+      <name type="Org name type" language="en" script="Latn" locale="en-US">International Organization for Standardization</name>
+      <subdivision type="Sub Div type">
+        <name>Sub division name</name>
+      </subdivision>
+      <abbreviation>ISO</abbreviation>
+      <uri>www.iso.org</uri>
+      <logo>
+        <image id="logo1" src="logo1.png" mimetype="image/png" filename="logo1.png" width="200" height="100%" alt="Logo 1" title="Logo #1" longdesc="Logo number 1"/>
+      </logo>
+    </organization>
+  </contributor>
+  <contributor>
+    <role type="author"/>
+    <person>
+      <name>
+        <abbreviation>AB</abbreviation>
+        <completename language="en" script="Latn">A. Bierman</completename>
+      </name>
+      <credential>Credential</credential>
+      <affiliation>
+        <organization>
+          <name>IETF</name>
+          <abbreviation>IETF</abbreviation>
+          <identifier type="uri">www.ietf.org</identifier>
+        </organization>
+      </affiliation>
+      <address>
+        <street>Street</street>
+        <city>City</city>
+        <state>State</state>
+        <country>Country</country>
+        <postcode>123456</postcode>
+      </address>
+      <phone type="mobile">223322</phone>
+      <email>person@email.org</email>
+      <uri>www.person.com</uri>
+    </person>
+  </contributor>
+  <contributor>
+    <role type="publisher">
+      <description>Publisher description</description>
+    </role>
+    <role type="editor">
+      <description>Editor description</description>
+    </role>
+    <organization>
+      <name>Institute of Electrical and Electronics Engineers</name>
+      <abbreviation>IEEE</abbreviation>
+      <identifier type="uri">www.ieee.org</identifier>
+      <address>
+        <formattedAddress>Formatted address</formattedAddress>
+      </address>
+    </organization>
+  </contributor>
+  <contributor>
+    <role type="author"/>
+    <person>
+      <name>
+        <prefix>Prefix</prefix>
+        <forename>Arnold</forename>
+        <formatted-initials>A.</formatted-initials>
+        <surname>Bierman</surname>
+        <addition>Addition</addition>
+      </name>
+      <affiliation>
+        <name language="en" script="Latn">Name</name>
+        <description language="en">Description</description>
+        <organization>
+          <name>IETF</name>
+          <abbreviation>IETF</abbreviation>
+        </organization>
+      </affiliation>
+      <identifier type="uri">www.person.com</identifier>
+      <address>
+        <street>Street</street>
+        <city>City</city>
+        <state>State</state>
+        <country>Country</country>
+        <postcode>123456</postcode>
+      </address>
+      <phone type="work">223322</phone>
+    </person>
+  </contributor>
+  <contributor>
+    <role type="editor"/>
+    <person>
+      <name>
+        <forename language="en" script="Latn" initial="A">Arnold</forename>
+        <forename initial="B"/>
+        <formatted-initials language="en" script="Latn">A. B.</formatted-initials>
+        <surname language="en" script="Latn">Bierman</surname>
+      </name>
+    </person>
+  </contributor>
+  <contributor>
+    <role type="distributor">
+      <description>sponsor</description>
+    </role>
+    <organization>
+      <name>World Wide Web Consortium</name>
+      <address>
+        <formattedAddress>Address string</formattedAddress>
+      </address>
+    </organization>
+  </contributor>
+  <edition number="1.2">Edition 1</edition>
+  <version>
+    <revision-date>2019-04-01</revision-date>
+    <draft>draft</draft>
+  </version>
+  <note>note</note>
+  <note type="annote">An note</note>
+  <note type="howpublished">How published</note>
+  <note type="comment">Comment</note>
+  <note type="tableOfContents">Table Of Contents</note>
+  <language>en</language>
+  <language>fr</language>
+  <locale>en-US</locale>
+  <script>Latn</script>
+  <abstract language="en" script="Latn">
+    <p>ISO 19115-1:2014 defines the schema required for...</p>
+  </abstract>
+  <abstract language="fr" script="Latn">L'ISO 19115-1:2014 définit le schéma requis pour...</abstract>
+  <status>
+    <stage abbreviation="CD">30</stage>
+    <substage>substage</substage>
+    <iteration>final</iteration>
+  </status>
+  <copyright>
+    <from>2014</from>
+    <to>2020</to>
+    <owner>
+      <organization>
+        <name>International Organization for Standardization</name>
+        <abbreviation language="en">ISO</abbreviation>
+        <uri>www.iso.org</uri>
+      </organization>
+    </owner>
+    <scope>Scope</scope>
+  </copyright>
+  <relation type="updates">
+    <bibitem>
+      <formattedref>ISO 19115:2003</formattedref>
+    </bibitem>
+    <locality type="section">
+      <referenceFrom>Reference from</referenceFrom>
+    </locality>
+    <sourceLocalityStack>
+      <sourceLocality type="volume">
+        <referenceFrom>2</referenceFrom>
+      </sourceLocality>
+      <sourceLocality type="chapter">
+        <referenceFrom>3</referenceFrom>
+      </sourceLocality>
+    </sourceLocalityStack>
+  </relation>
+  <relation type="obsoletes">
+    <description>supersedes</description>
+    <bibitem type="standard">
+      <formattedref>ISO 19115:2003/Cor 1:2006</formattedref>
+    </bibitem>
+    <localityStack>
+      <locality type="chapter">
+        <referenceFrom>1</referenceFrom>
+      </locality>
+    </localityStack>
+    <localityStack>
+      <locality type="page">
+        <referenceFrom>2</referenceFrom>
+      </locality>
+    </localityStack>
+    <sourceLocality type="section">
+      <referenceFrom>Reference from</referenceFrom>
+      <referenceTo>Reference to</referenceTo>
+    </sourceLocality>
+  </relation>
+  <relation type="partOf">
+    <bibitem>
+      <title type="main" format="text/plain">Book title</title>
+    </bibitem>
+  </relation>
+  <series type="main">
+    <formattedref>Series formatted ref</formattedref>
+    <title type="main">Series Title</title>
+    <place>
+      <city>New York</city>
+      <region iso="NY" recommended="true">New York</region>
+      <country iso="US" recommended="true">USA</country>
+      <formattedPlace>New York, NY, US</formattedPlace>
+    </place>
+  </series>
+  <series type="alt">
+    <formattedref>ISO/IEC FDIS 10118-3</formattedref>
+    <title type="original" language="en" script="Latn" locale="en-US">ISO/IEC FDIS 10118-3</title>
+    <organization>Serie's organization</organization>
+    <abbreviation language="en" script="Latn" locale="en-US">ABVR</abbreviation>
+    <from>2009-02-01</from>
+    <to>2010-12-20</to>
+    <number>serie1234</number>
+    <partnumber>part5678</partnumber>
+    <run>2</run>
+  </series>
+  <medium>
+    <content>Medium content</content>
+    <genre>Medium Genre</genre>
+    <form>Medium form</form>
+    <carrier>Medium carrier</carrier>
+    <size>Medium size</size>
+    <scale>Medium scale</scale>
+  </medium>
+  <place>
+    <city>Geneva</city>
+    <region>Europe</region>
+    <country iso="CH" recommended="true">Switzeland</country>
+    <formattedPlace>Geneva, Switzeland</formattedPlace>
+  </place>
+  <price currency="USD">123</price>
+  <extent>
+    <localityStack>
+      <locality type="section">
+        <referenceFrom>Reference from</referenceFrom>
+        <referenceTo>Reference to</referenceTo>
+      </locality>
+      <locality type="chapter">
+        <referenceFrom>4</referenceFrom>
+      </locality>
+    </localityStack>
+  </extent>
+  <extent>
+    <localityStack>
+      <locality type="page">
+        <referenceFrom>10</referenceFrom>
+        <referenceTo>20</referenceTo>
+      </locality>
+      <locality type="volume">
+        <referenceFrom>1</referenceFrom>
+      </locality>
+    </localityStack>
+  </extent>
+  <size>
+    <value type="page">490</value>
+    <value type="plate">3</value>
+  </size>
+  <accesslocation>accesslocation1</accesslocation>
+  <accesslocation>accesslocation2</accesslocation>
+  <license>License</license>
+  <classification type="type">value</classification>
+  <classification type="keyword">Keywords</classification>
+  <classification type="mendeley">Mendeley Tags</classification>
+  <keyword>
+    <vocab language="en" script="Latn">Vocab 1</vocab>
+    <taxon language="en" script="Latn">Taxon 1</taxon>
+    <taxon language="fr" script="Latn">Taxon 2</taxon>
+    <vocabid type="vocab-id-type" uri="http://vovab">
+      <code>444</code>
+      <term>VocabId Term</term>
+    </vocabid>
+  </keyword>
+  <validity>
+    <validityBegins>2010-10-10</validityBegins>
+    <validityEnds>2011-02-03</validityEnds>
+    <revision>2011-03-04</revision>
+  </validity>
+  <depiction scope="cover">
+    <image src="cover1.png" mimetype="image/png" filename="cover1.png" width="200" height="100%" alt="Cover 1" title="Cover #1" longdesc="Cover number 1"/>
+  </depiction>
+</bibitem>

@@ -1,0 +1,410 @@
+id: ISO1231994
+type: standard
+schema_version: 1.0.0
+fetched: "2022-05-02"
+formattedref: ISO 123:1994
+title:
+  - content: Geographic information -- Metadata
+    language: en
+    script: Latn
+    locale: en-US
+  - content: Information géographique -- Métadonnées
+    language: fr
+    script: Latn
+    locale: fr-FR
+source:
+  - type: src
+    content: https://www.iso.org/standard/22722.html
+  - type: doi
+    content: 10.1007/978-3-319-99155-2_1
+docidentifier:
+  - type: ISO
+    content: ISO 123:1994
+    language: en
+    script: Latn
+    locale: en-US
+    scope: global
+    primary: true
+  - type: DOI
+    content: 10.1007/978-3-319-99155-2_1
+docnumber: "123"
+date:
+  - type: published
+    at: "1994-01-01"
+  - type: confirmed
+    from: "1994-02-01"
+    to: "1994-12-31"
+contributor:
+  - role:
+      type: author
+      description:
+        - content: Role of the author
+          language: en
+          script: Latn
+          locale: en-US
+    person:
+      name:
+        abbreviation:
+          content: Prof. J.
+          language: en
+          script: Latn
+          locale: en-US
+        prefix:
+          - content: Prof.
+            language: en
+            script: Latn
+            locale: en-US
+        forename:
+          - initial: J
+            content: John
+            language: en
+            script: Latn
+            locale: en-US
+        formatted_initials:
+          content: J.D.
+          language: en
+          script: Latn
+          locale: en-US
+        surname:
+          content: Doe
+          language: en
+          script: Latn
+          locale: en-US
+        addition:
+          - content: PhD
+            language: en
+            script: Latn
+            locale: en-US
+        completename:
+          content: Prof. John Doe PhD
+          language: en
+          script: Latn
+          locale: en-US
+        note:
+          - type: legal
+            content: J.D.
+            language: en
+            script: Latn
+            locale: en-US
+        variant:
+          - type: pseudonym
+            completename:
+              content: John Q. Public
+              language: en
+              script: Latn
+              locale: en-US
+      credential:
+        - PhD
+      affiliation:
+        - name:
+            content: ISO
+            language: en
+            script: Latn
+            locale: en-US
+          description:
+            - content: Affiliation of the author
+              language: en
+              script: Latn
+              locale: en-US
+          organization:
+            name:
+              - type: primary
+                content: International Organization for Standardization
+      identifier:
+        - type: orcid
+          content: 0000-0002-1825-0097
+      address:
+        - street:
+            - 1, rue de Varembé
+          city: Geneva
+          country: Switzerland
+          postcode: "1211"
+          formatted_address: 1, rue de Varembé,<br>Geneva, Switzerland, 1211
+      phone:
+        - type: mobile
+          content: "+41 22 749 01 11"
+      email:
+        - jdoe@email.org
+      uri:
+        - type: primary
+          content: https://orcid.org/0000-0002-1825-0097
+  - role:
+      type: publisher
+      description:
+        - content: Role of the publisher
+    organization:
+        name:
+          - type: primary
+            content: International Organization for Standardization
+            language: en
+            script: Latn
+            locale: en-US
+        subdivision:
+          - type: primary
+            name:
+                content: ISO/TC 211
+        abbreviation:
+          content: ISO
+        identifier:
+          - type: ISNI
+            content: 0000 0001 2345 6789
+        address:
+          - street:
+              - 1, rue de Varembé
+            city: Geneva
+            country: Switzerland
+            postcode: "1211"
+            formatted_address: 1, rue de Varembé,<br>Geneva, Switzerland, 1211
+        phone:
+          - type: main
+            content: "+41 22 749 01 11"
+        email:
+          - office@iso.org
+        uri:
+          - type: primary
+            content: https://www.iso.org
+            language: en
+            script: Latn
+            locale: en-US
+        logo:
+          image:
+            id: 12345678-abcd-1234-abcd-1234567890ab
+            src: https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg
+            mimetype: image/jpeg
+            filename: PUB100080.jpg
+            alt: ISO logo
+            title: ISO Logo
+            longdesc: https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg
+            width: 100%
+            height: auto
+edition:
+  number: "1"
+  content: First edition
+version:
+  - revision_date: "1994-01-01"
+    draft: PD
+note:
+  - type: errata
+    content: This is an errata
+    language: en
+    script: Latn
+    locale: en-US
+language:
+  - en
+  - fr
+locale:
+  - en-US
+  - fr-FR
+script:
+  - Latn
+abstract:
+  - content: This is an abstract. <em>This is emphasized</em>
+    language: en
+    script: Latn
+    locale: en-US
+status:
+  stage:
+    abbreviation: IS
+    content: Published
+  substage:
+    abbreviation: FDIS
+    content: Final Draft International Standard
+  iteration: "3"
+copyright:
+  - from: "1994"
+    to: "2000"
+    owner:
+      - organization:
+          name:
+            - content: ISO
+      - person:
+          name:
+            completename:
+              content: John Doe
+    scope: Book preface
+relation:
+  - type: isPartOf
+    description:
+      content: Part of the ISO 123 serieso
+      language: en
+      script: Latn
+      locale: en-US
+    bibitem:
+      formattedref: ISO 123-1:1994
+      docidentifier:
+        - type: ISO
+          content: ISO 123-1:1994
+    locality:
+      - type: section
+        reference_from: "1"
+        reference_to: "10"
+    locality_stack:
+      - connective: and
+        locality:
+          - type: article
+            reference_from: "1"
+          - type: page
+            reference_from: "2"
+            reference_to: "5"
+    source_locality:
+      - type: chapter
+        reference_from: "4"
+        reference_to: "11"
+    source_locality_stack:
+      - connective: or
+        source_locality:
+          - type: article
+            reference_from: "2"
+            reference_to: "5"
+        source_locality:
+          - type: article
+            reference_from: "7"
+            reference_to: "9"
+series:
+  - type: main
+    formattedref: ISO 123
+    title:
+      - content: ISO 123
+    place:
+      city: New York
+      region:
+        - iso: US-NY
+          recommended: true
+          content: New York
+      country:
+        - iso: US
+          recommended: true
+          content: United States
+      formatted_place: New York, United States
+      uri:
+        type: primary
+        content: https://www.iso.org/series/123
+    organization: International Organization for Standardization
+    abbreviation:
+      content: ISO
+    from: "2000-01-01"
+    to: "2000-12-31"
+    number: "1"
+    partnumber: "1"
+    run: Run 1
+medium:
+  content: cri
+  genre: statical dataset
+  form: c
+  carrier: cr
+  size: 500 kB
+  scale: 1:10,000
+place:
+  - city: Geneva
+    region:
+      - iso: CH-GE
+        recommended: true
+        content: Geneva
+    country:
+      - iso: CH
+        recommended: true
+        content: Switzerland
+    formatted_place: Geneva, Switzerland
+    uri:
+      type: primary
+      content: https://www.iso.org/series/123
+price:
+  - currency: CHF
+    content: "123.45"
+  - currency: USD
+    content: "123.45"
+extent:
+  - locality:
+    - type: page
+      reference_from: "1"
+      reference_to: "10"
+  - locality_stack:
+      - connective: and
+        locality:
+          - type: article
+            reference_from: "1"
+          - type: page
+            reference_from: "2"
+            reference_to: "5"
+size:
+  value:
+    - type: page
+      content: "10"
+    - type: article
+      content: "5"
+accesslocation:
+  - file/path
+license:
+  - MIT
+classification:
+  - type: ISO
+    content: "123"
+    language: en
+    script: Latn
+    locale: en-US
+    scope: local
+    primary: true
+keyword:
+  - vocab:
+      - content: geographic
+        language: en
+        script: Latn
+        locale: en-US
+    taxon:
+      - content: information
+        language: en
+        script: Latn
+        locale: en-US
+    vocabid:
+      type: AGROVOC
+      uri: http://aims.fao.org/aos/agrovoc/
+      code: "1234"
+      term: Test term
+validity:
+  begins: "1994-01-01"
+  ends: "1994-12-31"
+  revision: "1994-12-31"
+depiction:
+  scope: local
+  image:
+    - id: 12345678-abcd-1234-abcd-1234567890ab
+      src: https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg
+      mimetype: image/jpeg
+      filename: PUB100080.jpg
+      alt: ISO logo
+      title: ISO Logo
+      longdesc: https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg
+      width: 100%
+      height: auto
+ext:
+  schema_version: 1.0.0
+  doctype:
+    abbreviation: std
+    content: Standard
+  subdoctype: Technical Report
+  flavor: iso
+  editorialgroup:
+    technical_committee:
+      number: "211"
+      type: main
+      identifier: ISO/TC 211
+      prefix: ISO
+      content: Geographic information
+  ics:
+    - code: "01.040.11"
+      text: ISO 123-1
+  structuredidentifier:
+    - type: standard
+      agency:
+        - ISO
+      klass: technical report
+      docnumber: "123-1"
+      partnumber: "1"
+      edition: "2"
+      version: "3"
+      supplementtype: "A"
+      supplementnumber: "1"
+      amendment: "1"
+      corrigendum: "1"
+      language: "en"
+      year: "1994"

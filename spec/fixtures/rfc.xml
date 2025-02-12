@@ -1,0 +1,66 @@
+<reference anchor="ISO.TC.211" target="https://www.iso.org/standard/53798.html">
+  <front>
+    <title>Geographic information</title>
+    <author>
+      <organization abbrev="ISO">International Organization for Standardization</organization>
+      <address>
+        <uri>www.iso.org</uri>
+      </address>
+    </author>
+    <author fullname="A. Bierman">
+      <organization abbrev="IETF">IETF</organization>
+      <address>
+        <postal>
+          <city>City</city>
+          <code>123456</code>
+          <country>Country</country>
+          <region>State</region>
+          <street>Street</street>
+        </postal>
+        <phone>223322</phone>
+        <email>person@email.org</email>
+        <uri>www.person.com</uri>
+      </address>
+    </author>
+    <author role="editor">
+      <organization abbrev="IEEE">IEEE</organization>
+      <address>
+        <postalLine>Formatted address</postalLine>
+      </address>
+    </author>
+    <author fullname="Arnold Bierman" initials="A." surname="Bierman">
+      <organization abbrev="IETF">IETF</organization>
+      <address>
+        <postal>
+          <city>City</city>
+          <code>123456</code>
+          <country>Country</country>
+          <region>State</region>
+          <street>Street</street>
+        </postal>
+        <phone>223322</phone>
+      </address>
+    </author>
+    <author role="editor" fullname="Arnold B Bierman" initials="A. B." surname="Bierman">
+      <organization/>
+    </author>
+    <author>
+      <organization>W3C</organization>
+      <address>
+        <postalLine>Address string</postalLine>
+      </address>
+    </author>
+    <date year="2014" month="April"/>
+    <workgroup>Editorial group</workgroup>
+    <abstract>
+      <t>ISO 19115-1:2014 defines the schema required for...</t>
+    </abstract>
+  </front>
+  <seriesInfo name="DOI" value="10.17487/rfc1149"/>
+  <seriesInfo name="Internet-Draft" value="draft-ietf-somewg-someprotocol-07"/>
+  <seriesInfo name="ISO/IEC FDIS 10118-3" value="serie1234"/>
+  <seriesInfo name="Formattedref"/>
+  <seriesInfo name="Journal" value="7"/>
+  <seriesInfo name="Series"/>
+  <seriesInfo name="RFC" value="4"/>
+</reference>

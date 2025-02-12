@@ -1,4 +1,4 @@
-= RelatonBib
+= Relaton::Bib
 
 image:https://img.shields.io/gem/v/relaton-bib.svg["Gem Version", link="https://rubygems.org/gems/relaton-bib"]
 image:https://github.com/relaton/relaton-bib/workflows/rake/badge.svg["Build Status", link="https://github.com/relaton/relaton-bib/actions?workflow=rake"]
@@ -6,7 +6,7 @@ image:https://codeclimate.com/github/relaton/relaton-bib/badges/gpa.svg["Code Cl
 image:https://img.shields.io/github/issues-pr-raw/relaton/relaton-bib.svg["Pull Requests", link="https://github.com/relaton/relaton-bib/pulls"]
 image:https://img.shields.io/github/commits-since/relaton/relaton-bib/latest.svg["Commits since latest",link="https://github.com/relaton/relaton-bib/releases"]
 
-RelatonBib is a Ruby gem that implements the https://github.com/metanorma/relaton-models#bibliography-uml-models[BibliographicItem model].
+Relaton::Bib is a Ruby gem that implements the https://github.com/metanorma/relaton-models#bibliography-uml-models[BibliographicItem model].
 
 == Installation
 
@@ -27,23 +27,34 @@ Or install it yourself as:
 
 == Usage
 
-=== Create bibliographic item
+=== Configuration
+
+Configuration is optional. The available option is `logger` which is a `Logger` instance. By default, the logger is `Logger.new($stderr)` with `Logger::WARN` level. To change the logger level, use `Relaton::Bib.configure` block.
 
 [source,ruby]
 ----
 require 'relaton_bib'
 => true
 
+Relaton::Bib.configure do |config|
+  config.logger.level = Logger::DEBUG
+end
+----
+
+=== Create bibliographic item
+
+[source,ruby]
+----
 hash = YAML.load_file "spec/examples/bib_item.yml"
 => {"id"=>"ISOTC211",
 "fetched"=>"2022-05-02",
  "title"=>["Geographic information", {"content"=>"Information géographique", "language"=>"fr", "script"=>"Latn"}],
  ...
 
-item = RelatonBib::BibliographicItem.from_hash(hash)
-=> #<RelatonBib::BibliographicItem:0x00007f962f030710
+item = Relaton::Bib::Item.from_hash(hash)
+=> #<Relaton::Bib::Item:0x00007f962f030710
  @abstract=
-  [#<RelatonBib::FormattedString:0x00007f962f02acc0
+  [#<Relaton::Bib::FormattedString:0x00007f962f02acc0
 ...
 ----
 
@@ -52,24 +63,24 @@ item = RelatonBib::BibliographicItem.from_hash(hash)
 [source,ruby]
 ----
 item.title
-=> #<RelatonBib::TypedTitleStringCollection:0x00007fea821ec6b0
+=> #<Relaton::Bib::TitleCollection:0x00007fea821ec6b0
  @array=
-  [#<RelatonBib::TypedTitleString:0x00007fea821ecb60
-    @title=#<RelatonBib::FormattedString:0x00007fea821eca70 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
+  [#<Relaton::Bib::Title:0x00007fea821ecb60
+    @title=#<Relaton::Bib::FormattedString:0x00007fea821eca70 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
     @type="title-main">,
-   #<RelatonBib::TypedTitleString:0x00007fea821ec8b8
-    @title=#<RelatonBib::FormattedString:0x00007fea821ec818 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
+   #<Relaton::Bib::Title:0x00007fea821ec8b8
+    @title=#<Relaton::Bib::FormattedString:0x00007fea821ec818 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
     @type="main">,
-   #<RelatonBib::TypedTitleString:0x00007fea821ec610
+   #<Relaton::Bib::Title:0x00007fea821ec610
     @title=
-     #<RelatonBib::FormattedString:0x00007fea821ec570 @content="Information géographique", @format="text/plain", @language=["fr"], @script=["Latn"]>,
+     #<Relaton::Bib::FormattedString:0x00007fea821ec570 @content="Information géographique", @format="text/plain", @language=["fr"], @script=["Latn"]>,
     @type=nil>]>
 
 item.title lang: "fr"
-=> #<RelatonBib::TypedTitleStringCollection:0x00007fea8222d908
+=> #<Relaton::Bib::TitleCollection:0x00007fea8222d908
  @array=
-  [#<RelatonBib::TypedTitleString:0x00007fea821ec610
-    @title=#<RelatonBib::FormattedString:0x00007fea821ec570 @content="Information géographique", @format="text/plain", @language=["fr"], @script=["Latn"]>,
+  [#<Relaton::Bib::Title:0x00007fea821ec610
+    @title=#<Relaton::Bib::FormattedString:0x00007fea821ec570 @content="Information géographique", @format="text/plain", @language=["fr"], @script=["Latn"]>,
     @type=nil>]>
 ----
 
@@ -78,12 +89,12 @@ item.title lang: "fr"
 [source,ruby]
 ----
 item.abstract
-=> [#<RelatonBib::FormattedString:0x00007fea82236828
+=> [#<Relaton::Bib::FormattedString:0x00007fea82236828
   @content="<p>ISO 19115-1:2014 defines the schema required for ...</p>",
   @format="text/html",
   @language=["en"],
   @script=["Latn"]>,
- #<RelatonBib::FormattedString:0x00007fea82236670
+ #<Relaton::Bib::FormattedString:0x00007fea82236670
   @content="L'ISO 19115-1:2014 définit le schéma requis pour ...",
   @format="text/plain",
   @language=["fr"],
@@ -191,8 +202,8 @@ hash = YAML.load_file 'spec/examples/bib_item.yml'
 => {"id"=>"ISOTC211"
 ...
 
-RelatonBib::BibliographicItem.from_hash hash
-=> #<RelatonBib::BibliographicItem:0x007ff1524f8c88
+Relaton::Bib::Item.from_hash hash
+=> #<Relaton::Bib::Item:0x007ff1524f8c88
 ...
 ----
 
@@ -203,8 +214,8 @@ RelatonBib::BibliographicItem.from_hash hash
 bibxml = File.read "spec/examples/rfc.xml"
 => <reference anchor=...
 
-RelatonBib::BibXMLParser.parse bibxml
-=> #<RelatonBib::BibliographicItem:0x00007f9d0c75b268
+Relaton::Bib::BibXMLParser.parse bibxml
+=> #<Relaton::Bib::Item:0x00007f9d0c75b268
 ...
 ----
 
@@ -226,9 +237,9 @@ item.to_hash
 
 [source,ruby]
 ----
-RelatonBib::BibtexParser.from_bibtex File.read('spec/examples/techreport.bib')
+Relaton::Bib::BibtexParser.from_bibtex File.read('spec/examples/techreport.bib')
 => {"ISOTC211"=>
-  #<RelatonBib::BibliographicItem:0x007fedee0a2ab0
+  #<Relaton::Bib::Item:0x007fedee0a2ab0
   ...
 ----
 
