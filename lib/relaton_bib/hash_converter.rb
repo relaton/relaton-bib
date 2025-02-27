@@ -525,7 +525,7 @@ module RelatonBib
       case obj
       when Hash
         obj.reduce({}) do |memo, (k, v)|
-          memo[k.to_sym] = symbolize(v)
+          memo[k.to_s.to_sym] = symbolize(v)
           memo
         end
       when Array then obj.reduce([]) { |memo, v| memo << symbolize(v) }

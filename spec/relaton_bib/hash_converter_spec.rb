@@ -21,6 +21,14 @@ RSpec.describe RelatonBib::HashConverter do
     expect(ls).to be_instance_of RelatonBib::LocalizedString
   end
 
+  describe "symboliize hash" do
+    it "with boolean keys" do
+      # Relaton does not use boolean keys but for not fail with invalid data it should be handled
+      hash = { true => "value" }
+      expect(described_class.symbolize(hash)).to eq(true: "value")
+    end
+  end
+
   # it "make localityStack from unwrapped loclaity" do
   #   hash = { locality: [{ type: "section", reference_from: "1" }] }
   #   RelatonBib::HashConverter.relation_locality_hash_to_bib hash
