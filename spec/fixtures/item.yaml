@@ -391,7 +391,7 @@ ext:
   flavor: iso
   editorialgroup:
     technical_committee:
-      number: "211"
+      number: 211
       type: main
       identifier: ISO/TC 211
       prefix: ISO

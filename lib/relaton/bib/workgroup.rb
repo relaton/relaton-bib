@@ -1,7 +1,7 @@
 module Relaton
   module Bib
     class WorkGroup < Lutaml::Model::Serializable
-      attribute :number, :string
+      attribute :number, :integer
       attribute :type, :string
       attribute :identifier, :string
       attribute :prefix, :string

@@ -1,14 +1,23 @@
 module Relaton
   module Bib
-    # This class represents a bibliographic item as a bibitem.
-    class Bibitem < Item
-      model ItemData
+    module BibitemShared
+      def self.included(base)
+        base.class_eval do
+          model ItemData
 
-      mappings[:xml].instance_variable_get(:@elements).delete("ext")
+          # This class represents a bibliographic item as a bibitem.
+          attributes.delete :ext
+          mappings[:xml].instance_variable_get(:@elements).delete("ext")
 
-      xml do
-        root "bibitem"
+          xml do
+            root "bibitem"
+          end
+        end
       end
+    end
+
+    class Bibitem < Item
+      include BibitemShared
     end
   end
 end
