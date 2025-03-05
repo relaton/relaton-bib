@@ -1,7 +1,11 @@
 module Relaton
   module Bib
     class Date < Lutaml::Model::Serializable
-      attribute :type, :string
+      attribute :type, :string, values: %w[
+        published accessed created implemented obsoleted confirmed updated
+        corrected issued transmitted copied unchanged circulated adapted
+        vote-started vote-ended announced stable-until
+      ]
       attribute :text, :string
       choice(min: 1, max: 2) do
         choice(min: 1, max: 2) do

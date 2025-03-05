@@ -3,7 +3,19 @@ require_relative "item_base"
 module Relaton
   module Bib
     class Relation
-      attribute :type, :string
+      attribute :type, :string, values: %w[
+        includes includedIn hasPart partOf merges mergedInto splits splitInto
+        instanceOf hasInstance exemplarOf hasExemplar manifestationOf
+        hasManifestation reproductionOf hasReproduction reprintOf hasReprint
+        expressionOf hasExpression translatedFrom hasTranslation arrangementOf
+        hasArrangement abridgementOf hasAbridgement annotationOf hasAnnotation
+        draftOfhasDraft preliminaryDraftOf hasPreliminaryDraft revisionDraftOf
+        hasRevisionDraft editionOf hasEdition updates updatedBy derivedFrom
+        derives describes describedBy catalogues cataloguedBy hasSuccessor
+        successorOf adaptedFrom hasAdaptation adoptedFrom adoptedAs reviewOf
+        hasReview commentaryOf hasCommentary related hasComplement complementOf
+        obsoletes obsoletedBy cites isCitedIn
+      ]
       attribute :description, LocalizedMarkedUpString
       attribute :bibitem, ItemBase
       choice(min: 1, max: 1) do
