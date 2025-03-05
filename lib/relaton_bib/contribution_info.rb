@@ -26,7 +26,7 @@ module RelatonBib
       end
 
       @type = args[:type]
-      @description = args.fetch(:description, []).map do |d|
+      @description = (args[:description] || []).map do |d|
         FormattedString.new content: d, format: nil
       end
     end

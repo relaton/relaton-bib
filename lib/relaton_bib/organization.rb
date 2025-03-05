@@ -75,10 +75,10 @@ module RelatonBib
     # @param identifier [Array<RelatonBib::OrgIdentifier>]
     # @param contact [Array<RelatonBib::Address, RelatonBib::Contact>]
     # @param logo [RelatonBib::Image, nil]
-    def initialize(**args) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+    def initialize(**args) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       raise ArgumentError, "missing keyword: name" unless args[:name]
 
-      super(url: args[:url], contact: args.fetch(:contact, []))
+      super(url: args[:url], contact: args[:contact] || [])
 
       @name = if args[:name].is_a?(Array)
                 args[:name].map { |n| localized_string(n) }
@@ -90,7 +90,7 @@ module RelatonBib
       @subdivision  = (args[:subdivision] || []).map do |sd|
         localized_string sd
       end
-      @identifier = args.fetch(:identifier, [])
+      @identifier = args[:identifier] || []
       @logo = args[:logo]
     end
 

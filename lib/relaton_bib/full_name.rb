@@ -23,23 +23,25 @@ module RelatonBib
     # @param prefix [Array<RelatonBib::LocalizedString>] array of prefixes
     # @param completename [RelatonBib::LocalizedString, nil] completename or surname should be present
     #
-    def initialize(**args) # rubocop:disable Metrics/AbcSize
+    def initialize(**args) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
       unless args[:surname] || args[:completename]
         raise ArgumentError, "Should be given :surname or :completename"
       end
 
       @surname      = args[:surname]
       @abbreviation = args[:abbreviation]
-      @forename     = args.fetch :forename, []
+      @forename     = args[:forename] || []
       @initials     = args[:initials].is_a?(String) ? LocalizedString.new(args[:initials]) : args[:initials]
-      @addition     = args.fetch :addition, []
-      @prefix       = args.fetch :prefix, []
+      @addition     = args[:addition] || []
+      @prefix       = args[:prefix] || []
       @completename = args[:completename]
     end
 
-    def ==(other)
-      surname == other.surname && abbreviation == other.abbreviation && completename == other.completename &&
-        forename == other.forename && initials == other.initials && addition == other.addition && prefix == other.prefix
+    def ==(other) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
+      surname == other.surname && abbreviation == other.abbreviation &&
+        completename == other.completename && forename == other.forename &&
+        initials == other.initials && addition == other.addition &&
+        prefix == other.prefix
     end
 
     # @param opts [Hash]

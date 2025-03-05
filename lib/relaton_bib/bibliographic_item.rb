@@ -233,7 +233,7 @@ module RelatonBib
         a.is_a?(Hash) ? FormattedString.new(**a) : a
       end
 
-      @copyright = args.fetch(:copyright, []).map do |c|
+      @copyright = (args[:copyright] || []).map do |c|
         c.is_a?(Hash) ? CopyrightAssociation.new(**c) : c
       end
 
@@ -248,31 +248,31 @@ module RelatonBib
                           Edition.new(content: args[:edition].to_s)
                         when Edition then args[:edition]
                         end
-      @version        = args.fetch :version, []
-      @biblionote     = args.fetch :biblionote, BiblioNoteCollection.new([])
-      @language       = args.fetch :language, []
-      @script         = args.fetch :script, []
+      @version        = args[:version] || []
+      @biblionote     = args[:biblionote] || BiblioNoteCollection.new([])
+      @language       = args[:language] || []
+      @script         = args[:script] || []
       @status         = args[:docstatus]
       @relation       = DocRelationCollection.new(args[:relation] || [])
-      @link           = args.fetch(:link, []).map do |s|
+      @link           = (args[:link] || []).map do |s|
         case s
         when Hash then TypedUri.new(**s)
         when String then TypedUri.new(content: s)
         else s
         end
       end
-      @series         = args.fetch :series, []
+      @series         = args[:series] || []
       @medium         = args[:medium]
-      @place          = args.fetch(:place, []).map do |pl|
+      @place          = (args[:place] || []).map do |pl|
         pl.is_a?(String) ? Place.new(name: pl) : pl
       end
       @extent         = args[:extent] || []
       @size           = args[:size]
-      @accesslocation = args.fetch :accesslocation, []
-      @classification = args.fetch :classification, []
+      @accesslocation = args[:accesslocation] || []
+      @classification = args[:classification] || []
       @validity       = args[:validity]
       # we should pass the fetched arg from scrappers
-      @fetched        = args.fetch :fetched, nil
+      @fetched        = args[:fetched]
       @keyword        = (args[:keyword] || []).map do |kw|
         case kw
         when Hash then LocalizedString.new(kw[:content], kw[:language], kw[:script])
@@ -280,11 +280,11 @@ module RelatonBib
         else kw
         end
       end
-      @license        = args.fetch :license, []
+      @license        = args[:license] || []
       @doctype        = args[:doctype]
       @subdoctype     = args[:subdoctype]
       @editorialgroup = args[:editorialgroup]
-      @ics            = args.fetch :ics, []
+      @ics            = args[:ics] || []
       @structuredidentifier = args[:structuredidentifier]
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
