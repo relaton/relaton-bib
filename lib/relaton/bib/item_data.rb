@@ -10,6 +10,10 @@ module Relaton
                     :abstract, :status, :copyright, :relation, :series, :medium,
                     :place, :price, :extent, :size, :accesslocation, :license,
                     :classification, :keyword, :validity, :depiction, :ext
+
+      def initialize(**args)
+        args.each { |k, v| instance_variable_set "@#{k}", v }
+      end
     end
   end
 end

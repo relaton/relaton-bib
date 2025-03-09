@@ -21,7 +21,6 @@ require_relative "bibxml_parser"
 require_relative "renderer/bibtex_builder"
 require_relative "renderer/bibxml"
 require_relative "bib/relation"
-# require_relative "hash_converter"
 
 module Relaton
   # class Error < StandardError; end

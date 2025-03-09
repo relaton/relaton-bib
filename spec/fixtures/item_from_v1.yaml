@@ -1,0 +1,409 @@
+---
+id: ISOTC211
+type: standard
+schema_version: v1.2.9
+fetched: '2022-05-02'
+title:
+- content: Geographic information
+  type: title-main
+  format: text/plain
+- content: Geographic information
+  type: main
+  format: text/plain
+- language: fr
+  script: Latn
+  content: Information géographique
+  format: text/plain
+source:
+- language: en
+  script: Latn
+  type: src
+  content: https://www.iso.org/standard/53798.html
+- type: obp
+  content: https://www.iso.org/obp/ui/#!iso:std:53798:en
+- type: rss
+  content: https://www.iso.org/contents/data/standard/05/37/53798.detail.rss
+- type: doi
+  content: http://standrd.org/doi-123
+- type: file
+  content: file://path/file
+docidentifier:
+- language: en
+  script: Latn
+  content: ISO TC 211
+  type: ISO
+  primary: true
+- content: ISBN
+  type: isbn
+- content: LCCN
+  type: lccn
+- content: ISSN
+  type: issn
+  scope: series
+- content: urn:iso:std:iso:123:stage-90.93:ed-3:en,fr
+  type: URN
+- content: XYZ
+- content: 10.17487/rfc1149
+  type: DOI
+- content: draft-ietf-somewg-someprotocol-07
+  type: Internet-Draft
+docnumber: TC211
+date:
+- type: issued
+  at: '2014'
+- type: published
+  at: 2014-04
+- type: accessed
+  at: '2015-05-20'
+contributor:
+- role:
+  - type: publisher
+    description:
+    - content: Publisher role
+  organization:
+    uri:
+    - content: www.iso.org
+    name:
+    - content: International Organization for Standardization
+    subdivision:
+    - name:
+      - content: division
+    abbreviation:
+      content: ISO
+    logo:
+      image:
+        id: logo1
+        src: logo1.png
+        mimetype: image/png
+        filename: logo1.png
+        width: '200'
+        height: 100%
+        alt: Logo 1
+        title: 'Logo #1'
+        longdesc: Logo number 1
+- role:
+  - type: author
+  person:
+    address:
+    - street:
+      - Street
+      city: City
+      state: State
+      country: Country
+      postcode: '123456'
+    phone:
+    - type: mobile
+      content: '223322'
+    email:
+    - person@email.org
+    uri:
+    - content: www.person.com
+    name:
+      abbreviation:
+        content: AB
+      completename:
+        language: en
+        script: Latn
+        content: A. Bierman
+    credential:
+    - Credential
+    affiliation:
+    - organization:
+        name:
+        - content: IETF
+        abbreviation:
+          content: IETF
+        identifier:
+        - type: uri
+          content: www.ietf.org
+- role:
+  - type: publisher
+    description:
+    - content: Publisher description
+  - type: editor
+    description:
+    - content: Editor description
+  organization:
+    address:
+    - formatted_address: Formatted address
+    name:
+    - content: Institute of Electrical and Electronics Engineers
+    abbreviation:
+      content: IEEE
+    identifier:
+    - type: uri
+      content: www.ieee.org
+- role:
+  - type: author
+  person:
+    address:
+    - street:
+      - Street
+      city: City
+      state: State
+      country: Country
+      postcode: '123456'
+    phone:
+    - type: work
+      content: '223322'
+    name:
+      prefix:
+      - content: Prefix
+      forename:
+      - content: Arnold
+      formatted_initials:
+        content: A.
+      surname:
+        content: Bierman
+      addition:
+      - content: Addition
+    affiliation:
+    - name:
+        language: en
+        script: Latn
+        content: Name
+      description:
+      - language: en
+        content: Description
+      organization:
+        name:
+        - content: IETF
+        abbreviation:
+          content: IETF
+    identifier:
+    - type: uri
+      content: www.person.com
+- role:
+  - type: editor
+  person:
+    name:
+      forename:
+      - language: en
+        script: Latn
+        content: Arnold
+        initial: A
+      - initial: B
+      formatted_initials:
+        language: en
+        script: Latn
+        content: A. B.
+      surname:
+        language: en
+        script: Latn
+        content: Bierman
+- role:
+  - type: distributor
+    description:
+    - content: sponsor
+  organization:
+    address:
+    - formatted_address: Address string
+    name:
+    - content: World Wide Web Consortium
+edition:
+  number: '1.2'
+  content: Edition 1
+version:
+- revision_date: '2019-04-01'
+  draft: draft
+note:
+- content: note
+- type: annote
+  content: An note
+- type: howpublished
+  content: How published
+- type: comment
+  content: Comment
+- type: tableOfContents
+  content: Table Of Contents
+language:
+- en
+- fr
+script:
+- Latn
+abstract:
+- language: en
+  script: Latn
+  content: "<p>ISO 19115-1:2014 defines the schema required for...</p>"
+- language: fr
+  script: Latn
+  content: L'ISO 19115-1:2014 définit le schéma requis pour...
+status:
+  stage:
+    abbreviation: CD
+    content: '30'
+  substage:
+    content: substage
+  iteration: final
+copyright:
+- from: '2014'
+  to: '2020'
+  owner:
+  - organization:
+      uri:
+      - content: www.iso.org
+      name:
+      - content: International Organization for Standardization
+      abbreviation:
+        content: ISO
+  scope: Scope
+relation:
+- type: updates
+  bibitem:
+    formattedref: ISO 19115:2003
+  locality:
+  - type: section
+    reference_from: Reference from
+  source_locality_stack:
+  - source_locality:
+    - type: volume
+      reference_from: '2'
+    - type: chapter
+      reference_from: '3'
+- type: obsoletes
+  description:
+    content: supersedes
+  bibitem:
+    type: standard
+    formattedref: ISO 19115:2003/Cor 1:2006
+  locality_stack:
+  - locality:
+    - type: chapter
+      reference_from: '1'
+  - locality:
+    - type: page
+      reference_from: '2'
+  source_locality:
+  - type: section
+    reference_from: Reference from
+    reference_to: Reference to
+- type: partOf
+  bibitem:
+    title:
+    - content: Book title
+      type: main
+      format: text/plain
+series:
+- type: Internet-Draft
+  title:
+  - content: Internet-Draft
+    format: text/plain
+  number: draft-ietf-somewg-someprotocol-07
+  run: seriesrun
+- type: main
+  title:
+  - language: en
+    script: Latn
+    content: ISO/IEC FDIS 10118-3
+    type: original
+    format: text/plain
+  place:
+    formatted_place: Serie's place
+  organization: Serie's organization
+  abbreviation:
+    content: ABVR
+  from: '2009-02-01'
+  to: '2010-12-20'
+  number: serie1234
+  partnumber: part5678
+- type: alt
+  formattedref: serieref
+  title:
+  - content: Formattedref
+    format: text/plain
+- type: journal
+  title:
+  - content: Journal
+    format: text/plain
+  number: '7'
+- title:
+  - content: RFC
+    format: text/plain
+  number: '4'
+medium:
+  form: medium form
+  size: medium size
+  scale: medium scale
+place:
+- formatted_place: bib place
+- city: Geneva
+  region:
+  - content: Region
+  country:
+  - iso: CH
+    recommended: true
+    content: Switzelznd
+extent:
+- locality:
+  - type: section
+    reference_from: Reference from
+    reference_to: Reference to
+  - type: chapter
+    reference_from: '4'
+- locality_stack:
+  - locality:
+    - type: page
+      reference_from: '10'
+      reference_to: '20'
+    - type: volume
+      reference_from: '1'
+size:
+  value:
+  - type: page
+    content: '490'
+  - type: plate
+    content: '3'
+accesslocation:
+- accesslocation1
+- accesslocation2
+license:
+- License
+classification:
+- content: value
+  type: type
+- content: Keywords
+  type: keyword
+- content: Mendeley Tags
+  type: mendeley
+keyword:
+- taxon:
+  - content: Keyword
+- taxon:
+  - content: Key Word
+validity:
+  begins: '2010-10-10'
+  ends: '2011-02-03'
+  revision: '2011-03-04'
+ext:
+  doctype:
+    abbreviation: DCT
+    content: Doctype
+  subdoctype: Subdoctype
+  flavor: iso
+  editorialgroup:
+    technical_committee:
+    - number: 1
+      type: Type
+      identifier: Identifier
+      prefix: Prefix
+      content: Editorial group
+  ics:
+  - code: '01'
+    text: First
+  structuredidentifier:
+  - type: type 1
+    agency:
+    - agency 1
+    - agency 2
+    klass: class 1
+    docnumber: '123'
+    partnumber: '4'
+    edition: '1'
+    version: '2'
+    supplementtype: type 2
+    supplementnumber: '5'
+    language: en
+    year: '2020'
+  - agency:
+    - agency 3
+    docnumber: '456'

@@ -347,19 +347,6 @@ series:
     format: text/plain
   number: '7'
 - title:
-    content:
-    - content: Series
-      language:
-      - en
-      script:
-      - Latn
-    - content: Séries
-      language:
-      - fr
-      script:
-      - Latn
-    format: text/plain
-- title:
     content: RFC
     format: text/plain
   number: '4'

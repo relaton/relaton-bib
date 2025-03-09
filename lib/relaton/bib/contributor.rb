@@ -1,6 +1,20 @@
 module Relaton
   module Bib
     class Contributor < Lutaml::Model::Serializable
+      class Role < Lutaml::Model::Serializable
+        attribute :type, :string, values: %w[
+          author performer publisher editor adapter translator distributor reazer
+          owner authorizer enabler subject
+        ]
+        attribute :description, LocalizedMarkedUpString, collection: true
+
+        xml do
+          root "role"
+          map_attribute "type", to: :type
+          map_element "description", to: :description
+        end
+      end
+
       attribute :role, Role, collection: true
       # attribute :entity, ContributionInfo
       # @TODO: use `import_model ContributionInfo` for person and organization when Lutaml supports it
