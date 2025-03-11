@@ -35,11 +35,11 @@ module Relaton
         validity_hash_to_bib(ret)
         keyword_hash_to_bib(ret)
         ret[:license] = Relaton.array(ret[:license])
-        ext_has_to_bib ret
+        ext_hash_to_bib ret
         ret
       end
 
-      def ext_has_to_bib(ret)
+      def ext_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize
         ret[:ext] ||= {}
         doctype_hash_to_bib ret
         ret[:ext][:subdoctype] = ret.delete(:subdoctype) if ret[:subdoctype]
@@ -237,7 +237,11 @@ module Relaton
       end
 
       def edition_hash_to_bib(ret)
-        ret[:edition] &&= Bib::Edition.new(**ret[:edition])
+        ret[:edition] &&= if ret[:edition].is_a?(Hash)
+                            Bib::Edition.new(**ret[:edition])
+                          else
+                            Bib::Edition.new(content: ret[:edition])
+                          end
       end
 
       def create_organization(org)
@@ -448,8 +452,12 @@ module Relaton
           relation_locality_stack_hash_to_bib(rel)
           relaton_source_locality_stack_hash_to_bib(rel)
           relation_source_locality_hash_to_bib(rel)
-          Bib::Relation.new(**rel)
+          create_relation rel
         end
+      end
+
+      def create_relation(rel)
+        Bib::Relation.new(**rel)
       end
 
       # @param rel [Hash] relation
@@ -593,12 +601,17 @@ module Relaton
         eg = ret.dig(:ext, :editorialgroup) || ret[:editorialgroup] # @todo remove ret[:editorialgroup] in the future
         return unless eg
 
-        technical_committee = Relaton.array(eg).map do |wg|
-          wg[:content] ||= wg.delete(:name)
-          # Bib::TechnicalCommittee.new
-          Bib::WorkGroup.new(**wg)
-        end
+        technical_committee = workgroup_hash_to_bib eg
         ret[:ext][:editorialgroup] = Bib::EditorialGroup.new technical_committee: technical_committee
+      end
+
+      def workgroup_hash_to_bib(wrkg)
+        Relaton.array(wrkg).map { |wg| create_workgroup wg }
+      end
+
+      def create_workgroup(wrkg)
+        wrkg[:content] ||= wrkg.delete(:name)
+        Bib::WorkGroup.new(**wrkg)
       end
 
       # @param ret [Hash]
@@ -679,16 +692,20 @@ module Relaton
         doctype = ret.dig(:ext, :doctype) || ret[:doctype] # @todo remove ret[:doctype] in the future
         return unless doctype
 
-        ret[:ext][:doctype] = create_doctype(doctype)
+        ret[:ext][:doctype] = create_doctype(doctype_args(doctype))
+      end
+
+      def doctype_args(args)
+        if args.is_a?(String)
+          { content: args }
+        else
+          args[:content] = args.delete(:type)
+          args
+        end
       end
 
       def create_doctype(args)
-        if args.is_a?(String)
-          Bib::Doctype.new type: args
-        else
-          args[:content] = args.delete(:type)
-          Bib::Doctype.new(**args)
-        end
+        Bib::Doctype.new(**args)
       end
     end
   end
