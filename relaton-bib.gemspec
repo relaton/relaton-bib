@@ -1,6 +1,6 @@
 lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "relaton/bib/gem_version"
+require "relaton/bib/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "relaton-bib"
@@ -23,9 +23,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.required_ruby_version = Gem::Requirement.new(">= 2.7.0")
 
-  spec.add_dependency "addressable"
   spec.add_dependency "bibtex-ruby"
-  spec.add_dependency "htmlentities"
   spec.add_dependency "iso639"
   spec.add_dependency "lutaml-model", "~> 0.6"
   spec.add_dependency "nokogiri", "~> 1.16.0"

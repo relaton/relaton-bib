@@ -1,14 +1,5 @@
 module Relaton
   module Bib
-    class Version < Lutaml::Model::Serializable
-      attribute :revision_date, :date
-      attribute :draft, :string
-
-      xml do
-        root "version"
-        map_element "revision-date", to: :revision_date
-        map_element "draft", to: :draft
-      end
-    end
+    VERSION = "2.0.0-alpha.1".freeze
   end
 end

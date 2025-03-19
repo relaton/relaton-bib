@@ -63,7 +63,8 @@ contributor:
     abbreviation:
       content: ISO
     subdivision:
-    - content: division
+    - Division 1
+    - content: Division 2
     logo:
       image:
         src: logo1.png
@@ -128,7 +129,7 @@ contributor:
         formatted_address: Formatted address
   role:
   - description:
-    - content: Publisher description
+    - Publisher description
     type: publisher
   - description:
     - content: Editor description
@@ -137,7 +138,7 @@ contributor:
     name:
       given:
         forename:
-        - content: Arnold
+        - Arnold
         formatted_initials:
           content: A.
       surname:
@@ -173,6 +174,7 @@ contributor:
         state: State
         country: Country
         postcode: '123456'
+    - address: Street, City, State, Country, 123456
     - phone: '223322'
       type: work
   role:
@@ -202,7 +204,7 @@ contributor:
         script:
         - Latn
   role:
-  - type: editor
+  - editor
 - organization:
     name:
     - content: World Wide Web Consortium
@@ -262,15 +264,15 @@ copyright:
     abbreviation:
       content: ISO
     url: www.iso.org
+  - name:
+      completename: John Doe
   from: '2014'
   to: '2020'
   scope: Scope
 relation:
 - type: updates
   bibitem:
-    formattedref:
-      content: ISO 19115:2003
-      format: text/plain
+    formattedref: ISO 19115:2003
   locality:
   - type: section
     reference_from: Reference from
@@ -297,7 +299,7 @@ relation:
     - type: page
       reference_from: '2'
   source_locality:
-  - type: section
+    type: section
     reference_from: Reference from
     reference_to: Reference to
 - type: partOf
@@ -346,9 +348,7 @@ series:
     content: Journal
     format: text/plain
   number: '7'
-- title:
-    content: RFC
-    format: text/plain
+- title: RFC
   number: '4'
 medium:
   form: medium form
@@ -393,8 +393,8 @@ classification:
 - value: Mendeley Tags
   type: mendeley
 validity:
-  begins: 2010-10-10 12:21
-  ends: 2011-02-03 18:30
+  begins: "2010"
+  ends: 2011-02
   revision: 2011-03-04 09:00
 fetched: '2022-05-02'
 keyword:

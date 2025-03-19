@@ -11,4 +11,14 @@ describe Relaton::Bib::HashParserV1 do
     File.write output_file, output_yaml, encoding: "UTF-8" unless File.exist? output_file
     expect(output_hash).to eq YAML.load_file(output_file)
   end
+
+  describe "parse edition as string" do
+    let(:input_hash) { { edition: "1st ed." } }
+
+    it "return Edition" do
+      edition = described_class.edition_hash_to_bib input_hash
+      expect(edition).to be_instance_of Relaton::Bib::Edition
+      expect(edition.content).to eq "1st ed."
+    end
+  end
 end

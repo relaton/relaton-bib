@@ -396,23 +396,23 @@ module Relaton
         end
       end
 
-      def contacts_hash_to_bib(entity) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity
-        return [] unless entity[:contact]
+      # def contacts_hash_to_bib(entity) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity
+      #   return [] unless entity[:contact]
 
-        Relaton.array(entity[:contact]).map do |a|
-          type, value = a.reject { |k, _| k == :type }.flatten
-          case type
-          when :street, :city, :state, :country, :postcode # it's for old version compatibility, should be removed in the future
-            a[:street] = Relaton.array(a[:street])
-            Bib::Address.new(**a)
-          when :address then create_address(a[:address])
-          when :phone, :email, :uri
-            Bib::Contact.new(type: type.to_s, value: value, subtype: a[:type])
-          else # it's for old version compatibility, should be removed in the future
-            Bib::Contact.new(**a)
-          end
-        end
-      end
+      #   Relaton.array(entity[:contact]).map do |a|
+      #     type, value = a.reject { |k, _| k == :type }.flatten
+      #     case type
+      #     when :street, :city, :state, :country, :postcode # it's for old version compatibility, should be removed in the future
+      #       a[:street] = Relaton.array(a[:street])
+      #       Bib::Address.new(**a)
+      #     when :address then create_address(a[:address])
+      #     when :phone, :email, :uri
+      #       Bib::Contact.new(type: type.to_s, value: value, subtype: a[:type])
+      #     else # it's for old version compatibility, should be removed in the future
+      #       Bib::Contact.new(**a)
+      #     end
+      #   end
+      # end
 
       def create_address(adr)
         if adr.is_a?(Hash)
@@ -434,7 +434,7 @@ module Relaton
       end
 
       def create_contribution_info(contrib)
-        if contrib[:surname] || contrib[:completename]
+        if contrib[:name].is_a?(Hash) && (contrib[:name].keys & %i[prefix forename addition surname completename]).any?
           Bib::ContributionInfo.new person: create_person(contrib)
         else
           Bib::ContributionInfo.new organization: create_organization(contrib)
@@ -465,7 +465,7 @@ module Relaton
         if rel[:bibitem]
           rel[:bibitem] = bib_item hash_to_bib(rel[:bibitem])
         else
-          Util.warn "Bibitem missing: `#{rel}`"
+          Util.warn "Bibitem missing: `#(rel)`"
           rel[:bibitem] = nil
         end
       end
@@ -473,7 +473,7 @@ module Relaton
       # @param item_hash [Hash]
       # @return [Relaton::Bib::Item]
       def bib_item(item_hash)
-        Bib::ItemData.new(**item_hash)
+        ItemData.new(**item_hash)
       end
 
       # @param rel [Hash] relation
@@ -519,7 +519,7 @@ module Relaton
         end
 
         case rel[:source_locality]
-        when Hash then rel[source_locality].delete(:source_locality_stack)
+        when Hash then rel[:source_locality].delete(:source_locality_stack)
         when Array then rel[:source_locality].delete_if { |loc| loc[:source_locality_stack] }
         end
 

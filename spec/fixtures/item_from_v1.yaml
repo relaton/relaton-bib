@@ -67,7 +67,9 @@ contributor:
     - content: International Organization for Standardization
     subdivision:
     - name:
-      - content: division
+      - content: Division 1
+    - name:
+      - content: Division 2
     abbreviation:
       content: ISO
     logo:
@@ -143,6 +145,7 @@ contributor:
       state: State
       country: Country
       postcode: '123456'
+    - formatted_address: Street, City, State, Country, 123456
     phone:
     - type: work
       content: '223322'
@@ -246,6 +249,10 @@ copyright:
       - content: International Organization for Standardization
       abbreviation:
         content: ISO
+  - person:
+      name:
+        completename:
+          content: John Doe
   scope: Scope
 relation:
 - type: updates
@@ -318,7 +325,6 @@ series:
   number: '7'
 - title:
   - content: RFC
-    format: text/plain
   number: '4'
 medium:
   form: medium form
@@ -371,8 +377,8 @@ keyword:
 - taxon:
   - content: Key Word
 validity:
-  begins: '2010-10-10'
-  ends: '2011-02-03'
+  begins: '2010-01-01'
+  ends: '2011-02-28'
   revision: '2011-03-04'
 ext:
   doctype:
