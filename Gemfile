@@ -12,3 +12,7 @@ gem "rubocop-performance"
 gem "rubocop-rails"
 gem "ruby-jing"
 gem "simplecov"
+
+group :development do
+  gem "pry"
+end
