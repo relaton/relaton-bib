@@ -36,7 +36,7 @@ date:
     to: "1994-12-31"
 contributor:
   - role:
-      type: author
+    - type: author
       description:
         - content: Role of the author
           language: en
@@ -129,7 +129,7 @@ contributor:
         - type: primary
           content: https://orcid.org/0000-0002-1825-0097
   - role:
-      type: publisher
+    - type: publisher
       description:
         - content: Role of the publisher
     organization:

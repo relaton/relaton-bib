@@ -18,7 +18,8 @@
     <role type="author"/>
   </contributor>
   <series type="journal">
-    <title format="text/plain">Journal of Miscellaneous</title>
+    <title>Journal of Miscellaneous</title>
+    <number>1</number>
   </series>
   <date type="published">
     <on>2019</on>

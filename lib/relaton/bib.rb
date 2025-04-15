@@ -1,24 +1,18 @@
 require "relaton/logger"
 require "forwardable"
-# require "yaml"
 # require "htmlentities"
 require "bibtex"
 require "iso639"
-# require_relative "bib/config"
 require_relative "bib/version"
 require_relative "bib/util"
-# require_relative "workers_pool"
 require_relative "bib/item_data"
 require_relative "bib/model/item"
-# require_relative "xml_parser"
 require_relative "bib/model/item_base"
 require_relative "bib/model/bibitem"
 require_relative "bib/model/bibdata"
-# require_relative "hit_collection"
-# require_relative "hit"
 require_relative "bibxml_parser"
-require_relative "renderer/bibtex_builder"
-require_relative "renderer/bibxml"
+require_relative "bib/renderer/bibtex_builder"
+require_relative "bib/bibxml/reference"
 require_relative "bib/model/relation"
 
 module Relaton
@@ -27,6 +21,15 @@ module Relaton
   class RequestError < StandardError; end
 
   class << self
+    #
+    # Read schema versions from file
+    #
+    # @return [Hash{String=>String}] schema versions
+    #
+    def schema_versions
+      @@schema_versions ||= JSON.parse File.read(File.join(__dir__, "../../grammars/versions.json"))
+    end
+
     # @param date [String, Integer, Date] date
     # @param str [Boolean] return string or Date
     # @return [Date, String, nil] date

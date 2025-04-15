@@ -11,16 +11,22 @@ module Relaton
         map_attribute "primary", to: :primary
       end
 
-      def remove_part
-        raise NotImplementedError, "remove_part method not implemented in #{self.class}"
+      key_value do
+        map "type", to: :type
+        map "scope", to: :scope
+        map "primary", to: :primary
       end
 
-      def to_all_parts
-        raise NotImplementedError, "to_all_parts method not implemented in #{self.class}"
+      def remove_part!
+        raise NotImplementedError, "`remove_part!` method not implemented in #{self.class}"
       end
 
-      def remove_date
-        raise NotImplementedError, "remove_date method not implemented in #{self.class}"
+      def to_all_parts!
+        raise NotImplementedError, "`to_all_parts!` method not implemented in #{self.class}"
+      end
+
+      def remove_date!
+        raise NotImplementedError, "`remove_date!` method not implemented in #{self.class}"
       end
     end
   end

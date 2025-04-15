@@ -8,6 +8,11 @@ module Relaton
         map_attribute "type", to: :type
         map_attribute "format", to: :format
       end
+
+      key_value do
+        map "type", to: :type
+        map "format", to: :format
+      end
     end
   end
 end

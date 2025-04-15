@@ -1,13 +1,15 @@
 module Relaton
   module Bib
-    class Note < LocalizedStringAttrs
+    class Note < LocalizedMarkedUpString
       attribute :type, :string
-      attribute :content, :string
 
       xml do
         root "note"
         map_attribute "type", to: :type
-        map_all to: :content
+      end
+
+      key_value do
+        map "type", to: :type
       end
     end
   end

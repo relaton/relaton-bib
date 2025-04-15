@@ -1,3 +1,5 @@
+require_relative "../bib"
+
 module Relaton
   module Bib
     module HashParserV1
@@ -156,14 +158,11 @@ module Relaton
         ret[:accesslocation] = Relaton.array(ret[:accesslocation])
       end
 
-      def dates_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize
-        ret[:date] &&= Relaton.array(ret[:date]).map.with_index do |d, i|
-          # value is synonym of on: it is reserved word in YAML
-          if d[:value]
-            ret[:date][i][:at] ||= d[:value]
-            ret[:date][i].delete(:value)
-            Bib::Date.new(**ret[:date][i])
-          end
+      def dates_hash_to_bib(ret)
+        ret[:date] &&= Relaton.array(ret[:date]).map do |d|
+          # `at` is synonym of `on`, which is reserved word in YAML
+          d[:at] = d.delete(:value) if d[:value]
+          Bib::Date.new(**d)
         end
       end
 
@@ -220,8 +219,8 @@ module Relaton
       end
 
       def contributors_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength,Metrics/PerceivedComplexity
-        ret[:contributor] &&= Relaton.array(ret[:contributor]).map.with_index do |c, i|
-          roles = Relaton.array(ret[:contributor][i][:role]).map do |r|
+        ret[:contributor] &&= Relaton.array(ret[:contributor]).map do |c|
+          roles = Relaton.array(c[:role]).map do |r|
             if r.is_a? Hash
               desc = Relaton.array(r[:description]).map { |d| localized_marked_up_string d }
               Bib::Contributor::Role.new(type: r[:type], description: desc)

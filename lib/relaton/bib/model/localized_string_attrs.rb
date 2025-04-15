@@ -13,8 +13,12 @@ module Relaton
         map_attribute "locale", to: :locale
         map_attribute "script", to: :script
       end
-      #   end
-      # end
+
+      key_value do
+        map "language", to: :language
+        map "locale", to: :locale
+        map "script", to: :script
+      end
     end
   end
 end

@@ -7,6 +7,10 @@ module Relaton
         xml do
           map_attribute "initial", to: :initial
         end
+
+        key_value do
+          map "initial", to: :initial
+        end
       end
 
       def self.included(base) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
