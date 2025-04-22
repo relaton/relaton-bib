@@ -27,89 +27,93 @@ Or install it yourself as:
 
 == Usage
 
-=== Configuration
-
-Configuration is optional. The available option is `logger` which is a `Logger` instance. By default, the logger is `Logger.new($stderr)` with `Logger::WARN` level. To change the logger level, use `Relaton::Bib.configure` block.
-
 [source,ruby]
 ----
-require 'relaton_bib'
+require 'relaton/bib'
 => true
-
-Relaton::Bib.configure do |config|
-  config.logger.level = Logger::DEBUG
-end
 ----
 
 === Create bibliographic item
 
 [source,ruby]
 ----
-hash = YAML.load_file "spec/examples/bib_item.yml"
-=> {"id"=>"ISOTC211",
-"fetched"=>"2022-05-02",
- "title"=>["Geographic information", {"content"=>"Information géographique", "language"=>"fr", "script"=>"Latn"}],
- ...
+yaml = File.read 'spec/fixtures/item.yaml'
+ => "id: ISO1231994\ntype: standard\nschema_version: 1.0.0\nfetched: \"2022-05-02\"\nformattedref: ISO 123:1994\ntitle..."
 
-item = Relaton::Bib::Item.from_hash(hash)
-=> #<Relaton::Bib::Item:0x00007f962f030710
- @abstract=
-  [#<Relaton::Bib::FormattedString:0x00007f962f02acc0
-...
+item = Relaton::Bib::Item.from_yaml yaml
+ => #<Relaton::Bib::ItemData:0x000000012838bfc0 ...
 ----
 
-=== BibliographicItem Typed Title Strings
+=== Title
 
 [source,ruby]
 ----
 item.title
-=> #<Relaton::Bib::TitleCollection:0x00007fea821ec6b0
- @array=
-  [#<Relaton::Bib::Title:0x00007fea821ecb60
-    @title=#<Relaton::Bib::FormattedString:0x00007fea821eca70 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
-    @type="title-main">,
-   #<Relaton::Bib::Title:0x00007fea821ec8b8
-    @title=#<Relaton::Bib::FormattedString:0x00007fea821ec818 @content="Geographic information", @format="text/plain", @language=nil, @script=nil>,
-    @type="main">,
-   #<Relaton::Bib::Title:0x00007fea821ec610
-    @title=
-     #<Relaton::Bib::FormattedString:0x00007fea821ec570 @content="Information géographique", @format="text/plain", @language=["fr"], @script=["Latn"]>,
-    @type=nil>]>
+ => [#<Relaton::Bib::Title:0x00000001270a6810
+  @content="Geographic information -- Metadata",
+  @format=nil,
+  @language="en",
+  @locale="en-US",
+  @script="Latn",
+  @type=nil>,
+ #<Relaton::Bib::Title:0x00000001270a5cd0
+  @content="Information géographique -- Métadonnées",
+  @format=nil,
+  @language="fr",
+  @locale="fr-FR",
+  @script="Latn",
+  @type=nil>]
 
-item.title lang: "fr"
-=> #<Relaton::Bib::TitleCollection:0x00007fea8222d908
- @array=
-  [#<Relaton::Bib::Title:0x00007fea821ec610
-    @title=#<Relaton::Bib::FormattedString:0x00007fea821ec570 @content="Information géographique", @format="text/plain", @language=["fr"], @script=["Latn"]>,
-    @type=nil>]>
+item.title "fr"
+ => [#<Relaton::Bib::Title:0x00000001270a5cd0
+  @content="Information géographique -- Métadonnées",
+  @format=nil,
+  @language="fr",
+  @locale="fr-FR",
+  @script="Latn",
+  @type=nil>]
 ----
 
-=== BibliographicItem Formatted Strings
+=== Abstract
 
 [source,ruby]
 ----
 item.abstract
-=> [#<Relaton::Bib::FormattedString:0x00007fea82236828
-  @content="<p>ISO 19115-1:2014 defines the schema required for ...</p>",
-  @format="text/html",
-  @language=["en"],
-  @script=["Latn"]>,
- #<Relaton::Bib::FormattedString:0x00007fea82236670
-  @content="L'ISO 19115-1:2014 définit le schéma requis pour ...",
-  @format="text/plain",
-  @language=["fr"],
-  @script=["Latn"]>]
+ => [#<Relaton::Bib::LocalizedMarkedUpString:0x0000000126c05748
+  @content="This is an abstract. <em>This is emphasized</em>",
+  @language="en",
+  @locale="en-US",
+  @script="Latn">]
 
-item.abstract(lang: "en").to_s
-=> "<p>ISO 19115-1:2014 defines the schema required for ...</p>"
+item.abstract("en")
+ => [#<Relaton::Bib::LocalizedMarkedUpString:0x0000000126c05748
+  @content="This is an abstract. <em>This is emphasized</em>",
+  @language="en",
+  @locale="en-US",
+  @script="Latn">]
 ----
 
-=== BibliographicItem references
+=== Document identifier
 
 [source,ruby]
 ----
-item.shortref item.docidentifier.first
-=> "ISOTC211:2014"
+item.docidentifier
+ => [#<Relaton::Bib::Docidentifier:0x00000001270a4b00
+  @content="ISO 123:1994",
+  @language="en",
+  @locale="en-US",
+  @primary=true,
+  @scope="global",
+  @script="Latn",
+  @type="ISO">,
+ #<Relaton::Bib::Docidentifier:0x00000001270a46a0
+  @content="10.1007/978-3-319-99155-2_1",
+  @language=nil,
+  @locale=nil,
+  @primary=nil,
+  @scope=nil,
+  @script=nil,
+  @type="DOI">]
 ----
 
 === XML serialization
@@ -117,11 +121,13 @@ item.shortref item.docidentifier.first
 [source,ruby]
 ----
 item.to_xml
-=> "<bibitem id="ISOTC211" type="standard" schema-version="v1.2.1">
+=> "<bibitem id="ISO1231994" type="standard" schema-version="1.0.0">
       <fetched>2022-05-02</fetched>
-      <title type="title-main" format="text/plain">Geographic information</title>
-      <title type="main" format="text/plain">Geographic information</title>
-      <title format="text/plain" language="fr" script="Latn">Information géographique</title>
+      <formattedref>ISO 123:1994</formattedref>
+      <title language="en" locale="en-US" script="Latn">Geographic information -- Metadata</title>
+      <title language="fr" locale="fr-FR" script="Latn">Information géographique -- Métadonnées</title>
+      <uri type="src">https://www.iso.org/standard/22722.html</uri>
+      <uri type="doi">10.1007/978-3-319-99155-2_1</uri>
       ...
     </bibitem>"
 ----
@@ -131,65 +137,27 @@ The default root element is `bibitem`. With argument `bibdata: true` the XML wra
 [source,ruby]
 ----
 item.to_xml bibdata: true
-=> "<bibdata type="standard" schema-version="v1.2.1">
+=> "<bibdata type="standard" schema-version="1.0.0">
       <fetched>2022-05-02</fetched>
-      <title type="title-main" format="text/plain">Geographic information</title>
+      <formattedref>ISO 123:1994</formattedref>
+      <title language="en" locale="en-US" script="Latn">Geographic information -- Metadata</title>
       ...
-        <ext>
-          <doctype>document</doctype>
-          <subdoctype>subdocument</subdoctype>
-          ...
-        </ext>
+      <ext schema-version="1.0.0">
+        <doctype abbreviation="std">Standard</doctype>
+        <subdoctype>Technical Report</subdoctype>
+        ...
+      </ext>
     </bibdata>"
-----
-
-==== Date format
-
-By default date elements are formatted as a year (yyyy). Option `:date_format` allows to output date elements in `:short` (yyyy-mm) and `:full` (yyyy-mm-dd) additional formats.
-
-[source,ruby]
-----
-item.to_xml date_format: :short
-=> "<bibitem id="ISOTC211" type="standard" schema-version="v1.2.1">
-      <fetched>2022-05-02</fetched>
-      <title type="title-main" format="text/plain">Geographic information</title>
-      ...
-      <date type="issued">
-        <on>2014-01</on>
-      </date>
-      <date type="published">
-        <on>2014-04</on>
-      </date>
-      <date type="accessed">
-        <on>2015-05</on>
-      </date>
-      ...
-    </bibitem>"
-
-item.to_xml date_format: :full
-=> "<bibitem id="ISOTC211" type="standard" schema-version="v1.2.1">
-      ...
-      <date type="issued">
-        <on>2014-01-01</on>
-      </date>
-      <date type="published">
-        <on>2014-04-01</on>
-      </date>
-      <date type="accessed">
-        <on>2015-05-20</on>
-      </date>
-      ...
-    </bibitem>"
 ----
 
 ==== Adding notes
 
 [source,ruby]
 ----
-item.to_xml note: [{ text: "Note", type: "note" }]
-=> "<bibitem id="ISOTC211" type="standard" schema-version="v1.2.1">
+item.to_xml note: [{ content: "Note", type: "note" }]
+=> "<bibitem id="ISO1231994" type="standard" schema-version="1.0.0">
       ...
-      <note format="text/plain" type="note">Note</note>
+      <note type="note">Note</note>
       ...
     </bibitem>"
 ----
@@ -198,42 +166,39 @@ item.to_xml note: [{ text: "Note", type: "note" }]
 
 [source,ruby]
 ----
-hash = YAML.load_file 'spec/examples/bib_item.yml'
-=> {"id"=>"ISOTC211"
-...
+yaml = File.read 'spec/fixtures/item.yaml'
+ => "id: ISO1231994\ntype: standard\nschema_version: 1.0.0\nfetched: \"2022-05-02\"\nformattedref: ISO 123:1994\ntitle..."
 
-Relaton::Bib::Item.from_hash hash
-=> #<Relaton::Bib::Item:0x007ff1524f8c88
-...
+Relaton::Bib::Item.from_yaml yaml
+ => #<Relaton::Bib::ItemData:0x000000011dc9e118 ...
 ----
 
-=== Create bibliographic item from BibXML
+=== Create bibliographic item from RFC XML
 
 [source,ruby]
 ----
-bibxml = File.read "spec/examples/rfc.xml"
-=> <reference anchor=...
+xml = File.read 'spec/fixtures/rfc.xml'
+ => "<reference anchor=\"RFC1\" target=\"10.17487/RFC0001\">\n  <front>\n    <title>Title RFC1</title>\n    <seriesInf..."
 
-Relaton::Bib::BibXMLParser.parse bibxml
-=> #<Relaton::Bib::Item:0x00007f9d0c75b268
-...
+Relaton::Bib::Parser::RfcReference.from_xml xml
+ => #<Relaton::Bib::ItemData:0x000000011dc9fc98 ...
 ----
 
-=== Export bibliographic item to Hash
-
+=== Create bibliographic item from XML
 [source,ruby]
 ----
-item.to_hash
-=> {"schema-version"=>"v1.2.1",
-    "id"=>"ISOTC211",
-    "title"=>
-      [{"content"=>"Geographic information", "format"=>"text/plain", "type"=>"title-main"},
-      {"content"=>"Geographic information", "format"=>"text/plain", "type"=>"main"},
-      {"content"=>"Information géographique", "language"=>["fr"], "script"=>["Latn"], "format"=>"text/plain"}],
-      ...
+xml = File.read 'spec/fixtures/bibitem.xml'
+=> "<bibitem id=\"ISO1231994\" type=\"standard\" schema-version=\"1.0.0\">\n  <fetched>2022-05-02</fetched>\n  <forma..."
+
+item = Relaton::Bib::Bibitem.from_xml xml
+ => #<Relaton::Bib::ItemData:0x000000011d4b7580 ...
+
+xml = File.read 'spec/fixtures/bibdata.xml'
+item = Relaton::Bib::Bibdata.from_xml xml
+ => #<Relaton::Bib::ItemData:0x000000011d4daa08 ...
 ----
 
-=== Create bibliographic item from BibTeX
+=== Create bibliographic item from BibTeX (@TODO: add support for BibTeX)
 
 [source,ruby]
 ----
@@ -243,19 +208,42 @@ Relaton::Bib::BibtexParser.from_bibtex File.read('spec/examples/techreport.bib')
   ...
 ----
 
+=== Export bibliographic item to YAML
+
+[source,ruby]
+----
+item.to_yaml
+---
+type: standard
+schema_version: 1.0.0
+fetched: '2022-05-02'
+formattedref: ISO 123:1994
+...
+----
+
 === Export bibliographic item to BibTeX
 
 [source,ruby]
 ----
 item.to_bibtex
-=> @misc{ISOTC211,
-    title = {Geographic information},
-    edition = {Edition 1},
-    author = {Bierman, A. and Bierman, Arnold and Bierman, Arnold B},
-    ...
+@misc{doe1994a,
+  title = {Geographic information -- Metadata},
+  author = {Doe, John},
+  edition = {First edition},
+  publisher = {International Organization for Standardization},
+  year = {1994},
+  month = {jan},
+  address = {Geneva, Switzerland, Geneva, Geneva},
+  pages = {1--10},
+  keywords = {information},
+  timestamp = {2022-05-02},
+  url = {https://www.iso.org/standard/22722.html},
+  doi = {10.1007/978-3-319-99155-2_1},
+  month_numeric = {1}
+}
 ----
 
-=== Export bibliographic item to Citeproc
+=== Export bibliographic item to Citeproc (@TODO: add support for Citeproc)
 
 [source,ruby]
 ----
@@ -268,7 +256,7 @@ item.to_citeproc
      ...
 ----
 
-=== Exporting bibliographic item to AsciiBib
+=== Exporting bibliographic item to AsciiBib (@TODO: add support for AsciiBib)
 
 [source,ruby]
 ----
@@ -284,24 +272,54 @@ item.to_asciibib
    ...
 ----
 
-=== Export bibliographic item to BibXML (RFC)
+=== Export bibliographic item to RFC XML
 
 [source,ruby]
 ----
-item.to_bibxml
-=> "<reference anchor="ISO.TC.211" target="https://www.iso.org/standard/53798.html">
-      <front>
-        <title>Geographic information</title>
-        <author>
-          <organization abbrev="ISO">International Organization for Standardization</organization>
-        </author>
-        ..
-      </front>
-      <seriesInfo name="DOI" value="10.17487/rfc1149"/>
-      <seriesInfo name="Internet-Draft" value="draft-ietf-somewg-someprotocol-07"/>
-      <seriesInfo name="ISO/IEC FDIS 10118-3" value="serie1234"/>
-      ...
-    </reference>"
+item.to_rfcxml
+<reference anchor="ISO 123:1994" target="https://www.iso.org/standard/22722.html">
+  <front>
+    <title>Geographic information -- Metadata</title>
+    <seriesInfo name="DOI" value="10.1007/978-3-319-99155-2_1"/>
+    <seriesInfo name="ISO 123" value="1"/>
+    <author initials="J.D." surname="Doe" fullname="Prof. John Doe PhD">
+      <organization>International Organization for Standardization</organization>
+      <address>
+        <postal>
+          <street>1, rue de Varembé</street>
+          <city>Geneva</city>
+          <code>1211</code>
+          <country>Switzerland</country>
+          <postalLine>1, rue de Varembé,&lt;br/&gt;Geneva, Switzerland, 1211</postalLine>
+        </postal>
+        <phone>+41 22 749 01 11</phone>
+        <email>jdoe@email.org</email>
+        <uri>https://orcid.org/0000-0002-1825-0097</uri>
+      </address>
+    </author>
+    <author>
+      <organization abbrev="ISO">International Organization for Standardization</organization>
+      <address>
+        <postal>
+          <street>1, rue de Varembé</street>
+          <city>Geneva</city>
+          <code>1211</code>
+          <country>Switzerland</country>
+          <postalLine>1, rue de Varembé,&lt;br/&gt;Geneva, Switzerland, 1211</postalLine>
+        </postal>
+        <phone>+41 22 749 01 11</phone>
+        <email>office@iso.org</email>
+        <uri>https://www.iso.org</uri>
+      </address>
+    </author>
+    <date day="01" month="January" year="1994"></date>
+    <workgroup>Geographic information</workgroup>
+    <keyword>information</keyword>
+    <abstract>
+      <t>This is an abstract. &lt;em&gt;This is emphasized&lt;/em&gt;</t>
+    </abstract>
+  </front>
+</reference>
 ----
 
 === Logging

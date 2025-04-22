@@ -92,12 +92,30 @@ module Relaton
         @relation&.select { |r| r.type == type.to_s }
       end
 
-      def to_xml(bibdata: false)
-        bibdata ? Bibdata.to_xml(self) : Bibitem.to_xml(self)
+      def to_xml(bibdata: false, **opts)
+        add_notes opts[:note] do
+          bibdata ? Bibdata.to_xml(self) : Bibitem.to_xml(self)
+        end
+      end
+
+      def to_yaml(**opts)
+        add_notes opts[:note] do
+          Item.to_yaml(self)
+        end
+      end
+
+      def to_json(**opts)
+        add_notes opts[:note] do
+          Item.to_json(self)
+        end
       end
 
       def to_bibtex
         Renderer::BibtexBuilder.build(self).to_s
+      end
+
+      def to_rfcxml
+        Renderer::Rfc.transform(self).to_xml
       end
 
       def deep_clone
@@ -136,9 +154,15 @@ module Relaton
         Relaton.array(ext.structuredidentifier).each(&:remove_date!)
       end
 
-      # def disable_id_attribute
-      #   @id_attribute = false
-      # end
+      private
+
+      def add_notes(notes)
+        self.note ||= []
+        Relaton.array(notes).each { |nt| note << Bib::Note.new(**nt) }
+        result = yield
+        Relaton.array(notes).each { note.pop }
+        result
+      end
     end
   end
 end

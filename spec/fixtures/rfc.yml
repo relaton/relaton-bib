@@ -1,0 +1,157 @@
+id: RFC1
+type: standard
+title:
+- type: main
+  content: Title RFC1
+docidentifier:
+  - content: RFC1
+    type: IETF
+  - content: 10.17487/RFC0001
+    type: DOI
+  - content: 10.17487/rfc1
+    type: URI
+    trademark: true
+source:
+  - type: doi
+    content: 10.17487/RFC0001
+  - type: txt
+    content: https://www.rfc-editor.org/info/rfc1
+contributor:
+  - organization:
+      name:
+      - content: Internet Engineering Task Force
+      abbreviation:
+        content: IETF
+      uri:
+      - content: www.ietf.org
+  - person:
+      name:
+        completename:
+          content: A. Bierman
+          language: en
+          script: Latn
+      affiliation:
+      - organization:
+          name:
+          - content: IETF
+          abbreviation:
+            content: IETF
+          identifier:
+            type: uri
+            content: www.ietf.org
+      address:
+      - city: City
+        postcode: '123456'
+        country: Country
+        state: State
+        street:
+        - Street
+      phone:
+      - content: "223322"
+        type: work
+      email:
+      - person@email.org
+      uri:
+      - type: primary
+        content: www.person.com
+  - organization:
+      abbreviation:
+        content: IETF
+      address:
+      - formatted_address: Formatted address
+    role:
+      - type: publisher
+        description:
+          - content: Role of the publisher
+      - type: editor
+        description:
+          - content: Role of the publisher
+  - person:
+      name:
+        surname:
+          content: Bierman
+        forename:
+          - content: Arnold
+        formatted_initials:
+          content: A.
+        addition:
+          content: Addition
+        prefix:
+        - content: Prefix
+      affiliation:
+      - organization:
+          name:
+          - content: IETF
+          abbreviation:
+            content: IETF
+        description:
+          content: Description
+          language: en
+        name:
+          content: Name
+          language: en
+          script: Latn
+      address:
+      - street:
+          - Street
+        city: City
+        postcode: "123456"
+        country: Country
+        state: State
+      phone:
+      - content: "223322"
+        type: work
+    identifier:
+      type: uri
+      id: www.person.com
+  - person:
+      name:
+        surname:
+          content: Bierman
+        forename:
+          - content: Arnold
+          - initial: B
+    role:
+    - type: editor
+  - organization:
+      name:
+      - content: W3C
+      address:
+      - formatted_address: Address string
+date:
+  - type: published
+    at: "2014-04"
+abstract:
+  - content: Abstract RFC 0001
+    language: en
+    script: Latn
+    format: text/html
+series:
+  - number: draft-ietf-somewg-someprotocol-07
+    title:
+    - type: main
+      content: Internet-Draft
+  - number: serie1234
+    title:
+    - content: ISO/IEC FDIS 10118-3
+  - title:
+    - content: Formattedref
+  - number: "7"
+    title:
+    - content: Journal
+  - title:
+    - content: Series
+  - number: "4"
+    title:
+    - content: RFC
+  - number: "1"
+    title:
+    - type: main
+      content: DOI
+keyword:
+- taxon:
+  - content: Keyword
+ext:
+  editorialgroup:
+    technical_committee:
+      - content: Editorial group

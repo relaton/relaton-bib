@@ -36,7 +36,7 @@ require_relative "source_locality_stack"
 require_relative "ext"
 
 Lutaml::Model::Config.configure do |config|
-  config.xml_adapter = Lutaml::Model::XmlAdapter::NokogiriAdapter
+  config.xml_adapter = Lutaml::Model::Xml::NokogiriAdapter
 end
 
 module Relaton
@@ -58,32 +58,32 @@ module Relaton
       attribute :schema_version, :string
       attribute :fetched, :date
       attribute :formattedref, :string, raw: true
-      attribute :title, Title, collection: true
-      attribute :source, Uri, collection: true
-      attribute :docidentifier, Docidentifier, collection: true
+      attribute :title, Title, collection: true, initialize_empty: true
+      attribute :source, Uri, collection: true, initialize_empty: true
+      attribute :docidentifier, Docidentifier, collection: true, initialize_empty: true
       attribute :docnumber, :string
-      attribute :date, Date, collection: true
-      attribute :contributor, Contributor, collection: true
+      attribute :date, Date, collection: true, initialize_empty: true
+      attribute :contributor, Contributor, collection: true, initialize_empty: true
       attribute :edition, Edition
-      attribute :version, Version, collection: true
-      attribute :note, Note, collection: true
-      attribute :language, :string, collection: true
-      attribute :locale, :string, collection: true
-      attribute :script, :string, collection: true
-      attribute :abstract, LocalizedMarkedUpString, collection: true
+      attribute :version, Version, collection: true, initialize_empty: true
+      attribute :note, Note, collection: true, initialize_empty: true
+      attribute :language, :string, collection: true, initialize_empty: true
+      attribute :locale, :string, collection: true, initialize_empty: true
+      attribute :script, :string, collection: true, initialize_empty: true
+      attribute :abstract, LocalizedMarkedUpString, collection: true, initialize_empty: true
       attribute :status, Status
-      attribute :copyright, Copyright, collection: true
-      attribute :relation, Relation, collection: true
-      attribute :series, Series, collection: true
+      attribute :copyright, Copyright, collection: true, initialize_empty: true
+      attribute :relation, Relation, collection: true, initialize_empty: true
+      attribute :series, Series, collection: true, initialize_empty: true
       attribute :medium, Medium
-      attribute :place, Place, collection: true
-      attribute :price, Price, collection: true
-      attribute :extent, Extent, collection: true
+      attribute :place, Place, collection: true, initialize_empty: true
+      attribute :price, Price, collection: true, initialize_empty: true
+      attribute :extent, Extent, collection: true, initialize_empty: true
       attribute :size, Size
-      attribute :accesslocation, :string, collection: true
-      attribute :license, :string, collection: true
-      attribute :classification, Docidentifier, collection: true
-      attribute :keyword, Keyword, collection: true
+      attribute :accesslocation, :string, collection: true, initialize_empty: true
+      attribute :license, :string, collection: true, initialize_empty: true
+      attribute :classification, Docidentifier, collection: true, initialize_empty: true
+      attribute :keyword, Keyword, collection: true, initialize_empty: true
       attribute :validity, Validity
       attribute :depiction, Depiction
       attribute :ext, Ext

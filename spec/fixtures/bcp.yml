@@ -1,12 +1,12 @@
 id: BCP1
 
 title:
-  - BCP title
+  - content: BCP title
 
 type: standard
 
-docid:
-  - id: BCP1
+docidentifier:
+  - content: BCP1
     type: IETF
 
 docnumber: BCP1
@@ -16,7 +16,7 @@ language:
 
 script: Latn
 
-link:
+source:
   - type: src
     content: https://www.rfc-editor.org/info/bcp1
 
@@ -24,53 +24,57 @@ relation:
   - type: includes
     bibitem:
       title:
-        type: maind
+      - type: maind
         content: Included RFC1
-      docid:
-        - id: RFC1
+      docidentifier:
+        - content: RFC1
           type: IETF
-      link:
+      source:
         - type: src
           content: https://www.rfc-editor.org/info/rfc1
       contributor:
         - person:
-            name: 
-              completename: 
+            name:
+              completename:
                 content: A. Bierman
                 language: en
                 script: Latn
             affiliation:
               - organization:
-                  name: IETF
-                  abbreviation: IETF
+                  name:
+                  - content: IETF
+                  abbreviation:
+                    content: IETF
                   identifier:
                     type: uri
-                    id: www.ietf.org
+                    content: www.ietf.org
       date:
         - type: published
-          value: "2014-04"
+          at: "2014-04"
       abstract:
-        - content: <p>Abstract RFC 0001</p>
+        - content: Abstract RFC 0001
           language: en
           script: Latn
           format: text/html
       series:
         - number: "1"
-          title: BCP
+          title:
+          - content: BCP
   - type: includes
     bibitem:
       title:
-        type: main
+      - type: main
         content: Included RFC0002
-      docid:
-        - id: RFC2
+      docidentifier:
+        - content: RFC2
           type: IETF
-      link:
+      source:
         - type: src
           content: https://www.rfc-editor.org/info/rfc2
       date:
         - type: published
-          value: "1999-12"
+          at: "1999-12"
       series:
         - number: "1"
-          title: BCP
+          title:
+          - content: BCP

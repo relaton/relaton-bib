@@ -6,7 +6,7 @@ module Relaton
           author performer publisher editor adapter translator distributor reazer
           owner authorizer enabler subject
         ]
-        attribute :description, LocalizedMarkedUpString, collection: true
+        attribute :description, LocalizedMarkedUpString, collection: true, initialize_empty: true
 
         xml do
           root "role"
@@ -15,7 +15,7 @@ module Relaton
         end
       end
 
-      attribute :role, Role, collection: true
+      attribute :role, Role, collection: true, initialize_empty: true
       # attribute :entity, ContributionInfo
       # @TODO: use `import_model ContributionInfo` for person and organization when Lutaml supports it
       choice(min: 1, max: 1) do

@@ -132,5 +132,10 @@ describe Relaton::Bib::ItemData do
       xml = item.to_xml
       expect(xml).to include("<bibitem id=\"ISO12342011\" schema-version=")
     end
+
+    it "returns XML with notes" do
+      xml = item.to_xml note: [{ type: "note", content: "Note 1" }]
+      expect(xml).to include('<note type="note">Note 1</note>')
+    end
   end
 end

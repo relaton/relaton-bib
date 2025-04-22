@@ -18,10 +18,10 @@ module Relaton
         base.instance_eval do
           include Contact
 
-          attribute :name, TypedLocalizedString, collection: true
-          attribute :subdivision, Subdivision, collection: true
+          attribute :name, TypedLocalizedString, collection: true, initialize_empty: true
+          attribute :subdivision, Subdivision, collection: true, initialize_empty: true
           attribute :abbreviation, LocalizedString
-          attribute :identifier, Identifier, collection: true
+          attribute :identifier, Identifier, collection: true, initialize_empty: true
           attribute :logo, Logo
 
           xml do

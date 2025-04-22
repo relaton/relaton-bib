@@ -19,12 +19,12 @@ module Relaton
       attribute :description, LocalizedMarkedUpString
       attribute :bibitem, ItemBase
       choice(min: 1, max: 1) do
-        attribute :locality, Locality, collection: true
-        attribute :locality_stack, LocalityStack, collection: true
+        attribute :locality, Locality, collection: true, initialize_empty: true
+        attribute :locality_stack, LocalityStack, collection: true, initialize_empty: true
       end
       choice(min: 1, max: 1) do
-        attribute :source_locality, Locality, collection: true
-        attribute :source_locality_stack, SourceLocalityStack, collection: true
+        attribute :source_locality, Locality, collection: true, initialize_empty: true
+        attribute :source_locality_stack, SourceLocalityStack, collection: true, initialize_empty: true
       end
 
       xml do

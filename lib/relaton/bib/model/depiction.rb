@@ -2,7 +2,7 @@ module Relaton
   module Bib
     class Depiction < Lutaml::Model::Serializable
       attribute :scope, :string
-      attribute :image, Image, collection: true
+      attribute :image, Image, collection: true, initialize_empty: true
 
       xml do
         root "depiction"

@@ -7,10 +7,10 @@ module Relaton
     module Contact
       def self.included(base)
         base.instance_eval do
-          attribute :address, Address, collection: true
-          attribute :phone, Phone, collection: true
-          attribute :email, :string, collection: true
-          attribute :uri, Uri, collection: true
+          attribute :address, Address, collection: true, initialize_empty: true
+          attribute :phone, Phone, collection: true, initialize_empty: true
+          attribute :email, :string, collection: true, initialize_empty: true
+          attribute :uri, Uri, collection: true, initialize_empty: true
         end
       end
     end

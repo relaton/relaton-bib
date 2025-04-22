@@ -267,7 +267,7 @@ describe Relaton::Bib::Renderer::BibtexBuilder do
         year = {1994},
         month = {jan},
         address = {Geneva, Switzerland, Geneva, Geneva},
-        pages = {2--5},
+        pages = {1--10},
         keywords = {information},
         timestamp = {2022-05-02},
         url = {https://www.iso.org/standard/22722.html},

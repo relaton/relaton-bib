@@ -3,7 +3,7 @@ module Relaton
     class Copyright < Lutaml::Model::Serializable
       attribute :from, :string
       attribute :to, :string
-      attribute :owner, ContributionInfo, collection: true
+      attribute :owner, ContributionInfo, collection: true, initialize_empty: true
       attribute :scope, :string
 
       xml do

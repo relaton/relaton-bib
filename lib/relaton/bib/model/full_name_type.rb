@@ -16,14 +16,14 @@ module Relaton
       def self.included(base) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
         base.instance_eval do
           attribute :abbreviation, LocalizedString
-          attribute :prefix, LocalizedString, collection: true
-          attribute :forename, Forename, collection: true
+          attribute :prefix, LocalizedString, collection: true, initialize_empty: true
+          attribute :forename, Forename, collection: true, initialize_empty: true
           attribute :formatted_initials, LocalizedString
           attribute :surname, LocalizedString
-          attribute :addition, LocalizedString, collection: true
+          attribute :addition, LocalizedString, collection: true, initialize_empty: true
           attribute :completename, LocalizedString
-          attribute :note, Note, collection: true
-          attribute :variant, Variant, collection: true
+          attribute :note, Note, collection: true, initialize_empty: true
+          attribute :variant, Variant, collection: true, initialize_empty: true
 
           xml do
             map_element "abbreviation", to: :abbreviation

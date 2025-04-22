@@ -15,8 +15,8 @@ module Relaton
       end
 
       attribute :city, :string
-      attribute :region, RegionType, collection: true
-      attribute :country, RegionType, collection: true
+      attribute :region, RegionType, collection: true, initialize_empty: true
+      attribute :country, RegionType, collection: true, initialize_empty: true
       attribute :formatted_place, :string
       attribute :uri, Uri
 

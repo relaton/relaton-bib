@@ -3,7 +3,7 @@ require_relative "workgroup"
 module Relaton
   module Bib
     class EditorialGroup < Lutaml::Model::Serializable
-      attribute :technical_committee, WorkGroup, collection: true
+      attribute :technical_committee, WorkGroup, collection: true, initialize_empty: true
 
       xml do
         root "editorialgroup"

@@ -15,9 +15,9 @@ module Relaton
       include Contact
 
       attribute :name, FullName
-      attribute :credential, :string, collection: true
-      attribute :affiliation, Affiliation, collection: true
-      attribute :identifier, Identifier, collection: true
+      attribute :credential, :string, collection: true, initialize_empty: true
+      attribute :affiliation, Affiliation, collection: true, initialize_empty: true
+      attribute :identifier, Identifier, collection: true, initialize_empty: true
 
       xml do
         root "person"

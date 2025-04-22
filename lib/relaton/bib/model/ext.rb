@@ -11,8 +11,8 @@ module Relaton
       attribute :subdoctype, :string
       attribute :flavor, :string
       attribute :editorialgroup, EditorialGroup
-      attribute :ics, ICS, collection: true
-      attribute :structuredidentifier, StructuredIdentifier, collection: true
+      attribute :ics, ICS, collection: true, initialize_empty: true
+      attribute :structuredidentifier, StructuredIdentifier, collection: true, initialize_empty: true
 
       xml do
         root "ext"

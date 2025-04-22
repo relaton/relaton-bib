@@ -2,7 +2,7 @@ module Relaton
   module Bib
     class LocalityStack < Lutaml::Model::Serializable
       attribute :connective, :string, values: %w[and or from to]
-      attribute :locality, Locality, collection: true
+      attribute :locality, Locality, collection: true, initialize_empty: true
 
       xml do
         root "localityStack"

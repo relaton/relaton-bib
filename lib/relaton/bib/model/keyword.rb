@@ -15,8 +15,8 @@ module Relaton
         end
       end
 
-      attribute :vocab, LocalizedString, collection: true
-      attribute :taxon, LocalizedString, collection: (1..)
+      attribute :vocab, LocalizedString, collection: true, initialize_empty: true
+      attribute :taxon, LocalizedString, collection: (1..), initialize_empty: true
       attribute :vocabid, Vocabid
 
       xml do
