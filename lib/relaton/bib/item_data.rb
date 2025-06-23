@@ -4,18 +4,28 @@ module Relaton
     # It needed to keep data fot different types of representations (bibitem, bibdata ...).
     # @TODO: remove this class when Lutaml Model will support transformation between different types of models.
     class ItemData
-      attr_accessor :id, :type, :schema_version, :fetched, :formattedref,
-                    :docidentifier, :docnumber, :date, :contributor, :edition,
-                    :version, :note, :language, :locale, :script, :status,
-                    :copyright, :series, :medium, :place, :price, :extent,
-                    :size, :accesslocation, :license, :classification,
-                    :keyword, :validity, :depiction, :ext # , :all_parts
+      ATTRIBUTES = %i[
+        id type schema_version fetched formattedref docnumber edition status
+        medium size validity depiction ext
+      ].freeze
+      COLLECTION_ATTRBUTES = %i[
+        docidentifier date contributor version note language locale script
+        copyright series place price extent accesslocation license
+        classification keyword
+      ].freeze
+      WRITE_ATTRIBUTES = %i[title abstract source relation].freeze
 
-      attr_writer :title, :abstract, :source, :relation
+      ATTRIBUTES.each { |attr| attr_accessor attr }
+      COLLECTION_ATTRBUTES.each { |attr| attr_accessor attr }
+      WRITE_ATTRIBUTES.each { |attr| attr_writer attr }
 
       def initialize(**args)
-        args.each do |k, v|
-          instance_variable_set("@#{k}", v) if respond_to?("#{k}=")
+        ATTRIBUTES.each do |attr|
+          instance_variable_set("@#{attr}", args[attr])
+        end
+
+        (COLLECTION_ATTRBUTES + WRITE_ATTRIBUTES).each do |attr|
+          instance_variable_set("@#{attr}", args[attr] || [])
         end
         self.schema_version = schema
       end
