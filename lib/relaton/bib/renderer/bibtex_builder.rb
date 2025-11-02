@@ -20,6 +20,8 @@ module Relaton
     module Renderer
       # BibTeX builder.
       class BibtexBuilder
+        include Core::ArrayWrapper
+
         ATTRS = %i[
           type id title author editor booktitle series number edition contributor
           date address note relation extent classification keyword docidentifier
@@ -213,7 +215,7 @@ module Relaton
         # Add date to BibTeX item
         #
         def add_date
-          Relaton.array(@bib.date).each do |d|
+          array(@bib.date).each do |d|
             case d.type
             when "published"
               year, month, = d.at.split("-")
@@ -239,7 +241,7 @@ module Relaton
         # Add note to BibTeX item
         #
         def add_note # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
-          Relaton.array(@bib.note).each do |n|
+          array(@bib.note).each do |n|
             case n.type
             when "annote" then @item.annote = n.content
             when "howpublished" then @item.howpublished = n.content
@@ -254,7 +256,7 @@ module Relaton
         # Add relation to BibTeX item
         #
         def add_relation # rubocop:disable Metrics/AbcSize
-          rel = Relaton.array(@bib.relation).detect { |r| r.type == "partOf" }
+          rel = array(@bib.relation).detect { |r| r.type == "partOf" }
           if rel && rel.bibitem.title&.any?
             title_main = rel.bibitem.title.detect { |t| t.type == "main" }
             @item.booktitle = title_main.content

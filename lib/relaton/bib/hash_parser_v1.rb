@@ -4,6 +4,8 @@ module Relaton
   module Bib
     module HashParserV1
       extend self
+      extend Core::ArrayWrapper
+
       # @param args [Hash]
       # @return [Hash]
       def hash_to_bib(args) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -37,7 +39,7 @@ module Relaton
         classification_hash_to_bib(ret)
         validity_hash_to_bib(ret)
         keyword_hash_to_bib(ret)
-        ret[:license] = Relaton.array(ret[:license])
+        ret[:license] = array(ret[:license])
         ext_hash_to_bib ret
         ret
       end
@@ -63,7 +65,7 @@ module Relaton
       end
 
       def keyword_hash_to_bib(ret)
-        ret[:keyword] = Relaton.array(ret[:keyword]).map do |keyword|
+        ret[:keyword] = array(ret[:keyword]).map do |keyword|
           Bib::Keyword.new taxon: [localizedstring(keyword)]
         end
       end
@@ -71,24 +73,24 @@ module Relaton
       def extent_hash_to_bib(ret)
         return unless ret[:extent]
 
-        ret[:extent] = Relaton.array(ret[:extent]).map do |e|
+        ret[:extent] = array(ret[:extent]).map do |e|
           Relaton::Bib::Extent.new  locality: locality(e[:locality]),
                                     locality_stack: locality_stack(e[:locality_stack])
         end
       end
 
       def locality(locality)
-        Relaton.array(locality).map { |l| Bib::Locality.new(**l) }
+        array(locality).map { |l| Bib::Locality.new(**l) }
       end
 
       def locality_stack(locality_stack)
-        Relaton.array(locality_stack).map { |l| Bib::LocalityStack.new locality: locality(l[:locality]) }
+        array(locality_stack).map { |l| Bib::LocalityStack.new locality: locality(l[:locality]) }
       end
 
       def size_hash_to_bib(ret)
         return unless ret[:size]
 
-        ret[:size] = Relaton.array(ret[:size])
+        ret[:size] = array(ret[:size])
         value = ret[:size]&.map do |val|
           val[:content] = val.delete(:value)
           Bib::Size::Value.new(**val)
@@ -99,7 +101,7 @@ module Relaton
       def title_hash_to_bib(ret)
         # return unless ret[:title]
 
-        # ret[:title] = Relaton.array(ret[:title]).reduce(Bib::TitleCollection.new) do |m, t|
+        # ret[:title] = array(ret[:title]).reduce(Bib::TitleCollection.new) do |m, t|
         #   m << (t.is_a?(Hash) ? Bib::Title.new(**t) : Bib::Title.new(content: t))
         # end
         ret[:title] &&= title_collection(ret[:title])
@@ -108,17 +110,17 @@ module Relaton
       def language_hash_to_bib(ret)
         return unless ret[:language]
 
-        ret[:language] = Relaton.array(ret[:language])
+        ret[:language] = array(ret[:language])
       end
 
       def script_hash_to_bib(ret)
         return unless ret[:script]
 
-        ret[:script] = Relaton.array(ret[:script])
+        ret[:script] = array(ret[:script])
       end
 
       def abstract_hash_to_bib(ret)
-        ret[:abstract] &&= Relaton.array(ret[:abstract]).map do |a|
+        ret[:abstract] &&= array(ret[:abstract]).map do |a|
           localized_marked_up_string a
         end
       end
@@ -126,13 +128,13 @@ module Relaton
       def link_hash_to_bib(ret)
         return unless ret[:link]
 
-        ret[:source] = Relaton.array(ret[:link]).map do |l|
+        ret[:source] = array(ret[:link]).map do |l|
           Bib::Uri.new(**l)
         end
       end
 
       def place_hash_to_bib(ret)
-        ret[:place] &&= Relaton.array(ret[:place]).map { |pl| create_place(pl) }
+        ret[:place] &&= array(ret[:place]).map { |pl| create_place(pl) }
       end
 
       def create_place(place)
@@ -146,7 +148,7 @@ module Relaton
       end
 
       def create_region(region)
-        Relaton.array(region).map do |r|
+        array(region).map do |r|
           r[:content] ||= r.delete(:name)
           r[:iso] ||= r.delete(:code)
           Bib::Place::RegionType.new(**r)
@@ -156,11 +158,11 @@ module Relaton
       def accesslocation_hash_to_bib(ret)
         return unless ret[:accesslocation]
 
-        ret[:accesslocation] = Relaton.array(ret[:accesslocation])
+        ret[:accesslocation] = array(ret[:accesslocation])
       end
 
       def dates_hash_to_bib(ret)
-        ret[:date] &&= Relaton.array(ret[:date]).map do |d|
+        ret[:date] &&= array(ret[:date]).map do |d|
           # `at` is synonym of `on`, which is reserved word in YAML
           d[:at] = d.delete(:value) if d[:value]
           Bib::Date.new(**d)
@@ -170,7 +172,7 @@ module Relaton
       def docid_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize
         return unless ret[:docid]
 
-        ret[:docidentifier] = Relaton.array(ret[:docid]).map do |id|
+        ret[:docidentifier] = array(ret[:docid]).map do |id|
           id[:type] ||= id[:id].match(/^\w+(?=\s)/)&.to_s
           id[:content] = id[:id]
           create_docid(**id)
@@ -184,14 +186,14 @@ module Relaton
       def version_hash_to_bib(ret)
         return unless ret[:version]
 
-        ret[:version] = Relaton.array(ret[:version]).map do |v|
+        ret[:version] = array(ret[:version]).map do |v|
           v[:revision_date] &&= ::Date.parse(v[:revision_date])
           Bib::Version.new(**v)
         end
       end
 
       def biblionote_hash_to_bib(ret)
-        ret[:note] = Relaton.array(ret.delete(:biblionote)).map do |n|
+        ret[:note] = array(ret.delete(:biblionote)).map do |n|
           n.is_a?(String) ? Bib::Note.new(content: n) : Bib::Note.new(**n)
         end
       end
@@ -220,10 +222,10 @@ module Relaton
       end
 
       def contributors_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength,Metrics/PerceivedComplexity
-        ret[:contributor] &&= Relaton.array(ret[:contributor]).map do |c|
-          roles = Relaton.array(c[:role]).map do |r|
+        ret[:contributor] &&= array(ret[:contributor]).map do |c|
+          roles = array(c[:role]).map do |r|
             if r.is_a? Hash
-              desc = Relaton.array(r[:description]).map { |d| localized_marked_up_string d }
+              desc = array(r[:description]).map { |d| localized_marked_up_string d }
               Bib::Contributor::Role.new(type: r[:type], description: desc)
             else
               Bib::Contributor::Role.new(type: r)
@@ -264,13 +266,13 @@ module Relaton
       end
 
       def create_org_identifier(identifier)
-        Relaton.array(identifier).map do |id|
+        array(identifier).map do |id|
           Bib::Organization::Identifier.new(type: id[:type], content: id[:id])
         end
       end
 
       def create_org_subdivision(subdivision)
-        Relaton.array(subdivision).map do |sub|
+        array(subdivision).map do |sub|
           if sub.is_a? String
             orgname = Bib::TypedLocalizedString.new(content: sub)
             Bib::Subdivision.new(name: [orgname])
@@ -282,7 +284,7 @@ module Relaton
       end
 
       def typed_localized_string(typed_strs)
-        Relaton.array(typed_strs).map do |args|
+        array(typed_strs).map do |args|
           if args.is_a? String
             Bib::TypedLocalizedString.new(content: args)
           elsif args.is_a? Hash
@@ -292,7 +294,7 @@ module Relaton
       end
 
       # def create_org_name(name)
-      #   Relaton.array(name).map do |nm|
+      #   array(name).map do |nm|
       #     if nm.is_a?(Hash)
       #       Bib::Organization::Name.new(**nm)
       #     else
@@ -304,7 +306,7 @@ module Relaton
       def create_person(person)
         Bib::Person.new(
           name: fullname_hash_to_bib(person),
-          credential: Relaton.array(person[:credential]),
+          credential: array(person[:credential]),
           affiliation: affiliation_hash_to_bib(person),
           address: address_hash_to_bib(person[:contact]),
           phone: phone_hash_to_bib(person[:contact]),
@@ -321,8 +323,8 @@ module Relaton
           abbreviation: localizedstring(n[:abbreviation]),
           forename: fname,
           formatted_initials: localizedstring(n.dig(:given, :formatted_initials)),
-          addition: Relaton.array(n[:addition])&.map { |f| localizedstring(f) },
-          prefix: Relaton.array(n[:prefix])&.map { |f| localizedstring(f) },
+          addition: array(n[:addition])&.map { |f| localizedstring(f) },
+          prefix: array(n[:prefix])&.map { |f| localizedstring(f) },
           surname: localizedstring(n[:surname]),
           completename: localizedstring(n[:completename]),
         )
@@ -331,7 +333,7 @@ module Relaton
       def given_hash_to_bib(given)
         return unless given
 
-        Relaton.array(given[:forename])&.map { |f| forename_hash_to_bib(f) }
+        array(given[:forename])&.map { |f| forename_hash_to_bib(f) }
       end
 
       def forename_hash_to_bib(fname)
@@ -344,7 +346,7 @@ module Relaton
       end
 
       def person_identifiers_hash_to_bib(person)
-        Relaton.array(person[:identifier])&.map do |a|
+        array(person[:identifier])&.map do |a|
           Bib::Person::Identifier.new(type: a[:type], content: a[:id])
         end
       end
@@ -352,8 +354,8 @@ module Relaton
       def affiliation_hash_to_bib(person) # rubocop:disable Metrics/AbcSize
         return [] unless person[:affiliation]
 
-        Relaton.array(person[:affiliation]).map do |a|
-          a[:description] = Relaton.array(a[:description]).map do |d|
+        array(person[:affiliation]).map do |a|
+          a[:description] = array(a[:description]).map do |d|
             localized_marked_up_string d
           end
           Bib::Affiliation.new(
@@ -364,7 +366,7 @@ module Relaton
       end
 
       def address_hash_to_bib(contact)
-        Relaton.array(contact).reduce([]) do |a, c|
+        array(contact).reduce([]) do |a, c|
           next a unless c[:address]
 
           a << create_address(c[:address])
@@ -372,7 +374,7 @@ module Relaton
       end
 
       def phone_hash_to_bib(contact)
-        Relaton.array(contact).reduce([]) do |a, c|
+        array(contact).reduce([]) do |a, c|
           next a unless c[:phone]
 
           c[:type] ||= "work"
@@ -381,7 +383,7 @@ module Relaton
       end
 
       def email_hash_to_bib(contact)
-        Relaton.array(contact).reduce([]) do |a, c|
+        array(contact).reduce([]) do |a, c|
           next a unless c[:email]
 
           a << c[:email]
@@ -389,7 +391,7 @@ module Relaton
       end
 
       def uri_hash_to_bib(contact)
-        Relaton.array(contact).reduce([]) do |a, c|
+        array(contact).reduce([]) do |a, c|
           next a unless c[:uri] || c[:url]
 
           a << Bib::Uri.new(content: c[:uri] || c[:url])
@@ -416,7 +418,7 @@ module Relaton
 
       def create_address(adr)
         if adr.is_a?(Hash)
-          adr[:street] = Relaton.array(adr[:street])
+          adr[:street] = array(adr[:street])
           Bib::Address.new(**adr)
         else
           Bib::Address.new(formatted_address: adr)
@@ -425,8 +427,8 @@ module Relaton
 
       # @param ret [Hash]
       def copyright_hash_to_bib(ret)
-        ret[:copyright] &&= Relaton.array(ret[:copyright]).map do |c|
-          c[:owner] = Relaton.array(c[:owner]).map do |o|
+        ret[:copyright] &&= array(ret[:copyright]).map do |c|
+          c[:owner] = array(c[:owner]).map do |o|
             create_contribution_info(o)
           end
           Bib::Copyright.new(**c)
@@ -445,7 +447,7 @@ module Relaton
       def relations_hash_to_bib(ret) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
         return unless ret[:relation]
 
-        ret[:relation] &&= Relaton.array(ret[:relation]).map do |rel|
+        ret[:relation] &&= array(ret[:relation]).map do |rel|
           rel[:description] = LocalizedMarkedUpString.new(**rel[:description]) if rel[:description]
           relation_bibitem_hash_to_bib(rel)
           relation_locality_hash_to_bib(rel)
@@ -481,7 +483,7 @@ module Relaton
       def relation_locality_hash_to_bib(rel)
         return unless rel[:locality]&.any?
 
-        rel[:locality] = Relaton.array(rel[:locality]).map do |bl|
+        rel[:locality] = array(rel[:locality]).map do |bl|
           Bib::Locality.new(**bl)
         end
       end
@@ -489,7 +491,7 @@ module Relaton
       def relation_locality_stack_hash_to_bib(rel)
         return unless rel[:locality_stack]&.any?
 
-        rel[:locality_stack] = Relaton.array(rel[:locality_stack]).map do |ls|
+        rel[:locality_stack] = array(rel[:locality_stack]).map do |ls|
           Bib::LocalityStack.new locality: relation_locality_hash_to_bib(ls)
         end
       end
@@ -507,15 +509,15 @@ module Relaton
 
       # @param rel [Hash] relation
       def relation_source_locality_hash_to_bib(rel)
-        rel[:source_locality] = Relaton.array(rel[:source_locality]).map do |loc|
+        rel[:source_locality] = array(rel[:source_locality]).map do |loc|
           Bib::Locality.new(**loc)
         end
       end
 
       def relaton_source_locality_stack_hash_to_bib(rel) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
-        sls = Relaton.array(rel[:source_locality_stack])
-        Relaton.array(rel[:source_locality]).each do |loc|
-          sls << Relaton.array(loc[:source_locality_stack]) if loc[:source_locality_stack]
+        sls = array(rel[:source_locality_stack])
+        array(rel[:source_locality]).each do |loc|
+          sls << array(loc[:source_locality_stack]) if loc[:source_locality_stack]
         end
 
         case rel[:source_locality]
@@ -530,7 +532,7 @@ module Relaton
 
       # @param ret [Hash]
       def series_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-        ret[:series] &&= Relaton.array(ret[:series]).map do |s|
+        ret[:series] &&= array(ret[:series]).map do |s|
           s[:formattedref] && s[:formattedref] = formattedref(s[:formattedref])
           s[:title] &&= title_collection(s[:title])
           s[:place] &&= create_place(s[:place])
@@ -547,7 +549,7 @@ module Relaton
       # @return [Relaton::Bib::TitleCollection]
       #
       def title_collection(title)
-        Relaton.array(title).map do |t|
+        array(title).map do |t|
           if t.is_a?(Hash)
             lang_scrip_array_to_string t
             Bib::Title.new(**t)
@@ -565,7 +567,7 @@ module Relaton
       # @param ret [Hash]
       def classification_hash_to_bib(ret)
         if ret[:classification]
-          ret[:classification] = Relaton.array(ret[:classification]).map do |cls|
+          ret[:classification] = array(ret[:classification]).map do |cls|
             cls[:content] ||= cls.delete(:value)
             Docidentifier.new(**cls)
           end
@@ -606,7 +608,7 @@ module Relaton
       end
 
       def workgroup_hash_to_bib(wrkg)
-        Relaton.array(wrkg).map { |wg| create_workgroup wg }
+        array(wrkg).map { |wg| create_workgroup wg }
       end
 
       def create_workgroup(wrkg)
@@ -619,7 +621,7 @@ module Relaton
         ics = ret.dig(:ext, :ics) || ret[:ics] # @todo remove ret[:ics] in the future
         return unless ics
 
-        ret[:ext][:ics] = Relaton.array(ics).map { |item| Bib::ICS.new(**item) }
+        ret[:ext][:ics] = array(ics).map { |item| Bib::ICS.new(**item) }
       end
 
       # @param ret [Hash]
@@ -627,8 +629,8 @@ module Relaton
         struct_id = ret.dig(:ext, :structuredidentifier) || ret[:structuredidentifier] # @todo remove ret[:structuredidentifier] in the future
         return unless struct_id
 
-        sids = Relaton.array(struct_id).map do |si|
-          si[:agency] = Relaton.array si[:agency]
+        sids = array(struct_id).map do |si|
+          si[:agency] = array si[:agency]
           si[:klass] = si.delete(:class)
           Bib::StructuredIdentifier.new(**si)
         end

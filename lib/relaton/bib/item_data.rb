@@ -4,6 +4,8 @@ module Relaton
     # It needed to keep data fot different types of representations (bibitem, bibdata ...).
     # @TODO: remove this class when Lutaml Model will support transformation between different types of models.
     class ItemData
+      include Core::ArrayWrapper
+
       ATTRIBUTES = %i[
         id type schema_version fetched formattedref docnumber edition status
         medium size validity depiction ext
@@ -104,19 +106,19 @@ module Relaton
 
       def to_xml(bibdata: false, **opts)
         add_notes opts[:note] do
-          bibdata ? Bibdata.to_xml(self) : Bibitem.to_xml(self)
+          bibdata ? namespace::Bibdata.to_xml(self) : namespace::Bibitem.to_xml(self)
         end
       end
 
       def to_yaml(**opts)
         add_notes opts[:note] do
-          Item.to_yaml(self)
+          namespace::Item.to_yaml(self)
         end
       end
 
       def to_json(**opts)
         add_notes opts[:note] do
-          Item.to_json(self)
+          namespace::Item.to_json(self)
         end
       end
 
@@ -129,11 +131,11 @@ module Relaton
       end
 
       def deep_clone
-        Item.from_yaml Item.to_yaml(self)
+        namespace::Item.from_yaml namespace::Item.to_yaml(self)
       end
 
       def create_relation(**args)
-        Relation.new(**args)
+        namespace::Relation.new(**args)
       end
 
       def delete_title_part!
@@ -155,22 +157,32 @@ module Relaton
 
         # some flavor modles have structuredidentifier as not an array
         # so we need to make it an array use common method
-        Relaton.array(ext.structuredidentifier).each(&:to_all_parts!)
+        array(ext.structuredidentifier).each(&:to_all_parts!)
       end
 
       def ext_remove_date
         return unless ext
 
-        Relaton.array(ext.structuredidentifier).each(&:remove_date!)
+        array(ext.structuredidentifier).each(&:remove_date!)
       end
 
       private
 
+      class << self
+        def namespace
+          @namespace = Object.const_get name.split("::")[0..1].join("::")
+        end
+      end
+
+      def namespace
+        self.class.namespace
+      end
+
       def add_notes(notes)
         self.note ||= []
-        Relaton.array(notes).each { |nt| note << Bib::Note.new(**nt) }
+        array(notes).each { |nt| note << Bib::Note.new(**nt) }
         result = yield
-        Relaton.array(notes).each { note.pop }
+        array(notes).each { note.pop }
         result
       end
     end

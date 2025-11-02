@@ -4,6 +4,7 @@ require "forwardable"
 require "bibtex"
 require "iso639"
 require "rfcxml"
+require "relaton/core"
 require_relative "bib/version"
 require_relative "bib/util"
 require_relative "bib/item_data"
@@ -69,15 +70,6 @@ module Relaton
     rescue Date::Error => e
       Bib::Util.warn "#{date} #{e.message}"
       date
-    end
-
-    # @param arr [nil, Array, #is_a?]
-    # @return [Array]
-    def array(arr)
-      return [] unless arr
-      return [arr] unless arr.is_a?(Array)
-
-      arr
     end
 
     #
