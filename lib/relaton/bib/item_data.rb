@@ -13,18 +13,18 @@ module Relaton
         copyright series place price extent accesslocation license
         classification keyword
       ].freeze
-      WRITE_ATTRIBUTES = %i[title abstract source relation].freeze
+      COLLECTION_WRITE_ONLY_ATTRIBUTES = %i[title abstract source relation].freeze
 
       ATTRIBUTES.each { |attr| attr_accessor attr }
       COLLECTION_ATTRBUTES.each { |attr| attr_accessor attr }
-      WRITE_ATTRIBUTES.each { |attr| attr_writer attr }
+      COLLECTION_WRITE_ONLY_ATTRIBUTES.each { |attr| attr_writer attr }
 
       def initialize(**args)
         ATTRIBUTES.each do |attr|
           instance_variable_set("@#{attr}", args[attr])
         end
 
-        (COLLECTION_ATTRBUTES + WRITE_ATTRIBUTES).each do |attr|
+        (COLLECTION_ATTRBUTES + COLLECTION_WRITE_ONLY_ATTRIBUTES).each do |attr|
           instance_variable_set("@#{attr}", args[attr] || [])
         end
         self.schema_version = schema

@@ -11,7 +11,8 @@ module Relaton
 
         ret = Marshal.load(Marshal.dump(symbolize(args))) # deep copy
         ret[:fetched] &&= ::Date.parse(ret[:fetched])
-        ret[:schema_version] = ret.delete(:"schema-version") if ret[:"schema-version"]
+        ret.delete(:"schema-version")
+        ret.delete(:schema_version)
         title_hash_to_bib(ret)
         link_hash_to_bib(ret)
         language_hash_to_bib(ret)

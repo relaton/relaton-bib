@@ -55,7 +55,7 @@ module Relaton
         graphic_work music patent inbook incollection inproceedings journal website
         webresource dataset archival social_media alert message convesation misc
       ]
-      attribute :schema_version, :string
+      attribute :schema_version, method: :get_schema_version
       attribute :fetched, :date
       attribute :formattedref, :string, raw: true
       attribute :title, Title, collection: true, initialize_empty: true
@@ -123,6 +123,10 @@ module Relaton
         map_element "validity", to: :validity
         map_element "depiction", to: :depiction
         map_element "ext", to: :ext
+      end
+
+      def get_schema_version
+        Relaton.schema_versions["relaton-models"]
       end
     end
   end

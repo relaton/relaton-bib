@@ -219,7 +219,7 @@ module Relaton
               year, month, = d.at.split("-")
               @item.year = year
               @item.month = month if month
-            when "accessed" then @item.urldate = d.at
+            when "accessed" then @item.urldate = d.at.to_s
             end
           end
         end

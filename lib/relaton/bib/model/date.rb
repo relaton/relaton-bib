@@ -1,3 +1,5 @@
+require_relative "type/string_date"
+
 module Relaton
   module Bib
     class Date < Lutaml::Model::Serializable
@@ -9,11 +11,11 @@ module Relaton
       attribute :text, :string
       choice(min: 1, max: 2) do
         choice(min: 1, max: 2) do
-          attribute :from, :string
-          attribute :to, :string
+          attribute :from, StringDate
+          attribute :to, StringDate
         end
-        # `on` is reserved word in YAML, so use `at` instead to avoid remapping key-value formats
-        attribute :at, :string
+        # `on` is reserved word in YAML, so we use `at` to avoid remapping key-value formats
+        attribute :at, StringDate
       end
 
       xml do

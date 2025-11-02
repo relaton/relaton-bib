@@ -1,4 +1,4 @@
-<bibdata type="standard" schema-version="1.0.0">
+<bibdata type="standard" schema-version="v1.4.1">
   <fetched>2022-05-02</fetched>
   <formattedref>ISO 123:1994</formattedref>
   <title language="en" locale="en-US" script="Latn">Geographic information -- Metadata</title>
@@ -229,9 +229,6 @@
     <doctype abbreviation="std">Standard</doctype>
     <subdoctype>Technical Report</subdoctype>
     <flavor>iso</flavor>
-    <editorialgroup>
-      <technical-committee number="211" type="main" identifier="ISO/TC 211" prefix="ISO">Geographic information</technical-committee>
-    </editorialgroup>
     <ics>
       <code>01.040.11</code>
       <text>ISO 123-1</text>
