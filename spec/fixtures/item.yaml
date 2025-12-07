@@ -141,6 +141,7 @@ contributor:
             locale: en-US
         subdivision:
           - type: primary
+            subtype: secondary
             name:
                 content: ISO/TC 211
         abbreviation:

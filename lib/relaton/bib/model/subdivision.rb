@@ -4,10 +4,12 @@ module Relaton
       include OrganizationType
 
       attribute :type, :string
+      attribute :subtype, :string
 
       xml do
         root "subdivision"
         map_attribute "type", to: :type
+        map_attribute "subtype", to: :subtype
       end
     end
   end

@@ -46,6 +46,8 @@ module Relaton
 
     # Item class repesents bibliographic item metadata.
     class Item < Lutaml::Model::Serializable
+      attr_accessor :type # in some cases mehod type is unavailable
+
       model ItemData
 
       attribute :id, :string
