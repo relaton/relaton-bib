@@ -30,6 +30,7 @@ module Relaton
           instance_variable_set("@#{attr}", args[attr] || [])
         end
         self.schema_version = schema
+        create_id
       end
 
       #
@@ -77,7 +78,11 @@ module Relaton
       end
 
       def create_id(without_date: false)
-        raise NotImplementedError, "`create_id` method not implemented in #{self.class}"
+        docid = docidentifier.find(&:primary) || docidentifier.first
+        return unless docid
+
+        pubid = without_date ? docid.content.sub(/:\d{4}$/, "") : docid.content
+        self.id = pubid.gsub(/\W+/, "")
       end
 
       def title(lang = nil)
@@ -135,7 +140,11 @@ module Relaton
       end
 
       def create_relation(**args)
-        namespace::Relation.new(**args)
+        if defined?(namespace::Relation)
+          namespace::Relation.new(**args)
+        else
+          Relation.new(**args)
+        end
       end
 
       def delete_title_part!

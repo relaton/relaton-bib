@@ -64,7 +64,6 @@ describe Relaton::Bib::ItemData do
   it "#to_most_recent_reference" do
     allow_any_instance_of(Relaton::Bib::Docidentifier).to receive(:remove_date!)
     allow_any_instance_of(Relaton::Bib::StructuredIdentifier).to receive(:remove_date!)
-    allow_any_instance_of(Relaton::Bib::ItemData).to receive(:create_id).with(without_date: true)
     mrr_item = item.to_most_recent_reference
     expect(mrr_item).to be_a Relaton::Bib::ItemData
     expect(mrr_item.relation.size).to eq 2
@@ -76,7 +75,7 @@ describe Relaton::Bib::ItemData do
 
   context "#create_id" do
     it "raises NotImplementedError" do
-      expect { item.create_id }.to raise_error NotImplementedError
+      expect(item.create_id).to eq "ISO12342011"
     end
   end
 
