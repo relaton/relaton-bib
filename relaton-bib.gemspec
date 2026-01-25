@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "bibtex-ruby"
   spec.add_dependency "iso639"
+  spec.add_dependency "isoics", "~> 0.1.0"
   spec.add_dependency "lutaml-model", "~> 0.7"
   spec.add_dependency "nokogiri", "~> 1.16.0"
   spec.add_dependency "psych", "~> 5.2.0" # versin 5.3.0 crashes

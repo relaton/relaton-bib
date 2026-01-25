@@ -399,7 +399,7 @@ ext:
       content: Geographic information
   ics:
     - code: "01.040.11"
-      text: ISO 123-1
+      text: Health care technology (Vocabularies)
   structuredidentifier:
     - type: standard
       agency:

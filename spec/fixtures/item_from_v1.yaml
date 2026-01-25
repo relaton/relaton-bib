@@ -395,7 +395,7 @@ ext:
       content: Editorial group
   ics:
   - code: '01'
-    text: First
+    text: Generalities. Terminology. Standardization. Documentation
   structuredidentifier:
   - type: type 1
     agency:
