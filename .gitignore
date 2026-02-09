@@ -11,5 +11,6 @@
 
 # rspec failure tracking
 .rspec_status
-.rubocop-https---raw-githubusercontent-com-riboseinc-oss-guides-master-ci-rubocop-yml
 Gemfile.lock
+.claude/
+.rubocop-remote-87c7cdd254a8d09d005ee06efac7acc0.yml

@@ -1,63 +1,12 @@
 module Relaton
   module Bib
-    module Renderer
-      module Rfc
-        def self.transform(item, include_keywords: true) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-          if item.docnumber&.match(/^BCP/) ||
-              (item.docidentifier.detect(&:primary) || item.docidentifier[0])&.content&.include?("BCP")
-            Refrencegroup.new(item, include_keywords: include_keywords).transform
-          else
-            Reference.new(item, include_keywords: include_keywords).transform
-          end
-        end
-
-        module Shared
+    module Converter
+      module BibXml
+        class ToRfcxml
           def initialize(item, include_keywords: true)
             @item = item
             @include_keywords = include_keywords
           end
-
-          def create_anchor
-            docid = @item.docidentifier.detect(&:primary) || @item.docidentifier[0]
-            return unless docid
-
-            docid.content.to_s.sub(/^(RFC|BCP|FYI|STD) /, '\1').sub(/^\w+\./, "")
-          end
-
-          def create_target
-            target = @item.source.detect { |l| l.type.casecmp("src").zero? } ||
-              @item.source.detect { |l| l.type.casecmp("doi").zero? }
-            return unless target
-
-            target.content.to_s
-          end
-        end
-
-        class Refrencegroup
-          include Shared
-
-          def transform
-            reference = @item.relation&.each_with_object([]) do |rel, refs|
-              next unless rel.type == "includes"
-
-              refs << Reference.new(rel.bibitem, include_keywords: @include_keywords).transform
-            end
-            Rfcxml::V3::Referencegroup.new(
-              anchor: create_anchor,
-              target: create_target,
-              reference: reference,
-            )
-          end
-        end
-
-        class Reference
-          include Shared
-
-          ORGNAMES = {
-            "IEEE" => "Institute of Electrical and Electronics Engineers",
-            "W3C" => "World Wide Web Consortium",
-            "3GPP" => "3rd Generation Partnership Project",
-          }.freeze
 
           def transform
             model = ::Rfcxml::V3::Reference.new
@@ -66,6 +15,25 @@ module Relaton
             model.front = create_front
             model.format = create_format
             model
+          end
+
+          private
+
+          def create_anchor
+            docid = @item.docidentifier.detect(&:primary) ||
+              @item.docidentifier[0]
+            return unless docid
+
+            docid.content.to_s.sub(/^(RFC|BCP|FYI|STD) /, '\1').sub(/^\w+\./,
+                                                                    "")
+          end
+
+          def create_target
+            target = @item.source.detect { |l| l.type.casecmp("src").zero? } ||
+              @item.source.detect { |l| l.type.casecmp("doi").zero? }
+            return unless target
+
+            target.content.to_s
           end
 
           def create_front # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -81,13 +49,14 @@ module Relaton
           end
 
           def create_seriesinfo
-            docidentifier_to_seresinfo + series_to_seriesinfo
+            docidentifier_to_seriesinfo + series_to_seriesinfo
           end
 
-          def docidentifier_to_seresinfo
+          def docidentifier_to_seriesinfo
             @item.docidentifier.each_with_object([]) do |di, si|
               if di.type == "DOI" && di.scope != "trademark"
-                si << Rfcxml::V3::SeriesInfo.new(name: di.type, value: di.content)
+                si << Rfcxml::V3::SeriesInfo.new(name: di.type,
+                                                 value: di.content)
               end
             end
           end
@@ -99,7 +68,8 @@ module Relaton
               s.title.find { |t| t.content != "DOI" }.content
             end.each_with_object([]) do |s, si|
               title = s.title.find { |t| t.content != "DOI" }
-              si << Rfcxml::V3::SeriesInfo.new(name: title.content, value: s.number)
+              si << Rfcxml::V3::SeriesInfo.new(name: title.content,
+                                               value: s.number)
             end
           end
 
@@ -123,9 +93,7 @@ module Relaton
             if person.name.completename
               person.name.completename.content
             elsif person.name.forename.any?
-              parts = person.name.forename.map do |n|
-                n.content || n.initial
-              end
+              parts = person.name.forename.map { |n| n.content || n.initial }
               parts << person.name.surname.content if person.name.surname
               parts.join(" ")
             end
@@ -137,7 +105,9 @@ module Relaton
             if person.name.formatted_initials
               person.name.formatted_initials.content
             elsif person.name.forename.any?
-              person.name.forename.map { |f| "#{f.initial || f.content[0]}." }.join " "
+              person.name.forename.map do |f|
+                "#{f.initial || f.content[0]}."
+              end.join " "
             end
           end
 
@@ -147,21 +117,33 @@ module Relaton
             person.name.surname&.content
           end
 
-          def create_organization(contrib, _role = []) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity,Metrics/AbcSize
-            org = contrib.organization || contrib.person && contrib.person.affiliation[0]&.organization
+          def create_organization(contrib) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity,Metrics/AbcSize
+            org = contrib_org(contrib)
             return unless org
 
             abbrev = org.abbreviation&.content
+            orgname = resolve_orgname(org, abbrev)
+            Rfcxml::V3::Organization.new(
+              content: orgname, abbrev: abbrev,
+            )
+          end
+
+          def contrib_org(contrib)
+            contrib.organization ||
+              (contrib.person && contrib.person.affiliation[0]&.organization)
+          end
+
+          def resolve_orgname(org, abbrev)
             orgname = org.name&.first&.content
-            orgname = if ORGNAMES.key?(abbrev) then abbrev
-                      else ORGNAMES.key(orgname) || orgname || abbrev
-                      end
-            Rfcxml::V3::Organization.new(content: orgname, abbrev: abbrev)
+            if ORGNAMES.key?(abbrev) then abbrev
+            else ORGNAMES.key(orgname) || orgname || abbrev
+            end
           end
 
           def create_address(contrib) # rubocop:disable Metrics/AbcSize
             entity = contrib.person || contrib.organization
-            return unless entity.address.any? || entity.phone.any? || entity.email.any? || entity.uri.any?
+            return unless entity.address.any? || entity.phone.any? ||
+              entity.email.any? || entity.uri.any?
 
             Rfcxml::V3::Address.new(
               postal: address_postal(entity),
@@ -190,26 +172,34 @@ module Relaton
           end
 
           def address_cities(entity)
-            entity.address.each_with_object([]) do |address, cities|
-              cities << Rfcxml::V3::City.new(content: address.city) if address.city
+            entity.address.each_with_object([]) do |addr, cities|
+              next unless addr.city
+
+              cities << Rfcxml::V3::City.new(content: addr.city)
             end
           end
 
           def address_postcodes(entity)
-            entity.address.each_with_object([]) do |address, codes|
-              codes << Rfcxml::V3::Code.new(content: address.postcode) if address.postcode
+            entity.address.each_with_object([]) do |addr, codes|
+              next unless addr.postcode
+
+              codes << Rfcxml::V3::Code.new(content: addr.postcode)
             end
           end
 
           def address_countries(entity)
-            entity.address.each_with_object([]) do |address, countries|
-              countries << Rfcxml::V3::Country.new(content: address.country) if address.country
+            entity.address.each_with_object([]) do |addr, countries|
+              next unless addr.country
+
+              countries << Rfcxml::V3::Country.new(content: addr.country)
             end
           end
 
           def address_states(entity)
-            entity.address.each_with_object([]) do |address, states|
-              states << Rfcxml::V3::Region.new(content: address.state) if address.state
+            entity.address.each_with_object([]) do |addr, states|
+              next unless addr.state
+
+              states << Rfcxml::V3::Region.new(content: addr.state)
             end
           end
 
@@ -222,8 +212,12 @@ module Relaton
           end
 
           def address_postal_lines(entity)
-            entity.address.each_with_object([]) do |address, plines|
-              plines << Rfcxml::V3::PostalLine.new(content: address.formatted_address) if address.formatted_address
+            entity.address.each_with_object([]) do |addr, plines|
+              next unless addr.formatted_address
+
+              plines << Rfcxml::V3::PostalLine.new(
+                content: addr.formatted_address,
+              )
             end
           end
 
@@ -274,20 +268,21 @@ module Relaton
           def create_abstract
             return unless @item.abstract.any?
 
-            Rfcxml::V3::Abstract.new t: [create_text]
+            content = @item.abstract[0].content
+            Rfcxml::V3::Abstract.new(
+              t: [Rfcxml::V3::Text.new(content: content)],
+            )
           end
 
-          def create_text
-            Rfcxml::V3::Text.new content: @item.abstract[0].content
-          end
+          FORMAT_TYPES = %w[TXT HTML PDF XML DOC].freeze
 
-          def create_format
-            @item.source.reduce([]) do |a, l|
-              next a unless l.type.casecmp("TXT").zero? || l.type.casecmp("HTML").zero? ||
-                l.type.casecmp("PDF").zero? || l.type.casecmp("XML").zero? ||
-                l.type.casecmp("DOC").zero?
+          def create_format # rubocop:disable Metrics/AbcSize
+            @item.source.each_with_object([]) do |l, a|
+              next unless FORMAT_TYPES.any? { |ft| l.type.casecmp(ft).zero? }
 
-              a << Rfcxml::V3::Format.new(type: l.type, target: l.content)
+              a << Rfcxml::V3::Format.new(
+                type: l.type, target: l.content,
+              )
             end
           end
         end

@@ -58,13 +58,13 @@ Each bibliographic attribute has its own class in `lib/relaton/bib/model/`:
 ### Parsing
 
 - **`HashParserV1`** ([lib/relaton/bib/hash_parser_v1.rb](lib/relaton/bib/hash_parser_v1.rb)) - Converts legacy Hash/YAML format to `ItemData`
-- **RFC XML parsers** (`lib/relaton/bib/parser/rfc_*.rb`) - Parse RFC BibXML format via `Relaton::Bib::Parser::RfcReference`
+- **`Converter::BibXml`** ([lib/relaton/bib/converter/bibxml.rb](lib/relaton/bib/converter/bibxml.rb)) - Parses RFC BibXML format via `Relaton::Bib::Converter::BibXml.to_item`
 - **lutaml-model native** - `Item.from_xml`, `Item.from_yaml`, `Item.from_json` handle current format
 
 ### Rendering
 
 - **`Renderer::BibtexBuilder`** - Converts `ItemData` to BibTeX format
-- **`Renderer::Rfc`** - Converts `ItemData` to RFC XML format
+- **`Converter::BibXml`** - Converts `ItemData` to RFC XML format via `Relaton::Bib::Converter::BibXml.to_xml`
 - **lutaml-model native** - `to_xml`, `to_yaml`, `to_json` via the serialization classes
 
 ### Usage Pattern
@@ -78,7 +78,7 @@ item = Relaton::Bib::Bibitem.from_xml(xml_string)
 item = Relaton::Bib::Bibdata.from_xml(xml_string)
 
 # Parse from RFC XML
-item = Relaton::Bib::Parser::RfcReference.from_xml(xml_string)
+item = Relaton::Bib::Converter::BibXml.to_item(xml_string)
 
 # Convert to different formats (returns string)
 item.to_xml                    # as <bibitem>

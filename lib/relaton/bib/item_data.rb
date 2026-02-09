@@ -132,7 +132,7 @@ module Relaton
       end
 
       def to_rfcxml
-        Renderer::Rfc.transform(self).to_xml
+        Converter::BibXml.from_item(self).to_xml
       end
 
       def deep_clone

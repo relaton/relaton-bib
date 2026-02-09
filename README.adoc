@@ -180,7 +180,7 @@ Relaton::Bib::Item.from_yaml yaml
 xml = File.read 'spec/fixtures/rfc.xml'
  => "<reference anchor=\"RFC1\" target=\"10.17487/RFC0001\">\n  <front>\n    <title>Title RFC1</title>\n    <seriesInf..."
 
-Relaton::Bib::Parser::RfcReference.from_xml xml
+Relaton::Bib::Converter::BibXml.to_item xml
  => #<Relaton::Bib::ItemData:0x000000011dc9fc98 ...
 ----
 
