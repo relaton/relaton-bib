@@ -1,5 +1,5 @@
-describe "Relaton::BibtexParser" do
-  xit "parse BibTex" do
+describe Relaton::Bib::BibtexParser do
+  it "parse BibTex" do
     items = described_class.from_bibtex <<~BIBTEX
       @article{mrx05,
         type = "standard",
@@ -66,7 +66,7 @@ describe "Relaton::BibtexParser" do
       }
     BIBTEX
     expect(items).to be_instance_of Hash
-    expect(items["mrx05"]).to be_instance_of Relaton::Bib::Item
+    expect(items["mrx05"]).to be_instance_of Relaton::Bib::ItemData
 
     file = "spec/examples/from_bibtex.xml"
     xml = items["mrx05"].to_xml
@@ -75,7 +75,7 @@ describe "Relaton::BibtexParser" do
   end
 
   context "parse title" do
-    xit "with subtitle" do
+    it "with subtitle" do
       bibtex = BibTeX.parse <<~BIBTEX
         @article{mrx05,
           title = {Something Great},
@@ -83,50 +83,50 @@ describe "Relaton::BibtexParser" do
         }
       BIBTEX
       title = described_class.send :fetch_title, bibtex["mrx05"]
-      expect(title[0].title.content).to eq "Something Great"
-      expect(title[1].title.content).to eq "Sub title"
+      expect(title[0].content).to eq "Something Great"
+      expect(title[1].content).to eq "Sub title"
     end
 
-    xit "with double curly braces" do
+    it "with double curly braces" do
       bibtex = BibTeX.parse <<~BIBTEX
         @article{mrx05,
           title = {{Something Great}},
         }
       BIBTEX
       title = described_class.send :fetch_title, bibtex["mrx05"]
-      expect(title[0].title.content).to eq "Something Great"
+      expect(title[0].content).to eq "Something Great"
     end
   end
 
   context "parse contributor" do
-    xit "howpublished" do
+    it "howpublished" do
       bibtex = BibTeX.parse <<~BIBTEX
         @article{mrx05,
         howpublished = "\\publisher{Taylor {\\&} Francis},\\url{http://www.tandfonline.com/doi/abs/10.1080/17538940802439549}"
         }
       BIBTEX
       contribs = described_class.send :fetch_contributor, bibtex["mrx05"]
-      expect(contribs[0][:entity]).to be_instance_of Relaton::Bib::Organization
-      expect(contribs[0][:entity].name[0].content).to eq "Taylor & Francis"
-      expect(contribs[0][:role][0][:type]).to eq "publisher"
+      expect(contribs[0]).to be_instance_of Relaton::Bib::Contributor
+      expect(contribs[0].organization.name[0].content).to eq "Taylor & Francis"
+      expect(contribs[0].role[0].type).to eq "publisher"
     end
   end
 
   context "parse note" do
-    xit "with howpublished as note" do
+    it "with howpublished as note" do
       bibtex = BibTeX.parse <<~BIBTEX
         @article{mrx05,
           howpublished = {How Published Note},
         }
       BIBTEX
       note = described_class.send :fetch_note, bibtex["mrx05"]
-      expect(note).to be_instance_of Relaton::Bib::BiblioNoteCollection
-      expect(note[0]).to be_instance_of Relaton::Bib::BiblioNote
+      expect(note).to be_a Array
+      expect(note[0]).to be_instance_of Relaton::Bib::Note
       expect(note[0].type).to eq "howpublished"
       expect(note[0].content).to eq "How Published Note"
     end
 
-    xit "don't parse howpublished as note" do
+    it "don't parse howpublished as note" do
       bibtex = <<~BIBTEX
         @article{mrx05,
           howpublished = "\\publisher{Taylor {\&} Francis},\\url{http://www.tandfonline.com/doi/abs/10.1080/17538940802439549}"
@@ -134,33 +134,33 @@ describe "Relaton::BibtexParser" do
       BIBTEX
       docs = BibTeX.parse bibtex
       note = described_class.send :fetch_note, docs["mrx05"]
-      expect(note).to be_instance_of Relaton::Bib::BiblioNoteCollection
+      expect(note).to be_a Array
       expect(note).to be_empty
     end
   end
 
   context "parse keywords" do
-    xit "with comma separator" do
+    it "with comma separator" do
       bibtex = BibTeX.parse <<~BIBTEX
         @article{mrx05,
           keywords = {Sensor Web,data acquisition},
         }
       BIBTEX
       keywords = described_class.send :fetch_keyword, bibtex["mrx05"]
-      expect(keywords).to eq %w[Sensor\ Web data\ acquisition]
+      expect(keywords.map { |k| k.taxon[0].content }).to eq %w[Sensor\ Web data\ acquisition]
     end
 
-    xit "with comma and space separator" do
+    it "with comma and space separator" do
       bibtex = BibTeX.parse <<~BIBTEX
         @article{mrx05,
           keywords = {Sensor Web, data acquisition},
         }
       BIBTEX
       keywords = described_class.send :fetch_keyword, bibtex["mrx05"]
-      expect(keywords).to eq %w[Sensor\ Web data\ acquisition]
+      expect(keywords.map { |k| k.taxon[0].content }).to eq %w[Sensor\ Web data\ acquisition]
     end
 
-    xit "empty" do
+    it "empty" do
       bibtex = BibTeX.parse <<~BIBTEX
         @article{mrx05,
         }

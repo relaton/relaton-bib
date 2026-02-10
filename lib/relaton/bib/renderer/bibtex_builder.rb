@@ -31,7 +31,7 @@ module Relaton
         #
         # Build BibTeX bibliography.
         #
-        # @param bib [Relaton::Bib::Item]
+        # @param bib [Relaton::Bib::ItemData]
         # @param bibtex [BibTeX::Bibliography, nil] BibTeX bibliography
         #
         # @return [BibTeX::Bibliography] BibTeX bibliography
@@ -43,7 +43,7 @@ module Relaton
         #
         # Initialize BibTeX builder.
         #
-        # @param bib [Relaton::Bib::Item]
+        # @param bib [Relaton::Bib::ItemData]
         def initialize(bib)
           @bib = bib
         end
@@ -131,7 +131,7 @@ module Relaton
         # @param [String] type "author" or "editor"
         #
         def add_author_editor(type) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-          retur unless @bib.contributor&.any?
+          return unless @bib.contributor&.any?
 
           contribs = @bib.contributor.select do |c|
             c.person && c.role.any? { |e| e.type == type }
