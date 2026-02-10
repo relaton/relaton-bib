@@ -1,4 +1,4 @@
-describe Relaton::Bib::Renderer::BibtexBuilder do
+describe Relaton::Bib::Converter::Bibtex::ToBibtex do
   context "instance methods" do
     subject { described_class.new bibitem }
     let(:item) { double "item" }

@@ -1,6 +1,6 @@
-describe Relaton::Bib::BibtexParser do
+describe Relaton::Bib::Converter::Bibtex do
   it "parse BibTex" do
-    items = described_class.from_bibtex <<~BIBTEX
+    items = described_class.to_item <<~BIBTEX
       @article{mrx05,
         type = "standard",
         auTHor = "Mr. X and Y, Mr.",
@@ -75,6 +75,8 @@ describe Relaton::Bib::BibtexParser do
   end
 
   context "parse title" do
+    let(:from_bibtex_class) { Relaton::Bib::Converter::Bibtex::FromBibtex }
+
     it "with subtitle" do
       bibtex = BibTeX.parse <<~BIBTEX
         @article{mrx05,
@@ -82,7 +84,7 @@ describe Relaton::Bib::BibtexParser do
           subtitle = {Sub title},
         }
       BIBTEX
-      title = described_class.send :fetch_title, bibtex["mrx05"]
+      title = from_bibtex_class.new(bibtex["mrx05"]).send(:fetch_title)
       expect(title[0].content).to eq "Something Great"
       expect(title[1].content).to eq "Sub title"
     end
@@ -93,19 +95,21 @@ describe Relaton::Bib::BibtexParser do
           title = {{Something Great}},
         }
       BIBTEX
-      title = described_class.send :fetch_title, bibtex["mrx05"]
+      title = from_bibtex_class.new(bibtex["mrx05"]).send(:fetch_title)
       expect(title[0].content).to eq "Something Great"
     end
   end
 
   context "parse contributor" do
+    let(:from_bibtex_class) { Relaton::Bib::Converter::Bibtex::FromBibtex }
+
     it "howpublished" do
       bibtex = BibTeX.parse <<~BIBTEX
         @article{mrx05,
         howpublished = "\\publisher{Taylor {\\&} Francis},\\url{http://www.tandfonline.com/doi/abs/10.1080/17538940802439549}"
         }
       BIBTEX
-      contribs = described_class.send :fetch_contributor, bibtex["mrx05"]
+      contribs = from_bibtex_class.new(bibtex["mrx05"]).send(:fetch_contributor)
       expect(contribs[0]).to be_instance_of Relaton::Bib::Contributor
       expect(contribs[0].organization.name[0].content).to eq "Taylor & Francis"
       expect(contribs[0].role[0].type).to eq "publisher"
@@ -113,13 +117,15 @@ describe Relaton::Bib::BibtexParser do
   end
 
   context "parse note" do
+    let(:from_bibtex_class) { Relaton::Bib::Converter::Bibtex::FromBibtex }
+
     it "with howpublished as note" do
       bibtex = BibTeX.parse <<~BIBTEX
         @article{mrx05,
           howpublished = {How Published Note},
         }
       BIBTEX
-      note = described_class.send :fetch_note, bibtex["mrx05"]
+      note = from_bibtex_class.new(bibtex["mrx05"]).send(:fetch_note)
       expect(note).to be_a Array
       expect(note[0]).to be_instance_of Relaton::Bib::Note
       expect(note[0].type).to eq "howpublished"
@@ -133,20 +139,22 @@ describe Relaton::Bib::BibtexParser do
         }
       BIBTEX
       docs = BibTeX.parse bibtex
-      note = described_class.send :fetch_note, docs["mrx05"]
+      note = from_bibtex_class.new(docs["mrx05"]).send(:fetch_note)
       expect(note).to be_a Array
       expect(note).to be_empty
     end
   end
 
   context "parse keywords" do
+    let(:from_bibtex_class) { Relaton::Bib::Converter::Bibtex::FromBibtex }
+
     it "with comma separator" do
       bibtex = BibTeX.parse <<~BIBTEX
         @article{mrx05,
           keywords = {Sensor Web,data acquisition},
         }
       BIBTEX
-      keywords = described_class.send :fetch_keyword, bibtex["mrx05"]
+      keywords = from_bibtex_class.new(bibtex["mrx05"]).send(:fetch_keyword)
       expect(keywords.map { |k| k.taxon[0].content }).to eq %w[Sensor\ Web data\ acquisition]
     end
 
@@ -156,7 +164,7 @@ describe Relaton::Bib::BibtexParser do
           keywords = {Sensor Web, data acquisition},
         }
       BIBTEX
-      keywords = described_class.send :fetch_keyword, bibtex["mrx05"]
+      keywords = from_bibtex_class.new(bibtex["mrx05"]).send(:fetch_keyword)
       expect(keywords.map { |k| k.taxon[0].content }).to eq %w[Sensor\ Web data\ acquisition]
     end
 
@@ -165,7 +173,7 @@ describe Relaton::Bib::BibtexParser do
         @article{mrx05,
         }
       BIBTEX
-      keywords = described_class.send :fetch_keyword, bibtex["mrx05"]
+      keywords = from_bibtex_class.new(bibtex["mrx05"]).send(:fetch_keyword)
       expect(keywords).to eq []
     end
   end

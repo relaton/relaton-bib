@@ -128,7 +128,7 @@ module Relaton
       end
 
       def to_bibtex
-        Renderer::BibtexBuilder.build(self).to_s
+        Converter::Bibtex.from_item(self).to_s
       end
 
       def to_rfcxml

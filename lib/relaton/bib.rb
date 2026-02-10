@@ -12,10 +12,9 @@ require_relative "bib/model/item"
 require_relative "bib/model/item_base"
 require_relative "bib/model/bibitem"
 require_relative "bib/model/bibdata"
-require_relative "bib/renderer/bibtex_builder"
 require_relative "bib/converter/bibxml"
+require_relative "bib/converter/bibtex"
 require_relative "bib/model/relation"
-require_relative "bibtex_parser"
 
 module Relaton
   # class Error < StandardError; end
