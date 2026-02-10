@@ -48,6 +48,7 @@ The codebase uses [lutaml-model](https://github.com/lutaml/lutaml-model) for ser
 ### Component Models
 
 Each bibliographic attribute has its own class in `lib/relaton/bib/model/`:
+
 - `Title`, `LocalizedString`, `LocalizedMarkedUpString` - text with language/script
 - `Contributor`, `Person`, `Organization` - contributors and affiliations
 - `Docidentifier` - document IDs (DOI, ISBN, etc.)

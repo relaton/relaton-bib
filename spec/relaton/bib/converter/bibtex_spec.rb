@@ -68,7 +68,7 @@ describe Relaton::Bib::Converter::Bibtex do
     expect(items).to be_instance_of Hash
     expect(items["mrx05"]).to be_instance_of Relaton::Bib::ItemData
 
-    file = "spec/examples/from_bibtex.xml"
+    file = "spec/fixtures/from_bibtex.xml"
     xml = items["mrx05"].to_xml
     File.write(file, xml, encoding: "utf-8") unless File.exist? file
     expect(xml).to be_equivalent_to File.read(file, encoding: "utf-8")

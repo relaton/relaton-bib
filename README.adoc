@@ -202,7 +202,7 @@ item = Relaton::Bib::Bibdata.from_xml xml
 
 [source,ruby]
 ----
-Relaton::Bib::BibtexParser.from_bibtex File.read('spec/examples/techreport.bib')
+Relaton::Bib::BibtexParser.from_bibtex File.read('spec/fixtures/techreport.bib')
 => {"ISOTC211"=>
   #<Relaton::Bib::Item:0x007fedee0a2ab0
   ...
