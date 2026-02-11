@@ -14,6 +14,7 @@ require_relative "bib/model/bibitem"
 require_relative "bib/model/bibdata"
 require_relative "bib/converter/bibxml"
 require_relative "bib/converter/bibtex"
+require_relative "bib/converter/asciibib"
 require_relative "bib/model/relation"
 
 module Relaton

@@ -131,6 +131,10 @@ module Relaton
         Converter::Bibtex.from_item(self).to_s
       end
 
+      def to_asciibib
+        Converter::Asciibib.from_item(self)
+      end
+
       def to_rfcxml
         Converter::BibXml.from_item(self).to_xml
       end
