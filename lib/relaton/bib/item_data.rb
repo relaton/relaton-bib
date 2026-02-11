@@ -5,6 +5,7 @@ module Relaton
     # @TODO: remove this class when Lutaml Model will support transformation between different types of models.
     class ItemData
       include Core::ArrayWrapper
+      include NamespaceHelper
 
       ATTRIBUTES = %i[
         id type schema_version fetched formattedref docnumber edition status
@@ -180,16 +181,6 @@ module Relaton
       end
 
       private
-
-      class << self
-        def namespace
-          @namespace = Object.const_get name.split("::")[0..1].join("::")
-        end
-      end
-
-      def namespace
-        self.class.namespace
-      end
 
       def add_notes(notes)
         self.note ||= []

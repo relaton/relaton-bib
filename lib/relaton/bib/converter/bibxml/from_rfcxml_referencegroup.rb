@@ -3,12 +3,14 @@ module Relaton
     module Converter
       module BibXml
         class FromRfcxmlReferencegroup
+          include NamespaceHelper
+
           def initialize(reference)
             @reference = reference
           end
 
           def transform
-            ItemData.new(
+            namespace::ItemData.new(
               docnumber: @reference.anchor.sub(/^\w+\./, ""),
               type: "standard",
               docidentifier: docidentifiers,
@@ -58,7 +60,7 @@ module Relaton
 
           def relation
             (@reference.reference || []).map do |ref|
-              item = FromRfcxml.new(ref).transform
+              item = namespace::Converter::BibXml::FromRfcxml.new(ref).transform
               Relation.new(type: "includes", bibitem: item)
             end
           end

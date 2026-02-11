@@ -3,12 +3,14 @@ module Relaton
     module Converter
       module BibXml
         class FromRfcxml # rubocop:disable Metrics/ClassLength
+          include NamespaceHelper
+
           def initialize(reference)
             @reference = reference
           end
 
           def transform # rubocop:disable Metrics/MethodLength
-            ItemData.new(
+            namespace::ItemData.new(
               docnumber: @reference.anchor.sub(/^\w+\./, ""),
               type: "standard",
               docidentifier: docidentifiers,
@@ -323,7 +325,7 @@ module Relaton
             dt = doctype
             return unless eg || dt
 
-            Bib::Ext.new editorialgroup: eg, doctype: dt
+            namespace::Ext.new editorialgroup: eg, doctype: dt
           end
 
           def editorialgroup
@@ -341,7 +343,7 @@ module Relaton
                    when /IEEE/ then "ieee"
                    else "rfc"
                    end
-            Doctype.new content: type
+            namespace::Doctype.new content: type
           end
         end
       end
