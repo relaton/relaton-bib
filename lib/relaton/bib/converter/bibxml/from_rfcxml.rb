@@ -21,7 +21,7 @@ module Relaton
               title: title,
               formattedref: formattedref,
               abstract: abstract,
-              contributor: contributor,
+              contributor: contributor + workgroup_contributors,
               date: date,
               series: series,
               keyword: keyword,
@@ -318,23 +318,34 @@ module Relaton
             end
           end
 
+          # --- Workgroup Contributors ---
+
+          def workgroup_contributors
+            return [] unless @reference.front.workgroup
+
+            @reference.front.workgroup.map do |wg|
+              Contributor.new(
+                role: [Contributor::Role.new(
+                  type: "author",
+                  description: [LocalizedMarkedUpString.new(content: "committee")],
+                )],
+                organization: Organization.new(
+                  subdivision: [Subdivision.new(
+                    type: "workgroup",
+                    name: [TypedLocalizedString.new(content: wg.content)],
+                  )],
+                ),
+              )
+            end
+          end
+
           # --- Ext ---
 
           def ext
-            eg = editorialgroup
             dt = doctype
-            return unless eg || dt
+            return unless dt
 
-            namespace::Ext.new editorialgroup: eg, doctype: dt
-          end
-
-          def editorialgroup
-            return unless @reference.front.workgroup
-
-            tc = @reference.front.workgroup.map do |wg|
-              WorkGroup.new content: wg.content
-            end
-            EditorialGroup.new(technical_committee: tc) if tc.any?
+            namespace::Ext.new doctype: dt
           end
 
           def doctype

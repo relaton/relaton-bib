@@ -203,6 +203,22 @@ contributor:
     - formatted_address: Address string
     name:
     - content: World Wide Web Consortium
+- role:
+  - type: author
+    description:
+    - content: committee
+  organization:
+    name:
+    - content: Prefix
+    subdivision:
+    - type: technical-committee
+      subtype: Type
+      name:
+      - content: Editorial group
+      identifier:
+      - content: Identifier
+    abbreviation:
+      content: Prefix
 edition:
   number: '1.2'
   content: Edition 1
@@ -386,13 +402,6 @@ ext:
     content: Doctype
   subdoctype: Subdoctype
   flavor: iso
-  editorialgroup:
-    technical_committee:
-    - number: 1
-      type: Type
-      identifier: Identifier
-      prefix: Prefix
-      content: Editorial group
   ics:
   - code: '01'
     text: Generalities. Terminology. Standardization. Documentation

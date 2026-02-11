@@ -132,6 +132,19 @@
       </address>
     </organization>
   </contributor>
+  <contributor>
+    <role type="author">
+      <description>committee</description>
+    </role>
+    <organization>
+      <name>Prefix</name>
+      <subdivision type="technical-committee" subtype="Type">
+        <name>Editorial group</name>
+        <identifier>Identifier</identifier>
+      </subdivision>
+      <abbreviation>Prefix</abbreviation>
+    </organization>
+  </contributor>
   <edition number="1.2">Edition 1</edition>
   <version>
     <revision-date>2019-04-01</revision-date>
@@ -288,9 +301,6 @@
   <ext>
     <doctype abbreviation="DCT">Doctype</doctype>
     <subdoctype>Subdoctype</subdoctype>
-    <editorialgroup>
-      <technical-committee number="1" type="Type" identifier="Identifier" prefix="Prefix">Editorial group</technical-committee>
-    </editorialgroup>
     <ics>
       <code>01</code>
       <text>First</text>

@@ -54,7 +54,7 @@ Each bibliographic attribute has its own class in `lib/relaton/bib/model/`:
 - `Docidentifier` - document IDs (DOI, ISBN, etc.)
 - `Date` - publication dates with custom `StringDate` type
 - `Relation` - related documents (circular reference with Item)
-- `Ext` - extension data (doctype, editorial group, ICS codes, structured identifiers)
+- `Ext` - extension data (doctype, ICS codes, structured identifiers)
 
 ### Parsing
 

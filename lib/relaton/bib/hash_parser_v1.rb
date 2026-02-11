@@ -27,6 +27,7 @@ module Relaton
         formattedref_hash_to_bib(ret)
         docstatus_hash_to_bib(ret)
         contributors_hash_to_bib(ret)
+        editorialgroup_hash_to_bib(ret)
         edition_hash_to_bib(ret)
         copyright_hash_to_bib(ret)
         relations_hash_to_bib(ret)
@@ -49,7 +50,6 @@ module Relaton
         doctype_hash_to_bib ret
         ret[:ext][:subdoctype] = ret.delete(:subdoctype) if ret[:subdoctype]
         ret[:ext][:flavor] ||= flavor(ret)
-        editorialgroup_hash_to_bib ret
         ics_hash_to_bib ret
         structuredidentifier_hash_to_bib ret
         ret[:ext] = Bib::Ext.new(**ret[:ext])
@@ -599,21 +599,30 @@ module Relaton
       end
 
       # @param ret [Hash]
-      def editorialgroup_hash_to_bib(ret)
-        eg = ret.dig(:ext, :editorialgroup) || ret[:editorialgroup] # @todo remove ret[:editorialgroup] in the future
+      def editorialgroup_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+        eg = ret.dig(:ext, :editorialgroup) || ret[:editorialgroup]
         return unless eg
 
-        technical_committee = workgroup_hash_to_bib eg
-        ret[:ext][:editorialgroup] = Bib::EditorialGroup.new technical_committee: technical_committee
-      end
-
-      def workgroup_hash_to_bib(wrkg)
-        array(wrkg).map { |wg| create_workgroup wg }
-      end
-
-      def create_workgroup(wrkg)
-        wrkg[:content] ||= wrkg.delete(:name)
-        Bib::WorkGroup.new(**wrkg)
+        ret[:contributor] ||= []
+        array(eg).each do |wg|
+          wg[:content] ||= wg.delete(:name)
+          ret[:contributor] << Bib::Contributor.new(
+            role: [Bib::Contributor::Role.new(
+              type: "author",
+              description: [Bib::LocalizedMarkedUpString.new(content: "committee")],
+            )],
+            organization: Bib::Organization.new(
+              name: wg[:prefix] ? [Bib::TypedLocalizedString.new(content: wg[:prefix])] : [],
+              subdivision: [Bib::Subdivision.new(
+                type: "technical-committee",
+                subtype: wg[:type],
+                name: [Bib::TypedLocalizedString.new(content: wg[:content])],
+                identifier: wg[:identifier] ? [Bib::OrganizationType::Identifier.new(content: wg[:identifier])] : [],
+              )],
+              abbreviation: wg[:prefix] ? Bib::LocalizedString.new(content: wg[:prefix]) : nil,
+            ),
+          )
+        end
       end
 
       # @param ret [Hash]

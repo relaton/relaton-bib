@@ -213,6 +213,19 @@ contributor:
       type: distributor
       description: sponsor
 
+  - organization:
+      name: Prefix
+      abbreviation: Prefix
+      subdivision:
+        content: Editorial group
+        type: technical-committee
+        subtype: Type
+        identifier:
+          id: Identifier
+    role:
+      type: author
+      description: committee
+
 copyright:
   owner:
     name: International Organization for Standardization
@@ -390,13 +403,6 @@ ext:
     abbreviation: DCT
 
   subdoctype: Subdoctype
-
-  editorialgroup:
-    - name: Editorial group
-      number: 1
-      type: Type
-      identifier: Identifier
-      prefix: Prefix
 
   ics:
     - code: "01"

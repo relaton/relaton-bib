@@ -178,6 +178,22 @@ contributor:
             longdesc: https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg
             width: 100%
             height: auto
+  - role:
+    - type: author
+      description:
+        - content: committee
+    organization:
+      name:
+        - content: ISO
+      subdivision:
+        - type: technical-committee
+          subtype: main
+          name:
+            - content: Geographic information
+          identifier:
+            - content: ISO/TC 211
+      abbreviation:
+        content: ISO
 edition:
   number: "1"
   content: First edition
@@ -390,13 +406,6 @@ ext:
     content: Standard
   subdoctype: Technical Report
   flavor: iso
-  editorialgroup:
-    technical_committee:
-    - number: 211
-      type: main
-      identifier: ISO/TC 211
-      prefix: ISO
-      content: Geographic information
   ics:
     - code: "01.040.11"
       text: Health care technology (Vocabularies)

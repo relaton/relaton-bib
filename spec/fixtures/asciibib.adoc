@@ -169,6 +169,12 @@ contributor.organization.logo.image.title:: ISO Logo
 contributor.organization.logo.image.longdesc:: https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg
 contributor.role.description:: Role of the publisher
 contributor.role.type:: publisher
+contributor::
+contributor.organization.name:: ISO
+contributor.organization.abbreviation:: ISO
+contributor.organization.subdivision:: Geographic information
+contributor.role.description:: committee
+contributor.role.type:: author
 relation::
 relation.type:: partOf
 relation.desctiption.content:: Part of the ISO 123 serieso

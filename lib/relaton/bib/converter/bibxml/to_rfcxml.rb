@@ -74,7 +74,7 @@ module Relaton
           end
 
           def create_authors # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-            @item.contributor.map do |contrib|
+            @item.contributor.reject { |c| committee_contributor?(c) }.map do |contrib|
               role = "editor" if contrib.role.detect { |r| r.type == "editor" }
               Rfcxml::V3::Author.new(
                 role: role,
@@ -253,9 +253,22 @@ module Relaton
             Rfcxml::V3::Date.new(**args)
           end
 
+          def committee_contributor?(contrib)
+            contrib.role.any? do |r|
+              r.type == "author" &&
+                r.description.any? { |d| d.content == "committee" }
+            end
+          end
+
           def create_workgroup
-            @item.ext&.editorialgroup&.technical_committee&.each do |tc|
-              Rfcxml::V3::Workgroup.new content: tc.content
+            @item.contributor.each_with_object([]) do |contrib, wgs|
+              next unless committee_contributor?(contrib)
+
+              contrib.organization&.subdivision&.each do |sd|
+                sd.name.each do |n|
+                  wgs << Rfcxml::V3::Workgroup.new(content: n.content)
+                end
+              end
             end
           end
 

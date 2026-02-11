@@ -118,6 +118,15 @@ contributor:
       - content: W3C
       address:
       - formatted_address: Address string
+  - role:
+    - type: author
+      description:
+      - content: committee
+    organization:
+      subdivision:
+      - type: workgroup
+        name:
+        - content: Editorial group
 date:
   - type: published
     at: "2014-04"
@@ -152,6 +161,3 @@ keyword:
 - taxon:
   - content: Keyword
 ext:
-  editorialgroup:
-    technical_committee:
-      - content: Editorial group
