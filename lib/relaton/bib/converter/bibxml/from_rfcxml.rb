@@ -210,7 +210,7 @@ module Relaton
 
             name = ORGNAMES[org.content] || org.content
             orgname = TypedLocalizedString.new(content: name, language: "en")
-            abbrev = LocalizedString.new(content: org.abbrev, language: "en")
+            abbrev = LocalizedString.new(content: org.abbrev, language: "en") if org.abbrev
             Organization.new(
               name: [orgname], abbreviation: abbrev,
               address: org_address(author), phone: contact_phone(author),

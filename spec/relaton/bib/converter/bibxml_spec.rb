@@ -394,6 +394,53 @@ describe Relaton::Bib::Converter::BibXml do
     end
   end
 
+  describe "FromRfcxml#organization" do
+    context "when <organization> has an abbrev attribute" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="RFC0001">
+            <front>
+              <title>Test</title>
+              <author>
+                <organization abbrev="IETF">Internet Engineering Task Force</organization>
+              </author>
+              <date year="2024"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "creates an abbreviation with the abbrev value" do
+        org = item.contributor.first.organization
+        expect(org.abbreviation.content).to eq "IETF"
+        expect(org.abbreviation.language).to eq "en"
+      end
+    end
+
+    context "when <organization> has no abbrev attribute" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="RFC0002">
+            <front>
+              <title>Test</title>
+              <author>
+                <organization>W3C</organization>
+              </author>
+              <date year="2024"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "does not set an abbreviation" do
+        org = item.contributor.first.organization
+        expect(org.abbreviation).to be_nil
+      end
+    end
+  end
+
   describe "ItemData#to_rfcxml integration" do
     let(:item) { Relaton::Bib::Item.from_yaml File.read("spec/fixtures/rfc.yml") }
     let(:expected) { File.read("spec/fixtures/rfc.xml", encoding: "UTF-8") }
