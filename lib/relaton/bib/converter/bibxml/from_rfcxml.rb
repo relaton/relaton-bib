@@ -48,24 +48,27 @@ module Relaton
           # --- Docidentifiers ---
 
           def docidentifiers
-            ids = [create_docid(@reference.anchor, primary: true)]
-            create_internet_draft_id { |id| ids << id }
+            draft_id = versioned_internet_draft_id
+            ids = [create_docid(@reference.anchor, primary: draft_id.nil?)]
+            ids << draft_id if draft_id
             ids + docid_from_series_info
           end
 
           def create_docid(id, primary: false) # rubocop:disable Metrics/MethodLength
+            args = {}
             pref, num = id_to_pref_num(id)
             if RFCPREFIXES.include?(pref)
-              pid = "#{pref} #{num.sub(/^-?0+/, '')}"
-              type = pubid_type(id)
+              args[:content] = "#{pref} #{num.sub(/^-?0+/, '')}"
+              args[:type] = pubid_type(id)
             elsif %w[I-D draft].include?(pref)
-              pid = "draft-#{num}"
-              type = "Internet-Draft"
+              args[:content] = "draft-#{num}"
+              args[:type] = "Internet-Draft"
             else
-              pid = pref ? "#{pref} #{num}" : id
-              type = pubid_type(id)
+              args[:content] = pref ? "#{pref} #{num}" : id
+              args[:type] = pubid_type(id)
             end
-            Docidentifier.new(type: type, content: pid, primary: primary)
+            args[:primary] = true if primary
+            Docidentifier.new(**args)
           end
 
           def pubid_type(id)
@@ -79,13 +82,13 @@ module Relaton
             tn && tn.to_a[1..2]
           end
 
-          def create_internet_draft_id
+          def versioned_internet_draft_id
             si = internet_draft_series_info(@reference.front) ||
               internet_draft_series_info(@reference)
             return unless si
 
-            yield Docidentifier.new(
-              type: "Internet-Draft", content: si.value,
+            Docidentifier.new(
+              type: "Internet-Draft", content: si.value, primary: true,
             )
           end
 
@@ -146,8 +149,13 @@ module Relaton
               o = organization(author)
               next acc unless p || o
 
-              acc << Contributor.new(person: p, organization: o,
-                                     role: [contributor_role(author)])
+              args = { role: [contributor_role(author)] }
+              if p
+                args[:person] = p
+              else
+                args[:organization] = o
+              end
+              acc << Contributor.new(**args)
             end
           end
 

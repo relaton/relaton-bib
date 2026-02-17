@@ -20,12 +20,16 @@ module Relaton
           private
 
           def create_anchor
-            docid = @item.docidentifier.detect(&:primary) ||
-              @item.docidentifier[0]
+            docid = anchor_docid
             return unless docid
 
-            docid.content.to_s.sub(/^(RFC|BCP|FYI|STD) /, '\1').sub(/^\w+\./,
-                                                                    "")
+            docid.content.to_s.sub(/^(RFC|BCP|FYI|STD) /, '\1').sub(/^\w+\./, "")
+          end
+
+          def anchor_docid
+            @item.docidentifier.detect { |d| RFCPREFIXES.include?(d.type) } ||
+              @item.docidentifier.detect(&:primary) ||
+              @item.docidentifier[0]
           end
 
           def create_target

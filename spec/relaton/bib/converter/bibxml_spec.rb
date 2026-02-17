@@ -70,7 +70,327 @@ describe Relaton::Bib::Converter::BibXml do
 
     it "parses docidentifiers" do
       expect(subject.docidentifier).not_to be_empty
-      expect(subject.docidentifier[0].primary).to be true
+      primary = subject.docidentifier.find(&:primary)
+      expect(primary).not_to be_nil
+    end
+  end
+
+  describe "FromRfcxml#docidentifiers" do
+    context "with RFC prefix anchor and no seriesInfo" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="RFC0001">
+            <front>
+              <title>Test RFC</title>
+              <date year="2014"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "creates a single primary docid with stripped leading zeros" do
+        expect(item.docidentifier.size).to eq 1
+        primary = item.docidentifier.first
+        expect(primary.primary).to be true
+        expect(primary.content).to eq "RFC 1"
+        expect(primary.type).to eq "RFC"
+      end
+    end
+
+    context "with BCP prefix anchor" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="BCP0047">
+            <front>
+              <title>Test BCP</title>
+              <date year="2020"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "creates a primary docid with BCP type and stripped zeros" do
+        primary = item.docidentifier.find(&:primary)
+        expect(primary.content).to eq "BCP 47"
+        expect(primary.type).to eq "BCP"
+      end
+    end
+
+    context "with Internet-Draft anchor (I-D prefix)" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="I-D.some-draft-name">
+            <front>
+              <title>Test Draft</title>
+              <date year="2023"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "creates a primary docid with Internet-Draft type" do
+        primary = item.docidentifier.find(&:primary)
+        expect(primary.content).to eq "draft-some-draft-name"
+        expect(primary.type).to eq "Internet-Draft"
+      end
+    end
+
+    context "with draft prefix anchor" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="draft-ietf-proto-01">
+            <front>
+              <title>Test Draft</title>
+              <date year="2023"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "creates a primary docid with Internet-Draft type" do
+        primary = item.docidentifier.find(&:primary)
+        expect(primary.content).to eq "draft-ietf-proto-01"
+        expect(primary.type).to eq "Internet-Draft"
+      end
+    end
+
+    context "with non-standard prefix anchor (IEEE)" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="IEEE.11073-10201-2020">
+            <front>
+              <title>IEEE Standard</title>
+              <date year="2020"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "creates a primary docid with prefix as type" do
+        primary = item.docidentifier.find(&:primary)
+        expect(primary.content).to eq "IEEE 11073-10201-2020"
+        expect(primary.type).to eq "IEEE"
+      end
+    end
+
+    context "with W3C prefix anchor" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="W3C.REC-xml-20081126">
+            <front>
+              <title>W3C Recommendation</title>
+              <date year="2008"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "creates a primary docid with W3C type" do
+        primary = item.docidentifier.find(&:primary)
+        expect(primary.content).to eq "W3C REC-xml-20081126"
+        expect(primary.type).to eq "W3C"
+      end
+    end
+
+    context "with Internet-Draft seriesInfo in front" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="RFC0001">
+            <front>
+              <title>Test RFC</title>
+              <seriesInfo name="Internet-Draft" value="draft-ietf-somewg-proto-07"/>
+              <date year="2014"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "marks the versioned Internet-Draft ID as primary" do
+        draft_id = item.docidentifier.find { |d| d.type == "Internet-Draft" }
+        expect(draft_id).not_to be_nil
+        expect(draft_id.content).to eq "draft-ietf-somewg-proto-07"
+        expect(draft_id.primary).to be true
+      end
+
+      it "does not mark the anchor-derived ID as primary" do
+        anchor_id = item.docidentifier.find { |d| d.type == "RFC" }
+        expect(anchor_id.primary).to be_falsey
+      end
+    end
+
+    context "with Internet-Draft seriesInfo on reference" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="RFC0001">
+            <front>
+              <title>Test RFC</title>
+              <date year="2014"/>
+            </front>
+            <seriesInfo name="Internet-Draft" value="draft-ietf-somewg-proto-07"/>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "marks the versioned Internet-Draft ID as primary" do
+        draft_id = item.docidentifier.find { |d| d.type == "Internet-Draft" }
+        expect(draft_id).not_to be_nil
+        expect(draft_id.content).to eq "draft-ietf-somewg-proto-07"
+        expect(draft_id.primary).to be true
+      end
+    end
+
+    context "with DOI seriesInfo in front" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="RFC0001">
+            <front>
+              <title>Test RFC</title>
+              <seriesInfo name="DOI" value="10.17487/RFC0001"/>
+              <date year="2014"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "adds a DOI docid" do
+        doi = item.docidentifier.find { |d| d.type == "DOI" }
+        expect(doi).not_to be_nil
+        expect(doi.content).to eq "10.17487/RFC0001"
+      end
+
+      it "keeps the anchor-derived ID primary when no versioned ID exists" do
+        primary = item.docidentifier.find(&:primary)
+        expect(primary.type).to eq "RFC"
+      end
+    end
+
+    context "with DOI seriesInfo on reference" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="IEEE.11073-10201-2020">
+            <front>
+              <title>IEEE Standard</title>
+              <date year="2020"/>
+            </front>
+            <seriesInfo name="DOI" value="10.1109/IEEESTD.2020.9102466"/>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "adds a DOI docid from reference-level seriesInfo" do
+        doi = item.docidentifier.find { |d| d.type == "DOI" }
+        expect(doi).not_to be_nil
+        expect(doi.content).to eq "10.1109/IEEESTD.2020.9102466"
+      end
+    end
+
+    context "with multiple identifier sources (RFC anchor + Internet-Draft + DOI)" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="RFC0001">
+            <front>
+              <title>Test RFC</title>
+              <seriesInfo name="DOI" value="10.17487/RFC0001"/>
+              <seriesInfo name="Internet-Draft" value="draft-ietf-somewg-proto-07"/>
+              <date year="2014"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "includes RFC, Internet-Draft, and DOI identifiers" do
+        expect(item.docidentifier.size).to eq 3
+        types = item.docidentifier.map(&:type)
+        expect(types).to include("RFC", "Internet-Draft", "DOI")
+      end
+
+      it "marks the versioned Internet-Draft ID as primary" do
+        primaries = item.docidentifier.select(&:primary)
+        expect(primaries.size).to eq 1
+        expect(primaries.first.type).to eq "Internet-Draft"
+        expect(primaries.first.content).to eq "draft-ietf-somewg-proto-07"
+      end
+    end
+  end
+
+  describe "FromRfcxmlReferencegroup#docidentifiers" do
+    context "with BCP anchor" do
+      let(:xml) do
+        <<~XML
+          <referencegroup anchor="BCP0001">
+            <reference anchor="RFC0001">
+              <front>
+                <title>Included RFC</title>
+                <date year="2014"/>
+              </front>
+            </reference>
+          </referencegroup>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "creates a single primary docid from the group anchor" do
+        expect(item.docidentifier.size).to eq 1
+        primary = item.docidentifier.first
+        expect(primary.primary).to be true
+        expect(primary.content).to eq "BCP 1"
+        expect(primary.type).to eq "BCP"
+      end
+    end
+
+    context "with STD anchor" do
+      let(:xml) do
+        <<~XML
+          <referencegroup anchor="STD0068">
+            <reference anchor="RFC5730">
+              <front>
+                <title>Included RFC</title>
+                <date year="2009"/>
+              </front>
+            </reference>
+          </referencegroup>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "creates a primary docid with STD type" do
+        primary = item.docidentifier.first
+        expect(primary.content).to eq "STD 68"
+        expect(primary.type).to eq "STD"
+      end
+    end
+
+    context "with FYI anchor" do
+      let(:xml) do
+        <<~XML
+          <referencegroup anchor="FYI0018">
+            <reference anchor="RFC1578">
+              <front>
+                <title>Included RFC</title>
+                <date year="1994"/>
+              </front>
+            </reference>
+          </referencegroup>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "creates a primary docid with FYI type" do
+        primary = item.docidentifier.first
+        expect(primary.content).to eq "FYI 18"
+        expect(primary.type).to eq "FYI"
+      end
     end
   end
 
