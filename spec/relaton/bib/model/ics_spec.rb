@@ -10,7 +10,7 @@ describe Relaton::Bib::ICS do
     context "when code is present and text is empty" do
       it "fetches description from Isoics" do
         ics = Relaton::Bib::ICS.new(code: "01.040.01")
-        ics.instance_variable_set(:@text, "")
+        ics.text = ""
         expect(ics.text).to eq "Generalities. Terminology. Standardization. Documentation (Vocabularies)"
       end
     end
@@ -25,7 +25,7 @@ describe Relaton::Bib::ICS do
     context "when text is already set" do
       it "returns the set text" do
         ics = Relaton::Bib::ICS.new(code: "01.040.01")
-        ics.instance_variable_set(:@text, "Custom text")
+        ics.text = "Custom text"
         expect(ics.text).to eq "Custom text"
       end
     end

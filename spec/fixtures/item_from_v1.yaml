@@ -404,7 +404,7 @@ ext:
   flavor: iso
   ics:
   - code: '01'
-    text: Generalities. Terminology. Standardization. Documentation
+    text: First
   structuredidentifier:
   - type: type 1
     agency:

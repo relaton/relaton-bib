@@ -4,7 +4,7 @@ module Relaton
   module Bib
     class ICS < Lutaml::Model::Serializable
       attribute :code, :string
-      attribute :text, method: :get_text
+      attribute :text, :string
 
       xml do
         root "ics"
@@ -12,8 +12,9 @@ module Relaton
         map_element "text", to: :text
       end
 
-      def get_text
-        return @text if @text && !@text.empty?
+      def text
+        val = @text
+        return val if val && !val.empty?
 
         Isoics.fetch(code)&.description if code
       end
