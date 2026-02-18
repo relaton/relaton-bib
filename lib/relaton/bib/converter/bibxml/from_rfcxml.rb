@@ -353,7 +353,7 @@ module Relaton
             dt = doctype
             return unless dt
 
-            namespace::Ext.new doctype: dt
+            namespace::Ext.new doctype: dt, flavor: falvor
           end
 
           def doctype
@@ -364,6 +364,8 @@ module Relaton
                    end
             namespace::Doctype.new content: type
           end
+
+          def falvor = "ietf"
         end
       end
     end
