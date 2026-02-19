@@ -603,6 +603,8 @@ module Relaton
         eg = ret.dig(:ext, :editorialgroup) || ret[:editorialgroup]
         return unless eg
 
+        ret[:ext]&.delete(:editorialgroup)
+        ret.delete(:editorialgroup)
         ret[:contributor] ||= []
         array(eg).each do |wg|
           wg[:content] ||= wg.delete(:name)
@@ -617,12 +619,19 @@ module Relaton
                 type: "technical-committee",
                 subtype: wg[:type],
                 name: [Bib::TypedLocalizedString.new(content: wg[:content])],
-                identifier: wg[:identifier] ? [Bib::OrganizationType::Identifier.new(content: wg[:identifier])] : [],
+                identifier: eg_identifiers(wg),
               )],
               abbreviation: wg[:prefix] ? Bib::LocalizedString.new(content: wg[:prefix]) : nil,
             ),
           )
         end
+      end
+
+      def eg_identifiers(wg)
+        ids = []
+        ids << Bib::OrganizationType::Identifier.new(content: wg[:number].to_s) if wg[:number]
+        ids << Bib::OrganizationType::Identifier.new(content: wg[:identifier]) if wg[:identifier]
+        ids
       end
 
       # @param ret [Hash]
