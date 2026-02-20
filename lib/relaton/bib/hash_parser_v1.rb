@@ -599,7 +599,7 @@ module Relaton
       end
 
       # @param ret [Hash]
-      def editorialgroup_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+      def editorialgroup_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
         eg = ret.dig(:ext, :editorialgroup) || ret[:editorialgroup]
         return unless eg
 
@@ -627,10 +627,18 @@ module Relaton
         end
       end
 
-      def eg_identifiers(wg)
+      def eg_identifiers(workgroup) # rubocop:disable Metrics/MethodLength
         ids = []
-        ids << Bib::OrganizationType::Identifier.new(content: wg[:number].to_s) if wg[:number]
-        ids << Bib::OrganizationType::Identifier.new(content: wg[:identifier]) if wg[:identifier]
+        if workgroup[:number]
+          ids << Bib::OrganizationType::Identifier.new(
+            content: workgroup[:number].to_s,
+          )
+        end
+        if workgroup[:identifier]
+          ids << Bib::OrganizationType::Identifier.new(
+            content: workgroup[:identifier],
+          )
+        end
         ids
       end
 
