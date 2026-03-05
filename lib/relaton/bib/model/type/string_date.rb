@@ -4,6 +4,7 @@ module Relaton
   module Bib
     class StringDate < Lutaml::Model::Type::Value
       class Value
+        include Comparable
         extend Forwardable
         extend Core::DateParser
 
@@ -16,6 +17,12 @@ module Relaton
         def self.parse_date(date)
           value = super
           new value if value
+        end
+
+        def <=>(other)
+          return nil unless other.is_a?(Value)
+
+          @value <=> other.to_s
         end
 
         def to_date
