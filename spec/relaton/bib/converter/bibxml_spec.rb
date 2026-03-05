@@ -73,6 +73,23 @@ describe Relaton::Bib::Converter::BibXml do
       primary = subject.docidentifier.find(&:primary)
       expect(primary).not_to be_nil
     end
+
+    it "populates person forename from initials" do
+      xml = <<~XML
+        <reference anchor="RFC0001">
+          <front>
+            <title>Test</title>
+            <author initials="A. B." surname="Smith" fullname="Arnold B Smith"/>
+            <date year="2024"/>
+          </front>
+        </reference>
+      XML
+      item = described_class.to_item(xml)
+      person = item.contributor.first.person
+      expect(person.name.forename.size).to eq 2
+      expect(person.name.forename[0].initial).to eq "A"
+      expect(person.name.forename[1].initial).to eq "B"
+    end
   end
 
   describe "FromRfcxml#docidentifiers" do

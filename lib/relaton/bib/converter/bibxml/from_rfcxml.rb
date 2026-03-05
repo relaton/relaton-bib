@@ -184,6 +184,7 @@ module Relaton
               completename: LocalizedString.new(content: author.fullname,
                                                 language: "en"),
               formatted_initials: person_initials(author),
+              forename: person_forename(author),
               surname: LocalizedString.new(content: author.surname,
                                            language: "en"),
             )
@@ -193,6 +194,14 @@ module Relaton
             return unless author.initials
 
             LocalizedString.new(content: author.initials, language: "en")
+          end
+
+          def person_forename(author)
+            return [] unless author.initials
+
+            author.initials.split(/\.-?\s?|\s/).map do |i|
+              FullNameType::Forename.new(initial: i, language: "en")
+            end
           end
 
           def person_affiliation(author)
