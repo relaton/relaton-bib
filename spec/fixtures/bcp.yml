@@ -29,6 +29,7 @@ relation:
       docidentifier:
         - content: RFC1
           type: IETF
+      docnumber: RFC1
       source:
         - type: src
           content: https://www.rfc-editor.org/info/rfc1
@@ -68,6 +69,7 @@ relation:
       docidentifier:
         - content: RFC2
           type: IETF
+      docnumber: RFC2
       source:
         - type: src
           content: https://www.rfc-editor.org/info/rfc2

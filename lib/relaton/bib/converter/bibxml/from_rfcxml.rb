@@ -11,7 +11,7 @@ module Relaton
 
           def transform # rubocop:disable Metrics/MethodLength
             namespace::ItemData.new(
-              docnumber: @reference.anchor.sub(/^\w+\./, ""),
+              docnumber: @reference.anchor,
               type: "standard",
               docidentifier: docidentifiers,
               status: status,

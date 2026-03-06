@@ -10,7 +10,7 @@ module Relaton
 
           def transform
             model = ::Rfcxml::V3::Reference.new
-            model.anchor = create_anchor
+            model.anchor = @item.docnumber
             model.target = create_target
             model.front = create_front
             model.format = create_format
@@ -18,19 +18,6 @@ module Relaton
           end
 
           private
-
-          def create_anchor
-            docid = anchor_docid
-            return unless docid
-
-            docid.content.to_s.sub(/^(RFC|BCP|FYI|STD) /, '\1').sub(/^\w+\./, "")
-          end
-
-          def anchor_docid
-            @item.docidentifier.detect { |d| RFCPREFIXES.include?(d.type) } ||
-              @item.docidentifier.detect(&:primary) ||
-              @item.docidentifier[0]
-          end
 
           def create_target
             target = @item.source.detect { |l| l.type.casecmp("src").zero? } ||
@@ -42,7 +29,7 @@ module Relaton
 
           def create_front # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
             front = ::Rfcxml::V3::Front.new
-            front.title = Rfcxml::V3::Title.new(content: @item.title[0].content)
+            front.title = Rfcxml::V3::Title.new(content: @item.title[0].content) if @item.title.any?
             front.series_info = create_seriesinfo
             front.author = create_authors
             front.date = create_date
