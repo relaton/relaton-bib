@@ -133,7 +133,7 @@ module Relaton
           # --- Abstract ---
 
           def abstract
-            return [] unless @reference.front.abstract
+            return [] unless @reference.front.abstract&.t
 
             @reference.front.abstract.t.map do |t|
               LocalizedMarkedUpString.new(content: t.content, language: "en",
@@ -298,7 +298,7 @@ module Relaton
 
           def date # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
             dt = @reference.front&.date
-            return [] unless dt || dt.year || dt.month || dt.day
+            return [] unless dt && (dt.year || dt.month || dt.day)
 
             dparts = [dt.year, month_to_num(dt.month),
                       dt.day].compact.reject(&:empty?)
