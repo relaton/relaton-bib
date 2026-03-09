@@ -5,6 +5,7 @@ module Relaton
     module HashParserV1
       extend self
       extend Core::ArrayWrapper
+      extend Core::DateParser
 
       # @param args [Hash]
       # @return [Hash]
@@ -187,7 +188,7 @@ module Relaton
         return unless ret[:version]
 
         ret[:version] = array(ret[:version]).map do |v|
-          v[:revision_date] &&= parse_date(v[:revision_date])
+          v[:revision_date] &&= parse_date(v[:revision_date], str: false)
           Bib::Version.new(**v)
         end
       end
@@ -734,14 +735,6 @@ module Relaton
 
       def create_doctype(args)
         Bib::Doctype.new(**args)
-      end
-
-      def parse_date(str)
-        case str
-        when /^\d{4}$/ then ::Date.new(str.to_i)
-        when /^\d{4}-\d{1,2}$/ then ::Date.strptime(str, "%Y-%m")
-        else ::Date.parse(str)
-        end
       end
     end
   end

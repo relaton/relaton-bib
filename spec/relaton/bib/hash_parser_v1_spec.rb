@@ -12,20 +12,6 @@ describe Relaton::Bib::HashParserV1 do
     expect(output_hash).to eq YAML.load_file(output_file)
   end
 
-  describe "parse_date" do
-    it "parses year-only string" do
-      expect(described_class.parse_date("2019")).to eq Date.new(2019, 1, 1)
-    end
-
-    it "parses year-month string" do
-      expect(described_class.parse_date("2019-04")).to eq Date.new(2019, 4, 1)
-    end
-
-    it "parses full date string" do
-      expect(described_class.parse_date("2019-04-01")).to eq Date.new(2019, 4, 1)
-    end
-  end
-
   describe "version_hash_to_bib" do
     it "parses version with year-only revision_date" do
       ret = { version: [{ revision_date: "2019", draft: "draft" }] }
