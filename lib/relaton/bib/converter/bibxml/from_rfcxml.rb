@@ -120,6 +120,8 @@ module Relaton
           # --- Title / Formattedref ---
 
           def title
+            return [] unless @reference.front.title
+
             [Title.new(content: @reference.front.title.content, language: "en",
                        script: "Latn")]
           end
