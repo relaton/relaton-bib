@@ -121,6 +121,15 @@ describe Relaton::Bib::ItemData do
     end
   end
 
+  context "#create_relation" do
+    it "creates a Relation with given args" do
+      rel = item.send(:create_relation, type: "replaces", bibitem: item)
+      expect(rel).to be_a Relaton::Bib::Relation
+      expect(rel.type).to eq "replaces"
+      expect(rel.bibitem).to eq item
+    end
+  end
+
   context "#to_xml" do
     it "returns bibdata XML" do
       xml = item.to_xml(bibdata: true)
@@ -135,6 +144,48 @@ describe Relaton::Bib::ItemData do
     it "returns XML with notes" do
       xml = item.to_xml note: [{ type: "note", content: "Note 1" }]
       expect(xml).to include('<note type="note">Note 1</note>')
+    end
+  end
+
+  context "#to_yaml" do
+    it "returns YAML string" do
+      yaml = item.to_yaml
+      parsed = YAML.safe_load(yaml)
+      expect(parsed).to be_a Hash
+      expect(parsed["id"]).to eq "ISO12342011"
+      expect(parsed["title"]).to be_a Array
+      expect(parsed["docidentifier"]).to be_a Array
+      expect(parsed["language"]).to include("en", "fr")
+    end
+
+    it "returns YAML with notes" do
+      yaml = item.to_yaml(note: [{ type: "note", content: "Note 1" }])
+      parsed = YAML.safe_load(yaml)
+      notes = parsed["note"]
+      expect(notes).to be_a Array
+      expect(notes.first["content"]).to eq "Note 1"
+      expect(notes.first["type"]).to eq "note"
+    end
+  end
+
+  context "#to_json" do
+    it "returns JSON string" do
+      json = item.to_json
+      parsed = JSON.parse(json)
+      expect(parsed).to be_a Hash
+      expect(parsed["id"]).to eq "ISO12342011"
+      expect(parsed["title"]).to be_a Array
+      expect(parsed["docidentifier"]).to be_a Array
+      expect(parsed["language"]).to include("en", "fr")
+    end
+
+    it "returns JSON with notes" do
+      json = item.to_json(note: [{ type: "note", content: "Note 1" }])
+      parsed = JSON.parse(json)
+      notes = parsed["note"]
+      expect(notes).to be_a Array
+      expect(notes.first["content"]).to eq "Note 1"
+      expect(notes.first["type"]).to eq "note"
     end
   end
 end

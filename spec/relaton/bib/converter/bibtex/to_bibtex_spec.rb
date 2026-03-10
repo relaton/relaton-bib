@@ -122,6 +122,70 @@ describe Relaton::Bib::Converter::Bibtex::ToBibtex do
       end
     end
 
+    context "add_extent" do
+      context "sets volume from locality" do
+        let(:bibitem) { Relaton::Bib::ItemData.new extent: [extent] }
+        let(:extent) { Relaton::Bib::Extent.new(locality: [Relaton::Bib::Locality.new(type: "volume", reference_from: "1")]) }
+        it do
+          expect(item).to receive(:volume=).with("1")
+          subject.send(:add_extent)
+        end
+      end
+
+      context "sets issue from locality" do
+        let(:bibitem) { Relaton::Bib::ItemData.new extent: [extent] }
+        let(:extent) { Relaton::Bib::Extent.new(locality: [Relaton::Bib::Locality.new(type: "issue", reference_from: "2")]) }
+        it do
+          expect(item).to receive(:issue=).with("2")
+          subject.send(:add_extent)
+        end
+      end
+
+      context "sets chapter from locality" do
+        let(:bibitem) { Relaton::Bib::ItemData.new extent: [extent] }
+        let(:extent) { Relaton::Bib::Extent.new(locality: [Relaton::Bib::Locality.new(type: "chapter", reference_from: "3")]) }
+        it do
+          expect(item).to receive(:chapter=).with("3")
+          subject.send(:add_extent)
+        end
+      end
+
+      context "sets pages with range" do
+        let(:bibitem) { Relaton::Bib::ItemData.new extent: [extent] }
+        let(:extent) { Relaton::Bib::Extent.new(locality: [Relaton::Bib::Locality.new(type: "page", reference_from: "3", reference_to: "10")]) }
+        it do
+          expect(item).to receive(:pages=).with("3--10")
+          subject.send(:add_extent)
+        end
+      end
+
+      context "sets pages without range" do
+        let(:bibitem) { Relaton::Bib::ItemData.new extent: [extent] }
+        let(:extent) { Relaton::Bib::Extent.new(locality: [Relaton::Bib::Locality.new(type: "page", reference_from: "5")]) }
+        it do
+          expect(item).to receive(:pages=).with("5")
+          subject.send(:add_extent)
+        end
+      end
+
+      context "processes locality_stack" do
+        let(:bibitem) { Relaton::Bib::ItemData.new extent: [extent] }
+        let(:extent) do
+          e = Relaton::Bib::Extent.new(locality_stack: [
+            Relaton::Bib::LocalityStack.new(locality: [
+              Relaton::Bib::Locality.new(type: "chapter", reference_from: "5"),
+            ]),
+          ])
+          e.locality = nil
+          e
+        end
+        it do
+          expect(item).to receive(:chapter=).with("5")
+          subject.send(:add_extent)
+        end
+      end
+    end
+
     context "add_link" do
       let(:bibitem) { Relaton::Bib::ItemData.new source: source }
 

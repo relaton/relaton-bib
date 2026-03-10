@@ -15,7 +15,7 @@ module BibTeX
   end
 end
 
-module Relaton
+module Relaton # rubocop:disable Style/OneClassPerFile
   module Bib
     module Converter
       module Bibtex

@@ -341,6 +341,50 @@ describe Relaton::Bib::Converter::BibXml do
     end
   end
 
+  describe "FromRfcxml#create_docid" do
+    let(:converter) do
+      Relaton::Bib::Converter::BibXml::FromRfcxml.new(Object.new)
+    end
+
+    it "strips leading zeros for RFC prefix" do
+      docid = converter.send(:create_docid, "RFC0042")
+      expect(docid.content).to eq "RFC 42"
+      expect(docid.type).to eq "RFC"
+      expect(docid.primary).to be_nil
+    end
+
+    it "sets primary when requested for RFC prefix" do
+      docid = converter.send(:create_docid, "BCP0047", primary: true)
+      expect(docid.content).to eq "BCP 47"
+      expect(docid.type).to eq "BCP"
+      expect(docid.primary).to be true
+    end
+
+    it "handles I-D prefix as Internet-Draft" do
+      docid = converter.send(:create_docid, "I-D.some-draft")
+      expect(docid.content).to eq "draft-some-draft"
+      expect(docid.type).to eq "Internet-Draft"
+    end
+
+    it "handles draft prefix as Internet-Draft" do
+      docid = converter.send(:create_docid, "draft-ietf-proto-01")
+      expect(docid.content).to eq "draft-ietf-proto-01"
+      expect(docid.type).to eq "Internet-Draft"
+    end
+
+    it "handles other known prefix" do
+      docid = converter.send(:create_docid, "W3C.REC-xml")
+      expect(docid.content).to eq "W3C REC-xml"
+      expect(docid.type).to eq "W3C"
+    end
+
+    it "handles unknown id with no matching prefix" do
+      docid = converter.send(:create_docid, "some-unknown-id")
+      expect(docid.content).to eq "some-unknown-id"
+      expect(docid.type).to be_nil
+    end
+  end
+
   describe "FromRfcxmlReferencegroup#docidentifiers" do
     context "with BCP anchor" do
       let(:xml) do
@@ -411,6 +455,54 @@ describe Relaton::Bib::Converter::BibXml do
     end
   end
 
+  describe "FromRfcxmlReferencegroup#create_docid" do
+    let(:converter) do
+      Relaton::Bib::Converter::BibXml::FromRfcxmlReferencegroup.new(Object.new)
+    end
+
+    it "strips leading zeros for RFC prefix" do
+      docid = converter.send(:create_docid, "RFC0042")
+      expect(docid.content).to eq "RFC 42"
+      expect(docid.type).to eq "RFC"
+      expect(docid.primary).to be false
+    end
+
+    it "sets primary when requested for RFC prefix" do
+      docid = converter.send(:create_docid, "BCP0047", primary: true)
+      expect(docid.content).to eq "BCP 47"
+      expect(docid.type).to eq "BCP"
+      expect(docid.primary).to be true
+    end
+
+    it "handles I-D prefix as Internet-Draft" do
+      docid = converter.send(:create_docid, "I-D.some-draft")
+      expect(docid.content).to eq "draft-some-draft"
+      expect(docid.type).to eq "Internet-Draft"
+      expect(docid.primary).to be false
+    end
+
+    it "handles draft prefix as Internet-Draft" do
+      docid = converter.send(:create_docid, "draft-ietf-proto-01")
+      expect(docid.content).to eq "draft-ietf-proto-01"
+      expect(docid.type).to eq "Internet-Draft"
+      expect(docid.primary).to be false
+    end
+
+    it "handles other known prefix" do
+      docid = converter.send(:create_docid, "W3C.REC-xml")
+      expect(docid.content).to eq "W3C REC-xml"
+      expect(docid.type).to eq "W3C"
+      expect(docid.primary).to be false
+    end
+
+    it "handles unknown id with no matching prefix" do
+      docid = converter.send(:create_docid, "some-unknown-id")
+      expect(docid.content).to eq "some-unknown-id"
+      expect(docid.type).to be_nil
+      expect(docid.primary).to be false
+    end
+  end
+
   describe "FromRfcxml#organization" do
     context "when <organization> has an abbrev attribute" do
       let(:xml) do
@@ -455,6 +547,135 @@ describe Relaton::Bib::Converter::BibXml do
         org = item.contributor.first.organization
         expect(org.abbreviation).to be_nil
       end
+    end
+  end
+
+  describe "FromRfcxml#status" do
+    context "when seriesInfo in front has a status attribute" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="RFC1234">
+            <front>
+              <title>Test</title>
+              <seriesInfo name="RFC" value="1234" status="Informational"/>
+              <date year="2024"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "extracts the status" do
+        expect(item.status.stage.content).to eq "Informational"
+      end
+    end
+
+    context "when seriesInfo on reference has a status attribute" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="RFC5678">
+            <front>
+              <title>Test</title>
+              <date year="2024"/>
+            </front>
+            <seriesInfo name="RFC" value="5678" status="Proposed Standard"/>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "extracts the status" do
+        expect(item.status.stage.content).to eq "Proposed Standard"
+      end
+    end
+
+    context "when seriesInfo has no status attribute" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="RFC9999">
+            <front>
+              <title>Test</title>
+              <seriesInfo name="RFC" value="9999"/>
+              <date year="2024"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "returns nil" do
+        expect(item.status).to be_nil
+      end
+    end
+  end
+
+  describe "FromRfcxml#formattedref" do
+    context "when front has no title" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="RFC1234">
+            <front>
+              <date year="2024"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "returns the anchor value" do
+        expect(item.formattedref).to eq("RFC1234")
+      end
+    end
+
+    context "when front has a title" do
+      let(:xml) do
+        <<~XML
+          <reference anchor="RFC5678">
+            <front>
+              <title>Some Title</title>
+              <date year="2024"/>
+            </front>
+          </reference>
+        XML
+      end
+      let(:item) { described_class.to_item(xml) }
+
+      it "returns nil" do
+        expect(item.formattedref).to be_nil
+      end
+    end
+  end
+
+  describe "ToRfcxmlReferencegroup#create_target" do
+    it "returns src URL when present" do
+      sources = [Relaton::Bib::Uri.new(type: "src", content: "https://example.com/src")]
+      item = Relaton::Bib::ItemData.new(source: sources)
+      conv = Relaton::Bib::Converter::BibXml::ToRfcxmlReferencegroup.new(item)
+      expect(conv.send(:create_target)).to eq("https://example.com/src")
+    end
+
+    it "falls back to doi when no src" do
+      sources = [Relaton::Bib::Uri.new(type: "doi", content: "https://doi.org/10.1000/xyz")]
+      item = Relaton::Bib::ItemData.new(source: sources)
+      conv = Relaton::Bib::Converter::BibXml::ToRfcxmlReferencegroup.new(item)
+      expect(conv.send(:create_target)).to eq("https://doi.org/10.1000/xyz")
+    end
+
+    it "prefers src over doi" do
+      sources = [
+        Relaton::Bib::Uri.new(type: "doi", content: "https://doi.org/10.1000/xyz"),
+        Relaton::Bib::Uri.new(type: "src", content: "https://example.com/src"),
+      ]
+      item = Relaton::Bib::ItemData.new(source: sources)
+      conv = Relaton::Bib::Converter::BibXml::ToRfcxmlReferencegroup.new(item)
+      expect(conv.send(:create_target)).to eq("https://example.com/src")
+    end
+
+    it "returns nil when no matching source" do
+      sources = [Relaton::Bib::Uri.new(type: "HTML", content: "https://example.com/page")]
+      item = Relaton::Bib::ItemData.new(source: sources)
+      conv = Relaton::Bib::Converter::BibXml::ToRfcxmlReferencegroup.new(item)
+      expect(conv.send(:create_target)).to be_nil
     end
   end
 
