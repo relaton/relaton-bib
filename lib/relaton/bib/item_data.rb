@@ -8,11 +8,11 @@ module Relaton
       include NamespaceHelper
 
       ATTRIBUTES = %i[
-        id type schema_version fetched formattedref docnumber edition status
+        type schema_version fetched formattedref docnumber edition status
         medium size validity depiction ext
       ].freeze
       COLLECTION_ATTRBUTES = %i[
-        docidentifier date contributor version note language locale script
+        date contributor version note language locale script
         copyright series place price extent accesslocation license
         classification keyword
       ].freeze
@@ -22,15 +22,27 @@ module Relaton
       COLLECTION_ATTRBUTES.each { |attr| attr_accessor attr }
       COLLECTION_WRITE_ONLY_ATTRIBUTES.each { |attr| attr_writer attr }
 
+      attr_reader :id, :docidentifier
+
       def initialize(**args)
-        ATTRIBUTES.each do |attr|
-          instance_variable_set("@#{attr}", args[attr])
-        end
+        ATTRIBUTES.each { |attr| instance_variable_set("@#{attr}", args[attr]) }
 
         (COLLECTION_ATTRBUTES + COLLECTION_WRITE_ONLY_ATTRIBUTES).each do |attr|
           instance_variable_set("@#{attr}", args[attr] || [])
         end
+
+        @docidentifier = args[:docidentifier] || []
         self.schema_version = schema
+        @id = args[:id]
+        create_id
+      end
+
+      def id=(value)
+        @id = value if value
+      end
+
+      def docidentifier=(value)
+        @docidentifier = value || []
         create_id
       end
 
