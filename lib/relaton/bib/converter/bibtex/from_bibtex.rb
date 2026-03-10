@@ -35,7 +35,7 @@ module Relaton
 
           # @return [Array<Relaton::Bib::Docidentifier>]
           def fetch_docid # rubocop:disable Metrics/AbcSize
-            docid = []
+            docid = [Docidentifier.new(content: @entry.key.to_s, primary: true)]
             docid << Docidentifier.new(content: @entry.isbn.to_s, type: "isbn") if @entry["isbn"]
             docid << Docidentifier.new(content: @entry.lccn.to_s, type: "lccn") if @entry["lccn"]
             docid << Docidentifier.new(content: @entry.issn.to_s, type: "issn") if @entry["issn"]

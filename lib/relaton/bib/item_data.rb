@@ -91,7 +91,9 @@ module Relaton
       end
 
       def create_id(without_date: false)
-        docid = docidentifier.find(&:primary) || docidentifier.first
+        return id if id && !id.empty?
+
+        docid = find_primary_docid
         return unless docid
 
         pubid = without_date ? docid.content.sub(/:\d{4}$/, "") : docid.content
@@ -193,6 +195,21 @@ module Relaton
       end
 
       private
+
+      def find_primary_docid
+        prim_docids = docidentifier.select(&:primary)
+        case prim_docids.size
+        when 0 then find_primary_or_english_docid(docidentifier)
+        when 1 then prim_docids.first
+        else find_primary_or_english_docid(prim_docids)
+        end
+      end
+
+      def find_primary_or_english_docid(docids) # rubocop:disable Metrics/CyclomaticComplexity
+        docids.reject(&:language).first ||
+          docids.find { |i| i.language&.casecmp("en")&.zero? } ||
+          docids.first
+      end
 
       def add_notes(notes)
         self.note ||= []

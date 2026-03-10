@@ -1,10 +1,11 @@
-<bibitem id="isbnId" type="article" schema-version="v1.4.1">
+<bibitem id="mrx05" type="article" schema-version="v1.4.1">
   <fetched>2019-12-05</fetched>
   <title type="main">Something Great</title>
   <title type="main">Sub title</title>
   <uri type="src">http://standars.org/123</uri>
   <uri type="doi">http://standard.org/doi-123</uri>
   <uri type="file">file://path/file</uri>
+  <docidentifier primary="true">mrx05</docidentifier>
   <docidentifier type="isbn">isbnId</docidentifier>
   <docidentifier type="lccn">lccnId</docidentifier>
   <docidentifier type="issn">issnId</docidentifier>
