@@ -7,6 +7,7 @@ module Relaton
         include Comparable
         extend Forwardable
         extend Core::DateParser
+        include Core::DateParser
 
         def_delegators :@value, :split, :to_s
 
@@ -26,7 +27,7 @@ module Relaton
         end
 
         def to_date
-          ::Date.parse(@value)
+          parse_date(@value, str: false)
         rescue ArgumentError
           nil
         end
