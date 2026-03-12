@@ -16,6 +16,7 @@ module Relaton
         ret[:fetched] &&= ::Date.parse(ret[:fetched])
         ret.delete(:"schema-version")
         ret.delete(:schema_version)
+        id_hash_to_bib ret
         title_hash_to_bib(ret)
         link_hash_to_bib(ret)
         language_hash_to_bib(ret)
@@ -44,6 +45,12 @@ module Relaton
         ret[:license] = array(ret[:license])
         ext_hash_to_bib ret
         ret
+      end
+
+      def id_hash_to_bib(ret)
+        return unless ret[:id]
+
+        ret[:id] = ret[:id].gsub(/\W+/, "")
       end
 
       def ext_hash_to_bib(ret) # rubocop:disable Metrics/AbcSize

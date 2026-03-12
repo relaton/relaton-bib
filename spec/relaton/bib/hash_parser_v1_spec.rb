@@ -40,6 +40,32 @@ describe Relaton::Bib::HashParserV1 do
     end
   end
 
+  describe "id_hash_to_bib" do
+    it "strips non-word characters from id" do
+      ret = { id: "ISO/IEC 27001:2022" }
+      described_class.id_hash_to_bib(ret)
+      expect(ret[:id]).to eq "ISOIEC270012022"
+    end
+
+    it "handles id with spaces and special characters" do
+      ret = { id: "RFC 8341 (BCP 190)" }
+      described_class.id_hash_to_bib(ret)
+      expect(ret[:id]).to eq "RFC8341BCP190"
+    end
+
+    it "returns nil when id is not present" do
+      ret = {}
+      expect(described_class.id_hash_to_bib(ret)).to be_nil
+      expect(ret[:id]).to be_nil
+    end
+
+    it "keeps id with only word characters unchanged" do
+      ret = { id: "ABC123" }
+      described_class.id_hash_to_bib(ret)
+      expect(ret[:id]).to eq "ABC123"
+    end
+  end
+
   describe "parse edition as string" do
     let(:input_hash) { { edition: "1st ed." } }
 
