@@ -97,7 +97,7 @@ module Relaton
         return unless docid
 
         pubid = without_date ? docid.content.sub(/:\d{4}$/, "") : docid.content
-        self.id = pubid.gsub(/\W+/, "")
+        self.id = pubid.to_s.gsub(/\W+/, "")
       end
 
       def title(lang = nil)

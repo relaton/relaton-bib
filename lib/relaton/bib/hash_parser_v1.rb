@@ -3,9 +3,9 @@ require_relative "../bib"
 module Relaton
   module Bib
     module HashParserV1
+      include Core::ArrayWrapper
+      include Core::DateParser
       extend self
-      extend Core::ArrayWrapper
-      extend Core::DateParser
 
       # @param args [Hash]
       # @return [Hash]
