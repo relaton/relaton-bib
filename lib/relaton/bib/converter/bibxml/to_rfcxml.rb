@@ -10,7 +10,7 @@ module Relaton
 
           def transform
             model = ::Rfcxml::V3::Reference.new
-            model.anchor = @item.docnumber
+            model.anchor = @item.docnumber || derive_anchor
             model.target = create_target
             model.front = create_front
             model.format = create_format
@@ -18,6 +18,11 @@ module Relaton
           end
 
           private
+
+          def derive_anchor
+            di = @item.docidentifier.detect(&:primary) || @item.docidentifier[0]
+            di&.content&.to_s&.gsub(" ", ".")
+          end
 
           def create_target
             target = @item.source.detect { |l| l.type.casecmp("src").zero? } ||

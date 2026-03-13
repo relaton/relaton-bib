@@ -31,7 +31,7 @@ module Relaton
         def self.bcp?(item) # rubocop:disable Metrics/CyclomaticComplexity
           item.docnumber&.match(/^BCP/) ||
             (item.docidentifier.detect(&:primary) ||
-              item.docidentifier[0])&.content&.include?("BCP")
+              item.docidentifier[0])&.content&.to_s&.include?("BCP")
         end
         private_class_method :bcp?
 
