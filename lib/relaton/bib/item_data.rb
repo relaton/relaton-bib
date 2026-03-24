@@ -142,6 +142,12 @@ module Relaton
         end
       end
 
+      def to_h(**opts)
+        add_notes opts[:note] do
+          namespace::Item.to_hash(self)
+        end
+      end
+
       def to_bibtex
         Converter::Bibtex.from_item(self).to_s
       end

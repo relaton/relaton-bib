@@ -188,4 +188,23 @@ describe Relaton::Bib::ItemData do
       expect(notes.first["type"]).to eq "note"
     end
   end
+
+  context "#to_h" do
+    it "returns a Hash" do
+      hash = item.to_h
+      expect(hash).to be_a Hash
+      expect(hash["id"]).to eq "ISO12342011"
+      expect(hash["title"]).to be_a Array
+      expect(hash["docidentifier"]).to be_a Array
+      expect(hash["language"]).to include("en", "fr")
+    end
+
+    it "returns Hash with notes" do
+      hash = item.to_h(note: [{ type: "note", content: "Note 1" }])
+      notes = hash["note"]
+      expect(notes).to be_a Array
+      expect(notes.first["content"]).to eq "Note 1"
+      expect(notes.first["type"]).to eq "note"
+    end
+  end
 end

@@ -221,6 +221,18 @@ formattedref: ISO 123:1994
 ...
 ----
 
+=== Export bibliographic item to Hash
+
+[source,ruby]
+----
+item.to_h
+=> {"id"=>"ISO1231994",
+ "type"=>"standard",
+ "schema_version"=>"...",
+ "title"=>[...],
+ ...}
+----
+
 === Export bibliographic item to BibTeX
 
 [source,ruby]
