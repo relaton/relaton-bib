@@ -545,8 +545,8 @@ module Relaton
           s[:title] &&= title_collection(s[:title])
           s[:place] &&= create_place(s[:place])
           s[:abbreviation] &&= localizedstring(s[:abbreviation])
-          s[:from] &&= ::Date.parse(s[:from])
-          s[:to] &&= ::Date.parse(s[:to])
+          s[:from] &&= s[:from].to_s
+          s[:to] &&= s[:to].to_s
           Bib::Series.new(**s)
         end
       end

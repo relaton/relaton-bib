@@ -1,3 +1,5 @@
+require_relative "type/string_date"
+
 module Relaton
   module Bib
     class Series < Lutaml::Model::Serializable
@@ -7,8 +9,8 @@ module Relaton
       attribute :place, Place
       attribute :organization, :string
       attribute :abbreviation, LocalizedString
-      attribute :from, :date
-      attribute :to, :date
+      attribute :from, StringDate
+      attribute :to, StringDate
       attribute :number, :string
       attribute :partnumber, :string
       attribute :run, :string
