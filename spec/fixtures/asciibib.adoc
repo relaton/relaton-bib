@@ -209,7 +209,7 @@ doctype.content:: Standard
 doctype.abbreviation:: std
 subdoctype:: Technical Report
 formattedref:: ISO 123:1994
-keyword.content:: information
+keyword.content:: geographic
 keyword.language:: en
 keyword.script:: Latn
 ics.code:: 01.040.11

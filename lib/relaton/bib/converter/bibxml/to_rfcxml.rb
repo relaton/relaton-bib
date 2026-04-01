@@ -270,7 +270,11 @@ module Relaton
 
           def create_keyword
             @item.keyword.inject([]) do |a, k|
-              a + k.taxon.map { |t| Rfcxml::V3::Keyword.new content: t.content }
+              if k.vocab
+                a + [Rfcxml::V3::Keyword.new(content: k.vocab.content)]
+              else
+                a + k.taxon.map { |t| Rfcxml::V3::Keyword.new(content: t.content) }
+              end
             end
           end
 

@@ -1,6 +1,6 @@
 id: ISO1231994
 type: standard
-schema_version: v1.4.1
+schema_version: v1.5.6
 fetched: "2022-05-02"
 formattedref: ISO 123:1994
 title:
@@ -168,16 +168,16 @@ contributor:
             script: Latn
             locale: en-US
         logo:
-          image:
-            id: ertg-1234567890ab
-            src: https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg
-            mimetype: image/jpeg
-            filename: PUB100080.jpg
-            alt: ISO logo
-            title: ISO Logo
-            longdesc: https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg
-            width: 100%
-            height: auto
+          - image:
+              id: ertg-1234567890ab
+              src: https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg
+              mimetype: image/jpeg
+              filename: PUB100080.jpg
+              alt: ISO logo
+              title: ISO Logo
+              longdesc: https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg
+              width: 100%
+              height: auto
   - role:
     - type: author
       description:
@@ -369,20 +369,24 @@ classification:
     primary: true
 keyword:
   - vocab:
-      - content: geographic
+      content: geographic
+      language: en
+      script: Latn
+      locale: en-US
+    taxon:
+      - content: geography
         language: en
         script: Latn
         locale: en-US
-    taxon:
-      - content: information
+      - content: geographic information
         language: en
         script: Latn
         locale: en-US
     vocabid:
-      type: AGROVOC
-      uri: http://aims.fao.org/aos/agrovoc/
-      code: "1234"
-      term: Test term
+      - type: AGROVOC
+        uri: http://aims.fao.org/aos/agrovoc/
+        code: "1234"
+        term: Test term
 validity:
   begins: "1994-01-01"
   ends: "1994-12-31"

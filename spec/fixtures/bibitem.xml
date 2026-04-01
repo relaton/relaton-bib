@@ -1,4 +1,4 @@
-<bibitem id="ISO1231994" type="standard" schema-version="v1.4.1">
+<bibitem id="ISO1231994" type="standard" schema-version="v1.5.6">
   <fetched>2022-05-02</fetched>
   <formattedref>ISO 123:1994</formattedref>
   <title language="en" locale="en-US" script="Latn">Geographic information -- Metadata</title>
@@ -211,7 +211,8 @@
   <classification language="en" locale="en-US" script="Latn" type="ISO" scope="local" primary="true">123</classification>
   <keyword>
     <vocab language="en" locale="en-US" script="Latn">geographic</vocab>
-    <taxon language="en" locale="en-US" script="Latn">information</taxon>
+    <taxon language="en" locale="en-US" script="Latn">geography</taxon>
+    <taxon language="en" locale="en-US" script="Latn">geographic information</taxon>
     <vocabid type="AGROVOC" uri="http://aims.fao.org/aos/agrovoc/">
       <code>1234</code>
       <term>Test term</term>

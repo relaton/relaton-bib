@@ -9,12 +9,12 @@ module Relaton
 
       ATTRIBUTES = %i[
         type schema_version fetched formattedref docnumber edition status
-        medium size validity depiction ext
+        medium size validity ext
       ].freeze
       COLLECTION_ATTRBUTES = %i[
         date contributor version note language locale script
         copyright series place price extent accesslocation license
-        classification keyword
+        classification keyword depiction
       ].freeze
       COLLECTION_WRITE_ONLY_ATTRIBUTES = %i[title abstract source relation].freeze
 

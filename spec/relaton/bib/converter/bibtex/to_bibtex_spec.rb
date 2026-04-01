@@ -332,7 +332,7 @@ describe Relaton::Bib::Converter::Bibtex::ToBibtex do
         month = {jan},
         address = {Geneva, Switzerland, Geneva, Geneva},
         pages = {1--10},
-        keywords = {information},
+        keywords = {geographic},
         timestamp = {2022-05-02},
         url = {https://www.iso.org/standard/22722.html},
         doi = {10.1007/978-3-319-99155-2_1},

@@ -188,6 +188,15 @@ Applicable to modify and delete</a:documentation>
       </attribute>
     </optional>
     <optional>
+      <attribute name="position">
+        <a:documentation>For an "add" change, whether the change is added before or after the location</a:documentation>
+        <choice>
+          <value>before</value>
+          <value>after</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
       <element name="location">
         <a:documentation>The location(s) in the original document which have undergone the change described in this block</a:documentation>
         <zeroOrMore>
@@ -208,10 +217,14 @@ Applicable to modify and delete</a:documentation>
     </zeroOrMore>
     <optional>
       <element name="newcontent">
-        <a:documentation>New content to be added to the document; applicable to add and modify</a:documentation>
+        <a:documentation>New content to be added to the document; applicable to add and modify.
+Can be blocks and/or sections</a:documentation>
         <ref name="OptionalId"/>
         <zeroOrMore>
           <ref name="BasicBlock"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="section"/>
         </zeroOrMore>
       </element>
     </optional>

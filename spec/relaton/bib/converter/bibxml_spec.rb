@@ -623,7 +623,7 @@ describe Relaton::Bib::Converter::BibXml do
       let(:item) { described_class.to_item(xml) }
 
       it "returns the anchor value" do
-        expect(item.formattedref).to eq("RFC1234")
+        expect(item.formattedref.content).to eq("RFC1234")
       end
     end
 

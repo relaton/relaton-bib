@@ -230,7 +230,7 @@ module Relaton
           # @return [Array<Relaton::Bib::Keyword>]
           def fetch_keyword
             @entry["keywords"]&.split(/,\s?/)&.map do |kw|
-              Keyword.new(taxon: [LocalizedString.new(content: kw)])
+              Keyword.new(vocab: LocalizedString.new(content: kw))
             end || []
           end
 

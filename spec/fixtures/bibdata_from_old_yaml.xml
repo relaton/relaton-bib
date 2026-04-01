@@ -1,4 +1,4 @@
-<bibdata type="standard" schema-version="v1.4.1">
+<bibdata type="standard" schema-version="v1.5.6">
   <fetched>2024-12-11</fetched>
   <title>Geographic information</title>
   <title language="fr" script="Latn">Information géographique</title>
@@ -302,10 +302,10 @@
   <classification type="keyword">Keywords</classification>
   <classification type="mendeley">Mendeley Tags</classification>
   <keyword>
-    <taxon>Keyword</taxon>
+    <vocab>Keyword</vocab>
   </keyword>
   <keyword>
-    <taxon>Key Word</taxon>
+    <vocab>Key Word</vocab>
   </keyword>
   <validity>
     <validityBegins>2010-10-10</validityBegins>

@@ -22,7 +22,7 @@ module Relaton
           attribute :subdivision, Subdivision, collection: true, initialize_empty: true
           attribute :abbreviation, LocalizedString
           attribute :identifier, Identifier, collection: true, initialize_empty: true
-          attribute :logo, Logo
+          attribute :logo, Logo, collection: true, initialize_empty: true
 
           xml do
             map_element "name", to: :name

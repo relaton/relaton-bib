@@ -422,7 +422,11 @@ module Relaton
             ids = array(org.identifier)
             ids.each { |n| out << render_org_identifier(n, pref, ids.size) }
             out << render_contact(org, pref)
-            out << render_logo(org.logo, pref) if org.logo
+            logos = array(org.logo)
+            logos.each do |l|
+              out << ("#{pref}.logo::\n" if logos.size > 1).to_s
+              out << render_logo(l, pref)
+            end
             out
           end
 
@@ -511,7 +515,7 @@ module Relaton
           def render_bibitem(item, prefix) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
             pref = prefix.empty? ? prefix : "#{prefix}."
             out = ""
-            out << "#{pref}formattedref:: #{item.formattedref}\n" if item.formattedref
+            out << "#{pref}formattedref:: #{item.formattedref.content}\n" if item.formattedref
             array(item.title).each { |t| out << render_title(t, prefix, array(item.title).size) }
             array(item.docidentifier).each do |di|
               out << render_docidentifier(di, prefix, array(item.docidentifier).size)
@@ -547,7 +551,7 @@ module Relaton
             pref = prefix.empty? ? "series" : "#{prefix}.series"
             out = count > 1 ? "#{pref}::\n" : ""
             out << "#{pref}.type:: #{ser.type}\n" if ser.type
-            out << "#{pref}.formattedref:: #{ser.formattedref}\n" if ser.formattedref
+            out << "#{pref}.formattedref:: #{ser.formattedref.content}\n" if ser.formattedref
             array(ser.title).each { |t| out << render_title(t, pref, 1) }
             out << render_series_place(ser.place, pref) if ser.place
             out << "#{pref}.organization:: #{ser.organization}\n" if ser.organization
@@ -580,7 +584,7 @@ module Relaton
           end
 
           def render_formattedref
-            @item.formattedref ? "formattedref:: #{@item.formattedref}\n" : ""
+            @item.formattedref ? "formattedref:: #{@item.formattedref.content}\n" : ""
           end
 
           def render_keywords
@@ -589,8 +593,11 @@ module Relaton
           end
 
           def render_keyword(kw, prefix, count)
-            taxons = array(kw.taxon)
-            taxons.map { |t| render_localized_string(t, prefix, count) }.join
+            if kw.vocab
+              render_localized_string(kw.vocab, prefix, count)
+            else
+              array(kw.taxon).map { |t| render_localized_string(t, prefix, count) }.join
+            end
           end
 
           def render_ics_collection

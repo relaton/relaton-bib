@@ -1,4 +1,4 @@
-<bibitem id="mrx05" type="article" schema-version="v1.4.1">
+<bibitem id="mrx05" type="article" schema-version="v1.5.6">
   <fetched>2019-12-05</fetched>
   <title type="main">Something Great</title>
   <title type="main">Sub title</title>
@@ -109,9 +109,9 @@
   <classification type="type">Type</classification>
   <classification type="mendeley">Mendeley tags</classification>
   <keyword>
-    <taxon>Keyword</taxon>
+    <vocab>Keyword</vocab>
   </keyword>
   <keyword>
-    <taxon>Key Word</taxon>
+    <vocab>Key Word</vocab>
   </keyword>
 </bibitem>

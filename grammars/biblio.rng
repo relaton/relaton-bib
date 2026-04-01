@@ -466,11 +466,11 @@ Editorial and advisory groups are represented as consecutive subdivisions of the
         <a:documentation>Contact information for the organization, including address, phone number, and email</a:documentation>
       </ref>
     </optional>
-    <optional>
+    <zeroOrMore>
       <ref name="logo">
         <a:documentation>A logo for the organization</a:documentation>
       </ref>
-    </optional>
+    </zeroOrMore>
   </define>
   <define name="orgname">
     <element name="name">
@@ -502,6 +502,11 @@ Editorial and advisory groups are represented as consecutive subdivisions of the
   </define>
   <define name="logo">
     <element name="logo">
+      <optional>
+        <attribute name="type">
+          <a:documentation>The type of logo</a:documentation>
+        </attribute>
+      </optional>
       <ref name="image-no-id"/>
     </element>
   </define>
@@ -511,6 +516,11 @@ Editorial and advisory groups are represented as consecutive subdivisions of the
       <optional>
         <attribute name="scope">
           <a:documentation>Description of what is being depicted</a:documentation>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="type">
+          <a:documentation>Description of what kind of depiction this</a:documentation>
         </attribute>
       </optional>
       <zeroOrMore>
@@ -690,7 +700,7 @@ Examples include GRID, LEI, CrossRef, and Ringgold</a:documentation>
   <define name="CitationType">
     <attribute name="bibitemid">
       <a:documentation>Bibliographic item that the citation applies to, referenced as the anchor of a bibliographic description</a:documentation>
-      <data type="IDREF"/>
+      <ref name="IdRefType"/>
     </attribute>
     <choice>
       <zeroOrMore>
@@ -1132,11 +1142,11 @@ NOTE: This should preferably be encoded as  a URI or short identifier, rather th
         <a:documentation>Information about how long the current description of the bibliographic item is valid for</a:documentation>
       </ref>
     </optional>
-    <optional>
+    <zeroOrMore>
       <ref name="depiction">
         <a:documentation>Depiction of the bibliographic item, typically an image</a:documentation>
       </ref>
-    </optional>
+    </zeroOrMore>
   </define>
   <define name="ReducedBibliographicItem">
     <a:documentation>Reduced description of a bibliographic resource, without mandatory title and docidentifier, used for document relations
@@ -1236,9 +1246,9 @@ Refer to `BibliographicItem` for definitions</a:documentation>
     <optional>
       <ref name="validity"/>
     </optional>
-    <optional>
+    <zeroOrMore>
       <ref name="depiction"/>
-    </optional>
+    </zeroOrMore>
   </define>
   <define name="btitle">
     <a:documentation>A title of a bibliographic item, associated with a type of title</a:documentation>
@@ -1296,17 +1306,17 @@ for which this claim of validity is made, if applicable</a:documentation>
   </define>
   <define name="validityBegins">
     <element name="validityBegins">
-      <ref name="ISO8601Date"/>
+      <ref name="ISO8601DateTime"/>
     </element>
   </define>
   <define name="validityEnds">
     <element name="validityEnds">
-      <ref name="ISO8601Date"/>
+      <ref name="ISO8601DateTime"/>
     </element>
   </define>
   <define name="validityRevision">
     <element name="revision">
-      <ref name="ISO8601Date"/>
+      <ref name="ISO8601DateTime"/>
     </element>
   </define>
   <define name="TypedTitleString">
@@ -1929,10 +1939,10 @@ Detailed in https://www.relaton.org/model/relations/</a:documentation>
       <value>hasAnnotation</value>
       <value>draftOf</value>
       <value>hasDraft</value>
-      <value>preliminaryDraftOf</value>
-      <value>hasPreliminaryDraft</value>
-      <value>revisionDraftOf</value>
-      <value>hasRevisionDraft</value>
+      <value>predecessorDraftOf</value>
+      <value>hasPredecessorDraft</value>
+      <value>successorDraftOf</value>
+      <value>hasSuccessorDraft</value>
       <value>editionOf</value>
       <value>hasEdition</value>
       <value>updates</value>
@@ -2053,13 +2063,13 @@ provided that it is not the entire bibliographic item that is so related</a:docu
           <ref name="LocalizedString"/>
         </element>
       </optional>
-      <oneOrMore>
+      <zeroOrMore>
         <element name="taxon">
           <a:documentation>The keywords as a hierarchical taxonomy. For example, the sequence of `taxon` elements
 `pump`, `centrifugal pump`, `line shaft pump` represents a taxonomic classification</a:documentation>
           <ref name="LocalizedString"/>
         </element>
-      </oneOrMore>
+      </zeroOrMore>
       <zeroOrMore>
         <ref name="vocabid">
           <a:documentation>Identifiers for the keyword as a controlled vocabulary</a:documentation>

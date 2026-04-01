@@ -155,7 +155,7 @@ describe Relaton::Bib::Converter::Bibtex do
         }
       BIBTEX
       keywords = from_bibtex_class.new(bibtex["mrx05"]).send(:fetch_keyword)
-      expect(keywords.map { |k| k.taxon[0].content }).to eq %w[Sensor\ Web data\ acquisition]
+      expect(keywords.map { |k| k.vocab.content }).to eq %w[Sensor\ Web data\ acquisition]
     end
 
     it "with comma and space separator" do
@@ -165,7 +165,7 @@ describe Relaton::Bib::Converter::Bibtex do
         }
       BIBTEX
       keywords = from_bibtex_class.new(bibtex["mrx05"]).send(:fetch_keyword)
-      expect(keywords.map { |k| k.taxon[0].content }).to eq %w[Sensor\ Web data\ acquisition]
+      expect(keywords.map { |k| k.vocab.content }).to eq %w[Sensor\ Web data\ acquisition]
     end
 
     it "empty" do

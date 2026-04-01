@@ -159,6 +159,6 @@ series:
     - type: main
       content: DOI
 keyword:
-- taxon:
-  - content: Keyword
+- vocab:
+    content: Keyword
 ext:

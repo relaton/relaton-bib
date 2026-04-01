@@ -2,6 +2,8 @@ require "lutaml/model"
 require "lutaml/model/xml_adapter/nokogiri_adapter"
 require_relative "localized_string_attrs"
 require_relative "localized_string"
+require_relative "formattedref"
+require_relative "abstract"
 require_relative "date"
 require_relative "locality"
 require_relative "locality_stack"
@@ -59,7 +61,7 @@ module Relaton
       ]
       attribute :schema_version, method: :get_schema_version
       attribute :fetched, :date
-      attribute :formattedref, :string, raw: true
+      attribute :formattedref, Formattedref
       attribute :title, Title, collection: true, initialize_empty: true
       attribute :source, Uri, collection: true, initialize_empty: true
       attribute :docidentifier, Docidentifier, collection: true, initialize_empty: true
@@ -72,7 +74,7 @@ module Relaton
       attribute :language, :string, collection: true, initialize_empty: true
       attribute :locale, :string, collection: true, initialize_empty: true
       attribute :script, :string, collection: true, initialize_empty: true
-      attribute :abstract, LocalizedMarkedUpString, collection: true, initialize_empty: true
+      attribute :abstract, Abstract, collection: true, initialize_empty: true
       attribute :status, Status
       attribute :copyright, Copyright, collection: true, initialize_empty: true
       attribute :relation, Relation, collection: true, initialize_empty: true
@@ -87,7 +89,7 @@ module Relaton
       attribute :classification, Docidentifier, collection: true, initialize_empty: true
       attribute :keyword, Keyword, collection: true, initialize_empty: true
       attribute :validity, Validity
-      attribute :depiction, Depiction
+      attribute :depiction, Depiction, collection: true, initialize_empty: true
       attribute :ext, Ext
 
       xml do # rubocop:disable Metrics/BlockLength

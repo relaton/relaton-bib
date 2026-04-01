@@ -29,14 +29,14 @@ describe Relaton::Bib::ItemData do
 
   let(:docidentifier) { Relaton::Bib::Docidentifier.new(content: "ISO 123-4:2011", type: "ISO") }
   let(:ext) { Relaton::Bib::Ext.new structuredidentifier: [structuredidentifier] }
-  let(:abstract) { Relaton::Bib::LocalizedMarkedUpString.new(content: "Abstract", language: "en") }
+  let(:abstract) { Relaton::Bib::Abstract.new(content: "Abstract", language: "en") }
   let(:source) do
     Relaton::Bib::Uri.new(type: "src", content: "https://www.iso.org/iso-123-4-2011")
   end
   let(:relation) do
     Relaton::Bib::Relation.new(
       type: "replaces",
-      bibitem: Relaton::Bib::ItemData.new(formattedref: "ISO 123-4:2010"),
+      bibitem: Relaton::Bib::ItemData.new(formattedref: Relaton::Bib::Formattedref.new(content: "ISO 123-4:2010")),
     )
   end
 

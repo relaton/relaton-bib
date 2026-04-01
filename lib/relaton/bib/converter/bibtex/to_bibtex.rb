@@ -296,7 +296,9 @@ module Relaton # rubocop:disable Style/OneClassPerFile
           #
           def add_keyword
             if @bib.keyword&.any?
-              @item.keywords = @bib.keyword.reduce([]) { |m, kw| m + kw.taxon.map(&:content) }.join(", ")
+              @item.keywords = @bib.keyword.reduce([]) do |m, kw|
+                  m + (kw.vocab ? [kw.vocab.content] : kw.taxon.map(&:content))
+                end.join(", ")
             end
           end
 

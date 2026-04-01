@@ -129,7 +129,7 @@ module Relaton
           def formattedref
             return if @reference.front.title
 
-            @reference.anchor
+            Formattedref.new(content: @reference.anchor)
           end
 
           # --- Abstract ---
@@ -138,8 +138,7 @@ module Relaton
             return [] unless @reference.front.abstract&.t
 
             @reference.front.abstract.t.map do |t|
-              LocalizedMarkedUpString.new(content: t.content, language: "en",
-                                          script: "Latn")
+              Abstract.new(content: t.content, language: "en", script: "Latn")
             end
           end
 
@@ -331,9 +330,9 @@ module Relaton
 
           def keyword
             (@reference.front.keyword || []).map do |kw|
-              taxon = LocalizedString.new(content: kw.content, language: "en",
+              vocab = LocalizedString.new(content: kw.content, language: "en",
                                           script: "Latn")
-              Keyword.new(taxon: [taxon])
+              Keyword.new(vocab: vocab)
             end
           end
 

@@ -4,7 +4,7 @@ module Relaton
   module Bib
     class Series < Lutaml::Model::Serializable
       attribute :type, :string, values: %w[main alt]
-      attribute :formattedref, :string, raw: true
+      attribute :formattedref, Formattedref
       attribute :title, Title, collection: (1..)
       attribute :place, Place
       attribute :organization, :string

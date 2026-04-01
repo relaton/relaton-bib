@@ -74,7 +74,7 @@ module Relaton
 
       def keyword_hash_to_bib(ret)
         ret[:keyword] = array(ret[:keyword]).map do |keyword|
-          Bib::Keyword.new taxon: [localizedstring(keyword)]
+          Bib::Keyword.new vocab: localizedstring(keyword)
         end
       end
 
@@ -129,7 +129,9 @@ module Relaton
 
       def abstract_hash_to_bib(ret)
         ret[:abstract] &&= array(ret[:abstract]).map do |a|
-          localized_marked_up_string a
+          a = { content: a } if a.is_a?(String)
+          lang_scrip_array_to_string(a)
+          Bib::Abstract.new(**a)
         end
       end
 
@@ -267,7 +269,9 @@ module Relaton
         org[:phone] = phone_hash_to_bib(org[:contact])
         org[:email] = email_hash_to_bib(org[:contact])
         org[:uri] = uri_hash_to_bib(org[:contact] || org)
-        org[:logo] = Bib::Logo.new image: Bib::Image.new(**org[:logo][:image]) if org[:logo]
+        org[:logo] = array(org[:logo]).map do |l|
+          Bib::Logo.new(image: Bib::Image.new(**l[:image]))
+        end
         org[:name] = typed_localized_string(org[:name])
         org[:abbreviation] &&= localizedstring(org[:abbreviation])
         org
@@ -716,11 +720,10 @@ module Relaton
       # @return [Relaton::Bib::Formattedref]
       def formattedref(frf)
         if frf.is_a?(Hash)
-          # Relaton::Bib::Formattedref.new(**frf)
-          frf[:content]
+          lang_scrip_array_to_string(frf)
+          Relaton::Bib::Formattedref.new(**frf)
         else
-          # Relaton::Bib::Formattedref.new(content: frf)
-          frf
+          Relaton::Bib::Formattedref.new(content: frf)
         end
       end
 

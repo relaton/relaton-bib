@@ -1,7 +1,7 @@
 ---
 id: ISOTC211
 type: standard
-schema_version: v1.4.1
+schema_version: v1.5.6
 fetched: '2022-05-02'
 title:
 - content: Geographic information
@@ -73,7 +73,7 @@ contributor:
     abbreviation:
       content: ISO
     logo:
-      image:
+    - image:
         id: logo1
         src: logo1.png
         mimetype: image/png
@@ -211,13 +211,13 @@ contributor:
     name:
     - content: Prefix
     subdivision:
-    - type: technical-committee
-      subtype: Type
-      name:
+    - name:
       - content: Editorial group
       identifier:
       - content: '1'
       - content: Identifier
+      type: technical-committee
+      subtype: Type
     abbreviation:
       content: Prefix
 edition:
@@ -228,14 +228,14 @@ version:
   draft: draft
 note:
 - content: note
-- type: annote
-  content: An note
-- type: howpublished
-  content: How published
-- type: comment
-  content: Comment
-- type: tableOfContents
-  content: Table Of Contents
+- content: An note
+  type: annote
+- content: How published
+  type: howpublished
+- content: Comment
+  type: comment
+- content: Table Of Contents
+  type: tableOfContents
 language:
 - en
 - fr
@@ -245,9 +245,11 @@ abstract:
 - language: en
   script: Latn
   content: "<p>ISO 19115-1:2014 defines the schema required for...</p>"
+  format: text/html
 - language: fr
   script: Latn
   content: L'ISO 19115-1:2014 définit le schéma requis pour...
+  format: text/plain
 status:
   stage:
     abbreviation: CD
@@ -289,7 +291,9 @@ relation:
     content: supersedes
   bibitem:
     type: standard
-    formattedref: ISO 19115:2003/Cor 1:2006
+    formattedref:
+      content: ISO 19115:2003/Cor 1:2006
+      format: text/plain
   locality_stack:
   - locality:
     - type: chapter
@@ -331,7 +335,11 @@ series:
   number: serie1234
   partnumber: part5678
 - type: alt
-  formattedref: serieref
+  formattedref:
+    language: en
+    script: Latn
+    content: serieref
+    format: text/plain
   title:
   - content: Formattedref
     format: text/plain
@@ -389,10 +397,10 @@ classification:
 - content: Mendeley Tags
   type: mendeley
 keyword:
-- taxon:
-  - content: Keyword
-- taxon:
-  - content: Key Word
+- vocab:
+    content: Keyword
+- vocab:
+    content: Key Word
 validity:
   begins: '2010-01-01'
   ends: '2011-02-28'

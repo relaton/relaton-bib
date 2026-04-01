@@ -9,8 +9,8 @@ module Relaton
         hasManifestation reproductionOf hasReproduction reprintOf hasReprint
         expressionOf hasExpression translatedFrom hasTranslation arrangementOf
         hasArrangement abridgementOf hasAbridgement annotationOf hasAnnotation
-        draftOfhasDraft preliminaryDraftOf hasPreliminaryDraft revisionDraftOf
-        hasRevisionDraft editionOf hasEdition updates updatedBy derivedFrom
+        draftOf hasDraft predecessorDraftOf hasPredecessorDraft successorDraftOf
+        hasSuccessorDraft editionOf hasEdition updates updatedBy derivedFrom
         derives describes describedBy catalogues cataloguedBy hasSuccessor
         successorOf adaptedFrom hasAdaptation adoptedFrom adoptedAs reviewOf
         hasReview commentaryOf hasCommentary related hasComplement complementOf
