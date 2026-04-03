@@ -102,7 +102,7 @@ module Relaton
 
             ed = @item.edition
             pref = "edition"
-            out = "#{pref}.content:: #{ed.content}\n"
+            out = ed.content ? "#{pref}.content:: #{ed.content}\n" : ""
             out << "#{pref}.number:: #{ed.number}\n" if ed.number
             out
           end
@@ -404,7 +404,7 @@ module Relaton
             pref = prefix.empty? ? prefix : "#{prefix}."
             out = count > 1 ? "#{pref}identifier::\n" : ""
             out << "#{pref}identifier.type:: #{id.type}\n"
-            out << "#{pref}identifier.content:: #{id.content}\n"
+            out << "#{pref}identifier.content:: #{id.content}\n" if id.content
             out
           end
 
@@ -434,7 +434,7 @@ module Relaton
             pref = prefix.empty? ? prefix : "#{prefix}."
             out = count > 1 ? "#{pref}identifier::\n" : ""
             out << "#{pref}identifier.type:: #{id.type}\n"
-            out << "#{pref}identifier.content:: #{id.content}\n"
+            out << "#{pref}identifier.content:: #{id.content}\n" if id.content
             out
           end
 
@@ -651,7 +651,7 @@ module Relaton
             end
 
             out = count > 1 ? "#{prefix}::\n" : ""
-            out << "#{pref}content:: #{ls.content}\n"
+            out << "#{pref}content:: #{ls.content}\n" if ls.content
             out << "#{pref}language:: #{ls.language}\n" if ls.language
             out << "#{pref}script:: #{ls.script}\n" if ls.script
             out
