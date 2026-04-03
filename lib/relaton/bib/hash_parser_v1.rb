@@ -603,10 +603,13 @@ module Relaton
         p = period == :ends ? -1 : 1
         case t
         when /^\d{4}$/
-          ::Date.new(t.to_i, p, p).to_time
+          ::Date.new(t.to_i, p, p).to_datetime.to_time.utc
         when /^(?<year>\d{4})-(?<month>\d{1,2})$/
-          ::Date.new($~[:year].to_i, $~[:month].to_i, p).to_time
-        else ::Date.parse t
+          ::Date.new($~[:year].to_i, $~[:month].to_i, p).to_datetime.to_time.utc
+        else
+          # Default to UTC when no timezone is specified
+          t += " UTC" unless t.match?(/[+-]\d{2}:?\d{2}\s*$|Z\s*$/i)
+          ::Time.parse t
         end
       end
 

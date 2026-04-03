@@ -388,9 +388,9 @@ keyword:
         code: "1234"
         term: Test term
 validity:
-  begins: "1994-01-01"
-  ends: "1994-12-31"
-  revision: "1994-12-31"
+  begins: "1994-01-01T00:00:00+00:00"
+  ends: "1994-12-31T00:00:00+00:00"
+  revision: "1994-12-31T00:00:00+00:00"
 depiction:
   scope: local
   image:

@@ -93,9 +93,9 @@ size.content:: 5
 accesslocation:: file/path
 classification.type:: ISO
 classification.content:: 123
-validity.begins:: 1994-01-01
-validity.ends:: 1994-12-31
-validity.revision:: 1994-12-31
+validity.begins:: 1994-01-01T00:00:00+00:00
+validity.ends:: 1994-12-31T00:00:00+00:00
+validity.revision:: 1994-12-31T00:00:00+00:00
 contributor::
 contributor.person.name.abbreviation.content:: Prof. J.
 contributor.person.name.abbreviation.language:: en

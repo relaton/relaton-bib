@@ -1,9 +1,9 @@
 module Relaton
   module Bib
     class Validity < Lutaml::Model::Serializable
-      attribute :begins, :date
-      attribute :ends, :date
-      attribute :revision, :date
+      attribute :begins, :date_time
+      attribute :ends, :date_time
+      attribute :revision, :date_time
 
       xml do
         root "validity"
