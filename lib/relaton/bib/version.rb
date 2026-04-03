@@ -1,5 +1,5 @@
 module Relaton
   module Bib
-    VERSION = "2.0.0-alpha.6".freeze
+    VERSION = "2.0.0-alpha.7".freeze
   end
 end
