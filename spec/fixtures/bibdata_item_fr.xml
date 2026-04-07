@@ -224,7 +224,9 @@
   </series>
   <series type="main">
     <title type="original" format="text/plain" language="en" script="Latn">ISO/IEC FDIS 10118-3</title>
-    <place>Serie's place</place>
+    <place>
+      <city>Serie's place</city>
+    </place>
     <organization>Serie's organization</organization>
     <abbreviation>ABVR</abbreviation>
     <from>2009-02-01</from>
@@ -255,7 +257,9 @@
     <size>medium size</size>
     <scale>medium scale</scale>
   </medium>
-  <place>bib place</place>
+  <place>
+    <city>bib place</city>
+  </place>
   <place>
     <city>Geneva</city>
     <region>Region</region>
