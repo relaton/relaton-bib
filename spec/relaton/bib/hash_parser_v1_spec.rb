@@ -7,6 +7,14 @@ describe Relaton::Bib::HashParserV1 do
   let(:output_yaml) { Relaton::Bib::Item.to_yaml item }
   let(:output_hash) { YAML.safe_load output_yaml }
 
+  it "converts to XML" do
+    xml = item.to_xml
+    xml_file = "spec/fixtures/from_old_yaml.xml"
+    File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
+    expected_xml = File.read(xml_file, encoding: "UTF-8")
+    expect(xml).to be_equivalent_to expected_xml
+  end
+
   it "parses hash to bib item" do
     File.write output_file, output_yaml, encoding: "UTF-8" unless File.exist? output_file
     expect(output_hash).to eq YAML.load_file(output_file)

@@ -149,7 +149,7 @@ module Relaton
 
       def create_place(place)
         if place.is_a?(String)
-          Bib::Place.new(city: place)
+          Bib::Place.new(formatted_place: place)
         else
           place[:region] &&= create_region(place[:region])
           place[:country] &&= create_region(place[:country])

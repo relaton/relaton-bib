@@ -326,7 +326,7 @@ series:
     type: original
     format: text/plain
   place:
-    city: Serie's place
+    formatted_place: Serie's place
   organization: Serie's organization
   abbreviation:
     content: ABVR
@@ -356,7 +356,7 @@ medium:
   size: medium size
   scale: medium scale
 place:
-- city: bib place
+- formatted_place: bib place
 - city: Geneva
   region:
   - content: Region
