@@ -1,5 +1,5 @@
 require "lutaml/model"
-require "lutaml/model/xml_adapter/nokogiri_adapter"
+require "lutaml/xml"
 require_relative "localized_string_attrs"
 require_relative "localized_string"
 require_relative "formattedref"
@@ -38,7 +38,7 @@ require_relative "source_locality_stack"
 require_relative "ext"
 
 Lutaml::Model::Config.configure do |config|
-  config.xml_adapter = Lutaml::Model::Xml::NokogiriAdapter
+  config.xml_adapter_type = :nokogiri
 end
 
 module Relaton
@@ -48,9 +48,19 @@ module Relaton
 
     # Item class repesents bibliographic item metadata.
     class Item < Lutaml::Model::Serializable
+      include NamespaceHelper
+
       attr_accessor :type # in some cases mehod type is unavailable
 
       model ItemData
+
+      def self.from_xml(xml, options = {})
+        return super unless self == namespace::Item
+
+        root_name = xml.to_s[/<\s*(?:[\w-]+:)?([\w-]+)/, 1]
+        klass = root_name == "bibdata" ? namespace::Bibdata : namespace::Bibitem
+        klass.from_xml(xml, options)
+      end
 
       attribute :id, :string
       attribute :type, :string, values: %W[
@@ -59,7 +69,7 @@ module Relaton
         graphic_work music patent inbook incollection inproceedings journal website
         webresource dataset archival social_media alert message convesation misc
       ]
-      attribute :schema_version, method: :get_schema_version
+      attribute :schema_version, :string, method: :get_schema_version
       attribute :fetched, :date
       attribute :formattedref, Formattedref
       attribute :title, Title, collection: true, initialize_empty: true
