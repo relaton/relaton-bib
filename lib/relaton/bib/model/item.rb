@@ -1,5 +1,4 @@
 require "lutaml/model"
-require "lutaml/model/xml_adapter/nokogiri_adapter"
 require_relative "localized_string_attrs"
 require_relative "localized_string"
 require_relative "formattedref"
@@ -38,7 +37,7 @@ require_relative "source_locality_stack"
 require_relative "ext"
 
 Lutaml::Model::Config.configure do |config|
-  config.xml_adapter = Lutaml::Model::Xml::NokogiriAdapter
+  config.xml_adapter = :nokogiri
 end
 
 module Relaton
@@ -59,7 +58,7 @@ module Relaton
         graphic_work music patent inbook incollection inproceedings journal website
         webresource dataset archival social_media alert message convesation misc
       ]
-      attribute :schema_version, method: :get_schema_version
+      attribute :schema_version, :string, method: :get_schema_version
       attribute :fetched, :date
       attribute :formattedref, Formattedref
       attribute :title, Title, collection: true, initialize_empty: true
@@ -93,6 +92,7 @@ module Relaton
       attribute :ext, Ext
 
       xml do # rubocop:disable Metrics/BlockLength
+        root "bibdata"
         map_attribute "id", to: :id
         map_attribute "type", to: :type
         map_attribute "schema-version", to: :schema_version
