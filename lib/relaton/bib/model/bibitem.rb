@@ -1,23 +1,28 @@
 module Relaton
   module Bib
-    module BibitemShared
-      def self.included(base)
-        base.class_eval do
-          model ItemData
+    # Bibliographic item serialized as <bibitem>. Has id, no ext.
+    class Bibitem < Lutaml::Model::Serializable
+      include NamespaceHelper
 
-          # This class represents a bibliographic item as a bibitem.
-          attributes.delete :ext
-          mappings[:xml].instance_variable_get(:@elements).delete("ext")
+      attr_accessor :type
 
-          xml do
-            root "bibitem"
-          end
-        end
+      model ItemData
+
+      attribute :id, :string
+      attribute :schema_version, :string, method: :get_schema_version
+      attribute :fetched, :date
+      instance_exec(&ItemShared::ATTRIBUTES)
+
+      xml do
+        root "bibitem"
+        map_attribute "id", to: :id
+        map_attribute "type", to: :type
+        map_attribute "schema-version", to: :schema_version
+        map_element "fetched", to: :fetched
+        instance_exec(&ItemShared::XML_BODY)
       end
-    end
 
-    class Bibitem < Item
-      include BibitemShared
+      def get_schema_version = Relaton.schema_versions["relaton-models"]
     end
   end
 end

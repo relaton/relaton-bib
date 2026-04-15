@@ -1,24 +1,28 @@
 module Relaton
   module Bib
-    module BibdataShared
-      def self.included(base)
-        base.class_eval do
-          model ItemData
+    # Bibliographic item serialized as <bibdata>. Has ext, no id.
+    class Bibdata < Lutaml::Model::Serializable
+      include NamespaceHelper
 
-          # Bibdata doesn't have id attribute.
-          attributes.delete :id
-          mappings[:xml].instance_variable_get(:@attributes).delete("id")
+      attr_accessor :type
 
-          xml do
-            root "bibdata"
-          end
-        end
+      model ItemData
+
+      attribute :schema_version, :string, method: :get_schema_version
+      attribute :fetched, :date
+      instance_exec(&ItemShared::ATTRIBUTES)
+      attribute :ext, Ext
+
+      xml do
+        root "bibdata"
+        map_attribute "type", to: :type
+        map_attribute "schema-version", to: :schema_version
+        map_element "fetched", to: :fetched
+        instance_exec(&ItemShared::XML_BODY)
+        map_element "ext", to: :ext
       end
-    end
 
-    # This class represents a bibliographic item as a bibdata.
-    class Bibdata < Item
-      include BibdataShared
+      def get_schema_version = Relaton.schema_versions["relaton-models"]
     end
   end
 end

@@ -14,7 +14,7 @@ module Relaton
 
       xml do
         root "ext"
-        map_attribute "schema-version", to: :schema_version
+        map_attribute "schema-version", to: :schema_version, render_default: true
         map_element "doctype", to: :doctype
         map_element "subdoctype", to: :subdoctype
         map_element "flavor", to: :flavor
