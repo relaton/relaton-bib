@@ -43,6 +43,15 @@ module Relaton
         attribute :depiction, Depiction, collection: true, initialize_empty: true
       end
 
+      def self.prune_attribute(base, attr_name, xml_name)
+        return unless base.attributes.key?(attr_name)
+
+        xml_mapping = base.mappings[:xml]
+        xml_mapping.instance_variable_get(:@elements).delete(xml_name)
+        xml_mapping.instance_variable_get(:@attributes).delete(xml_name)
+        base.attributes.delete(attr_name)
+      end
+
       XML_BODY = lambda do # rubocop:disable Metrics/BlockLength
         map_element "formattedref", to: :formattedref
         map_element "title", to: :title
