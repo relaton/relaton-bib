@@ -408,7 +408,6 @@ depiction:
       width: 100%
       height: auto
 ext:
-  schema_version: 1.0.0
   doctype:
     abbreviation: std
     content: Standard

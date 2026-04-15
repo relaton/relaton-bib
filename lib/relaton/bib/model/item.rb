@@ -139,9 +139,7 @@ module Relaton
         map_element "ext", to: :ext
       end
 
-      def get_schema_version
-        Relaton.schema_versions["relaton-models"]
-      end
+      def get_schema_version = Relaton.schema_versions["relaton-models"]
     end
   end
 end
