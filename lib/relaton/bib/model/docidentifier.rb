@@ -6,6 +6,7 @@ module Relaton
       attribute :primary, :boolean
 
       xml do
+        root "docidentifier"
         map_attribute "type", to: :type
         map_attribute "scope", to: :scope
         map_attribute "primary", to: :primary
