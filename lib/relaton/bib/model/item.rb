@@ -76,7 +76,7 @@ module Relaton
       xml do
         map_attribute "id", to: :id
         map_attribute "type", to: :type
-        map_attribute "schema-version", to: :schema_version
+        map_attribute "schema-version", to: :schema_version, render_default: true
         map_element "fetched", to: :fetched
         instance_exec(&ItemShared::XML_BODY)
         map_element "ext", to: :ext
