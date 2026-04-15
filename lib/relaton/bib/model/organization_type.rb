@@ -12,6 +12,29 @@ module Relaton
         end
       end
 
+      # Serialize name preserving original shape (single vs array)
+      def name_to_kv(model, parent)
+        val = model.name
+        return if val.nil?
+
+        if val.is_a?(Array)
+          arr = val.map { |n| TypedLocalizedString.as_yaml(n) }
+          parent["name"] = arr
+        else
+          parent["name"] = TypedLocalizedString.as_yaml(val)
+        end
+      end
+
+      def name_from_kv(model, value)
+        model.name = if value.is_a?(Array)
+                       value.map do |v|
+                         TypedLocalizedString.of_yaml(v)
+                       end
+                     else
+                       TypedLocalizedString.of_yaml(value)
+                     end
+      end
+
       def self.included(base) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
         require_relative "subdivision"
 
@@ -34,6 +57,20 @@ module Relaton
             map_element "email", to: :email
             map_element "uri", to: :uri
             map_element "logo", to: :logo
+          end
+
+          key_value do
+            map "address", to: :address
+            map "phone", to: :phone
+            map "email", to: :email
+            map "uri", to: :uri
+            map "name", to: :name,
+                        with: { to: :name_to_kv,
+                                from: :name_from_kv }
+            map "subdivision", to: :subdivision
+            map "abbreviation", to: :abbreviation
+            map "identifier", to: :identifier
+            map "logo", to: :logo
           end
         end
       end

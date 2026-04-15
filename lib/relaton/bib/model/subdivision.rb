@@ -11,6 +11,11 @@ module Relaton
         map_attribute "type", to: :type
         map_attribute "subtype", to: :subtype
       end
+
+      key_value do
+        map "type", to: :type
+        map "subtype", to: :subtype
+      end
     end
   end
 end

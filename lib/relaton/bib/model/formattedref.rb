@@ -9,32 +9,38 @@ module Relaton
       end
 
       key_value do
+        map "content", to: :content,
+                       with: { to: :content_to_kv, from: :content_from_kv }
         map "format", to: :format
       end
 
-      # Handle plain string input from YAML/JSON deserialization
-      def self.from_yaml(value)
-        return new(content: value) if value.is_a?(String)
+      def content_to_kv(model, parent)
+        if self.class.simple_content?(model)
+          parent.value = model.content
+          parent.children.clear
+        else
+          parent["content"] = model.content
+        end
+      end
+
+      def content_from_kv(model, value)
+        model.content = value
+      end
+
+      # Handle plain string input during attribute casting
+      def self.of_yaml(data, options = {})
+        return new(content: data) if data.is_a?(String)
 
         super
       end
 
-      def self.from_json(value)
-        return new(content: value) if value.is_a?(String)
+      def self.of_json(data, options = {})
+        return new(content: data) if data.is_a?(String)
 
         super
       end
 
-      # Serialize as plain string when only content is present
-      def self.as(format, instance, options = {})
-        return instance.content if simple_content?(instance, format)
-
-        super
-      end
-
-      def self.simple_content?(instance, format)
-        return false if format == :xml
-
+      def self.simple_content?(instance)
         instance.format.nil? && instance.language.nil? &&
           instance.script.nil? && instance.locale.nil?
       end

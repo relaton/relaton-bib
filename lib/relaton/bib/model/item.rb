@@ -129,6 +129,19 @@ module Relaton
         map_element "ext", to: :ext
       end
 
+      # Preserve single-value shape for collection attributes
+      # that were stored as a single object (not wrapped in array).
+      def self.as(format, instance, options = {})
+        result = super
+        return result if format == :xml || !result.is_a?(Hash)
+
+        if result["depiction"].is_a?(Array) &&
+            !instance.depiction.is_a?(Array)
+          result["depiction"] = result["depiction"].first
+        end
+        result
+      end
+
       def get_schema_version
         Relaton.schema_versions["relaton-models"]
       end
