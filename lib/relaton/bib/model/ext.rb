@@ -22,6 +22,15 @@ module Relaton
         map_element "structuredidentifier", to: :structuredidentifier
       end
 
+      key_value do
+        map_element "schema_version", to: :schema_version, render_default: true
+        map_element "doctype", to: :doctype
+        map_element "subdoctype", to: :subdoctype
+        map_element "flavor", to: :flavor
+        map_element "ics", to: :ics
+        map_element "structuredidentifier", to: :structuredidentifier
+      end
+
       # Base returns nil so direct use omits schema-version. Subclasses in
       # downstream relaton gems override to return their own version.
       def get_schema_version = nil
