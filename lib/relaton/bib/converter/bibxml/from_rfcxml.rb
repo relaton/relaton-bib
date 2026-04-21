@@ -138,7 +138,7 @@ module Relaton
             return [] unless @reference.front.abstract&.t
 
             @reference.front.abstract.t.map do |t|
-              Abstract.new(content: t.content, language: "en", script: "Latn")
+              Abstract.new(content: t.content.join, language: "en", script: "Latn")
             end
           end
 
@@ -218,7 +218,7 @@ module Relaton
             org = author.organization
             return if org.nil? || org.content.empty?
 
-            name = ORGNAMES[org.content] || org.content
+            name = ORGNAMES[org.content.join] || org.content.join
             orgname = TypedLocalizedString.new(content: name, language: "en")
             abbrev = LocalizedString.new(content: org.abbrev, language: "en") if org.abbrev
             Organization.new(
