@@ -37,6 +37,7 @@ require_relative "depiction"
 require_relative "source_locality_stack"
 require_relative "ext"
 require_relative "item_shared"
+require_relative "type/plain_date"
 
 Lutaml::Model::Config.configure do |config|
   config.xml_adapter_type = :nokogiri
@@ -69,7 +70,7 @@ module Relaton
 
       attribute :id, :string
       attribute :schema_version, :string, method: :get_schema_version
-      attribute :fetched, :date
+      attribute :fetched, PlainDate
       instance_exec(&ItemShared::ATTRIBUTES)
       attribute :ext, Ext
 
