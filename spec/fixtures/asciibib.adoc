@@ -27,8 +27,7 @@ edition.number:: 1
 language:: en
 language:: fr
 script:: Latn
-version.revision_date:: 1994-01-01
-version.draft:: PD
+version:: PD (1994-01-01)
 biblionote.type:: errata
 biblionote.content:: This is an errata
 biblionote.language:: en

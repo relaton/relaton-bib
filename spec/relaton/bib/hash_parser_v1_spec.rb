@@ -21,24 +21,37 @@ describe Relaton::Bib::HashParserV1 do
   end
 
   describe "version_hash_to_bib" do
-    it "parses version with year-only revision_date" do
-      ret = { version: [{ revision_date: "2019", draft: "draft" }] }
+    it "migrates legacy draft into content" do
+      ret = { version: [{ draft: "draft" }] }
       described_class.version_hash_to_bib(ret)
       expect(ret[:version].first).to be_instance_of Relaton::Bib::Version
-      expect(ret[:version].first.revision_date).to eq Date.new(2019, 1, 1)
+      expect(ret[:version].first.content).to eq "draft"
     end
 
-    it "parses version with year-month revision_date" do
-      ret = { version: [{ revision_date: "2019-04" }] }
+    it "migrates legacy revision_date into content" do
+      ret = { version: [{ revision_date: "2019-04-01" }] }
       described_class.version_hash_to_bib(ret)
-      expect(ret[:version].first.revision_date).to eq Date.new(2019, 4, 1)
+      expect(ret[:version].first.content).to eq "2019-04-01"
     end
 
-    it "parses version with full date revision_date" do
+    it "joins draft and revision_date when both are present" do
       ret = { version: [{ revision_date: "2019-04-01", draft: "draft" }] }
       described_class.version_hash_to_bib(ret)
-      expect(ret[:version].first.revision_date).to eq Date.new(2019, 4, 1)
-      expect(ret[:version].first.draft).to eq "draft"
+      expect(ret[:version].first.content).to eq "draft (2019-04-01)"
+    end
+
+    it "preserves type attribute alongside legacy keys" do
+      ret = { version: [{ draft: "1.2", type: "semver" }] }
+      described_class.version_hash_to_bib(ret)
+      expect(ret[:version].first.content).to eq "1.2"
+      expect(ret[:version].first.type).to eq "semver"
+    end
+
+    it "passes through hashes already in the new shape" do
+      ret = { version: [{ content: "v1.2", type: "semver" }] }
+      described_class.version_hash_to_bib(ret)
+      expect(ret[:version].first.content).to eq "v1.2"
+      expect(ret[:version].first.type).to eq "semver"
     end
 
     it "handles nil version" do

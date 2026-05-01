@@ -196,10 +196,23 @@ module Relaton
       def version_hash_to_bib(ret)
         return unless ret[:version]
 
-        ret[:version] = array(ret[:version]).map do |v|
-          v[:revision_date] &&= parse_date(v[:revision_date], str: false)
-          Bib::Version.new(**v)
-        end
+        ret[:version] = array(ret[:version]).map { |v| version_entry(v) }
+      end
+
+      def version_entry(hash)
+        return Bib::Version.new(**hash) if hash[:content]
+
+        attrs = { content: legacy_version_content(hash) }
+        attrs[:type] = hash[:type] if hash[:type]
+        Bib::Version.new(**attrs)
+      end
+
+      def legacy_version_content(hash)
+        draft = hash[:draft]
+        revdate = hash[:revision_date]
+        return "#{draft} (#{revdate})" if draft && revdate
+
+        draft || revdate
       end
 
       def biblionote_hash_to_bib(ret)

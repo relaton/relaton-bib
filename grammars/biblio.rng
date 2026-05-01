@@ -2015,15 +2015,11 @@ provided that it is not the entire bibliographic item that is so related</a:docu
     <a:documentation>A version of the bibliographic item (within an edition). Can be used for drafts</a:documentation>
     <element name="version">
       <optional>
-        <ref name="revision-date">
-          <a:documentation>The date at which the current version of the bibliographic item was produced</a:documentation>
-        </ref>
+        <attribute name="type">
+          <a:documentation>Versioning scheme, in case of multiple versioning schemes</a:documentation>
+        </attribute>
       </optional>
-      <optional>
-        <ref name="draft">
-          <a:documentation>The identifier for the current draft of the bibliographic item</a:documentation>
-        </ref>
-      </optional>
+      <text/>
     </element>
   </define>
   <define name="vedition">
