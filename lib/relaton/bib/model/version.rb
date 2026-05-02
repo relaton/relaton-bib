@@ -1,7 +1,9 @@
+require_relative "type/plain_date"
+
 module Relaton
   module Bib
     class Version < Lutaml::Model::Serializable
-      attribute :revision_date, :date
+      attribute :revision_date, PlainDate
       attribute :draft, :string
 
       xml do

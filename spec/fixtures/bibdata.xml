@@ -219,14 +219,14 @@
     </vocabid>
   </keyword>
   <validity>
-    <validityBegins>1994-01-01T00:00:00+00:00</validityBegins>
-    <validityEnds>1994-12-31T00:00:00+00:00</validityEnds>
-    <revision>1994-12-31T00:00:00+00:00</revision>
+    <validityBegins>1994-01-01T00:00:00Z</validityBegins>
+    <validityEnds>1994-01-01T00:00:00Z</validityEnds>
+    <revision>1994-01-01T00:00:00Z</revision>
   </validity>
   <depiction scope="local">
     <image id="abcd-1234567890ab" src="https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg" mimetype="image/jpeg" filename="PUB100080.jpg" width="100%" height="auto" alt="ISO logo" title="ISO Logo" longdesc="https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100080.jpg"/>
   </depiction>
-  <ext schema-version="1.0.0">
+  <ext>
     <doctype abbreviation="std">Standard</doctype>
     <subdoctype>Technical Report</subdoctype>
     <flavor>iso</flavor>
