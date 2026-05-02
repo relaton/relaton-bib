@@ -123,8 +123,8 @@ module Relaton
           def render_version(ver, prefix, count)
             pref = prefix.empty? ? prefix : "#{prefix}."
             out = count > 1 ? "#{prefix}version::\n" : ""
-            out << "#{pref}version.revision_date:: #{ver.revision_date}\n" if ver.revision_date
-            out << "#{pref}version.draft:: #{ver.draft}\n" if ver.draft
+            out << "#{pref}version:: #{ver.content}\n" if ver.content
+            out << "#{pref}version.type:: #{ver.type}\n" if ver.type
             out
           end
 

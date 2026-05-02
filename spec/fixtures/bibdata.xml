@@ -81,10 +81,7 @@
     </organization>
   </contributor>
   <edition number="1">First edition</edition>
-  <version>
-    <revision-date>1994-01-01</revision-date>
-    <draft>PD</draft>
-  </version>
+  <version>PD (1994-01-01)</version>
   <note language="en" locale="en-US" script="Latn" type="errata">This is an errata</note>
   <language>en</language>
   <language>fr</language>

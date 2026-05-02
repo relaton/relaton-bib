@@ -157,10 +157,7 @@
     </organization>
   </contributor>
   <edition number="1.2">Edition 1</edition>
-  <version>
-    <revision-date>2019-04-01</revision-date>
-    <draft>draft</draft>
-  </version>
+  <version>draft (2019-04-01)</version>
   <note>note</note>
   <note type="annote">An note</note>
   <note type="howpublished">How published</note>

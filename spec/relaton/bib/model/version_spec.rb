@@ -1,19 +1,67 @@
 describe Relaton::Bib::Version do
-  it "strips time and timezone from revision-date on XML round-trip" do
-    xml_in = "<version><revision-date>2018-04-15T00:00:00Z</revision-date></version>"
-    v = described_class.from_xml(xml_in)
+  describe "XML round-trip" do
+    it "parses new shape and re-emits it unchanged" do
+      xml = '<version type="semver">1.2.0</version>'
+      v = described_class.from_xml(xml)
+      expect(v.content).to eq "1.2.0"
+      expect(v.type).to eq "semver"
+      expect(v.to_xml).to eq xml
+    end
 
-    expect(v.revision_date).to be_a(::Date)
-    expect(v.revision_date).not_to be_a(::DateTime)
+    it "joins both legacy children into content" do
+      xml = "<version><revision-date>1994-01-01</revision-date>" \
+            "<draft>PD</draft></version>"
+      v = described_class.from_xml(xml)
+      expect(v.content).to eq "PD (1994-01-01)"
+      expect(v.to_xml).to eq "<version>PD (1994-01-01)</version>"
+    end
 
-    xml_out = v.to_xml
-    expect(xml_out).to include "<revision-date>2018-04-15</revision-date>"
-    expect(xml_out).not_to include "2018-04-15Z"
+    it "parses legacy shape with revision-date only" do
+      xml = "<version><revision-date>2019-04-01</revision-date></version>"
+      v = described_class.from_xml(xml)
+      expect(v.content).to eq "2019-04-01"
+      expect(v.to_xml).to eq "<version>2019-04-01</version>"
+    end
+
+    it "parses legacy shape with draft only" do
+      v = described_class.from_xml("<version><draft>2.0.0</draft></version>")
+      expect(v.content).to eq "2.0.0"
+      expect(v.to_xml).to eq "<version>2.0.0</version>"
+    end
   end
 
-  it "round-trips a plain date unchanged" do
-    xml_in = "<version><revision-date>2018-04-15</revision-date></version>"
-    expect(described_class.from_xml(xml_in).to_xml)
-      .to include "<revision-date>2018-04-15</revision-date>"
+  describe "YAML round-trip" do
+    it "parses new shape and re-emits it" do
+      v = described_class.from_yaml("---\ntype: semver\ncontent: 1.2.0\n")
+      expect(v.content).to eq "1.2.0"
+      expect(v.type).to eq "semver"
+    end
+
+    it "parses legacy keys and folds them into content" do
+      yaml = "---\nrevision_date: '1994-01-01'\ndraft: PD\n"
+      v = described_class.from_yaml(yaml)
+      expect(v.content).to eq "PD (1994-01-01)"
+      expect(v.to_yaml).to eq "---\ncontent: PD (1994-01-01)\n"
+    end
+
+    it "parses legacy revision_date only" do
+      v = described_class.from_yaml("---\nrevision_date: '2019-04-01'\n")
+      expect(v.content).to eq "2019-04-01"
+    end
+
+    it "parses legacy draft only" do
+      v = described_class.from_yaml("---\ndraft: '2.0.0'\n")
+      expect(v.content).to eq "2.0.0"
+    end
+  end
+
+  describe "legacy field accessors" do
+    it "always returns nil so legacy fields never serialize back" do
+      xml = "<version><revision-date>1994-01-01</revision-date>" \
+            "<draft>PD</draft></version>"
+      v = described_class.from_xml(xml)
+      expect(v.revision_date).to be_nil
+      expect(v.draft).to be_nil
+    end
   end
 end
