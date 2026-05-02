@@ -31,5 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "psych", "~> 5.2.0" # versin 5.3.0 crashes
   spec.add_dependency "relaton-core", "~> 0.0.8"
   spec.add_dependency "relaton-logger", "~> 0.2.0"
-  spec.add_dependency "rfcxml", "~> 0.4.0"
+  spec.add_dependency "rfcxml", "~> 0.4.3"
 end
