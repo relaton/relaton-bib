@@ -1,22 +1,10 @@
+require_relative "bibitem_shared"
+
 module Relaton
   module Bib
-    module BibitemShared
-      def self.included(base)
-        base.class_eval do
-          model ItemData
-
-          # This class represents a bibliographic item as a bibitem.
-          attributes.delete :ext
-          mappings[:xml].instance_variable_get(:@elements).delete("ext")
-
-          xml do
-            root "bibitem"
-          end
-        end
-      end
-    end
-
+    # Bibliographic item serialized as <bibitem>. Has id, no ext.
     class Bibitem < Item
+      model ItemData
       include BibitemShared
     end
   end

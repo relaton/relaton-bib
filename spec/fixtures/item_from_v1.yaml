@@ -275,7 +275,8 @@ copyright:
 relation:
 - type: updates
   bibitem:
-    formattedref: ISO 19115:2003
+    formattedref:
+      content: ISO 19115:2003
   locality:
   - type: section
     reference_from: Reference from

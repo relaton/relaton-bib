@@ -120,7 +120,7 @@ module Relaton
             abbrev = org.abbreviation&.content
             orgname = resolve_orgname(org, abbrev)
             Rfcxml::V3::Organization.new(
-              content: orgname, abbrev: abbrev,
+              content: [orgname], abbrev: abbrev,
             )
           end
 
@@ -283,7 +283,7 @@ module Relaton
 
             content = @item.abstract[0].content
             Rfcxml::V3::Abstract.new(
-              t: [Rfcxml::V3::Text.new(content: content)],
+              t: [Rfcxml::V3::Text.new(content: [content])],
             )
           end
 

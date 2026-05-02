@@ -125,7 +125,7 @@
     <person>
       <name>
         <forename language="en" script="Latn" initial="A">Arnold</forename>
-        <forename initial="B"></forename>
+        <forename initial="B"/>
         <formatted-initials language="en" script="Latn">A. B.</formatted-initials>
         <surname language="en" script="Latn">Bierman</surname>
       </name>
@@ -314,8 +314,8 @@
     <vocab>Key Word</vocab>
   </keyword>
   <validity>
-    <validityBegins>2010-01-01T00:00:00+00:00</validityBegins>
-    <validityEnds>2011-02-28T00:00:00+00:00</validityEnds>
-    <revision>2011-03-04T09:00:00+00:00</revision>
+    <validityBegins>2010-01-01T00:00:00Z</validityBegins>
+    <validityEnds>2011-02-28T00:00:00Z</validityEnds>
+    <revision>2011-03-04T09:00:00Z</revision>
   </validity>
 </bibitem>

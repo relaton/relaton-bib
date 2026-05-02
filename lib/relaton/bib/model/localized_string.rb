@@ -8,7 +8,7 @@ module Relaton
       end
 
       key_value do
-        map "content", to: :content # , with: { from: :content_from_key_value, to: :content_to_key_value }
+        map "content", to: :content
         map "language", to: :language
       end
     end
@@ -26,31 +26,15 @@ module Relaton
     end
 
     class LocalizedMarkedUpString < LocalizedStringAttrs
-      attribute :content, :string
+      attribute :content, :string, raw: true
 
       xml do
-        map_all to: :content, with: { from: :content_from_xml, to: :content_to_xml }
+        map_all to: :content
       end
 
       key_value do
-        map "content", to: :content, with: { from: :content_from_key_value, to: :content_to_key_value }
+        map "content", to: :content
         map "language", to: :language
-      end
-
-      def content_from_xml(model, value)
-        model.content = value
-      end
-
-      def content_to_xml(model, parent, doc)
-        doc.add_xml_fragment parent, model.content
-      end
-
-      def content_from_key_value(model, value)
-        model.content = value
-      end
-
-      def content_to_key_value(model, doc)
-        doc["content"] = model.content
       end
     end
   end
