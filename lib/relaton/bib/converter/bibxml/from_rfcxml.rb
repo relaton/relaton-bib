@@ -1,3 +1,5 @@
+require "cgi"
+
 module Relaton
   module Bib
     module Converter
@@ -138,7 +140,8 @@ module Relaton
             return [] unless @reference.front.abstract&.t
 
             @reference.front.abstract.t.map do |t|
-              Abstract.new(content: t.content.join, language: "en", script: "Latn")
+              text = CGI.escapeHTML(t.content.join.strip)
+              Abstract.new(content: "<p>#{text}</p>", language: "en", script: "Latn")
             end
           end
 

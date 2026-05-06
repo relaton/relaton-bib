@@ -92,6 +92,29 @@ describe Relaton::Bib::Converter::BibXml do
     end
   end
 
+  describe "FromRfcxml#abstract" do
+    it "wraps paragraphs in <p> and escapes inner text so to_xml does not crash" do
+      xml = <<~XML
+        <reference anchor="I-D.example">
+          <front>
+            <title>Test</title>
+            <author fullname="Jane Doe"/>
+            <date year="2024"/>
+            <abstract>
+              <t>See &lt;mailto:foo@bar&gt; or &lt;https://example.org/&gt;.</t>
+            </abstract>
+          </front>
+        </reference>
+      XML
+      item = described_class.to_item(xml)
+      expect(item.abstract.first.content).to eq(
+        "<p>See &lt;mailto:foo@bar&gt; or &lt;https://example.org/&gt;.</p>",
+      )
+      roundtripped = Relaton::Bib::Item.from_yaml(item.to_yaml)
+      expect { roundtripped.to_xml }.not_to raise_error
+    end
+  end
+
   describe "FromRfcxml#docidentifiers" do
     context "with RFC prefix anchor and no seriesInfo" do
       let(:xml) do

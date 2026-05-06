@@ -1,3 +1,5 @@
+require "cgi"
+
 module Relaton
   module Bib
     module Converter
@@ -282,9 +284,10 @@ module Relaton
             return unless @item.abstract.any?
 
             content = @item.abstract[0].content
-            Rfcxml::V3::Abstract.new(
-              t: [Rfcxml::V3::Text.new(content: [content])],
-            )
+            paragraphs = content.scan(%r{<p>(.*?)</p>}m).flatten
+            paragraphs = [content] if paragraphs.empty?
+            ts = paragraphs.map { |p| Rfcxml::V3::Text.new(content: CGI.unescapeHTML(p)) }
+            Rfcxml::V3::Abstract.new(t: ts)
           end
 
           FORMAT_TYPES = %w[TXT HTML PDF XML DOC].freeze
