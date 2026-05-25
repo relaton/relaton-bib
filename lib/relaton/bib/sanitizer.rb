@@ -3,12 +3,19 @@ require "nokogiri"
 module Relaton
   module Bib
     # Strips inline markup not in the basicdoc PureTextElement set
-    # (plus <p>, <eref>, <xref>) from raw marked-up content strings.
+    # (plus <p>, <eref>, <xref>, <fn>) from raw marked-up content strings.
     # Disallowed elements are unwrapped: tags removed, inner text kept.
+    #
+    # <fn> is admitted beyond strict PureTextElement because bibliographic
+    # titles in real Metanorma input routinely carry footnotes (e.g. ISO
+    # standards titles with a disclaimer footnote), and downstream
+    # consumers — notably relaton-render's own inline-tag allow-list —
+    # already accept <fn> as a legitimate child of <title>. Stripping it
+    # here would break the round-trip.
     module Sanitizer
       ALLOWED = %w[
         em strong sub sup tt underline strike smallcap br stem
-        p eref xref
+        p eref xref fn
       ].freeze
 
       RENAME = {
