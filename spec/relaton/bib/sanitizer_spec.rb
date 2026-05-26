@@ -80,6 +80,17 @@ describe Relaton::Bib::Sanitizer do
       expected = "values of <em>h</em>, <em>N</em><sub>A</sub>"
       expect(described_class.sanitize(input)).to eq expected
     end
+
+    it "preserves <fn> wrapping a <p> body (footnote in title)" do
+      input = 'Cereals and cereal products' \
+              '<fn reference="7"><p id="_x">ISO is a standards ' \
+              'organisation.</p></fn>'
+      output = described_class.sanitize(input)
+      expect(output).to include('<fn reference="7">')
+      expect(output).to include('<p id="_x">')
+      expect(output).to include('ISO is a standards organisation.')
+      expect(output).to include('</fn>')
+    end
   end
 end
 
