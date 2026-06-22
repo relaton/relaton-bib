@@ -91,6 +91,53 @@ describe Relaton::Bib::Sanitizer do
       expect(output).to include('ISO is a standards organisation.')
       expect(output).to include('</fn>')
     end
+
+    # Opaque-stem cases (#116): <stem> holds out-of-band notation
+    # (MathML, AsciiMath, LaTeX) that the sanitiser must preserve
+    # rather than recurse into. Assertions are include-shaped because
+    # Nokogiri's serialiser may reflow whitespace around nested
+    # elements; the SEMANTIC claim is "inner elements survive, not just
+    # their text content".
+    it "preserves MathML inner elements inside <stem> (does not unwrap to text)" do
+      input  = 'Prefix <stem><math><mi>d</mi><mn>6</mn></math>' \
+               '<asciimath>d_6</asciimath></stem> Suffix'
+      output = described_class.sanitize(input)
+      expect(output).to include("<math>")
+      expect(output).to include("<mi>d</mi>")
+      expect(output).to include("<mn>6</mn>")
+      expect(output).to include("<asciimath>d_6</asciimath>")
+      # Negative: pre-fix the inner elements were unwrapped to bare
+      # text, producing "<stem>d6d_6</stem>". Make sure that exact
+      # collapsed shape does not reappear.
+      expect(output).not_to match(/<stem>\s*d\s*6\s*d_6\s*<\/stem>/)
+    end
+
+    it "preserves <stem> attributes alongside opaque MathML content" do
+      input  = 'a-<stem block="false" type="MathML">' \
+               '<math xmlns="http://www.w3.org/1998/Math/MathML">' \
+               '<mstyle displaystyle="false"><msub><mi>d</mi><mn>6</mn>' \
+               '</msub></mstyle></math><asciimath>d_6</asciimath>' \
+               '</stem> [ISRD-07]'
+      output = described_class.sanitize(input)
+      expect(output).to include('<stem block="false" type="MathML">')
+      expect(output).to include('<mstyle displaystyle="false">')
+      expect(output).to include('<msub>')
+      expect(output).to include('<mi>d</mi>')
+      expect(output).to include('<mn>6</mn>')
+      expect(output).to include('<asciimath>d_6</asciimath>')
+      expect(output).to include('[ISRD-07]')
+    end
+
+    it "still sanitises siblings of <stem> while leaving stem opaque" do
+      input  = '<script>bad</script> a-<stem><math><mi>x</mi></math>' \
+               '</stem> <em>ok</em>'
+      output = described_class.sanitize(input)
+      expect(output).not_to include("<script>")
+      expect(output).to include("bad ")
+      expect(output).to include("<math>")
+      expect(output).to include("<mi>x</mi>")
+      expect(output).to include("<em>ok</em>")
+    end
   end
 end
 

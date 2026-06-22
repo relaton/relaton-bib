@@ -12,11 +12,23 @@ module Relaton
     # consumers — notably relaton-render's own inline-tag allow-list —
     # already accept <fn> as a legitimate child of <title>. Stripping it
     # here would break the round-trip.
+    #
+    # OPAQUE elements (currently <stem>) are also allowed, but the
+    # sanitiser does not descend into them: their contents are out-of-band
+    # inline notation (MathML, AsciiMath, LaTeX) rather than basicdoc
+    # markup, and must be preserved verbatim. Without the opaque-skip,
+    # the recursive walk would unwrap MathML / AsciiMath elements down to
+    # bare text nodes — see #116 for the round-trip-loss symptom.
     module Sanitizer
       ALLOWED = %w[
         em strong sub sup tt underline strike smallcap br stem
         p eref xref fn
       ].freeze
+
+      # Elements whose children are non-basicdoc inline notation
+      # (MathML, AsciiMath, LaTeX, …) and must be preserved verbatim
+      # rather than sanitised against ALLOWED.
+      OPAQUE = %w[stem].freeze
 
       RENAME = {
         "italic" => "em",
@@ -44,6 +56,8 @@ module Relaton
           next unless child.element?
 
           child.name = RENAME[child.name] if RENAME.key?(child.name)
+          next if OPAQUE.include?(child.name)
+
           sanitize_children(child)
           child.replace(child.children) unless ALLOWED.include?(child.name)
         end
