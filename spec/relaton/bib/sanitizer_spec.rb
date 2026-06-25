@@ -120,6 +120,13 @@ describe Relaton::Bib::Sanitizer do
                '</stem> [ISRD-07]'
       output = described_class.sanitize(input)
       expect(output).to include('<stem block="false" type="MathML">')
+      # The MathML namespace must survive verbatim -- the whole point of
+      # basicdoc-models#35 ("namespace and all"). lutaml-model (0.8.16)
+      # preserves it through the map_all raw round-trip in both XML and
+      # key-value; this guards the Sanitizer half, and would fail loudly if
+      # the opaque-stem handling (#116/#117) were reverted.
+      expect(output)
+        .to include('<math xmlns="http://www.w3.org/1998/Math/MathML">')
       expect(output).to include('<mstyle displaystyle="false">')
       expect(output).to include('<msub>')
       expect(output).to include('<mi>d</mi>')
