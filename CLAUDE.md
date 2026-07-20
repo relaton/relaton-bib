@@ -37,6 +37,18 @@ bin/console
 
 The codebase uses [lutaml-model](https://github.com/lutaml/lutaml-model) for serialization. Each model class in `lib/relaton/bib/model/` inherits from `Lutaml::Model::Serializable` and declares attributes with XML/YAML/JSON mappings.
 
+### Constant loading (autoload)
+
+Model and converter constants are wired via Ruby `autoload` from a central manifest,
+[lib/relaton/bib/model_autoload.rb](lib/relaton/bib/model_autoload.rb). This makes load order
+irrelevant and avoids circular requires between mutually-referencing classes (e.g. `OrganizationType`
+↔ `Subdivision`). **When adding a new model class, add an `autoload` entry to the manifest** rather
+than a `require_relative` in a sibling file. The manifest also eagerly loads `lutaml/model`/`lutaml/xml`
+and runs the `Lutaml::Model::Config.configure` block so the XML adapter is set regardless of which
+class is referenced first. Exceptions that keep `require_relative`: files that only *reopen* an
+already-defined module to add methods (the converter method-partials under
+`lib/relaton/bib/converter/*/`), which `autoload` cannot express.
+
 ### Core Classes
 
 **`Relaton::Bib::Item`** ([lib/relaton/bib/model/item.rb](lib/relaton/bib/model/item.rb)) - The main serialization class defining all bibliographic attributes and their XML mappings. Uses `ItemData` as its underlying model.

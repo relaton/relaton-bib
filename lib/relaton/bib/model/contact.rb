@@ -1,7 +1,3 @@
-require_relative "address"
-require_relative "phone"
-require_relative "uri"
-
 module Relaton
   module Bib
     module Contact

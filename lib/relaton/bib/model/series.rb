@@ -1,5 +1,3 @@
-require_relative "type/string_date"
-
 module Relaton
   module Bib
     class Series < Lutaml::Model::Serializable

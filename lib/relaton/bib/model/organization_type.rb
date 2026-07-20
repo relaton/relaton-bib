@@ -13,8 +13,6 @@ module Relaton
       end
 
       def self.included(base) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-        require_relative "subdivision"
-
         base.instance_eval do
           include Contact
 
