@@ -1,4 +1,5 @@
 require "open3"
+require "tempfile"
 
 # Regression coverage for issue #120: the circular require between
 # organization_type.rb and subdivision.rb, resolved by converting internal
@@ -12,12 +13,19 @@ describe "Ruby autoload wiring (issue #120)" do
   end
 
   # Run a Ruby snippet in a fresh process under bundler, from the gem root.
+  # The snippet is written to a temp file rather than passed via `-e` so that
+  # multi-line code with embedded quotes runs identically on POSIX and Windows
+  # (Windows mangles newlines/quotes when reconstructing an `-e` argv element).
   def run_ruby(code, warn: false)
     flags = warn ? ["-W2"] : []
-    cmd = ["bundle", "exec", "ruby", *flags, "-e", code]
-    Bundler.with_unbundled_env do
-      Open3.capture3({ "BUNDLE_GEMFILE" => File.join(gem_root, "Gemfile") },
-                     *cmd, chdir: gem_root)
+    Tempfile.create(["autoload_check", ".rb"]) do |file|
+      file.write(code)
+      file.flush
+      cmd = ["bundle", "exec", "ruby", *flags, file.path]
+      Bundler.with_unbundled_env do
+        Open3.capture3({ "BUNDLE_GEMFILE" => File.join(gem_root, "Gemfile") },
+                       *cmd, chdir: gem_root)
+      end
     end
   end
 
@@ -69,7 +77,7 @@ describe "Ruby autoload wiring (issue #120)" do
     RUBY
     out, err, status = run_ruby(code)
     expect(status).to be_success, "stderr: #{err}"
-    expect(out).to eq("OK")
+    expect(out.strip).to eq("OK")
   end
 
   it "loads with Organization referenced before Subdivision" do
@@ -81,7 +89,7 @@ describe "Ruby autoload wiring (issue #120)" do
     RUBY
     out, err, status = run_ruby(code)
     expect(status).to be_success, "stderr: #{err}"
-    expect(out).to eq("OK")
+    expect(out.strip).to eq("OK")
   end
 
   it "emits no relaton-bib 'circular require' warning under warnings" do
