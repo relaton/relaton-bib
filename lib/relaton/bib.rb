@@ -9,17 +9,10 @@ require_relative "bib/version"
 require_relative "bib/util"
 require_relative "bib/sanitizer"
 require_relative "bib/namespace_helper"
+# Model and converter classes are wired via autoload (see model_autoload.rb) so
+# that load order is irrelevant and mutually-referencing classes resolve lazily.
+require_relative "bib/model_autoload"
 require_relative "bib/item_data"
-require_relative "bib/model/item"
-require_relative "bib/model/item_base"
-require_relative "bib/model/bibitem_shared"
-require_relative "bib/model/bibdata_shared"
-require_relative "bib/model/bibitem"
-require_relative "bib/model/bibdata"
-require_relative "bib/converter/bibxml"
-require_relative "bib/converter/bibtex"
-require_relative "bib/converter/asciibib"
-require_relative "bib/model/relation"
 
 module Relaton
   # class Error < StandardError; end

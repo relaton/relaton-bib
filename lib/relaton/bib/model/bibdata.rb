@@ -1,5 +1,3 @@
-require_relative "bibdata_shared"
-
 module Relaton
   module Bib
     # Bibliographic item serialized as <bibdata>. Has ext, no id.

@@ -1,5 +1,3 @@
-require_relative "organization_type"
-
 module Relaton
   module Bib
     class Organization < Lutaml::Model::Serializable

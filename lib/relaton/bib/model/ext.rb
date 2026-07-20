@@ -1,7 +1,3 @@
-require_relative "doctype"
-require_relative "ics"
-require_relative "structured_identifier"
-
 module Relaton
   module Bib
     class Ext < Lutaml::Model::Serializable

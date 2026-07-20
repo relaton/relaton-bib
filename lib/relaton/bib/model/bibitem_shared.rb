@@ -1,5 +1,3 @@
-require_relative "item_shared"
-
 module Relaton
   module Bib
     module BibitemShared

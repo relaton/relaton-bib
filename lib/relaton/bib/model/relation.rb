@@ -1,8 +1,6 @@
-require_relative "item_base"
-
 module Relaton
   module Bib
-    class Relation
+    class Relation < Lutaml::Model::Serializable
       attribute :type, :string, values: %w[
         includes includedIn hasPart partOf merges mergedInto splits splitInto
         instanceOf hasInstance exemplarOf hasExemplar manifestationOf
