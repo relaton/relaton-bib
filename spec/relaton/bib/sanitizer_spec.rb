@@ -33,6 +33,11 @@ describe Relaton::Bib::Sanitizer do
       expect(described_class.sanitize(input)).to eq input
     end
 
+    it "preserves an inline <link> with its target attribute (#122)" do
+      input = '<link target="https://x.org">L</link>'
+      expect(described_class.sanitize(input)).to eq input
+    end
+
     it "preserves <br/> self-closing tag" do
       expect(described_class.sanitize("a<br/>b")).to eq "a<br/>b"
     end
@@ -163,5 +168,17 @@ describe Relaton::Bib::LocalizedMarkedUpString do
   it "passes nil content through" do
     str = described_class.new(content: nil)
     expect(str.content).to be_nil
+  end
+
+  # Regression for #122: a biblionote round-trip must not drop an inline
+  # <link> (keeping only its text and losing the target URL). metanorma's
+  # amend() rebuilds merged bibitems via from_xml -> to_xml, so a dropped
+  # <link> silently discards every URL in span:note.display references.
+  it "preserves an inline <link> in a note through a Bibitem round-trip" do
+    xml = '<bibitem id="x"><title>T</title>' \
+          '<note type="display">a <link target="https://x.org">L</link> b' \
+          "</note></bibitem>"
+    output = Relaton::Bib::Bibitem.from_xml(xml).to_xml
+    expect(output).to include('<link target="https://x.org">L</link>')
   end
 end
