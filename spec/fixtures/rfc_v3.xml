@@ -1,0 +1,18 @@
+<reference anchor="RFC2119" target="https://www.rfc-editor.org/info/rfc2119">
+  <stream>IETF</stream>
+  <front>
+    <title>Key words for use in RFCs to Indicate Requirement Levels</title>
+    <seriesInfo name="DOI" value="10.17487/RFC2119"/>
+    <seriesInfo name="BCP" value="14"/>
+    <seriesInfo name="RFC" value="2119"/>
+    <author fullname="S. Bradner" asciiFullname="S. Bradner"/>
+    <author>
+      <organization abbrev="IETF" ascii="Internet Engineering Task Force">Internet Engineering Task Force</organization>
+    </author>
+    <date year="1997" month="March"/>
+    <keyword>Standards</keyword>
+    <abstract>
+      <t>In many standards track documents several words are used.</t>
+    </abstract>
+  </front>
+</reference>

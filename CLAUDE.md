@@ -77,7 +77,17 @@ Each bibliographic attribute has its own class in `lib/relaton/bib/model/`:
 ### Rendering
 
 - **`Renderer::BibtexBuilder`** - Converts `ItemData` to BibTeX format
-- **`Converter::BibXml`** - Converts `ItemData` to RFC XML format via `Relaton::Bib::Converter::BibXml.to_xml`
+- **`Converter::BibXml`** - Converts `ItemData` to an `Rfcxml::V3` model object via
+  `Relaton::Bib::Converter::BibXml.from_item`; call `to_xml` on the result (this is what
+  `ItemData#to_rfcxml` does). Two output shapes share one class hierarchy:
+  - `ToRfcxml` / `ToRfcxmlReferencegroup` (default) emit **BibXML**, the shape the Relaton
+    data repositories publish. It keeps the RFC 7991-deprecated `<format>` element, so it
+    must stay byte-compatible — every relaton data fetcher's `"bibxml"` format is
+    `entry.to_rfcxml`. Do not change its output.
+  - `ToRfcxmlV3` / `ToRfcxmlReferencegroupV3` (`v3: true`) subclass those and emit strict
+    **RFC 7991**: no `<format>`, plus `<stream>`, `ascii*` attributes and `<refcontent>`.
+    New v3-only behaviour belongs in the subclass, so the default path stays untouched by
+    construction and `spec/relaton/bib/converter/bibxml_spec.rb` keeps passing unedited.
 - **lutaml-model native** - `to_xml`, `to_yaml`, `to_json` via the serialization classes
 
 ### Usage Pattern
@@ -98,11 +108,13 @@ item.to_xml                    # as <bibitem>
 item.to_xml(bibdata: true)     # as <bibdata>
 item.to_yaml
 item.to_bibtex
-item.to_rfcxml
+item.to_rfcxml                 # BibXML (what the data repos publish)
+item.to_rfcxml(v3: true)       # strict RFC 7991 / xml2rfc v3
+item.to_rfcxml(anchor: "ISO712", include_keywords: false)
 ```
 
 ## Code Style
 
 - Follows Ribose OSS Ruby style guide (inherited via `.rubocop.yml`)
-- Target Ruby version: 3.1+
+- Target Ruby version: 3.2+ (`required_ruby_version` in the gemspec, `TargetRubyVersion` in `.rubocop.yml`)
 - Uses YARD documentation comments

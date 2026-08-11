@@ -3,9 +3,10 @@ module Relaton
     module Converter
       module BibXml
         class ToRfcxmlReferencegroup
-          def initialize(item, include_keywords: true)
+          def initialize(item, include_keywords: true, anchor: nil)
             @item = item
             @include_keywords = include_keywords
+            @anchor = anchor
           end
 
           def transform
@@ -30,6 +31,8 @@ module Relaton
           end
 
           def create_anchor
+            return @anchor if @anchor
+
             docid = @item.docidentifier.detect(&:primary) ||
               @item.docidentifier[0]
             return unless docid

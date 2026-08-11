@@ -1,0 +1,46 @@
+id: RFC2119
+type: standard
+docnumber: RFC2119
+title:
+  - type: main
+    content: Key words for use in RFCs to Indicate Requirement Levels
+docidentifier:
+  - content: RFC 2119
+    type: IETF
+    primary: true
+  - content: 10.17487/RFC2119
+    type: DOI
+source:
+  - type: src
+    content: https://www.rfc-editor.org/info/rfc2119
+contributor:
+  - person:
+      name:
+        completename:
+          content: S. Bradner
+  - organization:
+      name:
+        - content: Internet Engineering Task Force
+      abbreviation:
+        content: IETF
+    role:
+      - type: publisher
+date:
+  - type: published
+    at: "1997-03"
+keyword:
+  - vocab:
+      content: Standards
+abstract:
+  - content: In many standards track documents several words are used.
+    language: en
+    script: Latn
+    format: text/html
+series:
+  - type: stream
+    title:
+      - content: IETF
+  - number: "14"
+    title:
+      - content: BCP
+ext:

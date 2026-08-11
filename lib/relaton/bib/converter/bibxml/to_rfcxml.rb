@@ -5,14 +5,15 @@ module Relaton
     module Converter
       module BibXml
         class ToRfcxml
-          def initialize(item, include_keywords: true)
+          def initialize(item, include_keywords: true, anchor: nil)
             @item = item
             @include_keywords = include_keywords
+            @anchor = anchor
           end
 
           def transform
             model = ::Rfcxml::V3::Reference.new
-            model.anchor = @item.docnumber || derive_anchor
+            model.anchor = @anchor || @item.docnumber || derive_anchor
             model.target = create_target
             model.front = create_front
             model.format = create_format
@@ -59,9 +60,16 @@ module Relaton
             end
           end
 
+          # A `type="stream"` series is the publication stream, not a series:
+          # it has no number, so it would yield a valueless <seriesInfo>.
+          def seriesinfo_series?(ser)
+            ser.type != "stream" &&
+              ser.title.reject { |t| t.content == "DOI" }.any?
+          end
+
           def series_to_seriesinfo # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
             @item.series.select do |s|
-              s.title.reject { |t| t.content == "DOI" }.any?
+              seriesinfo_series?(s)
             end.uniq do |s|
               s.title.find { |t| t.content != "DOI" }.content
             end.each_with_object([]) do |s, si|

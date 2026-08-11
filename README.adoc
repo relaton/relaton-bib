@@ -334,6 +334,54 @@ item.to_rfcxml
 </reference>
 ----
 
+=== Export bibliographic item to strict RFC XML v3
+
+`to_rfcxml` emits the BibXML shape published by the Relaton data repositories,
+which still carries the `<format>` element that RFC 7991 deprecates. Pass
+`v3: true` for output that follows the RFC 7991 (xml2rfc v3) vocabulary
+instead: no `<format>`, a `<stream>` element, `ascii*` attributes, and
+`<refcontent>` for identifiers that cannot be expressed as `<seriesInfo>`.
+
+[source,ruby]
+----
+item.to_rfcxml v3: true
+<reference anchor="ISO20483">
+  <front>
+    <title>Cereals and pulses</title>
+    <author initials="Ö." asciiInitials="O." surname="Nürk" asciiSurname="Nurk"/>
+    <author>
+      <organization abbrev="ISO" ascii="International Organization for Standardization">International Organization for Standardization</organization>
+    </author>
+    <date year="2013"/>
+  </front>
+  <refcontent>ISO 20483:2013-2014</refcontent>
+</reference>
+----
+
+Documents published by the IETF (identified by a contributing organization
+named `IETF`, `Internet Engineering Task Force` or `RFC Publisher`) express
+their identifiers as `<seriesInfo>` rather than `<refcontent>`:
+
+[source,ruby]
+----
+<reference anchor="RFC2119" target="https://www.rfc-editor.org/info/rfc2119">
+  <stream>IETF</stream>
+  <front>
+    <title>Key words for use in RFCs to Indicate Requirement Levels</title>
+    <seriesInfo name="BCP" value="14"/>
+    <seriesInfo name="RFC" value="2119"/>
+    ...
+  </front>
+</reference>
+----
+
+Two further options are accepted by both modes:
+
+`anchor:`:: overrides the anchor otherwise derived from `docnumber`, for
+callers that carry their own identifier (for example a Metanorma Semantic XML
+`bibitem/@id`).
+`include_keywords:`:: set to `false` to suppress `<keyword>` elements.
+
 === Logging
 
 RelatonBib uses the relaton-logger gem for logging. By default, it logs to STDOUT. To change the log levels and add other loggers, read the https://github.com/relaton/relaton-logger#usage[relaton-logger] documentation.

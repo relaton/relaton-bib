@@ -156,8 +156,10 @@ module Relaton
         Converter::Asciibib.from_item(self)
       end
 
-      def to_rfcxml
-        Converter::BibXml.from_item(self).to_xml
+      # @param opts [Hash] passed to {Converter::BibXml.from_item}; notably
+      #   `v3: true` for strict RFC 7991 output instead of BibXML.
+      def to_rfcxml(**)
+        Converter::BibXml.from_item(self, **).to_xml
       end
 
       def deep_clone
