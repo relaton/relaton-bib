@@ -27,12 +27,20 @@ module Relaton
             di&.content&.to_s&.gsub(" ", ".")
           end
 
+          # A <uri> may legitimately carry no type -- biblio.rng makes it
+          # optional, and hand-authored bibitems often omit it -- so never call
+          # String methods on it unguarded.
+          def target_types = %w[src doi]
+
           def create_target
-            target = @item.source.detect { |l| l.type.casecmp("src").zero? } ||
-              @item.source.detect { |l| l.type.casecmp("doi").zero? }
+            target = target_types.filter_map { |t| source_of_type(t) }.first
             return unless target
 
             target.content.to_s
+          end
+
+          def source_of_type(type)
+            @item.source.detect { |l| l.type&.casecmp(type)&.zero? }
           end
 
           def create_front # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -79,8 +87,13 @@ module Relaton
             end
           end
 
+          # Which contributors become <author>; overridden by the v3 emitter.
+          def contributors_for_authors
+            @item.contributor.reject { |c| committee_contributor?(c) }
+          end
+
           def create_authors # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-            @item.contributor.reject { |c| committee_contributor?(c) }.map do |contrib|
+            contributors_for_authors.map do |contrib|
               role = "editor" if contrib.role.detect { |r| r.type == "editor" }
               Rfcxml::V3::Author.new(
                 role: role,
@@ -292,7 +305,10 @@ module Relaton
             return unless @item.abstract.any?
 
             content = @item.abstract[0].content
-            paragraphs = content.scan(%r{<p>(.*?)</p>}m).flatten
+            # Semantic XML paragraphs carry attributes (`<p id="_349ea…">`);
+            # match those too, or the whole abstract falls through to the
+            # fallback below and the markup is escaped into the <t>.
+            paragraphs = content.scan(%r{<p\b[^>]*>(.*?)</p>}m).flatten
             paragraphs = [content] if paragraphs.empty?
             ts = paragraphs.map { |p| Rfcxml::V3::Text.new(content: CGI.unescapeHTML(p)) }
             Rfcxml::V3::Abstract.new(t: ts)
@@ -302,7 +318,7 @@ module Relaton
 
           def create_format # rubocop:disable Metrics/AbcSize
             @item.source.each_with_object([]) do |l, a|
-              next unless FORMAT_TYPES.any? { |ft| l.type.casecmp(ft).zero? }
+              next unless FORMAT_TYPES.any? { |ft| l.type&.casecmp(ft)&.zero? }
 
               a << Rfcxml::V3::Format.new(
                 type: l.type, target: l.content,

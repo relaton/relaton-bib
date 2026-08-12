@@ -6,9 +6,6 @@
     <seriesInfo name="BCP" value="14"/>
     <seriesInfo name="RFC" value="2119"/>
     <author fullname="S. Bradner" asciiFullname="S. Bradner"/>
-    <author>
-      <organization abbrev="IETF" ascii="Internet Engineering Task Force">Internet Engineering Task Force</organization>
-    </author>
     <date year="1997" month="March"/>
     <keyword>Standards</keyword>
     <abstract>

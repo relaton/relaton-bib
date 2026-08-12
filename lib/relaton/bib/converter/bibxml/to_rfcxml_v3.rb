@@ -33,7 +33,23 @@ module Relaton
           SUBSERIES = %w[BCP STD].freeze
 
           HOME_ID_RE = /\A(?<name>RFC|BCP|STD|FYI)\s*(?<value>\d+)\z/i
-          DRAFT_ID_RE = /I-D[.\s]\s*(?<value>\S+)/
+          # xml2rfc only resolves a draft reference when seriesInfo carries the
+          # full draft name, so keep `draft-…` intact. The `I-D.` anchor form
+          # is a citation label, not the identifier (metanorma-ietf#283).
+          DRAFT_ID_RE = /\A(?<value>draft-\S+)\z/i
+          DRAFT_ANCHOR_RE = /\AI-D[.\s]\s*\S+\z/i
+
+          # Identifier types that duplicate a human-readable identifier or are
+          # bookkeeping rather than citation content (metanorma-ietf#301).
+          EXCLUDED_ID_TYPES = %w[URN].freeze
+
+          # Title parts joined when relaton supplies no composite title.
+          TITLE_PARTS = %w[title-intro title-main title-part].freeze
+
+          # Roles that may stand in for an author when the item names none,
+          # mirroring the released renderer's `creatornames_roles_allowed`.
+          FALLBACK_ROLES = %w[performer adapter translator publisher
+                              distributor authorizer].freeze
 
           # The values RFC XML v3 allows on <stream>; "editorial" was added by
           # RFC 9280. Keyed by the spellings the RFC Editor and relaton-ietf
@@ -70,6 +86,11 @@ module Relaton
 
           private
 
+          # The released IETF renderer takes an HTML-typed uri as the reference
+          # target when there is no src (isodoc/ietf/references.rb), and the
+          # transformer does the same; match it here.
+          def target_types = %w[src HTML doi]
+
           # anchor is mandatory in v3 and is an XML identifier, so fall back
           # through every source the item has and never leave whitespace in it.
           def create_anchor
@@ -86,24 +107,59 @@ module Relaton
           # <front> needs a title and at least one author to be valid v3.
           def create_front
             front = super
-            front.title ||= formattedref_title
+            front.title = compound_title || formattedref_title
             front.author = [unknown_author] if Array(front.author).empty?
             front
+          end
+
+          # The base emitter takes title[0], which on a multipart standard is
+          # the intro alone ("IT Security techniques"). A citation needs the
+          # whole compound, so prefer the composite title relaton builds, then
+          # the intro-main-part join, then whatever is first.
+          def compound_title
+            content = composite_title || joined_title ||
+              @item.title.first&.content
+            return nil if content.nil?
+
+            ::Rfcxml::V3::Title.new(content: plain_text(content))
+          end
+
+          def composite_title
+            @item.title.find { |t| t.type == "main" }&.content
+          end
+
+          def joined_title
+            parts = TITLE_PARTS.filter_map do |type|
+              @item.title.find { |t| t.type == type }&.content
+            end
+            parts.empty? ? nil : parts.join(" - ")
           end
 
           def formattedref_title
             content = @item.formattedref&.content or return nil
 
-            ::Rfcxml::V3::Title.new(content: content.to_s)
+            ::Rfcxml::V3::Title.new(content: plain_text(content))
+          end
+
+          # v3 <title> is text-only, so inline markup a formattedref or title
+          # carries has to be flattened rather than escaped into the output.
+          def plain_text(content)
+            text = content.to_s
+            return text unless text.include?("<")
+
+            Nokogiri::XML.fragment(text).text.squeeze(" ").strip
           end
 
           def unknown_author
             ::Rfcxml::V3::Author.new(surname: "Unknown")
           end
 
+          # One <seriesInfo> per (name, value): the same identifier can arrive
+          # from a docidentifier and a series, or from two docidentifiers that
+          # spell it differently ("RFC 2119" and "RFC2119").
           def create_seriesinfo
-            docidentifier_to_seriesinfo + series_to_seriesinfo +
-              identifier_to_seriesinfo
+            (docidentifier_to_seriesinfo + series_to_seriesinfo +
+              identifier_to_seriesinfo).uniq { |si| [si.name, si.value] }
           end
 
           # Only series that carry a number can become <seriesInfo>; the rest
@@ -175,6 +231,25 @@ module Relaton
             end
           end
 
+          # An untyped docidentifier that merely restates the reference's own
+          # label ("ZELLER", "Grail") is a citation label, not a citation: keep
+          # it only when the reference would otherwise show nothing at all.
+          def label_echo?(docid)
+            return false unless docid.type.nil?
+
+            docid.content.to_s.casecmp(label_candidates.to_s).zero? &&
+              reference_has_visible_text?
+          end
+
+          def label_candidates
+            @item.docnumber || @item.id
+          end
+
+          def reference_has_visible_text?
+            @item.title.any? || @item.formattedref ||
+              @item.contributor.any? || @item.date.any?
+          end
+
           def seriesinfo_status
             @item.status&.stage&.content
           end
@@ -191,7 +266,10 @@ module Relaton
 
           def non_authoritative?(docid)
             NON_AUTHORITATIVE_TYPES.include?(docid.type) ||
-              docid.scope == "trademark"
+              EXCLUDED_ID_TYPES.include?(docid.type) ||
+              docid.scope == "trademark" ||
+              DRAFT_ANCHOR_RE.match?(docid.content.to_s) ||
+              label_echo?(docid)
           end
 
           def subseries_identifiers
@@ -220,10 +298,18 @@ module Relaton
           # Identifiers that cannot be expressed as <seriesInfo> — either
           # because the document is not an IETF one, or because the identifier
           # does not split into a series name and number.
+          # Whatever <seriesInfo> already states must not be repeated here,
+          # whichever route put it there.
           def identifier_refcontent
-            ids = authoritative_identifiers
-            ids = ids.reject { |id| split_identifier(id) } if home_standard?
+            ids = authoritative_identifiers.reject { |id| in_seriesinfo?(id) }
             ids.empty? ? [] : [ids.join(", ")]
+          end
+
+          def in_seriesinfo?(id)
+            name, value = split_identifier(id)
+            return false if name.nil?
+
+            create_seriesinfo.any? { |si| si.name == name && si.value == value }
           end
 
           def series_refcontent
@@ -268,6 +354,29 @@ module Relaton
             ser && ser.title.first&.content
           end
 
+          # --- Contributors ---
+
+          # Every relaton-ietf RFC record carries publisher and authorizer
+          # contributors, and published RFC XML never lists those as authors.
+          # So: authors and editors if there are any, and only otherwise fall
+          # back to the wider set, which keeps a translator-only monograph its
+          # translator (metanorma-ietf#301).
+          def contributors_for_authors
+            contribs = super
+            primary = contribs.select { |c| role?(c, %w[author editor]) }
+            primary.any? ? primary : contribs.select { |c| fallback_author?(c) }
+          end
+
+          def role?(contrib, types)
+            contrib.role.any? { |r| types.include?(r.type) }
+          end
+
+          # A contributor with no role at all is an author by default; that is
+          # how most non-IETF bibitems are written.
+          def fallback_author?(contrib)
+            contrib.role.empty? || role?(contrib, FALLBACK_ROLES)
+          end
+
           # --- ascii folding ---
 
           def create_authors
@@ -295,7 +404,10 @@ module Relaton
                                    TRANSLITERATIONS)
               .unicode_normalize(:nfkd)
               .encode("ASCII", invalid: :replace, undef: :replace, replace: "")
-            folded.empty? ? nil : folded
+            # Folding a non-Latin script leaves only the punctuation and
+            # spacing behind ("Νίκος Παπαδόπουλος" -> " "), which is worse than
+            # no attribute at all. Real transliteration is the caller's policy.
+            folded.match?(/[[:alnum:]]/) ? folded : nil
           end
         end
       end

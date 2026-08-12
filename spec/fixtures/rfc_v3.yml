@@ -18,6 +18,8 @@ contributor:
       name:
         completename:
           content: S. Bradner
+    role:
+      - type: author
   - organization:
       name:
         - content: Internet Engineering Task Force

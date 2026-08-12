@@ -41,9 +41,13 @@ module Relaton
             id.sub(/^(RFC|BCP|FYI|STD) /, '\1').sub(/^\w+\./, "")
           end
 
+          # An untyped <uri> is legal, so guard before comparing.
+          def target_types = %w[src doi]
+
           def create_target
-            target = @item.source.detect { |l| l.type.casecmp("src").zero? } ||
-              @item.source.detect { |l| l.type.casecmp("doi").zero? }
+            target = target_types.filter_map do |type|
+              @item.source.detect { |l| l.type&.casecmp(type)&.zero? }
+            end.first
             return unless target
 
             target.content.to_s

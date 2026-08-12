@@ -375,6 +375,22 @@ their identifiers as `<seriesInfo>` rather than `<refcontent>`:
 </reference>
 ----
 
+The v3 mode also applies the citation rules the IETF toolchain expects, which
+the BibXML mode leaves alone:
+
+* Contributors with role `author` or `editor` become `<author>`; the wider set
+  (`publisher`, `authorizer`, `translator`, …) is used only when the item names
+  no author or editor, so an RFC's publisher is not listed as its author.
+* `<title>` takes the composite `title[@type="main"]`, else joins
+  title-intro / title-main / title-part, so multipart standards keep their full
+  title. Inline markup is flattened, since v3 `<title>` is text-only.
+* Identifiers that restate the reference label, `URN` identifiers and the
+  `I-D.` anchor form are left out of `<refcontent>`; Internet-Draft
+  `<seriesInfo>` carries the full `draft-…` name, which is what xml2rfc
+  resolves against.
+* Where folding a name leaves no letters (a non-Latin script), the `ascii*`
+  attribute is omitted rather than emitted blank.
+
 Two further options are accepted by both modes:
 
 `anchor:`:: overrides the anchor otherwise derived from `docnumber`, for

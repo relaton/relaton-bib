@@ -10,6 +10,8 @@ module Relaton
         class ToRfcxmlReferencegroupV3 < ToRfcxmlReferencegroup
           private
 
+          def target_types = %w[src HTML doi]
+
           # <referencegroup> needs an anchor just as much as its members do,
           # so fall back past the docidentifier the parent relies on.
           def create_anchor

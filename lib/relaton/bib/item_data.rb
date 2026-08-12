@@ -19,8 +19,18 @@ module Relaton
       COLLECTION_WRITE_ONLY_ATTRIBUTES = %i[title abstract source relation].freeze
 
       ATTRIBUTES.each { |attr| attr_accessor attr }
-      COLLECTION_ATTRBUTES.each { |attr| attr_accessor attr }
-      COLLECTION_WRITE_ONLY_ATTRIBUTES.each { |attr| attr_writer attr }
+      COLLECTION_ATTRBUTES.each { |attr| attr_reader attr }
+
+      # Collections are always arrays. lutaml-model assigns every mapped
+      # attribute after building the instance, so an element absent from the
+      # XML would otherwise overwrite the [] set in #initialize with nil --
+      # `Item.from_xml` items then blew up in any consumer that iterated them,
+      # while `from_yaml` ones did not.
+      (COLLECTION_ATTRBUTES + COLLECTION_WRITE_ONLY_ATTRIBUTES).each do |attr|
+        define_method("#{attr}=") do |value|
+          instance_variable_set("@#{attr}", array(value))
+        end
+      end
 
       attr_reader :id, :docidentifier
 
@@ -28,10 +38,10 @@ module Relaton
         ATTRIBUTES.each { |attr| instance_variable_set("@#{attr}", args[attr]) }
 
         (COLLECTION_ATTRBUTES + COLLECTION_WRITE_ONLY_ATTRIBUTES).each do |attr|
-          instance_variable_set("@#{attr}", args[attr] || [])
+          instance_variable_set("@#{attr}", array(args[attr]))
         end
 
-        @docidentifier = args[:docidentifier] || []
+        @docidentifier = array(args[:docidentifier])
         self.schema_version = schema
         @id = args[:id]
         create_id
@@ -42,7 +52,7 @@ module Relaton
       end
 
       def docidentifier=(value)
-        @docidentifier = value || []
+        @docidentifier = array(value)
         create_id
       end
 
