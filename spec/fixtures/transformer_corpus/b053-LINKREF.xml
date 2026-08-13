@@ -1,0 +1,4 @@
+<bibitem id="LINKREF">
+<formattedref format="application/x-isodoc+xml">See <link target="https://example.com/spec"/> for details.</formattedref>
+<docidentifier>LINKREF</docidentifier>
+</bibitem>
