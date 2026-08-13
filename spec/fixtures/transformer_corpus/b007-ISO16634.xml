@@ -1,0 +1,29 @@
+<bibitem id="ISO16634" type="standard">
+      <title language="x" format="text/plain">Cereals, pulses, milled cereal products, xxxx, oilseeds and animal feeding stuffs</title>
+      <title language="en" format="text/plain">Cereals, pulses, milled cereal products, oilseeds and animal feeding stuffs</title>
+      <uri>http://www.example.com</uri>
+      <uri type="RDF">http://www.example.com/rdf</uri>
+      <docidentifier type="ISO">ISO 16634:-- (all parts)</docidentifier>
+      <docidentifier type="DOI">1234</docidentifier>
+      <date type="published"><on>--</on></date>
+      <contributor>
+      <role type="publisher"/>
+      <organization>
+      <abbreviation>ISO</abbreviation>
+      </organization>
+      </contributor>
+      <contributor>
+      <role type="editor"/>
+      <organization>
+      <name>International Supporters of Odium</name>
+      <abbreviation>ISO1</abbreviation>
+      </organization>
+      </contributor>
+      <keyword><vocab>keyword1</vocab></keyword>
+      <keyword><vocab>keyword2</vocab></keyword>
+      <abstract><p>This is an abstract</p></abstract>
+      <note format="text/plain" reference="1">ISO DATE: Under preparation. (Stage at the time of publication ISO/DIS 16634)</note>
+      <extent type="part">
+      <referenceFrom>all</referenceFrom>
+      </extent>
+      </bibitem>

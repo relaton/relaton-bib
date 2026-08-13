@@ -1,0 +1,80 @@
+<bibitem id="_097f814d-a14f-004f-db25-ada9687fac91" type="standard" schema-version="v1.5.6" anchor="HOST-REQ">
+  <fetched>2026-07-17</fetched>
+  
+<title type="main">Requirements for Internet Hosts - Application and Support</title>
+
+  <uri type="src">https://www.rfc-editor.org/info/rfc1123</uri>
+  <docidentifier type="IETF" primary="true">RFC 1123</docidentifier>
+  <docidentifier type="DOI">10.17487/RFC1123</docidentifier>
+  <docnumber>RFC1123</docnumber>
+  <date type="published">
+    <on>1989-10</on>
+  </date>
+  <contributor>
+    <role type="editor"/>
+    <person>
+      
+<name>                    <formatted-initials language="en" script="Latn">R.</formatted-initials>          <surname language="en" script="Latn">Braden</surname>          <completename language="en" script="Latn">R. Braden</completename>       </name>
+
+    </person>
+  </contributor>
+  <contributor>
+    <role type="publisher"/>
+    <organization>
+      
+<name language="en">RFC Publisher</name>
+
+    </organization>
+  </contributor>
+  <contributor>
+    <role type="authorizer"/>
+    <organization>
+      
+<name language="en">RFC Series</name>
+
+    </organization>
+  </contributor>
+  <language>en</language>
+  <script>Latn</script>
+  <abstract language="en" script="Latn">
+    <p id="_1c5f44ba-da6d-edfd-1d30-db20e95ea26a">This RFC is an official specification for the Internet community.  It incorporates by reference, amends, corrects, and supplements the primary protocol standards documents relating to hosts. [STANDARDS-TRACK]</p>
+
+  </abstract>
+  <status>
+    <stage>INTERNET STANDARD</stage>
+  </status>
+  <relation type="updates">
+    <bibitem>
+      <formattedref>RFC822</formattedref>
+      <docidentifier type="IETF" primary="true">RFC822</docidentifier>
+    </bibitem>
+
+  </relation>
+  <relation type="updates">
+    <bibitem>
+      <formattedref>RFC952</formattedref>
+      <docidentifier type="IETF" primary="true">RFC952</docidentifier>
+    </bibitem>
+
+  </relation>
+  <series>
+    
+<title>STD</title>
+
+    <number>3</number>
+  </series>
+  <series>
+    
+<title>RFC</title>
+
+    <number>1123</number>
+  </series>
+  <series type="stream">
+    
+<title>Legacy</title>
+
+  </series>
+  <keyword>
+    <vocab>applicability</vocab>
+  </keyword>
+</bibitem>

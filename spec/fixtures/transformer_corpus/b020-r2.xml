@@ -1,0 +1,5 @@
+<bibitem anchor="XYZ" id="_r2" type="standard">
+        <title format="text/plain">Mystery stream</title>
+        <docidentifier type="XYZ" primary="true">XYZ 1</docidentifier>
+        <series type="stream"><title format="text/plain">Homebrew</title></series>
+      </bibitem>

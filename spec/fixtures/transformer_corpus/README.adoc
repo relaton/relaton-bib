@@ -1,0 +1,24 @@
+= Transformer reference corpus
+
+52 bibitems harvested from the metanorma-ietf model-driven
+transformer's spec suite and document fixtures
+(https://github.com/metanorma/metanorma-ietf, branch
+`feat/model-driven-transformer` — the
+https://github.com/metanorma/metanorma-ietf/issues/233[#233] QA
+campaign), deduplicated by content digest, plus four synthetic items
+covering shapes the suite lacked: an English monograph with two
+authors and a page extent, a Greek monograph (non-Latin author and
+publisher), a journal article with volume/issue/pages, and an ISSN
+journal item with a numbered series.
+
+Filenames are `<key>-<source id>.xml`; the key preserves the harvest
+order used in the differential review of PR #125.
+
+`transformer_corpus_spec.rb` runs each through
+`Item.from_xml → Converter::BibXml.from_item(v3: true)` and asserts
+the structural sentinels distilled from that review (no crashes on
+parse-built items, no deprecated `<format>`, no publisher/authorizer
+organization-authors, text-only titles, deduplicated seriesInfo, no
+degenerate `ascii*` remainders of non-Latin folding, clean
+abstracts). They are deliberately not golden files: open rendering
+choices stay open; only the fixed defect classes are pinned.

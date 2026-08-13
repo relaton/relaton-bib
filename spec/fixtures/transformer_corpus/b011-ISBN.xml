@@ -1,0 +1,12 @@
+<bibitem id="ISBN" type="book">
+      <title format="text/plain">Chemicals for analytical laboratory use</title>
+      <docidentifier type="ISBN">ISBN</docidentifier>
+      <docidentifier type="metanorma">[1]</docidentifier>
+      <contributor>
+      <role type="publisher"/>
+      <organization>
+      <name>International SBN</name>
+      <abbreviation>ISBN</abbreviation>
+      </organization>
+      </contributor>
+      </bibitem>

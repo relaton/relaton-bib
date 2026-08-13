@@ -1,0 +1,12 @@
+<bibitem id="ref11">
+      <title>Internet Calendaring and Scheduling Core Object Specification (iCalendar)</title>
+      <docidentifier type="IETF">RFC 10</docidentifier>
+      <contributor>
+      <role type="publisher"/>
+      <organization>
+      <name>Internet Engineering Task Force</name>
+      <abbreviation>IETF</abbreviation>
+      </organization>
+      </contributor>
+      <uri type="xml">https://xml2rfc.tools.ietf.org/10.xml</uri>
+      </bibitem>

@@ -1,0 +1,72 @@
+<bibitem id="_393320a8-0ac7-8324-64b3-71970f0b19b9" type="standard" schema-version="v1.5.6" anchor="RFC2119">
+  <fetched>2026-07-17</fetched>
+  
+<title type="main">Key words for use in RFCs to Indicate Requirement Levels</title>
+
+  <uri type="src">https://www.rfc-editor.org/info/rfc2119</uri>
+  <docidentifier type="IETF" primary="true">RFC 2119</docidentifier>
+  <docidentifier type="DOI">10.17487/RFC2119</docidentifier>
+  <docnumber>RFC2119</docnumber>
+  <date type="published">
+    <on>1997-03</on>
+  </date>
+  <contributor>
+    <role type="author"/>
+    <person>
+      
+<name>                    <formatted-initials language="en" script="Latn">S.</formatted-initials>          <surname language="en" script="Latn">Bradner</surname>          <completename language="en" script="Latn">S. Bradner</completename>       </name>
+
+    </person>
+  </contributor>
+  <contributor>
+    <role type="publisher"/>
+    <organization>
+      
+<name language="en">RFC Publisher</name>
+
+    </organization>
+  </contributor>
+  <contributor>
+    <role type="authorizer"/>
+    <organization>
+      
+<name language="en">RFC Series</name>
+
+    </organization>
+  </contributor>
+  <language>en</language>
+  <script>Latn</script>
+  <abstract language="en" script="Latn">
+    <p id="_b5825938-b022-5023-a5a4-ac4d6b0f0621">In many standards track documents several words are used to signify the requirements in the specification.  These words are often capitalized.  This document defines these words as they should be interpreted in IETF documents.  This document specifies an Internet Best Current Practices for the Internet Community, and requests discussion and suggestions for improvements.</p>
+
+  </abstract>
+  <status>
+    <stage>BEST CURRENT PRACTICE</stage>
+  </status>
+  <series>
+    
+<title>BCP</title>
+
+    <number>14</number>
+  </series>
+  <series>
+    
+<title>RFC</title>
+
+    <number>2119</number>
+  </series>
+  <series type="stream">
+    
+<title>IETF</title>
+
+  </series>
+  <keyword>
+    <vocab>Standards</vocab>
+  </keyword>
+  <keyword>
+    <vocab>Track</vocab>
+  </keyword>
+  <keyword>
+    <vocab>Documents</vocab>
+  </keyword>
+</bibitem>
