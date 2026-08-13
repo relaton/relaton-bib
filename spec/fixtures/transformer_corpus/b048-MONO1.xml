@@ -1,0 +1,11 @@
+<bibitem id="MONO1" type="book">
+<title format="text/plain">Structure and Interpretation of Network Protocols</title>
+<docidentifier type="ISBN">978-0-262-51087-5</docidentifier>
+<edition>2</edition>
+<date type="published"><on>1996</on></date>
+<contributor><role type="author"/><person><name><forename>Harold</forename><surname>Abelman</surname></name></person></contributor>
+<contributor><role type="author"/><person><name><forename>Gerald</forename><initial>G. J.</initial><surname>Sussmann</surname></name></person></contributor>
+<contributor><role type="publisher"/><organization><name>MIT Press</name></organization></contributor>
+<place>Cambridge, MA</place>
+<extent><locality type="page"><referenceFrom>1</referenceFrom><referenceTo>657</referenceTo></locality></extent>
+</bibitem>

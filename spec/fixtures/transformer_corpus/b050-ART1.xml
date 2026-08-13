@@ -1,0 +1,12 @@
+<bibitem id="ART1" type="article">
+<title format="text/plain">End-to-End Arguments in System Design</title>
+<docidentifier type="DOI">10.1145/357401.357402</docidentifier>
+<date type="published"><on>1984-11</on></date>
+<contributor><role type="author"/><person><name><forename>Jerome</forename><surname>Saltzer</surname></name></person></contributor>
+<contributor><role type="author"/><person><name><forename>David</forename><surname>Reed</surname></name></person></contributor>
+<contributor><role type="author"/><person><name><forename>David</forename><surname>Clark</surname></name></person></contributor>
+<series><title format="text/plain">ACM Transactions on Computer Systems</title></series>
+<extent><locality type="volume"><referenceFrom>2</referenceFrom></locality>
+<locality type="issue"><referenceFrom>4</referenceFrom></locality>
+<locality type="page"><referenceFrom>277</referenceFrom><referenceTo>288</referenceTo></locality></extent>
+</bibitem>
