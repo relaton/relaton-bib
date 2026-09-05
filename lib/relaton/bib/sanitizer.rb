@@ -42,15 +42,151 @@ module Relaton
 
       TAG_RX = %r{<[a-zA-Z/!?]}
 
+      # Captures a namespace prefix, on a tag or on an attribute: the
+      # "jats" of <jats:p> and </jats:italic>, and the "xlink" of
+      # xlink:href.
+      NS_PREFIX_RX = %r{(?:</?|\s)([A-Za-z_][\w.-]*):(?=[A-Za-z_])}
+
+      # Namespace that declares a prefix which the content leaves
+      # undeclared. The sanitiser removes it again before it serialises.
+      NS_PLACEHOLDER = "urn:x-relaton-undeclared:%s".freeze
+
+      # Element that carries the placeholder declarations. Its children
+      # are the sanitised content, so the element itself never reaches
+      # the output.
+      NS_WRAPPER = "relaton-sanitizer-root".freeze
+
+      # Reserved prefixes. XML declares both, so the content must not.
+      NS_RESERVED = %w[xml xmlns].freeze
+
+      # Serialise without the FORMAT option, so the sanitiser keeps the
+      # shape of element-only content instead of adding newlines and
+      # indent.
+      SAVE_OPTS = Nokogiri::XML::Node::SaveOptions::AS_XML
+
       def self.sanitize(content)
         return content unless sanitizable?(content)
 
-        fragment = Nokogiri::XML::DocumentFragment.parse(content)
-        return content if fragment.errors.any?
+        node = parse(content)
+        return content if node.nil?
 
-        sanitize_children(fragment)
-        fragment.children.map { |c| c.to_xml(encoding: "UTF-8") }.join
+        sanitize_children(node)
+        node.children.map do |c|
+          c.to_xml(encoding: "UTF-8", save_with: SAVE_OPTS)
+        end.join
       end
+
+      #
+      # Parse the content into a node whose children are the content.
+      #
+      # @param [String] content The raw marked-up content.
+      #
+      # @return [Nokogiri::XML::Node, nil] The node, or nil when the
+      #   content does not parse.
+      #
+      def self.parse(content)
+        fragment = Nokogiri::XML::DocumentFragment.parse(content)
+        return fragment if fragment.errors.empty?
+
+        parse_with_prefixes(content)
+      end
+      private_class_method :parse
+
+      #
+      # Parse content that uses undeclared namespace prefixes.
+      #
+      # An undeclared prefix is always a parse error, so without this the
+      # sanitiser gives up on exactly the third-party markup that needs
+      # sanitising most. Declare every prefix that the content uses on a
+      # wrapper element, parse, then remove the placeholder namespaces
+      # from the elements and from the attributes. See metanorma-pdfa#99.
+      #
+      # An undeclared prefix inside an OPAQUE <stem> goes as well. The
+      # sanitiser cannot keep it: an undeclared prefix in the output is
+      # the exact failure that this method removes. Only a namespace that
+      # the content declares itself survives verbatim.
+      #
+      # @param [String] content The raw marked-up content.
+      #
+      # @return [Nokogiri::XML::Element, nil] The wrapper element, or nil
+      #   when the content uses no prefix or does not parse.
+      #
+      def self.parse_with_prefixes(content)
+        decl = placeholder_declarations(content) or return
+        name = wrapper_name(content)
+        doc = Nokogiri::XML "<#{name} #{decl}>#{content}</#{name}>"
+        return unless doc.errors.empty?
+
+        drop_placeholder_namespaces doc.root
+      end
+      private_class_method :parse_with_prefixes
+
+      #
+      # Declare every namespace prefix that the content uses.
+      #
+      # @param [String] content The raw marked-up content.
+      #
+      # @return [String, nil] The declarations, or nil when the content
+      #   uses no prefix.
+      #
+      def self.placeholder_declarations(content)
+        prefixes = content.scan(NS_PREFIX_RX).flatten.uniq - NS_RESERVED
+        return if prefixes.empty?
+
+        prefixes.map do |pfx|
+          %(xmlns:#{pfx}="#{format NS_PLACEHOLDER, pfx}")
+        end.join(" ")
+      end
+      private_class_method :placeholder_declarations
+
+      #
+      # Name a wrapper element that the content does not close itself.
+      #
+      # Content that holds the literal end tag of the wrapper would close
+      # it early. The document then has more than one root, the parse
+      # fails, and the sanitiser gives up on content that it can handle.
+      #
+      # @param [String] content The raw marked-up content.
+      #
+      # @return [String] A name that the content does not contain.
+      #
+      def self.wrapper_name(content)
+        name = NS_WRAPPER
+        name += "-x" while content.include?(name)
+        name
+      end
+      private_class_method :wrapper_name
+
+      #
+      # Remove the placeholder namespaces, and only those.
+      #
+      # Nokogiri's remove_namespaces! would also strip a namespace that
+      # the content declares itself, such as the MathML xmlns inside an
+      # OPAQUE <stem>, which must survive verbatim. Match the wrapper's
+      # own declarations, so a namespace of the content never matches,
+      # whatever its URI.
+      #
+      # The declarations stay on the wrapper element. Only its children
+      # reach the output, so the declarations never leak. Do not
+      # serialise the root itself.
+      #
+      # @param [Nokogiri::XML::Element] root The wrapper element.
+      #
+      # @return [Nokogiri::XML::Element] The same element.
+      #
+      def self.drop_placeholder_namespaces(root)
+        placeholders = root.namespace_definitions
+        root.traverse do |node|
+          node.namespace = nil if placeholders.include?(node.namespace)
+          next unless node.element?
+
+          node.attribute_nodes.each do |attr|
+            attr.namespace = nil if placeholders.include?(attr.namespace)
+          end
+        end
+        root
+      end
+      private_class_method :drop_placeholder_namespaces
 
       def self.sanitizable?(content)
         content.is_a?(::String) && !content.empty? && content.match?(TAG_RX)
