@@ -1,0 +1,70 @@
+<bibitem id="_cf94a0fd-7fb0-7448-6591-dbf399429151" type="standard" schema-version="v1.5.6" anchor="NTP">
+  <fetched>2026-07-17</fetched>
+  
+<title type="main">Network Time Protocol (Version 3) Specification, Implementation and Analysis</title>
+
+  <uri type="src">https://www.rfc-editor.org/info/rfc1305</uri>
+  <docidentifier type="IETF" primary="true">RFC 1305</docidentifier>
+  <docidentifier type="DOI">10.17487/RFC1305</docidentifier>
+  <docnumber>RFC1305</docnumber>
+  <date type="published">
+    <on>1992-03</on>
+  </date>
+  <contributor>
+    <role type="author"/>
+    <person>
+      
+<name>                    <formatted-initials language="en" script="Latn">D.</formatted-initials>          <surname language="en" script="Latn">Mills</surname>          <completename language="en" script="Latn">D. Mills</completename>       </name>
+
+    </person>
+  </contributor>
+  <contributor>
+    <role type="publisher"/>
+    <organization>
+      
+<name language="en">RFC Publisher</name>
+
+    </organization>
+  </contributor>
+  <contributor>
+    <role type="authorizer"/>
+    <organization>
+      
+<name language="en">RFC Series</name>
+
+    </organization>
+  </contributor>
+  <language>en</language>
+  <script>Latn</script>
+  <abstract language="en" script="Latn">
+    <p id="_230e4ff1-fc12-4bb5-5d52-9d0cb793c7e1">This document describes the Network Time Protocol (NTP), specifies its formal structure and summarizes information useful for its implementation.</p>
+
+  </abstract>
+  <status>
+    <stage>HISTORIC</stage>
+  </status>
+  <relation type="obsoletedBy">
+    <bibitem>
+      <formattedref>RFC5905</formattedref>
+      <docidentifier type="IETF" primary="true">RFC5905</docidentifier>
+    </bibitem>
+
+  </relation>
+  <series>
+    
+<title>RFC</title>
+
+    <number>1305</number>
+  </series>
+  <series type="stream">
+    
+<title>Legacy</title>
+
+  </series>
+  <keyword>
+    <vocab>NTPV3</vocab>
+  </keyword>
+  <keyword>
+    <vocab>NTP</vocab>
+  </keyword>
+</bibitem>

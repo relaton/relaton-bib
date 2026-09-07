@@ -1,0 +1,25 @@
+<bibitem id="_a781901e-ebbb-744b-2033-bd512b0ec6aa" type="standard" schema-version="v1.5.6" anchor="ITU-R-TF">
+  <fetched>2026-07-17</fetched>
+  
+<title language="en" script="Latn" type="main">Standard-frequency and time-signal emissions</title>
+
+  <uri type="pdf">https://www.itu.int/dms_pubrec/itu-r/rec/tf/R-REC-TF.460-6-200202-I!!PDF-E.pdf</uri>
+  <docidentifier type="ITU" primary="true">ITU-R TF.460-6</docidentifier>
+  <language>en</language>
+  <script>Latn</script>
+  <relation type="instanceOf">
+    <bibitem type="standard">
+      
+<title language="en" script="Latn" type="main">Standard-frequency and time-signal emissions</title>
+
+      <uri type="pdf">https://www.itu.int/dms_pubrec/itu-r/rec/tf/R-REC-TF.460-6-200202-I!!PDF-E.pdf</uri>
+      <docidentifier type="ITU" primary="true">ITU-R TF.460-6</docidentifier>
+      <date type="published">
+        <on>2006-02</on>
+      </date>
+      <language>en</language>
+      <script>Latn</script>
+    </bibitem>
+
+  </relation>
+</bibitem>

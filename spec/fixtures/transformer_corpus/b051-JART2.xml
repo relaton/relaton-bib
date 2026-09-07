@@ -1,0 +1,9 @@
+<bibitem id="JART2" type="journal">
+<title format="text/plain">A Protocol for Packet Network Intercommunication</title>
+<docidentifier type="ISSN">0090-6778</docidentifier>
+<date type="published"><on>1974-05</on></date>
+<contributor><role type="author"/><person><name><forename>Vinton</forename><surname>Cerf</surname></name></person></contributor>
+<contributor><role type="author"/><person><name><forename>Robert</forename><surname>Kahn</surname></name></person></contributor>
+<contributor><role type="publisher"/><organization><name>IEEE</name><abbreviation>IEEE</abbreviation></organization></contributor>
+<series><title format="text/plain">IEEE Transactions on Communications</title><number>22</number></series>
+</bibitem>
