@@ -1,0 +1,39 @@
+id: ISO20483
+type: standard
+docnumber: ISO20483
+title:
+  - type: main
+    content: Cereals and pulses
+docidentifier:
+  - content: ISO 20483:2013-2014
+    type: ISO
+    primary: true
+contributor:
+  - person:
+      name:
+        surname:
+          content: Nürk
+        formatted_initials:
+          content: Ö.
+  - person:
+      name:
+        surname:
+          content: Citizen
+        formatted_initials:
+          content: A.B.
+  - organization:
+      name:
+        - content: International Organization for Standardization
+      abbreviation:
+        content: ISO
+    role:
+      - type: publisher
+date:
+  - type: published
+    at: "2013"
+abstract:
+  - content: This is an abstract
+    language: en
+    script: Latn
+    format: text/html
+ext:
