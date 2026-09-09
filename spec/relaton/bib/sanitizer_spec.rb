@@ -74,6 +74,18 @@ describe Relaton::Bib::Sanitizer do
       expect(twice).to eq once
     end
 
+    # The serialiser drops Nokogiri's FORMAT option, so element-only
+    # content keeps its shape instead of gaining newlines and indent.
+    it "does not indent element-only content" do
+      input = "<p><em>x</em></p>"
+      expect(described_class.sanitize(input)).to eq input
+    end
+
+    it "does not indent a nested element-only body" do
+      input = "<fn><p>x</p></fn>"
+      expect(described_class.sanitize(input)).to eq input
+    end
+
     it "renames <italic> to <em>" do
       expect(described_class.sanitize("<italic>h</italic>"))
         .to eq "<em>h</em>"
@@ -97,12 +109,86 @@ describe Relaton::Bib::Sanitizer do
       expect(output).to include('</fn>')
     end
 
+    # Undeclared namespace prefixes. Third-party markup (JATS from
+    # Crossref, for example) prefixes its elements, and Relaton never
+    # declares the prefix. Nokogiri reports an undeclared prefix as a
+    # parse error, so the sanitiser used to return the content
+    # untouched -- exactly the input that needs sanitising most. The
+    # unparseable output then reached relaton-render, which returned
+    # nil, and isodoc raised NoMethodError. See metanorma-pdfa#99.
+    context "with undeclared namespace prefixes" do
+      it "maps prefixed markup to the basicdoc set" do
+        input = "<jats:p><jats:italic>x</jats:italic></jats:p>"
+        expect(described_class.sanitize(input)).to eq "<p><em>x</em></p>"
+      end
+
+      it "unwraps prefixed elements outside the allow-list" do
+        input = "<ns:sec><ns:title>H</ns:title><ns:p>B</ns:p></ns:sec>"
+        expect(described_class.sanitize(input)).to eq "H<p>B</p>"
+      end
+
+      it "drops a prefixed attribute" do
+        input = '<jats:p><jats:ext-link xlink:href="http://a.b">A' \
+                "</jats:ext-link></jats:p>"
+        expect(described_class.sanitize(input)).to eq "<p>A</p>"
+      end
+
+      it "keeps a declared namespace alongside an undeclared prefix" do
+        math = '<math xmlns="http://www.w3.org/1998/Math/MathML">' \
+               "<mi>d</mi></math>"
+        input = "<jats:p><stem>#{math}</stem></jats:p>"
+        expect(described_class.sanitize(input))
+          .to eq "<p><stem>#{math}</stem></p>"
+      end
+
+      it "drops an undeclared prefix inside an opaque <stem>" do
+        # <stem> content survives verbatim, but an undeclared prefix
+        # cannot: it is the exact failure this path removes.
+        input = "<jats:p><stem><mml:math><mml:mi>d</mml:mi></mml:math>" \
+                "</stem></jats:p>"
+        expect(described_class.sanitize(input))
+          .to eq "<p><stem><math><mi>d</mi></math></stem></p>"
+      end
+
+      it "sanitises content that holds the wrapper element" do
+        # A guessable wrapper name would let the content close the
+        # wrapper early, and the sanitiser would give up on it.
+        input = "<jats:p><relaton-sanitizer-root>a" \
+                "</relaton-sanitizer-root></jats:p>"
+        expect(described_class.sanitize(input)).to eq "<p>a</p>"
+      end
+
+      it "keeps a namespace that reuses the placeholder URI" do
+        input = '<jats:p><stem><x:m xmlns:x="urn:x-relaton-undeclared:x">' \
+                "d</x:m></stem></jats:p>"
+        expect(described_class.sanitize(input))
+          .to eq '<p><stem><x:m xmlns:x="urn:x-relaton-undeclared:x">' \
+                 "d</x:m></stem></p>"
+      end
+
+      it "is idempotent on prefixed input" do
+        input = "<jats:p>a <jats:italic>b</jats:italic></jats:p>"
+        once  = described_class.sanitize(input)
+        twice = described_class.sanitize(once)
+        expect(twice).to eq once
+      end
+
+      it "leaves unbalanced markup untouched" do
+        expect(described_class.sanitize("<p>unbalanced")).to eq "<p>unbalanced"
+      end
+
+      it "leaves text that only looks like a prefixed tag untouched" do
+        text = "Vector<T:Clone> in Rust"
+        expect(described_class.sanitize(text)).to eq text
+      end
+    end
+
     # Opaque-stem cases (#116): <stem> holds out-of-band notation
     # (MathML, AsciiMath, LaTeX) that the sanitiser must preserve
     # rather than recurse into. Assertions are include-shaped because
-    # Nokogiri's serialiser may reflow whitespace around nested
-    # elements; the SEMANTIC claim is "inner elements survive, not just
-    # their text content".
+    # the SEMANTIC claim is "inner elements survive, not just their text
+    # content". Nokogiri no longer reflows whitespace around nested
+    # elements: SAVE_OPTS drops the FORMAT option.
     it "preserves MathML inner elements inside <stem> (does not unwrap to text)" do
       input  = 'Prefix <stem><math><mi>d</mi><mn>6</mn></math>' \
                '<asciimath>d_6</asciimath></stem> Suffix'
