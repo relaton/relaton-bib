@@ -1,7 +1,9 @@
 module Relaton
   module Bib
     class Series < Lutaml::Model::Serializable
-      attribute :type, :string, values: %w[main alt]
+      # "stream" carries an RFC publication stream; relaton-ietf already builds
+      # such series, and biblio.rng's SeriesType admits any string.
+      attribute :type, :string, values: %w[main alt stream]
       attribute :formattedref, Formattedref
       attribute :title, Title, collection: (1..)
       attribute :place, Place

@@ -1,0 +1,12 @@
+<bibitem id="ISO712" type="standard">
+      <title format="text/plain">Cereals or cereal products</title>
+      <title type="main" format="text/plain">Cereals and cereal products</title>
+      <uri>http://www.example.com</uri>
+      <docidentifier type="ISO">ISO&#xA0;712</docidentifier>
+      <contributor>
+      <role type="publisher"/>
+      <organization>
+      <name>International Organization for Standardization</name>
+      </organization>
+      </contributor>
+      </bibitem>

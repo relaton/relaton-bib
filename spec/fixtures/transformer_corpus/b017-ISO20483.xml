@@ -1,0 +1,30 @@
+<bibitem id="ISO20483" type="standard">
+      <title format="text/plain">Cereals and pulses</title>
+      <docidentifier type="ISO">ISO 20483:2013-2014</docidentifier>
+      <date type="published"><from>2013</from><to>2014</to></date>
+      <contributor>
+      <role type="publisher"/>
+      <organization>
+      <name>International Organization for Standardization</name>
+      </organization>
+      </contributor>
+      <contributor>
+      <role type="author"/>
+      <person>
+      <name><completename>&#xD6;laf N&#xFC;rk</completename>
+      <surname>N&#xFC;rk</surname>
+      <forename>&#xD6;laf</forename>
+      </name>
+      </person>
+      </contributor>
+      <contributor>
+      <role type="author"/>
+      <person>
+      <name>
+      <surname>Citizen</surname>
+      <formatted-initials>A. B.</formatted-initials>
+      </name>
+      </person>
+      </contributor>
+      <abstract>This is an abstract</abstract>
+      </bibitem>

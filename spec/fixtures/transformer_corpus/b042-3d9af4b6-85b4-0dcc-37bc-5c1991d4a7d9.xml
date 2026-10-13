@@ -1,0 +1,111 @@
+<bibitem id="_3d9af4b6-85b4-0dcc-37bc-5c1991d4a7d9" type="standard" schema-version="v1.5.6" anchor="ISO8601-2000">
+  <fetched>2026-07-17</fetched>
+  
+<title language="en" script="Latn" type="title-intro">Data elements and interchange formats</title>
+
+  
+<title language="en" script="Latn" type="title-main">Information interchange</title>
+
+  
+<title language="en" script="Latn" type="title-part">Representation of dates and times</title>
+
+  
+<title language="en" script="Latn" type="main">Data elements and interchange formats - Information interchange - Representation of dates and times</title>
+
+  
+<title language="fr" script="Latn" type="title-intro">Éléments de données et formats d'échange</title>
+
+  
+<title language="fr" script="Latn" type="title-main">Échange d'information</title>
+
+  
+<title language="fr" script="Latn" type="title-part">Représentation de la date et de l'heure</title>
+
+  
+<title language="fr" script="Latn" type="main">Éléments de données et formats d'échange - Échange d'information - Représentation de la date et de l'heure</title>
+
+  <uri type="src">https://www.iso.org/standard/26780.html</uri>
+  <uri type="obp">https://www.iso.org/obp/ui/en/#!iso:std:26780:en</uri>
+  <uri type="rss">https://www.iso.org/contents/data/standard/02/67/26780.detail.rss</uri>
+  <docidentifier type="ISO" primary="true">ISO 8601:2000</docidentifier>
+  <docidentifier type="iso-reference">ISO 8601:2000(E)</docidentifier>
+  <docidentifier type="URN">urn:iso:std:iso:8601:stage-95.99</docidentifier>
+  <docnumber>8601</docnumber>
+  <date type="published">
+    <on>2000-12-21</on>
+  </date>
+  <contributor>
+    <role type="publisher"/>
+    <organization>
+      
+<name>International Organization for Standardization</name>
+
+      <abbreviation>ISO</abbreviation>
+      <uri>www.iso.org</uri>
+    </organization>
+  </contributor>
+  <contributor>
+    <role type="author">
+      <description>committee</description>
+    </role>
+    <organization>
+      
+<name>International Organization for Standardization</name>
+
+      <subdivision type="technical-committee" subtype="TC">
+        
+<name>Processes, data elements and documents in commerce, industry and administration</name>
+
+        <identifier>ISO/TC 154</identifier>
+      </subdivision>
+      <abbreviation>ISO</abbreviation>
+    </organization>
+  </contributor>
+  <edition>2</edition>
+  <language>en</language>
+  <script>Latn</script>
+  <status>
+    <stage>95</stage>
+    <substage>99</substage>
+  </status>
+  <copyright>
+    <from>2000</from>
+    <owner>
+      <organization>
+        
+<name>ISO</name>
+
+      </organization>
+    </owner>
+  </copyright>
+  <relation type="obsoletes">
+    <bibitem>
+      <formattedref>ISO 8601:1988</formattedref>
+      <docidentifier type="ISO" primary="true">ISO 8601:1988</docidentifier>
+      <date type="published">
+        <on>1988-06-16</on>
+      </date>
+    </bibitem>
+
+  </relation>
+  <relation type="obsoletes">
+    <bibitem>
+      <formattedref>ISO 8601:1988/Cor 1:1991</formattedref>
+      <docidentifier type="ISO" primary="true">ISO 8601:1988/Cor 1:1991</docidentifier>
+      <date type="published">
+        <on>1991-05-09</on>
+      </date>
+    </bibitem>
+
+  </relation>
+  <relation type="obsoletedBy">
+    <bibitem>
+      <formattedref>ISO/WD 8601</formattedref>
+      <docidentifier type="ISO" primary="true">ISO/WD 8601</docidentifier>
+    </bibitem>
+
+  </relation>
+  <place>
+    <city>Geneva</city>
+  </place>
+</bibitem>

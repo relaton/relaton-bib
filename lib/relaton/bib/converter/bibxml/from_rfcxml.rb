@@ -326,7 +326,18 @@ module Relaton
 
               t = Title.new(content: si.name, language: "en", script: "Latn")
               Series.new(title: [t], number: si.value, type: "main")
-            end.compact
+            end.compact + stream_series
+          end
+
+          # RFC XML v3 carries the publication stream in a <stream> element.
+          # ItemData has no dedicated slot for it, so it is kept the way
+          # relaton-ietf does: as a series marked `type="stream"`.
+          def stream_series
+            return [] unless @reference.stream
+
+            t = Title.new(content: @reference.stream, language: "en",
+                          script: "Latn")
+            [Series.new(title: [t], type: "stream")]
           end
 
           # --- Keyword ---

@@ -3,9 +3,10 @@ module Relaton
     module Converter
       module BibXml
         class ToRfcxmlReferencegroup
-          def initialize(item, include_keywords: true)
+          def initialize(item, include_keywords: true, anchor: nil)
             @item = item
             @include_keywords = include_keywords
+            @anchor = anchor
           end
 
           def transform
@@ -30,6 +31,8 @@ module Relaton
           end
 
           def create_anchor
+            return @anchor if @anchor
+
             docid = @item.docidentifier.detect(&:primary) ||
               @item.docidentifier[0]
             return unless docid
@@ -38,9 +41,13 @@ module Relaton
             id.sub(/^(RFC|BCP|FYI|STD) /, '\1').sub(/^\w+\./, "")
           end
 
+          # An untyped <uri> is legal, so guard before comparing.
+          def target_types = %w[src doi]
+
           def create_target
-            target = @item.source.detect { |l| l.type.casecmp("src").zero? } ||
-              @item.source.detect { |l| l.type.casecmp("doi").zero? }
+            target = target_types.filter_map do |type|
+              @item.source.detect { |l| l.type&.casecmp(type)&.zero? }
+            end.first
             return unless target
 
             target.content.to_s
