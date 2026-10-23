@@ -12,7 +12,10 @@ module Relaton
           graphic_work music patent inbook incollection inproceedings journal website
           webresource dataset archival social_media alert message convesation misc
         ]
-        attribute :formattedref, Formattedref
+        # Bilingual bibdata (GB) can carry several <formattedref> elements;
+        # classic relaton kept the first one, so collapse over-ingested
+       # collections instead of raising at serialization time.
+        attribute :formattedref, Formattedref, singular_tolerance: :first
         attribute :title, Title, collection: true, initialize_empty: true
         attribute :source, Uri, collection: true, initialize_empty: true
         attribute :docidentifier, Docidentifier, collection: true, initialize_empty: true
