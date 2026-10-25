@@ -22,7 +22,10 @@ module Relaton
         attribute :docnumber, :string
         attribute :date, Date, collection: true, initialize_empty: true
         attribute :contributor, Contributor, collection: true, initialize_empty: true
-        attribute :edition, Edition
+        # Lenient ingest: some upstream corpus documents carry more than one
+        # <edition> in a bibitem (relaton-db#149); keep the first instead of
+        # failing the whole round-trip (lutaml-model#971, singular_tolerance).
+        attribute :edition, Edition, singular_tolerance: :first
         attribute :version, Version, collection: true, initialize_empty: true
         attribute :note, Note, collection: true, initialize_empty: true
         attribute :language, :string, collection: true, initialize_empty: true
