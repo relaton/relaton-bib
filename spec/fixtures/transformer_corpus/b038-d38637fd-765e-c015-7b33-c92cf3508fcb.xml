@@ -1,0 +1,73 @@
+<bibitem id="_d38637fd-765e-c015-7b33-c92cf3508fcb" type="standard" schema-version="v1.5.6" anchor="IMAIL">
+  <fetched>2026-07-17</fetched>
+  
+<title type="main">STANDARD FOR THE FORMAT OF ARPA INTERNET TEXT MESSAGES</title>
+
+  <uri type="src">https://www.rfc-editor.org/info/rfc822</uri>
+  <docidentifier type="IETF" primary="true">RFC 822</docidentifier>
+  <docidentifier type="DOI">10.17487/RFC822</docidentifier>
+  <docnumber>RFC822</docnumber>
+  <date type="published">
+    <on>1982-08</on>
+  </date>
+  <contributor>
+    <role type="author"/>
+    <person>
+      
+<name>                    <formatted-initials language="en" script="Latn">D.</formatted-initials>          <surname language="en" script="Latn">Crocker</surname>          <completename language="en" script="Latn">D. Crocker</completename>       </name>
+
+    </person>
+  </contributor>
+  <contributor>
+    <role type="publisher"/>
+    <organization>
+      
+<name language="en">RFC Publisher</name>
+
+    </organization>
+  </contributor>
+  <contributor>
+    <role type="authorizer"/>
+    <organization>
+      
+<name language="en">RFC Series</name>
+
+    </organization>
+  </contributor>
+  <language>en</language>
+  <script>Latn</script>
+  <abstract language="en" script="Latn">
+    <p id="_24beb4db-3d07-96ba-f4d1-74c835fbaec5">This document revises the specifications in RFC 733, in order to serve the needs of the larger and more complex ARPA Internet.  Some of RFC 733's features failed to gain adequate acceptance.  In order to simplify the standard and the software that follows it, these features have been removed.  A different addressing scheme is used, to handle the case of internetwork mail; and the concept of re-transmission has been introduced.  Obsoletes RFC 733, NIC 41952.</p>
+
+  </abstract>
+  <status>
+    <stage>INTERNET STANDARD</stage>
+  </status>
+  <relation type="obsoletedBy">
+    <bibitem>
+      <formattedref>RFC2822</formattedref>
+      <docidentifier type="IETF" primary="true">RFC2822</docidentifier>
+    </bibitem>
+
+  </relation>
+  <series>
+    
+<title>STD</title>
+
+    <number>11</number>
+  </series>
+  <series>
+    
+<title>RFC</title>
+
+    <number>822</number>
+  </series>
+  <series type="stream">
+    
+<title>Legacy</title>
+
+  </series>
+  <keyword>
+    <vocab>MAIL</vocab>
+  </keyword>
+</bibitem>

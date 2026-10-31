@@ -207,4 +207,36 @@ describe Relaton::Bib::ItemData do
       expect(notes.first["type"]).to eq "note"
     end
   end
+
+  # from_yaml defaults absent collections to []; from_xml used to leave them
+  # nil, so every consumer had to guard each one separately.
+  context "collection defaults" do
+    subject(:parsed) do
+      Relaton::Bib::Item.from_xml "<bibitem id='X'><title>T</title></bibitem>"
+    end
+
+    absent = described_class::COLLECTION_ATTRBUTES +
+      described_class::COLLECTION_WRITE_ONLY_ATTRIBUTES - %i[title]
+
+    absent.each do |attr|
+      it "defaults #{attr} to an array when absent from XML" do
+        expect(parsed.public_send(attr)).to eq []
+      end
+    end
+
+    it "still populates a collection that is present in the XML" do
+      expect(parsed.title.map(&:content)).to eq ["T"]
+    end
+
+    it "defaults docidentifier to an array when absent from XML" do
+      expect(parsed.docidentifier).to eq []
+    end
+
+    it "coerces a nil assignment back to an array" do
+      item.relation = nil
+      item.keyword = nil
+      expect(item.relation).to eq []
+      expect(item.keyword).to eq []
+    end
+  end
 end

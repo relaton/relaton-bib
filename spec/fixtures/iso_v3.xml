@@ -1,0 +1,15 @@
+<reference anchor="ISO20483">
+  <front>
+    <title>Cereals and pulses</title>
+    <author initials="Ö." asciiInitials="O." surname="Nürk" asciiSurname="Nurk"/>
+    <author initials="A.B." asciiInitials="A.B." surname="Citizen" asciiSurname="Citizen"/>
+    <author>
+      <organization abbrev="ISO" ascii="International Organization for Standardization">International Organization for Standardization</organization>
+    </author>
+    <date year="2013"/>
+    <abstract>
+      <t>This is an abstract</t>
+    </abstract>
+  </front>
+  <refcontent>ISO 20483:2013-2014</refcontent>
+</reference>
