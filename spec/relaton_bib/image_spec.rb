@@ -30,7 +30,7 @@ describe RelatonBib::Image do
       subject.to_xml xml
     end
     xml = builder.doc.root.to_xml
-    expect(xml).to be_equivalent_to <<~XML
+    expect(xml).to be_xml_equivalent_to <<~XML
       <image id="id" src="src" mimetype="mime type" filename="file name" width="60%" height="40%" alt="Alt" title="Title" longdesc="long description"/>
     XML
   end

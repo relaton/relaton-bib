@@ -114,7 +114,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
         xml = File.read(file, encoding: "utf-8")
           .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-        expect(subject_xml).to be_equivalent_to xml
+        expect(subject_xml).to be_xml_equivalent_to xml
         schema = Jing.new "grammars/biblio-compile.rng"
         errors = schema.validate file
         expect(errors).to eq []
@@ -127,7 +127,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         File.write file, subject_xml, encoding: "utf-8" unless File.exist? file
         xml = File.read(file, encoding: "utf-8")
           .gsub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-        expect(subject_xml).to be_equivalent_to xml
+        expect(subject_xml).to be_xml_equivalent_to xml
         schema = Jing.new "grammars/biblio-compile.rng"
         errors = schema.validate file
         expect(errors).to eq []
@@ -138,7 +138,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         xml = subject.to_xml(bibdata: true, lang: "fr")
           .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
         File.write file, xml, encoding: "UTF-8" unless File.exist? file
-        expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
+        expect(xml).to be_xml_equivalent_to File.read(file, encoding: "UTF-8")
           .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       end
 
@@ -164,7 +164,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
       file = "spec/examples/bib_item.yml"
       h = RelatonBib::HashConverter.hash_to_bib(YAML.load_file(file))
       b = RelatonBib::BibliographicItem.new(**h)
-      expect(b.to_xml).to be_equivalent_to subject.to_xml
+      expect(b.to_xml).to be_xml_equivalent_to subject.to_xml
     end
 
     context "converts item to hash" do
@@ -236,7 +236,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         file = "spec/examples/rfc.xml"
         rfc = subject.to_bibxml
         File.write file, rfc, encoding: "UTF-8" unless File.exist? file
-        expect(rfc).to be_equivalent_to File.read file, encoding: "UTF-8"
+        expect(rfc).to be_xml_equivalent_to File.read file, encoding: "UTF-8"
       end
 
       it "BCP" do
@@ -245,7 +245,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         file = "spec/examples/bcp_item.xml"
         bcpxml = bcpbib.to_bibxml
         File.write file, bcpxml, encoding: "UTF-8" unless File.exist? file
-        expect(bcpxml).to be_equivalent_to File.read file, encoding: "UTF-8"
+        expect(bcpxml).to be_xml_equivalent_to File.read file, encoding: "UTF-8"
       end
 
       it "ID" do
@@ -254,13 +254,13 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         file = "spec/examples/id_item.xml"
         idxml = id.to_bibxml
         File.write file, idxml, encoding: "UTF-8" unless File.exist? file
-        expect(idxml).to be_equivalent_to File.read file, encoding: "UTF-8"
+        expect(idxml).to be_xml_equivalent_to File.read file, encoding: "UTF-8"
       end
 
       it "render keywords" do
         docid = RelatonBib::DocumentIdentifier.new type: "IETF", id: "ID"
         bibitem = RelatonBib::BibliographicItem.new keyword: ["kw"], docid: [docid]
-        expect(bibitem.to_bibxml(include_keywords: true)).to be_equivalent_to <<~XML
+        expect(bibitem.to_bibxml(include_keywords: true)).to be_xml_equivalent_to <<~XML
           <reference anchor="ID">
             <front>
               <keyword>kw</keyword>
@@ -277,7 +277,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         entity = RelatonBib::Person.new name: name
         contrib = RelatonBib::ContributionInfo.new entity: entity
         bibitem = RelatonBib::BibliographicItem.new docid: [docid], contributor: [contrib]
-        expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
+        expect(bibitem.to_bibxml).to be_xml_equivalent_to <<~XML
           <reference anchor="ID">
             <front>
               <author fullname="James Cook" initials="J." surname="Cook">
@@ -294,7 +294,7 @@ RSpec.describe "RelatonBib" => :BibliographicItem do
         role = [{ type: "author", description: ["BibXML author"] }]
         contrib = RelatonBib::ContributionInfo.new entity: entity, role: role
         bibitem = RelatonBib::BibliographicItem.new docid: [docid], contributor: [contrib]
-        expect(bibitem.to_bibxml).to be_equivalent_to <<~XML
+        expect(bibitem.to_bibxml).to be_xml_equivalent_to <<~XML
           <reference anchor="ID">
             <front>
               <author>

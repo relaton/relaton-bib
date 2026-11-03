@@ -14,7 +14,7 @@ RSpec.describe RelatonBib::TypedUri do
     it "#to_xml" do
       builder = Nokogiri::XML::Builder.new
       subject.to_xml(builder)
-      expect(builder.doc.root.to_xml).to be_equivalent_to <<~XML
+      expect(builder.doc.root.to_xml).to be_xml_equivalent_to <<~XML
         <uri type="src" language="en" script="Latn">http://example.com</uri>
       XML
     end

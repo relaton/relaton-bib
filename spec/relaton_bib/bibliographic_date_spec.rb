@@ -24,7 +24,7 @@ RSpec.describe RelatonBib::BibliographicDate do
       xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
         subject.to_xml builder
       end.doc.root.to_xml
-      expect(xml).to be_equivalent_to <<~XML
+      expect(xml).to be_xml_equivalent_to <<~XML
         <date type="published"><on>2014-11</on></date>
       XML
     end
@@ -33,7 +33,7 @@ RSpec.describe RelatonBib::BibliographicDate do
       xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
         subject.to_xml builder, date_format: :full
       end.doc.root.to_xml
-      expect(xml).to be_equivalent_to <<~XML
+      expect(xml).to be_xml_equivalent_to <<~XML
         <date type="published"><on>2014-11-01</on></date>
       XML
     end
@@ -80,7 +80,7 @@ RSpec.describe RelatonBib::BibliographicDate do
       xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
         subject.to_xml builder
       end.doc.root.to_xml
-      expect(xml).to be_equivalent_to <<~XML
+      expect(xml).to be_xml_equivalent_to <<~XML
         <date type="published"><from>2014-11</from><to>2015-12</to></date>
       XML
     end
@@ -89,7 +89,7 @@ RSpec.describe RelatonBib::BibliographicDate do
       xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
         subject.to_xml builder, date_format: :short
       end.doc.root.to_xml
-      expect(xml).to be_equivalent_to <<~XML
+      expect(xml).to be_xml_equivalent_to <<~XML
         <date type="published"><from>2014-11</from><to>2015-12</to></date>
       XML
     end
@@ -101,7 +101,7 @@ RSpec.describe RelatonBib::BibliographicDate do
       item.to_xml builder, date_format: :full
     end.doc.root.to_xml
 
-    expect(xml).to be_equivalent_to <<~XML
+    expect(xml).to be_xml_equivalent_to <<~XML
       <date type="published"><on>2014-11-22</on></date>
     XML
   end
@@ -112,7 +112,7 @@ RSpec.describe RelatonBib::BibliographicDate do
       item.to_xml builder, date_format: :full
     end.doc.root.to_xml
 
-    expect(xml).to be_equivalent_to <<~XML
+    expect(xml).to be_xml_equivalent_to <<~XML
       <date type="published"><on>2014-01-01</on></date>
     XML
   end

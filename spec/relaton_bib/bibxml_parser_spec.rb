@@ -2,19 +2,19 @@ RSpec.describe "BibXML parser" do
   it "parse RFC" do
     bibxml = File.read "spec/examples/rfc.xml", encoding: "UTF-8"
     bib = RelatonBib::BibXMLParser.parse bibxml
-    expect(bib.to_bibxml).to be_equivalent_to bibxml
+    expect(bib.to_bibxml).to be_xml_equivalent_to bibxml
   end
 
   it "parse BCP" do
     bibxml = File.read "spec/examples/bcp_item.xml", encoding: "UTF-8"
     bib = RelatonBib::BibXMLParser.parse bibxml
-    expect(bib.to_bibxml).to be_equivalent_to bibxml
+    expect(bib.to_bibxml).to be_xml_equivalent_to bibxml
   end
 
   it "IEEE" do
     bibxml = File.read "spec/examples/ieee_bibxml.xml", encoding: "UTF-8"
     bib = RelatonBib::BibXMLParser.parse bibxml
-    expect(bib.to_bibxml).to be_equivalent_to bibxml
+    expect(bib.to_bibxml).to be_xml_equivalent_to bibxml
   end
 
   it "returns contacts" do

@@ -39,7 +39,7 @@ describe RelatonBib::FullName do
     it "to_xml" do
       builder = Nokogiri::XML::Builder.new
       subject.to_xml(builder: builder)
-      expect(builder.to_xml).to be_equivalent_to <<~XML
+      expect(builder.to_xml).to be_xml_equivalent_to <<~XML
         <name>
           <abbreviation>DJ</abbreviation>
           <prefix>Dr.</prefix>
@@ -103,7 +103,7 @@ describe RelatonBib::FullName do
     it "to_xml" do
       builder = Nokogiri::XML::Builder.new
       subject.to_xml(builder: builder, lang: "en")
-      expect(builder.to_xml).to be_equivalent_to <<~XML
+      expect(builder.to_xml).to be_xml_equivalent_to <<~XML
         <name>
           <completename>John Doe</completename>
         </name>

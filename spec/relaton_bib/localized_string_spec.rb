@@ -26,7 +26,7 @@ RSpec.describe RelatonBib::LocalizedString do
       xml = Nokogiri::XML::Builder.new do |b|
         b.localized_string { subject.to_xml(b) }
       end
-      expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
+      expect(xml.doc.root.to_s).to be_xml_equivalent_to <<~XML
         <localized_string language="en" script="Latn">
           prefix &lt;p&gt;content &lt;p&gt;&lt; &amp; &gt; characters&lt;/p&gt; to escape&lt;/p&gt;
           &lt;p&gt;Text&lt;/p&gt; suffix
@@ -39,7 +39,7 @@ RSpec.describe RelatonBib::LocalizedString do
       xml = Nokogiri::XML::Builder.new do |b|
         b.localized_string { ls.to_xml(b) }
       end
-      expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
+      expect(xml.doc.root.to_s).to be_xml_equivalent_to <<~XML
         <localized_string language="en" script="Latn">Content &amp;</localized_string>
       XML
     end
@@ -49,7 +49,7 @@ RSpec.describe RelatonBib::LocalizedString do
       xml = Nokogiri::XML::Builder.new do |b|
         b.localized_string { ls.to_xml(b) }
       end
-      expect(xml.doc.root.to_s).to be_equivalent_to <<~XML
+      expect(xml.doc.root.to_s).to be_xml_equivalent_to <<~XML
         <localized_string>
           <variant language="en" script="Latn">Content &lt;p&gt;Text&lt;/p&gt;</variant>
         </localized_string>
