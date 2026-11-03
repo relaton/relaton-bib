@@ -1,3 +1,20 @@
+= DEPRECATION NOTICE
+
+This repository is the pre-monorepo home of the `relaton-bib` code and
+is deprecated and no longer maintained. That work is now consolidated
+in the *relaton monogem* — https://github.com/relaton/relaton[relaton/relaton]
+(RubyGems: https://rubygems.org/gems/relaton[`relaton`] >= 3.0), which
+bundles the relaton core and every former `relaton-*` flavor gem. This
+repository is archived and read-only; issues and pull requests are
+disabled.
+
+See the monogem's README for usage: one entry point
+(`require "relaton"`), one resolver for every dataset, and the
+citation-style renderer built in.
+
+
+::::
+
 = RelatonBib
 
 image:https://img.shields.io/gem/v/relaton-bib.svg["Gem Version", link="https://rubygems.org/gems/relaton-bib"]
