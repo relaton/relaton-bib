@@ -15,7 +15,7 @@ describe RelatonBib::Forename do
       doc = Nokogiri::XML::Builder.new do |builder|
         builder.name { subject.to_xml builder }
       end.doc.root
-      expect(doc.to_xml).to be_equivalent_to <<-XML
+      expect(doc.to_xml).to be_xml_equivalent_to <<-XML
         <name>
           <forename language="en" script="Latn" initial="J">John</forename>
         </name>

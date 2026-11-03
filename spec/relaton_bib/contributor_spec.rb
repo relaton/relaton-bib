@@ -105,7 +105,7 @@ describe RelatonBib::Affiliation do
     context "with all fields" do
       it "as XML" do
         xml = Nokogiri::XML::Builder.new { |b| subject.to_xml(builder: b) }.doc.root
-        expect(xml.to_s).to be_equivalent_to <<~XML
+        expect(xml.to_s).to be_xml_equivalent_to <<~XML
           <affiliation>
             <name language="en">Name</name>
             <description format="text/plain" language="en">Description</description>
@@ -142,7 +142,7 @@ describe RelatonBib::Affiliation do
 
       it "as XML" do
         xml = Nokogiri::XML::Builder.new { |b| subject.to_xml(builder: b) }.doc.root
-        expect(xml.to_s).to be_equivalent_to <<~XML
+        expect(xml.to_s).to be_xml_equivalent_to <<~XML
           <affiliation>
             <name language="en">Name</name>
             <description format="text/plain" language="en">Description</description>
@@ -165,7 +165,7 @@ describe RelatonBib::Affiliation do
 
       it "as XML" do
         xml = Nokogiri::XML::Builder.new { |b| subject.to_xml(builder: b) }.doc.root
-        expect(xml.to_s).to be_equivalent_to <<~XML
+        expect(xml.to_s).to be_xml_equivalent_to <<~XML
           <affiliation>
             <description format="text/plain" language="en">Description</description>
             <organization>
@@ -190,7 +190,7 @@ describe RelatonBib::Affiliation do
 
       it "as XML" do
         xml = Nokogiri::XML::Builder.new { |b| subject.to_xml(builder: b) }.doc.root
-        expect(xml.to_s).to be_equivalent_to <<~XML
+        expect(xml.to_s).to be_xml_equivalent_to <<~XML
           <affiliation>
             <name language="en">Name</name>
             <organization>

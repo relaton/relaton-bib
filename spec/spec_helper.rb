@@ -4,7 +4,7 @@ SimpleCov.start { add_filter "/spec/" }
 require "bundler/setup"
 require "relaton_bib"
 require "rspec/matchers"
-require "equivalent-xml"
+require "canon/rspec_matchers"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
